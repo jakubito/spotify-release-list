@@ -1,0 +1,50 @@
+.Album {
+  margin: 20px 0 0 20px !important;
+  padding: 0 !important;
+  border: none !important;
+  flex: 0 0 430px;
+
+  @include desktop-only {
+    flex: 0 0 calc(50% - 20px);
+  }
+
+  @include touch {
+    margin-left: 0 !important;
+  }
+
+  @include tablet-only {
+    flex: 0 0 calc(50% - 10px);
+
+    &:nth-child(even) {
+      margin-left: 20px !important;
+    }
+  }
+
+  @include mobile {
+    flex: 0 0 calc(100%);
+  }
+
+  .media-left {
+    margin: 0 15px 0 0 !important;
+
+    figure {
+      margin: 0 !important;
+      border-radius: 3px;
+
+      img {
+        border-radius: 3px;
+      }
+    }
+  }
+
+  .content {
+    a {
+      color: #1cb954;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

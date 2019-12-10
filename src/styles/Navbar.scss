@@ -1,0 +1,63 @@
+.Navbar {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  flex: 0 0 auto;
+
+  @include touch {
+    flex-wrap: wrap;
+  }
+
+  .title {
+    margin-bottom: 0 !important;
+    margin-right: 20px;
+    user-select: none;
+    text-align: right;
+    flex: 0 0 240px;
+
+    @include touch {
+      margin-right: 0;
+      text-align: left;
+      flex: 0 1 auto;
+    }
+  }
+
+  .sync {
+    display: flex;
+    align-items: center;
+
+    @include touch {
+      order: 2;
+      flex: 0 0 100%;
+      margin-top: 20px;
+    }
+
+    @include mobile {
+      flex-direction: column;
+    }
+
+    .SpotifySyncButton {
+      @include mobile {
+        width: 100%;
+      }
+    }
+
+    .last-update {
+      margin-left: 15px;
+
+      @include mobile {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+        text-align: center;
+      }
+    }
+  }
+
+  .right {
+    justify-content: flex-end;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+  }
+}

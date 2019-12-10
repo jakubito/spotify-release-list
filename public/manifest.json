@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Spotify Release List",
+  "author": "Jakub Dobes",
+  "version": "1.0.2",
+  "description": "Display list of Spotify releases from artists you follow.",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "64": "icon64.png",
+    "128": "icon128.png"
+  },
+  "browser_action": {},
+  "permissions": ["identity", "storage"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_security_policy": "script-src 'self' https://use.fontawesome.com; object-src 'self'"
+}

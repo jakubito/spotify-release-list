@@ -1,0 +1,29 @@
+.Content {
+  padding: 15px 15px 50px;
+  flex: 1 1 auto;
+
+  .center {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    @include mobile {
+      > * {
+        width: 100%;
+      }
+    }
+  }
+
+  .loading {
+    opacity: 0.5;
+
+    progress {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 10px;
+    }
+  }
+}

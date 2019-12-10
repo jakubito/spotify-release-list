@@ -1,0 +1,61 @@
+.SettingsModal {
+  .modal-content {
+    .control {
+      display: flex;
+
+      @include mobile {
+        flex-direction: column;
+      }
+
+      .field {
+        margin-bottom: 0;
+        margin-right: 8px;
+
+        @include mobile {
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+      }
+
+      select {
+        width: 100%;
+      }
+    }
+
+    > .field {
+      margin-bottom: 24px;
+    }
+
+    .credits {
+      a {
+        text-decoration: underline;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+
+    .help {
+      margin: 0 0 20px 0;
+    }
+
+    .actions {
+      .column {
+        @include mobile {
+          margin-top: 20px;
+
+          &:first-child {
+            margin-top: 0;
+          }
+        }
+
+        .button {
+          @include mobile {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

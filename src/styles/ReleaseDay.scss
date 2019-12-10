@@ -1,0 +1,36 @@
+.ReleaseDay {
+  margin: 0 !important;
+
+  @include touch {
+    flex-direction: column;
+
+    &:first-child {
+      .column.date {
+        margin-top: 0 !important;
+      }
+    }
+  }
+
+  .column {
+    &.date {
+      flex: 0 0 240px;
+      line-height: 30px;
+      margin: 20px 0 0 0 !important;
+      text-align: right;
+
+      @include desktop-only {
+        flex: 0 0 170px;
+      }
+
+      @include touch {
+        flex: none;
+        text-align: left;
+      }
+    }
+
+    &.albums {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}

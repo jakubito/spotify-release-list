@@ -1,0 +1,11 @@
+.BackToTop {
+  position: fixed;
+  z-index: 100;
+  right: 15px;
+  bottom: 15px;
+  display: none;
+
+  &.visible {
+    display: block;
+  }
+}
