@@ -2,6 +2,8 @@
 
 Display list of Spotify releases from artists you follow.
 
+https://spotifyreleaselist.netlify.com/
+
 ![screenshot.jpg](https://raw.githubusercontent.com/jakubito/spotify-release-list-web/master/public/screenshot.jpg)
 
 This is a browser agnostic, hosted web version of my Google Chrome extension: https://github.com/jakubito/spotify-release-list
