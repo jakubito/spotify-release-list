@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   padding: 15px;
+  flex: 0 0 auto;
 
   @include touch {
     flex-wrap: wrap;
