@@ -1,13 +1,12 @@
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
-import { authorize } from './oauth';
 import { getUser, getUserFollowedArtists, getArtistAlbums } from './api';
 import { SYNC, setUser, syncFinished, addAlbums, setArtists } from './actions';
 import { getDaysAgoDate, chunks, reflect, filterResolved } from './helpers';
 import { getSettings } from './selectors';
 
-function* sync() {
+function* sync(action) {
   try {
-    const token = yield call(authorize);
+    const { token } = action.payload;
     const user = yield call(getUser, token);
     yield put(setUser(user));
     const artists = yield call(getUserFollowedArtists, token);

@@ -1,25 +1,22 @@
-/* global chrome */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Store } from 'webext-redux';
-import { hideSettingsModal, hideResetModal } from './actions';
+import { Router } from '@reach/router';
+import Auth from './components/Auth';
 import App from './components/App';
+import { store, hydrate } from './store';
 import './styles/index.scss';
 
-const store = new Store();
-
-async function renderApp() {
-  await store.ready();
-  await store.dispatch(hideSettingsModal());
-  await store.dispatch(hideResetModal());
+(async function() {
+  await hydrate;
 
   ReactDOM.render(
     <Provider store={store}>
-      <App />
+      <Router>
+        <Auth path="auth" />
+        <App path="/" />
+      </Router>
     </Provider>,
     document.getElementById('root')
   );
-}
-
-chrome.runtime.sendMessage({ type: 'READY' }, renderApp);
+})();

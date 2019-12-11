@@ -13,7 +13,8 @@
 
 html,
 body,
-#root {
+#root,
+#root > div {
   height: 100%;
 }
 

@@ -9,10 +9,12 @@ export const SHOW_SETTINGS_MODAL = 'SHOW_SETTINGS_MODAL';
 export const HIDE_SETTINGS_MODAL = 'HIDE_SETTINGS_MODAL';
 export const SHOW_RESET_MODAL = 'SHOW_RESET_MODAL';
 export const HIDE_RESET_MODAL = 'HIDE_RESET_MODAL';
+export const SET_NONCE = 'SET_NONCE';
 
-export function sync() {
+export function sync(token) {
   return {
     type: SYNC,
+    payload: { token },
   };
 }
 
@@ -77,5 +79,12 @@ export function showResetModal() {
 export function hideResetModal() {
   return {
     type: HIDE_RESET_MODAL,
+  };
+}
+
+export function setNonce(nonce) {
+  return {
+    type: SET_NONCE,
+    payload: { nonce },
   };
 }

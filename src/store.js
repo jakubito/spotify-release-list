@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-import { localStorage } from 'redux-persist-webextension-storage';
+import localForage from 'localforage';
 import createSagaMiddleware from 'redux-saga';
 import {
   SYNC,
@@ -15,13 +15,19 @@ import {
   HIDE_SETTINGS_MODAL,
   SHOW_RESET_MODAL,
   HIDE_RESET_MODAL,
+  SET_NONCE,
 } from './actions';
 import saga from './sagas';
 
+localForage.config({
+  name: 'spotify-release-list',
+});
+
 const persistConfig = {
   key: 'root',
-  storage: localStorage,
+  storage: localForage,
   stateReconciler: autoMergeLevel2,
+  whitelist: ['user', 'syncedOnce', 'lastSync', 'nonce', 'artists', 'albums', 'settings'],
 };
 
 const initialState = {
@@ -29,6 +35,7 @@ const initialState = {
   syncing: false,
   syncedOnce: false,
   lastSync: null,
+  nonce: null,
   settingsModalVisible: false,
   resetModalVisible: false,
   artists: {},
@@ -126,6 +133,11 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         resetModalVisible: false,
+      };
+    case SET_NONCE:
+      return {
+        ...state,
+        nonce: payload.nonce,
       };
     case RESET:
       return {

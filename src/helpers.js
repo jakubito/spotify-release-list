@@ -53,6 +53,17 @@ export function chunks(inputArray, chunkSize) {
   return result;
 }
 
+export function generateNonce() {
+  return (
+    Math.random()
+      .toString(36)
+      .substring(2, 15) +
+    Math.random()
+      .toString(36)
+      .substring(2, 15)
+  );
+}
+
 function getFirstImage(images) {
   return images && images.length && images[0].url;
 }

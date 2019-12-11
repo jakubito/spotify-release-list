@@ -5,6 +5,7 @@ export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;
 export const getSyncedOnce = (state) => state.syncedOnce;
 export const getLastSync = (state) => state.lastSync;
+export const getNonce = (state) => state.nonce;
 export const getArtists = (state) => state.artists;
 export const getAlbums = (state) => state.albums;
 export const getSettings = (state) => state.settings;
