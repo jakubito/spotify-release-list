@@ -36,7 +36,7 @@ function UriLinksField() {
             checked={uriLinks}
             onChange={uriLinksChangeHandler}
           />
-          <label htmlFor="uriLinksTrue">Desktop app</label>
+          <label htmlFor="uriLinksTrue">Spotify app</label>
         </div>
       </div>
     </div>
