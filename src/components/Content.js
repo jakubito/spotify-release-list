@@ -13,6 +13,9 @@ function Content() {
     return (
       <div className="Content">
         <div className="center has-background-black has-text-weight-semibold">
+          <p className="has-text-light is-size-5 intro">
+            Display list of Spotify releases from artists you follow.
+          </p>
           <SpotifySyncButton title="Connect Spotify account" className="is-medium" />
         </div>
       </div>
