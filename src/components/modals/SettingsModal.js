@@ -1,7 +1,7 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { hideSettingsModal, showResetModal } from '../../actions';
-import { modalEffect } from '../../hooks';
+import { useModal } from '../../hooks';
 import { getUser } from '../../selectors';
 import AlbumGroupsField from '../settings/AlbumGroupsField';
 import TimePeriodField from '../settings/TimePeriodField';
@@ -11,8 +11,7 @@ import UriLinksField from '../settings/UriLinksField';
 function SettingsModal() {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
-  const closeModal = useCallback(() => dispatch(hideSettingsModal()), [dispatch]);
-  useEffect(() => modalEffect(closeModal), [closeModal]);
+  const closeModal = useModal(hideSettingsModal);
 
   return (
     <div className="SettingsModal modal is-active">

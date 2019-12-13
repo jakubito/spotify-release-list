@@ -1,6 +1,6 @@
 import config from './config.json';
 
-export function authorize(nonce) {
+export function startAuthFlow(nonce) {
   const params = new URLSearchParams({
     client_id: config.SPOTIFY_CLIENT_ID,
     response_type: 'token',

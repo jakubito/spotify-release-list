@@ -15,7 +15,7 @@ function App() {
       'scroll',
       throttle(() => {
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        setBackToTopVisible(scrollTop > 100);
+        setBackToTopVisible(scrollTop > 200);
       }, 200)
     );
   }, [setBackToTopVisible]);

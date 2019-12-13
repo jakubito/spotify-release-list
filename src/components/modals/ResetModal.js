@@ -1,12 +1,11 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { reset, hideResetModal, showSettingsModal } from '../../actions';
-import { modalEffect } from '../../hooks';
+import { useModal } from '../../hooks';
 
 function ResetModal() {
   const dispatch = useDispatch();
-  const closeModal = useCallback(() => dispatch(hideResetModal()), [dispatch]);
-  useEffect(() => modalEffect(closeModal), [closeModal]);
+  const closeModal = useModal(hideResetModal);
 
   return (
     <div className="ResetModal modal is-active">

@@ -1,22 +1,13 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { setNonce } from '../actions';
 import { getSyncing } from '../selectors';
-import { authorize } from '../oauth';
-import { generateNonce } from '../helpers';
+import { useAuthorize } from '../hooks';
 
 function SpotifySyncButton({ title, icon, className }) {
   const syncing = useSelector(getSyncing);
-  const dispatch = useDispatch();
-
-  const onClick = useCallback(() => {
-    const nonce = generateNonce();
-
-    dispatch(setNonce(nonce));
-    authorize(nonce);
-  }, [dispatch]);
+  const authorize = useAuthorize();
 
   return (
     <button
@@ -32,7 +23,7 @@ function SpotifySyncButton({ title, icon, className }) {
         className
       )}
       disabled={syncing}
-      onClick={onClick}
+      onClick={authorize}
     >
       <span className="icon">
         <i className={icon}></i>
