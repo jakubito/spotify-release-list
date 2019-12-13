@@ -1,9 +1,12 @@
 .Content {
   padding: 15px 15px 50px;
   flex: 1 1 auto;
+  position: relative;
 
   .center {
-    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -11,7 +14,8 @@
     align-items: center;
 
     @include mobile {
-      > * {
+      > div,
+      > p {
         width: 100%;
       }
     }

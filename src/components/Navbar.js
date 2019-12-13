@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Media from 'react-media';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { getLastSyncDate, getUser, getSyncedOnce } from '../selectors';
 import { showSettingsModal } from '../actions';
+import { getLastSyncHuman } from '../helpers';
 import SpotifySyncButton from './SpotifySyncButton';
 import Profile from './Profile';
 
@@ -12,6 +12,16 @@ function Navbar() {
   const lastSyncDate = useSelector(getLastSyncDate);
   const user = useSelector(getUser);
   const dispatch = useDispatch();
+  const [lastSyncHuman, setLastSyncHuman] = useState(getLastSyncHuman(lastSyncDate));
+
+  useEffect(() => {
+    const updateLastSyncHuman = () => {
+      setLastSyncHuman(getLastSyncHuman(lastSyncDate));
+    };
+
+    window.onfocus = updateLastSyncHuman;
+    updateLastSyncHuman();
+  }, [lastSyncDate, setLastSyncHuman]);
 
   return (
     <nav className="Navbar">
@@ -19,9 +29,7 @@ function Navbar() {
       {syncedOnce && (
         <div className="sync">
           <SpotifySyncButton title="Refresh" icon="fas fa-sync" />
-          <div className="last-update has-text-grey">
-            Last update: {lastSyncDate ? `${formatDistanceToNow(lastSyncDate)} ago` : 'Never'}
-          </div>
+          <div className="last-update has-text-grey">Last update: {lastSyncHuman}</div>
         </div>
       )}
       <div className="right">

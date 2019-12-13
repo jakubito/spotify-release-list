@@ -5,6 +5,7 @@ import { Router } from '@reach/router';
 import Auth from './components/Auth';
 import App from './components/App';
 import { store, hydrate } from './store';
+import '@fortawesome/fontawesome-free/js/all';
 import './styles/index.scss';
 
 (async function() {
