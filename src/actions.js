@@ -9,12 +9,12 @@ export const SHOW_SETTINGS_MODAL = 'SHOW_SETTINGS_MODAL';
 export const HIDE_SETTINGS_MODAL = 'HIDE_SETTINGS_MODAL';
 export const SHOW_RESET_MODAL = 'SHOW_RESET_MODAL';
 export const HIDE_RESET_MODAL = 'HIDE_RESET_MODAL';
+export const SET_TOKEN = 'SET_TOKEN';
 export const SET_NONCE = 'SET_NONCE';
 
-export function sync(token) {
+export function sync() {
   return {
     type: SYNC,
-    payload: { token },
   };
 }
 
@@ -79,6 +79,13 @@ export function showResetModal() {
 export function hideResetModal() {
   return {
     type: HIDE_RESET_MODAL,
+  };
+}
+
+export function setToken(token, tokenExpires) {
+  return {
+    type: SET_TOKEN,
+    payload: { token, tokenExpires },
   };
 }
 

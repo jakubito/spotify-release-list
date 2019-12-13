@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Media from 'react-media';
 import { getLastSyncDate, getUser, getSyncedOnce } from '../selectors';
 import { showSettingsModal } from '../actions';
-import { getLastSyncHuman } from '../helpers';
+import { getLastSyncHuman, saveInterval } from '../helpers';
 import SpotifySyncButton from './SpotifySyncButton';
 import Profile from './Profile';
 
@@ -19,8 +19,9 @@ function Navbar() {
       setLastSyncHuman(getLastSyncHuman(lastSyncDate));
     };
 
-    window.onfocus = updateLastSyncHuman;
     updateLastSyncHuman();
+    saveInterval(updateLastSyncHuman, 60000);
+    window.onfocus = updateLastSyncHuman;
   }, [lastSyncDate, setLastSyncHuman]);
 
   return (

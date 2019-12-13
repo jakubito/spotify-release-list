@@ -3,6 +3,16 @@ import format from 'date-fns/format';
 import subDays from 'date-fns/subDays';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
+let intervalId;
+
+export function saveInterval(...args) {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+
+  intervalId = setInterval(...args);
+}
+
 export function formatDate(dateISOString, template) {
   return format(parseISO(dateISOString), template);
 }

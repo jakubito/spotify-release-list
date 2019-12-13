@@ -15,6 +15,7 @@ import {
   HIDE_SETTINGS_MODAL,
   SHOW_RESET_MODAL,
   HIDE_RESET_MODAL,
+  SET_TOKEN,
   SET_NONCE,
 } from './actions';
 import saga from './sagas';
@@ -27,7 +28,17 @@ const persistConfig = {
   key: 'root',
   storage: localForage,
   stateReconciler: autoMergeLevel2,
-  whitelist: ['user', 'syncedOnce', 'lastSync', 'nonce', 'artists', 'albums', 'settings'],
+  whitelist: [
+    'user',
+    'syncedOnce',
+    'lastSync',
+    'token',
+    'tokenExpires',
+    'nonce',
+    'artists',
+    'albums',
+    'settings',
+  ],
 };
 
 const initialState = {
@@ -35,6 +46,8 @@ const initialState = {
   syncing: false,
   syncedOnce: false,
   lastSync: null,
+  token: null,
+  tokenExpires: null,
   nonce: null,
   settingsModalVisible: false,
   resetModalVisible: false,
@@ -133,6 +146,12 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         resetModalVisible: false,
+      };
+    case SET_TOKEN:
+      return {
+        ...state,
+        token: payload.token,
+        tokenExpires: payload.tokenExpires,
       };
     case SET_NONCE:
       return {
