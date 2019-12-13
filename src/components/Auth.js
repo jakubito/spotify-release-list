@@ -19,7 +19,7 @@ function Auth() {
   }
 
   if (!hash.access_token || !hash.expires_in || hash.state !== nonce) {
-    alert(`Invalid request ◴_◶`);
+    alert('Invalid request ◴_◶');
 
     return null;
   }
