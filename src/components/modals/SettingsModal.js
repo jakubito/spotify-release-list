@@ -75,8 +75,9 @@ function SettingsModal() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            source code
-          </a>
+            github
+          </a>{' '}
+          • v1.0.0
         </div>
       </div>
     </div>
