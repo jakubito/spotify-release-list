@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getArtists } from '../selectors';
+import { getArtists, getSettings } from '../selectors';
 import { mergeAlbumArtists } from '../helpers';
 import Link from './Link';
 
 function Album(album) {
   const { uri, url, image, name } = album;
+  const { covers } = useSelector(getSettings);
   const artistsMap = useSelector(getArtists);
   const artistsToDisplay = mergeAlbumArtists(album, artistsMap)
     .map((artist) => (
@@ -18,11 +19,13 @@ function Album(album) {
 
   return (
     <article className="Album media">
-      <Link uri={uri} url={url} className="media-left">
-        <figure className="image is-64x64">
-          <img src={image} alt={name} />
-        </figure>
-      </Link>
+      {covers && (
+        <Link uri={uri} url={url} className="media-left">
+          <figure className="image is-64x64">
+            <img src={image} alt={name} />
+          </figure>
+        </Link>
+      )}
       <div className="media-content has-text-light">
         <div className="content">
           <Link uri={uri} url={url} className="is-size-5">

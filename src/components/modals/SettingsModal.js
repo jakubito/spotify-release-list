@@ -7,6 +7,7 @@ import AlbumGroupsField from '../settings/AlbumGroupsField';
 import TimePeriodField from '../settings/TimePeriodField';
 import MarketField from '../settings/MarketField';
 import UriLinksField from '../settings/UriLinksField';
+import CoversField from '../settings/CoversField';
 
 function SettingsModal() {
   const dispatch = useDispatch();
@@ -22,9 +23,11 @@ function SettingsModal() {
         <AlbumGroupsField />
         <TimePeriodField />
         <MarketField />
-        <UriLinksField />
 
-        <p className="help">Note: Please refresh the album list to apply these settings.</p>
+        <p className="help">Note: Please refresh your release list to apply above settings.</p>
+
+        <UriLinksField />
+        <CoversField />
 
         <div className="actions columns is-gapless">
           <div className="column">

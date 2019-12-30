@@ -79,15 +79,25 @@ export function generateNonce() {
   );
 }
 
-function getFirstImage(images) {
-  return images && images.length && images[0].url;
+function getImage(images) {
+  if (!images || !images.length) {
+    return null;
+  }
+
+  for (const image of images) {
+    if (image.width === 300) {
+      return image.url;
+    }
+  }
+
+  return images[0].url;
 }
 
 export function buildUser(source) {
   return {
     id: source.id,
     name: source.display_name,
-    image: getFirstImage(source.images),
+    image: getImage(source.images),
   };
 }
 
@@ -106,7 +116,7 @@ export function buildAlbum(source, artistId) {
     url: source.external_urls.spotify,
     uri: source.uri,
     name: source.name,
-    image: getFirstImage(source.images),
+    image: getImage(source.images),
     artists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
     releaseDatePrecision: source.release_date_precision,

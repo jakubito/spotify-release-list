@@ -58,6 +58,7 @@ const initialState = {
     days: 30,
     market: '',
     uriLinks: false,
+    covers: true,
   },
 };
 
@@ -156,6 +157,7 @@ function reducer(state = initialState, action) {
     case SET_NONCE:
       return {
         ...state,
+        syncing: true,
         nonce: payload.nonce,
       };
     case RESET:

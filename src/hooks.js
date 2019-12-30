@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { generateNonce } from './helpers';
+import { generateNonce, sleep } from './helpers';
 import { setNonce, sync } from './actions';
 import { startAuthFlow } from './oauth';
 import { getToken, getTokenExpires } from './selectors';
@@ -33,7 +33,7 @@ export function useAuthorize() {
   const token = useSelector(getToken);
   const tokenExpires = useSelector(getTokenExpires);
 
-  return useCallback(() => {
+  return useCallback(async () => {
     if (token && tokenExpires && new Date().toISOString() < tokenExpires) {
       dispatch(sync());
 
@@ -43,6 +43,7 @@ export function useAuthorize() {
     const nonce = generateNonce();
 
     dispatch(setNonce(nonce));
+    await sleep(500);
     startAuthFlow(nonce);
   }, [token, tokenExpires, dispatch]);
 }
