@@ -13,6 +13,8 @@ export const getAlbums = (state) => state.albums;
 export const getSettings = (state) => state.settings;
 export const getSettingsModalVisible = (state) => state.settingsModalVisible;
 export const getResetModalVisible = (state) => state.resetModalVisible;
+export const getPlaylistModalVisible = (state) => state.playlistModalVisible;
+export const getErrorMessage = (state) => state.errorMessage;
 
 export const getArtistsCount = createSelector(
   getArtists,

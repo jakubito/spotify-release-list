@@ -1,10 +1,18 @@
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 import { getUser, getUserFollowedArtists, getArtistAlbums } from './api';
-import { SYNC, setUser, syncFinished, addAlbums, setArtists } from './actions';
 import { getDaysAgoDate, chunks, reflect, filterResolved } from './helpers';
 import { getSettings, getToken } from './selectors';
+import {
+  SYNC,
+  setUser,
+  syncFinished,
+  syncFinishedWithError,
+  addAlbums,
+  setArtists,
+  showErrorMessage,
+} from './actions';
 
-function* sync() {
+function* syncSaga() {
   try {
     const token = yield select(getToken);
     const user = yield call(getUser, token);
@@ -23,15 +31,18 @@ function* sync() {
       const albums = filterResolved(albumResponses).flat();
       yield put(addAlbums(albums, afterDateString));
     }
-  } catch (error) {
-    console.error(error);
-  } finally {
+
     yield put(syncFinished());
+  } catch (error) {
+    yield put(showErrorMessage());
+    yield put(syncFinishedWithError());
+
+    throw error;
   }
 }
 
 function* saga() {
-  yield takeLatest(SYNC, sync);
+  yield takeLatest(SYNC, syncSaga);
 }
 
 export default saga;

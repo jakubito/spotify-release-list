@@ -1,5 +1,10 @@
 @import '~bulma/bulma';
 @import '~bulma-checkradio/dist/css/bulma-checkradio';
+@import '~react-dates/lib/css/_datepicker';
+
+@import './mixins';
+@import './base';
+@import './datepicker';
 
 @import './Album';
 @import './App';
@@ -9,36 +14,6 @@
 @import './ReleaseDay';
 @import './ResetModal';
 @import './SettingsModal';
+@import './PlaylistModal';
 @import './BackToTop';
-
-html,
-body,
-#root,
-#root > div {
-  height: 100%;
-}
-
-.button.is-primary {
-  background-color: #1cb954 !important;
-
-  &:hover {
-    background-color: #16c453 !important;
-  }
-}
-
-.is-checkradio[type='checkbox']:focus + label::before,
-.is-checkradio[type='checkbox']:focus + label:before,
-.is-checkradio[type='radio']:focus + label::before,
-.is-checkradio[type='radio']:focus + label:before {
-  outline: none;
-}
-
-.modal-content {
-  padding: 30px;
-  border-radius: 3px;
-  box-shadow: 0px 0px 80px 0px #000000;
-
-  .title {
-    margin-bottom: 24px;
-  }
-}
+@import './Error';

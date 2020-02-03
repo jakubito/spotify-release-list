@@ -1,0 +1,37 @@
+html,
+body,
+#root,
+#root > div {
+  height: 100%;
+}
+
+.button {
+  @include mobile {
+    font-size: 1.2em;
+  }
+}
+
+.button.is-primary {
+  background-color: #1cb954 !important;
+
+  &:hover {
+    background-color: #16c453 !important;
+  }
+}
+
+.is-checkradio[type='checkbox']:focus + label::before,
+.is-checkradio[type='checkbox']:focus + label:before,
+.is-checkradio[type='radio']:focus + label::before,
+.is-checkradio[type='radio']:focus + label:before {
+  outline: none;
+}
+
+.modal-content {
+  padding: 30px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 80px 0px #000000;
+
+  .title {
+    margin-bottom: 24px;
+  }
+}

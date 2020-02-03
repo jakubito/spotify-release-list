@@ -1,4 +1,4 @@
-.SettingsModal {
+.PlaylistModal {
   .modal-content {
     .control {
       display: flex;
@@ -21,7 +21,6 @@
         }
       }
 
-      .select,
       select {
         width: 100%;
       }
@@ -31,21 +30,9 @@
       margin-bottom: 24px;
     }
 
-    .credits {
-      a {
-        text-decoration: underline;
-
-        &:hover {
-          text-decoration: none;
-        }
-      }
-    }
-
-    .help {
-      margin: 0 0 20px 0;
-    }
-
     .actions {
+      margin-bottom: 0;
+
       .column {
         @include mobile {
           margin-top: 20px;
@@ -63,15 +50,9 @@
       }
     }
 
-    .reset {
-      margin-bottom: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
+    .date-helpers {
       button {
-        margin-top: 10px;
+        margin: 15px 15px 0 0;
       }
     }
   }

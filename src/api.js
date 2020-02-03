@@ -15,18 +15,29 @@ async function callApi(endpoint, token) {
     return response.json();
   }
 
-  // Handle too many requests error
+  // Handle 429 Too many requests
   if (response.status === 429) {
-    const retryAfterMs = Number(response.headers.get('Retry-After')) * 1000 + 100;
+    const waitMs = Number(response.headers.get('Retry-After')) * 1000 + 100;
 
-    await sleep(retryAfterMs);
+    await sleep(waitMs);
 
     return callApi(endpoint, token);
   }
 
-  throw new Error(
-    `💢 Fetch Error; Status: ${response.status}; Status text: ${response.statusText}`
-  );
+  if (response.status >= 400 && response.status < 500) {
+    const json = await response.json();
+
+    throw new Error(`
+      Fetch 4XX Response
+      Status: ${response.status} ${response.statusText}
+      Message: ${json.error.message}
+    `);
+  }
+
+  throw new Error(`
+    Fetch Error
+    Status: ${response.status} ${response.statusText}
+  `);
 }
 
 export async function getUser(token) {

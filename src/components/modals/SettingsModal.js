@@ -21,13 +21,24 @@ function SettingsModal() {
         <h4 className="title is-4 has-text-light has-text-centered">Settings</h4>
 
         <AlbumGroupsField />
-        <TimePeriodField />
-        <MarketField />
 
-        <p className="help">Note: Please refresh your release list to apply above settings.</p>
+        <div className="columns is-4 is-variable">
+          <div className="column">
+            <TimePeriodField />
+          </div>
+          <div className="column">
+            <MarketField />
+          </div>
+        </div>
 
-        <UriLinksField />
-        <CoversField />
+        <div className="columns is-4 is-variable">
+          <div className="column">
+            <UriLinksField />
+          </div>
+          <div className="column">
+            <CoversField />
+          </div>
+        </div>
 
         <div className="actions columns is-gapless">
           <div className="column">
@@ -41,21 +52,22 @@ function SettingsModal() {
               <span>All good</span>
             </button>
           </div>
-
-          {user && (
-            <div className="column has-text-right">
-              <button
-                className="button is-danger is-rounded has-text-weight-semibold"
-                onClick={() => dispatch(showResetModal())}
-              >
-                <span className="icon">
-                  <i className="fas fa-trash-alt"></i>
-                </span>
-                <span>Delete all data</span>
-              </button>
-            </div>
-          )}
         </div>
+
+        {user && (
+          <div className="reset has-text-grey-light">
+            Logged in as {user.name}
+            <button
+              className="button is-dark is-rounded is-small"
+              onClick={() => dispatch(showResetModal())}
+            >
+              <span className="icon">
+                <i className="far fa-trash-alt"></i>
+              </span>
+              <span>Delete all data</span>
+            </button>
+          </div>
+        )}
 
         <div className="credits has-text-centered has-text-grey">
           Made with{' '}

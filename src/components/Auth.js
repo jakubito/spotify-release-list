@@ -4,7 +4,7 @@ import { Redirect } from '@reach/router';
 import queryString from 'query-string';
 import addSeconds from 'date-fns/addSeconds';
 import { getNonce } from '../selectors';
-import { sync, setToken } from '../actions';
+import { sync, setToken, showErrorMessage } from '../actions';
 
 function Auth() {
   const dispatch = useDispatch();
@@ -13,22 +13,16 @@ function Auth() {
   const nonce = useSelector(getNonce);
 
   if (search.error) {
-    alert('Access denied ◕︵◕');
+    dispatch(showErrorMessage('Error: Access denied.'));
+  } else if (!hash.access_token || !hash.expires_in || hash.state !== nonce) {
+    dispatch(showErrorMessage('Error: Invalid request.'));
+  } else {
+    const token = hash.access_token;
+    const tokenExpires = addSeconds(new Date(), Number(hash.expires_in) - 120).toISOString();
 
-    return null;
+    dispatch(setToken(token, tokenExpires));
+    dispatch(sync());
   }
-
-  if (!hash.access_token || !hash.expires_in || hash.state !== nonce) {
-    alert('Invalid request ◴_◶');
-
-    return null;
-  }
-
-  const token = hash.access_token;
-  const tokenExpires = addSeconds(new Date(), Number(hash.expires_in) - 120).toISOString();
-
-  dispatch(setToken(token, tokenExpires));
-  dispatch(sync());
 
   return <Redirect to="/" noThrow />;
 }

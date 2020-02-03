@@ -2,10 +2,12 @@ import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import localForage from 'localforage';
+import * as Sentry from '@sentry/browser';
 import createSagaMiddleware from 'redux-saga';
 import {
   SYNC,
   SYNC_FINISHED,
+  SYNC_FINISHED_WITH_ERROR,
   SET_USER,
   ADD_ALBUMS,
   SET_ARTISTS,
@@ -15,8 +17,12 @@ import {
   HIDE_SETTINGS_MODAL,
   SHOW_RESET_MODAL,
   HIDE_RESET_MODAL,
+  SHOW_PLAYLIST_MODAL,
+  HIDE_PLAYLIST_MODAL,
   SET_TOKEN,
   SET_NONCE,
+  SHOW_ERROR_MESSAGE,
+  HIDE_ERROR_MESSAGE,
 } from './actions';
 import saga from './sagas';
 
@@ -34,6 +40,7 @@ const persistConfig = {
     'lastSync',
     'token',
     'tokenExpires',
+    'tokenScope',
     'nonce',
     'artists',
     'albums',
@@ -48,11 +55,14 @@ const initialState = {
   lastSync: null,
   token: null,
   tokenExpires: null,
+  tokenScope: null,
   nonce: null,
   settingsModalVisible: false,
   resetModalVisible: false,
+  playlistModalVisible: false,
   artists: {},
   albums: {},
+  errorMessage: null,
   settings: {
     groups: ['album', 'single', 'compilation', 'appears_on'],
     days: 30,
@@ -79,6 +89,11 @@ function reducer(state = initialState, action) {
         syncing: false,
         syncedOnce: true,
         lastSync: new Date().toISOString(),
+      };
+    case SYNC_FINISHED_WITH_ERROR:
+      return {
+        ...state,
+        syncing: false,
       };
     case SET_USER:
       return {
@@ -148,6 +163,16 @@ function reducer(state = initialState, action) {
         ...state,
         resetModalVisible: false,
       };
+    case SHOW_PLAYLIST_MODAL:
+      return {
+        ...state,
+        playlistModalVisible: true,
+      };
+    case HIDE_PLAYLIST_MODAL:
+      return {
+        ...state,
+        playlistModalVisible: false,
+      };
     case SET_TOKEN:
       return {
         ...state,
@@ -165,13 +190,27 @@ function reducer(state = initialState, action) {
         ...initialState,
         settings: state.settings,
       };
+    case SHOW_ERROR_MESSAGE:
+      return {
+        ...state,
+        errorMessage: payload.message,
+      };
+    case HIDE_ERROR_MESSAGE:
+      return {
+        ...state,
+        errorMessage: null,
+      };
     default:
       return state;
   }
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer);
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware({
+  onError: (error) => {
+    Sentry.captureException(error);
+  },
+});
 export const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
 export const hydrate = new Promise((resolve) => {
   persistStore(store, null, resolve);
