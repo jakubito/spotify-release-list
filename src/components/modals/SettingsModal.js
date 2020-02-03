@@ -3,11 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { hideSettingsModal, showResetModal } from '../../actions';
 import { useModal } from '../../hooks';
 import { getUser } from '../../selectors';
-import AlbumGroupsField from '../settings/AlbumGroupsField';
-import TimePeriodField from '../settings/TimePeriodField';
-import MarketField from '../settings/MarketField';
-import UriLinksField from '../settings/UriLinksField';
-import CoversField from '../settings/CoversField';
+import {
+  AlbumGroupsField,
+  TimePeriodField,
+  MarketField,
+  UriLinksField,
+  CoversField,
+} from '../settings';
 
 function SettingsModal() {
   const dispatch = useDispatch();
@@ -20,9 +22,13 @@ function SettingsModal() {
       <div className="modal-content has-background-black-bis has-text-light">
         <h4 className="title is-4 has-text-light has-text-centered">Settings</h4>
 
-        <AlbumGroupsField />
+        <div className="columns">
+          <div className="column">
+            <AlbumGroupsField />
+          </div>
+        </div>
 
-        <div className="columns is-4 is-variable">
+        <div className="columns is-6 is-variable">
           <div className="column">
             <TimePeriodField />
           </div>
@@ -31,7 +37,7 @@ function SettingsModal() {
           </div>
         </div>
 
-        <div className="columns is-4 is-variable">
+        <div className="columns is-6 is-variable">
           <div className="column">
             <UriLinksField />
           </div>
