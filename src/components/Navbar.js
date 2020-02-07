@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Media from 'react-media';
-import { getLastSyncDate, getSyncedOnce } from '../selectors';
+import { getLastSyncDate, getSyncedOnce, getHasReleases } from '../selectors';
 import { showSettingsModal, showPlaylistModal } from '../actions';
 import { getLastSyncHuman, saveInterval } from '../helpers';
 import SpotifySyncButton from './SpotifySyncButton';
@@ -9,6 +9,7 @@ import SpotifySyncButton from './SpotifySyncButton';
 function Navbar() {
   const syncedOnce = useSelector(getSyncedOnce);
   const lastSyncDate = useSelector(getLastSyncDate);
+  const hasReleases = useSelector(getHasReleases);
   const dispatch = useDispatch();
   const [lastSyncHuman, setLastSyncHuman] = useState(getLastSyncHuman(lastSyncDate));
 
@@ -35,7 +36,7 @@ function Navbar() {
         </div>
       )}
       <div className="right">
-        {syncedOnce && (
+        {syncedOnce && hasReleases && (
           <button
             className="button is-rounded is-dark has-text-weight-semibold"
             onClick={() => dispatch(showPlaylistModal())}

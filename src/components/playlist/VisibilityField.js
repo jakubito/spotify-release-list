@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useFormContext } from 'react-hook-form';
 
-function VisibilityField() {
+function VisibilityField({ name }) {
   const { register } = useFormContext();
 
   return (
@@ -13,7 +14,7 @@ function VisibilityField() {
             className="is-checkradio has-background-color is-white"
             id="uriLinksTrue"
             type="radio"
-            name="visibility"
+            name={name}
             value="private"
             ref={register}
             defaultChecked
@@ -25,7 +26,7 @@ function VisibilityField() {
             className="is-checkradio has-background-color is-white"
             id="uriLinksFalse"
             type="radio"
-            name="visibility"
+            name={name}
             value="public"
             ref={register}
           />
@@ -35,5 +36,9 @@ function VisibilityField() {
     </div>
   );
 }
+
+VisibilityField.propTypes = {
+  name: PropTypes.string.isRequired,
+};
 
 export default VisibilityField;

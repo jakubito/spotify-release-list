@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useFormContext } from 'react-hook-form';
 
-function DescriptionField() {
+function DescriptionField({ name }) {
   const { register, errors } = useFormContext();
 
   return (
@@ -9,18 +10,22 @@ function DescriptionField() {
       <label className="label has-text-light">Description</label>
       <div className="control">
         <input
-          name="description"
+          name={name}
           className="input is-rounded"
           type="text"
           placeholder="Optional"
           ref={register({ maxLength: 100 })}
         />
       </div>
-      {errors.description && (
+      {errors[name] && (
         <p className="help is-danger">Description can&apos;t exceed 300 characters.</p>
       )}
     </div>
   );
 }
+
+DescriptionField.propTypes = {
+  name: PropTypes.string.isRequired,
+};
 
 export default DescriptionField;

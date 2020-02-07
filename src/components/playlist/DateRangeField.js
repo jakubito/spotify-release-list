@@ -1,32 +1,44 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
+import moment from 'moment';
+import { getReleasesMinMaxDates } from '../../selectors';
 
-const START_DATE_NAME = 'startDate';
-const END_DATE_NAME = 'endDate';
-
-function DateRangeField() {
+function DateRangeField({ startDateName, endDateName }) {
+  const [minDate, maxDate] = useSelector(getReleasesMinMaxDates);
   const [focus, setFocus] = useState(null);
   const { register, watch, errors, setValue, triggerValidation } = useFormContext();
 
+  const [minDateMoment, maxDateMoment] = useMemo(() => [moment(minDate), moment(maxDate)], [
+    minDate,
+    maxDate,
+  ]);
+
+  const isOutsideRangeHandler = useCallback(
+    (day) => !day.isBetween(minDateMoment, maxDateMoment, 'day', '[]'),
+    [minDateMoment, maxDateMoment]
+  );
+
   const datesChangeHandler = useCallback(
     ({ startDate, endDate }) => {
-      setValue(START_DATE_NAME, startDate);
-      setValue(END_DATE_NAME, endDate);
+      setValue(startDateName, startDate);
+      setValue(endDateName, endDate);
 
       if (startDate && endDate) {
-        triggerValidation([START_DATE_NAME, END_DATE_NAME]);
+        triggerValidation([startDateName, endDateName]);
       }
     },
     [setValue, triggerValidation]
   );
 
-  const startDate = watch(START_DATE_NAME, null);
-  const endDate = watch(END_DATE_NAME, null);
+  register({ name: startDateName }, { required: true });
+  register({ name: endDateName }, { required: true });
 
-  register({ name: START_DATE_NAME }, { required: true });
-  register({ name: END_DATE_NAME }, { required: true });
+  const startDate = watch(startDateName);
+  const endDate = watch(endDateName);
 
   return (
     <div className="field">
@@ -39,7 +51,10 @@ function DateRangeField() {
               startDateId="new_playlist_start_date"
               endDate={endDate}
               endDateId="new_playlist_end_date"
+              minDate={minDateMoment}
+              maxDate={maxDateMoment}
               onDatesChange={datesChangeHandler}
+              isOutsideRange={isOutsideRangeHandler}
               focusedInput={focus}
               onFocusChange={setFocus}
               numberOfMonths={1}
@@ -51,11 +66,11 @@ function DateRangeField() {
         </Media>
       </div>
 
-      {(errors.startDate || errors.endDate) && (
+      {(errors[startDateName] || errors[endDateName]) && (
         <p className="help is-danger">
-          {errors.startDate && errors.endDate && 'Start and end date are required.'}
-          {errors.startDate && !errors.endDate && 'Start date is required.'}
-          {errors.endDate && !errors.startDate && 'End date is required.'}
+          {errors[startDateName] && errors[endDateName] && 'Start and end date are required.'}
+          {errors[startDateName] && !errors[endDateName] && 'Start date is required.'}
+          {errors[endDateName] && !errors[startDateName] && 'End date is required.'}
         </p>
       )}
 
@@ -70,5 +85,10 @@ function DateRangeField() {
     </div>
   );
 }
+
+DateRangeField.propTypes = {
+  startDateName: PropTypes.string.isRequired,
+  endDateName: PropTypes.string.isRequired,
+};
 
 export default DateRangeField;

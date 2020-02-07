@@ -31,7 +31,7 @@ const getDayPrecisionAlbums = createSelector(getAlbumsArray, (albums) =>
   albums.filter((album) => album.releaseDatePrecision === 'day')
 );
 
-const getDayReleasesMap = createSelector(getDayPrecisionAlbums, (albums) =>
+export const getDayReleasesMap = createSelector(getDayPrecisionAlbums, (albums) =>
   albums.reduce(
     (acc, album) => ({
       ...acc,
@@ -51,3 +51,11 @@ export const getDayReleasesSortedEntries = createSelector(getDayReleasesMap, (da
 
   return entries;
 });
+
+export const getHasReleases = createSelector(getDayReleasesSortedEntries, (entries) =>
+  Boolean(entries.length)
+);
+
+export const getReleasesMinMaxDates = createSelector(getDayReleasesSortedEntries, (entries) =>
+  entries.length ? [entries[entries.length - 1][0], entries[0][0]] : null
+);
