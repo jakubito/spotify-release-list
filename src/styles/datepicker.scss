@@ -12,7 +12,8 @@
   border: 1px solid #ffffff;
 
   @include mobile-small {
-    border-radius: 2px;
+    display: flex;
+    align-items: center;
   }
 }
 

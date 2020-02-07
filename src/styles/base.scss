@@ -31,6 +31,10 @@ body,
   border-radius: 3px;
   box-shadow: 0px 0px 80px 0px #000000;
 
+  @include mobile {
+    padding: 15px;
+  }
+
   .title {
     margin-bottom: 24px;
   }
