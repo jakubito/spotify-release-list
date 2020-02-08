@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useFormContext } from 'react-hook-form';
+import { FieldName } from '../../enums';
 
-function VisibilityField({ name }) {
+function VisibilityField() {
   const { register } = useFormContext();
 
   return (
@@ -14,7 +14,7 @@ function VisibilityField({ name }) {
             className="is-checkradio has-background-color is-white"
             id="uriLinksTrue"
             type="radio"
-            name={name}
+            name={FieldName.VISIBILITY}
             value="private"
             ref={register}
             defaultChecked
@@ -26,7 +26,7 @@ function VisibilityField({ name }) {
             className="is-checkradio has-background-color is-white"
             id="uriLinksFalse"
             type="radio"
-            name={name}
+            name={FieldName.VISIBILITY}
             value="public"
             ref={register}
           />
@@ -36,9 +36,5 @@ function VisibilityField({ name }) {
     </div>
   );
 }
-
-VisibilityField.propTypes = {
-  name: PropTypes.string.isRequired,
-};
 
 export default VisibilityField;

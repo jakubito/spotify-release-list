@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import DateRangeShortcut from './DateRangeShortcut';
 
-function DateRangeShortcuts({ startDateName, endDateName }) {
+function DateRangeShortcuts() {
   const shortcuts = useMemo(
     () => [
       {
@@ -41,22 +40,10 @@ function DateRangeShortcuts({ startDateName, endDateName }) {
   return (
     <div className="DateRangeShortcuts">
       {shortcuts.map(({ title, start, end }) => (
-        <DateRangeShortcut
-          key={title}
-          title={title}
-          start={start}
-          end={end}
-          startDateName={startDateName}
-          endDateName={endDateName}
-        />
+        <DateRangeShortcut key={title} title={title} start={start} end={end} />
       ))}
     </div>
   );
 }
-
-DateRangeShortcuts.propTypes = {
-  startDateName: PropTypes.string.isRequired,
-  endDateName: PropTypes.string.isRequired,
-};
 
 export default DateRangeShortcuts;

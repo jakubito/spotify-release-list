@@ -5,15 +5,8 @@ import classNames from 'classnames';
 import { hidePlaylistModal } from '../../actions';
 import { useModal } from '../../hooks';
 import { getDayReleasesMap } from '../../selectors';
+import { FieldName } from '../../enums';
 import { DateRangeField, NameField, DescriptionField, VisibilityField } from '../playlist';
-
-const FieldName = Object.freeze({
-  START_DATE: 'startDate',
-  END_DATE: 'endDate',
-  NAME: 'name',
-  DESCRIPTION: 'description',
-  VISIBILITY: 'visibility',
-});
 
 function useMatchedReleasesCount(watch) {
   const releases = useSelector(getDayReleasesMap);
@@ -35,7 +28,7 @@ function useMatchedReleasesCount(watch) {
         count += releases[currentFormatted].length;
       }
 
-      current.add(1, 'days');
+      current.add(1, 'day');
     }
 
     return count;
@@ -45,7 +38,7 @@ function useMatchedReleasesCount(watch) {
 function PlaylistModal() {
   const closeModal = useModal(hidePlaylistModal);
   const form = useForm();
-  const { watch, handleSubmit } = form;
+  const { register, watch, handleSubmit } = form;
   const matchedReleasesCount = useMatchedReleasesCount(watch);
 
   const onSubmit = useCallback((data) => {
@@ -54,6 +47,8 @@ function PlaylistModal() {
   }, []);
 
   const onSubmitHandler = useCallback(handleSubmit(onSubmit), [handleSubmit]);
+
+  register({ name: FieldName.NAME_CUSTOM });
 
   return (
     <FormContext {...form}>
@@ -65,10 +60,10 @@ function PlaylistModal() {
             Create playlist from releases
           </h4>
 
-          <DateRangeField startDateName={FieldName.START_DATE} endDateName={FieldName.END_DATE} />
-          <NameField name={FieldName.NAME} />
-          <DescriptionField name={FieldName.DESCRIPTION} />
-          <VisibilityField name={FieldName.VISIBILITY} />
+          <DateRangeField />
+          <NameField />
+          <DescriptionField />
+          <VisibilityField />
 
           <div className="actions columns is-gapless">
             <div className="column is-narrow">

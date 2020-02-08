@@ -4,17 +4,29 @@ import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import { min, max } from 'moment';
 import { getReleasesMinMaxDatesMoment } from '../../selectors';
+import { FieldName } from '../../enums';
+import { getPlaylistNameSuggestion } from '../../helpers';
 
-function DateRangeShortcut({ title, start, end, startDateName, endDateName }) {
+function DateRangeShortcut({ title, start, end }) {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
-  const { setValue } = useFormContext();
+  const { setValue, getValues } = useFormContext();
+
   const clickHandler = useCallback(
     (event) => {
       event.preventDefault();
-      setValue(startDateName, max(start, minDate));
-      setValue(endDateName, min(end, maxDate));
+
+      const values = getValues();
+      const startDate = max(start, minDate);
+      const endDate = min(end, maxDate);
+
+      setValue(FieldName.START_DATE, startDate);
+      setValue(FieldName.END_DATE, endDate);
+
+      if (!values[FieldName.NAME_CUSTOM]) {
+        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate));
+      }
     },
-    [setValue, startDateName, endDateName, start, end, minDate, maxDate]
+    [setValue, getValues, start, end, minDate, maxDate]
   );
 
   if (start.isAfter(maxDate) || end.isBefore(minDate)) {
@@ -32,8 +44,6 @@ DateRangeShortcut.propTypes = {
   title: PropTypes.string.isRequired,
   start: PropTypes.object.isRequired,
   end: PropTypes.object.isRequired,
-  startDateName: PropTypes.string.isRequired,
-  endDateName: PropTypes.string.isRequired,
 };
 
 export default DateRangeShortcut;

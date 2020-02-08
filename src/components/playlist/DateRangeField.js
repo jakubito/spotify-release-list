@@ -1,16 +1,17 @@
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
 import { getReleasesMinMaxDatesMoment } from '../../selectors';
+import { getPlaylistNameSuggestion } from '../../helpers';
+import { FieldName } from '../../enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
 
-function DateRangeField({ startDateName, endDateName }) {
+function DateRangeField() {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
   const [focus, setFocus] = useState(null);
-  const { register, watch, errors, setValue, triggerValidation } = useFormContext();
+  const { register, watch, errors, setValue, triggerValidation, getValues } = useFormContext();
 
   const isOutsideRangeHandler = useCallback(
     (day) => !day.isBetween(minDate, maxDate, 'day', '[]'),
@@ -19,21 +20,27 @@ function DateRangeField({ startDateName, endDateName }) {
 
   const datesChangeHandler = useCallback(
     ({ startDate, endDate }) => {
-      setValue(startDateName, startDate);
-      setValue(endDateName, endDate);
+      const values = getValues();
+
+      setValue(FieldName.START_DATE, startDate);
+      setValue(FieldName.END_DATE, endDate);
 
       if (startDate && endDate) {
-        triggerValidation([startDateName, endDateName]);
+        triggerValidation([FieldName.START_DATE, FieldName.END_DATE]);
+      }
+
+      if (!values[FieldName.NAME_CUSTOM]) {
+        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate));
       }
     },
-    [setValue, startDateName, endDateName, triggerValidation]
+    [setValue, getValues, triggerValidation]
   );
 
-  register({ name: startDateName }, { required: true });
-  register({ name: endDateName }, { required: true });
+  register({ name: FieldName.START_DATE }, { required: true });
+  register({ name: FieldName.END_DATE }, { required: true });
 
-  const startDate = watch(startDateName);
-  const endDate = watch(endDateName);
+  const startDate = watch(FieldName.START_DATE);
+  const endDate = watch(FieldName.END_DATE);
 
   return (
     <div className="field">
@@ -61,22 +68,19 @@ function DateRangeField({ startDateName, endDateName }) {
         </Media>
       </div>
 
-      {(errors[startDateName] || errors[endDateName]) && (
+      {(errors[FieldName.START_DATE] || errors[FieldName.END_DATE]) && (
         <p className="help is-danger">
-          {errors[startDateName] && errors[endDateName] && 'Start and end date are required.'}
-          {errors[startDateName] && !errors[endDateName] && 'Start date is required.'}
-          {errors[endDateName] && !errors[startDateName] && 'End date is required.'}
+          {errors[FieldName.START_DATE] &&
+            errors[FieldName.END_DATE] &&
+            'Start and end date are required.'}
+          {errors[FieldName.START_DATE] && !errors[FieldName.END_DATE] && 'Start date is required.'}
+          {errors[FieldName.END_DATE] && !errors[FieldName.START_DATE] && 'End date is required.'}
         </p>
       )}
 
-      <DateRangeShortcuts startDateName={startDateName} endDateName={endDateName} />
+      <DateRangeShortcuts />
     </div>
   );
 }
-
-DateRangeField.propTypes = {
-  startDateName: PropTypes.string.isRequired,
-  endDateName: PropTypes.string.isRequired,
-};
 
 export default DateRangeField;

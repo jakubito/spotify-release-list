@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useFormContext } from 'react-hook-form';
+import { FieldName } from '../../enums';
 
-function DescriptionField({ name }) {
+function DescriptionField() {
   const { register, errors } = useFormContext();
 
   return (
@@ -10,22 +10,18 @@ function DescriptionField({ name }) {
       <label className="label has-text-light">Description</label>
       <div className="control">
         <input
-          name={name}
+          name={FieldName.DESCRIPTION}
           className="input is-rounded"
           type="text"
           placeholder="Optional"
           ref={register({ maxLength: 100 })}
         />
       </div>
-      {errors[name] && (
+      {errors[FieldName.DESCRIPTION] && (
         <p className="help is-danger">Description can&apos;t exceed 300 characters.</p>
       )}
     </div>
   );
 }
-
-DescriptionField.propTypes = {
-  name: PropTypes.string.isRequired,
-};
 
 export default DescriptionField;

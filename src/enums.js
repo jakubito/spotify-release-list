@@ -86,3 +86,12 @@ export const Market = Object.freeze({
   UY: 'Uruguay',
   VN: 'Vietnam',
 });
+
+export const FieldName = Object.freeze({
+  START_DATE: 'startDate',
+  END_DATE: 'endDate',
+  NAME: 'name',
+  NAME_CUSTOM: 'nameCustom',
+  DESCRIPTION: 'description',
+  VISIBILITY: 'visibility',
+});

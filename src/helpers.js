@@ -79,6 +79,21 @@ export function generateNonce() {
   );
 }
 
+/**
+ * Get playlist name suggestion.
+ *
+ * @param {Moment} startDate
+ * @param {Moment} endDate
+ * @returns {string}
+ */
+export function getPlaylistNameSuggestion(startDate, endDate) {
+  if (!startDate || !endDate) {
+    return null;
+  }
+
+  return `${startDate.format('MMM D')} - ${endDate.format('MMM D')} New Releases`;
+}
+
 function getImage(images) {
   if (!images || !images.length) {
     return null;
