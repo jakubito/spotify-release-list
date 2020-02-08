@@ -1,14 +1,13 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm, FormContext } from 'react-hook-form';
-import classNames from 'classnames';
 import { hidePlaylistModal } from '../../actions';
 import { useModal } from '../../hooks';
 import { getDayReleasesMap } from '../../selectors';
 import { FieldName } from '../../enums';
 import { DateRangeField, NameField, DescriptionField, VisibilityField } from '../playlist';
 
-function useMatchedReleasesCount(watch) {
+function useReleasesCount(watch) {
   const releases = useSelector(getDayReleasesMap);
   const startDate = watch(FieldName.START_DATE);
   const endDate = watch(FieldName.END_DATE);
@@ -39,7 +38,7 @@ function PlaylistModal() {
   const closeModal = useModal(hidePlaylistModal);
   const form = useForm();
   const { register, watch, handleSubmit } = form;
-  const matchedReleasesCount = useMatchedReleasesCount(watch);
+  const releasesCount = useReleasesCount(watch);
 
   const onSubmit = useCallback((data) => {
     // TODO
@@ -60,17 +59,17 @@ function PlaylistModal() {
             Create playlist from releases
           </h4>
 
-          <DateRangeField />
+          <DateRangeField releasesCount={releasesCount} />
           <NameField />
           <DescriptionField />
           <VisibilityField />
 
           <div className="actions columns is-gapless">
-            <div className="column is-narrow">
+            <div className="column">
               <button
                 type="submit"
                 className="button is-primary is-rounded has-text-weight-semibold"
-                disabled={!matchedReleasesCount}
+                disabled={!releasesCount}
               >
                 <span className="icon">
                   <i className="fas fa-check"></i>
@@ -79,20 +78,7 @@ function PlaylistModal() {
               </button>
             </div>
 
-            <div className="column matched">
-              {matchedReleasesCount !== null && (
-                <div
-                  className={classNames('matched-count', {
-                    'has-text-grey': matchedReleasesCount > 0,
-                    'has-text-danger': matchedReleasesCount === 0,
-                  })}
-                >
-                  {matchedReleasesCount} release{matchedReleasesCount !== 1 && 's'} found
-                </div>
-              )}
-            </div>
-
-            <div className="column is-narrow has-text-right">
+            <div className="column has-text-right">
               <button
                 className="button is-dark is-rounded has-text-weight-semibold"
                 onClick={closeModal}

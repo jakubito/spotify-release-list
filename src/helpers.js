@@ -91,7 +91,7 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
     return null;
   }
 
-  return `${startDate.format('MMM D')} - ${endDate.format('MMM D')} New Releases`;
+  return `${startDate.format('MMM D')} - ${endDate.format('MMM D')} Releases`;
 }
 
 function getImage(images) {

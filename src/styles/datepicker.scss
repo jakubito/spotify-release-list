@@ -1,4 +1,8 @@
 .DateRangePicker {
+  @include mobile-small {
+    width: 100%;
+  }
+
   &_picker {
     overflow: hidden;
     border-radius: 3px;

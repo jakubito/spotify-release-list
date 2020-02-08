@@ -50,16 +50,21 @@
       }
     }
 
-    .matched {
+    .date-range {
       display: flex;
       align-items: center;
+
+      @include mobile {
+        align-items: flex-start;
+      }
 
       .matched-count {
         padding: 0 15px;
 
         @include mobile {
           width: 100%;
-          text-align: center;
+          text-align: left;
+          padding: 12px 0 0 0;
         }
       }
     }

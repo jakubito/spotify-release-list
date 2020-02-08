@@ -1,14 +1,16 @@
 import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
+import classNames from 'classnames';
 import { getReleasesMinMaxDatesMoment } from '../../selectors';
 import { getPlaylistNameSuggestion } from '../../helpers';
 import { FieldName } from '../../enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
 
-function DateRangeField() {
+function DateRangeField({ releasesCount }) {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
   const [focus, setFocus] = useState(null);
   const { register, watch, errors, setValue, triggerValidation, getValues } = useFormContext();
@@ -66,6 +68,17 @@ function DateRangeField() {
             />
           )}
         </Media>
+
+        {releasesCount !== null && (
+          <div
+            className={classNames('matched-count', {
+              'has-text-grey': releasesCount > 0,
+              'has-text-danger': releasesCount === 0,
+            })}
+          >
+            {releasesCount} release{releasesCount !== 1 && 's'} found
+          </div>
+        )}
       </div>
 
       {(errors[FieldName.START_DATE] || errors[FieldName.END_DATE]) && (
@@ -82,5 +95,9 @@ function DateRangeField() {
     </div>
   );
 }
+
+DateRangeField.propTypes = {
+  releasesCount: PropTypes.number,
+};
 
 export default DateRangeField;
