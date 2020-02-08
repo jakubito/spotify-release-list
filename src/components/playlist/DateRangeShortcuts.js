@@ -8,17 +8,17 @@ function DateRangeShortcuts({ startDateName, endDateName }) {
     () => [
       {
         title: 'Current week',
-        start: moment().startOf('week'),
-        end: moment().endOf('week'),
+        start: moment().startOf('isoWeek'),
+        end: moment().endOf('isoWeek'),
       },
       {
         title: 'Last week',
         start: moment()
           .subtract(1, 'week')
-          .startOf('week'),
+          .startOf('isoWeek'),
         end: moment()
           .subtract(1, 'week')
-          .endOf('week'),
+          .endOf('isoWeek'),
       },
       {
         title: 'Current month',
