@@ -33,15 +33,21 @@ function DateRangeShortcut({ title, start, end }) {
     return null;
   }
 
+  const buttonTitle = title instanceof Function ? title(start, end) : title;
+
   return (
-    <button className="button is-dark is-rounded is-small" onClick={clickHandler}>
-      <span>{title}</span>
+    <button
+      className="DateRangeShortcut button is-dark is-rounded is-small"
+      onClick={clickHandler}
+      key={buttonTitle}
+    >
+      <span>{buttonTitle}</span>
     </button>
   );
 }
 
 DateRangeShortcut.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
   start: PropTypes.object.isRequired,
   end: PropTypes.object.isRequired,
 };

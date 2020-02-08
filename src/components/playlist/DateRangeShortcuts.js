@@ -20,12 +20,12 @@ function DateRangeShortcuts() {
           .endOf('isoWeek'),
       },
       {
-        title: 'Current month',
+        title: (start) => start.format('MMMM'),
         start: moment().startOf('month'),
         end: moment().endOf('month'),
       },
       {
-        title: 'Last month',
+        title: (start) => start.format('MMMM'),
         start: moment()
           .subtract(1, 'month')
           .startOf('month'),
@@ -37,13 +37,7 @@ function DateRangeShortcuts() {
     []
   );
 
-  return (
-    <div className="DateRangeShortcuts">
-      {shortcuts.map(({ title, start, end }) => (
-        <DateRangeShortcut key={title} title={title} start={start} end={end} />
-      ))}
-    </div>
-  );
+  return <div className="DateRangeShortcuts">{shortcuts.map(DateRangeShortcut)}</div>;
 }
 
 export default DateRangeShortcuts;
