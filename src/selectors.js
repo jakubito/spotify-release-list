@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import orderBy from 'lodash.orderby';
+import moment from 'moment';
 
 export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;
@@ -58,4 +59,9 @@ export const getHasReleases = createSelector(getDayReleasesSortedEntries, (entri
 
 export const getReleasesMinMaxDates = createSelector(getDayReleasesSortedEntries, (entries) =>
   entries.length ? [entries[entries.length - 1][0], entries[0][0]] : null
+);
+
+export const getReleasesMinMaxDatesMoment = createSelector(
+  getReleasesMinMaxDates,
+  ([minDate, maxDate]) => [moment(minDate), moment(maxDate)]
 );

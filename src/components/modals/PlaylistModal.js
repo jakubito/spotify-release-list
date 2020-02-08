@@ -92,7 +92,7 @@ function PlaylistModal() {
                     'has-text-danger': matchedReleasesCount === 0,
                   })}
                 >
-                  Releases found: {matchedReleasesCount}
+                  {matchedReleasesCount} release{matchedReleasesCount !== 1 && 's'} found
                 </div>
               )}
             </div>

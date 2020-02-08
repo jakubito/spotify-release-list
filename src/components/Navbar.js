@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Media from 'react-media';
-import { getLastSyncDate, getSyncedOnce, getHasReleases } from '../selectors';
+import { getLastSyncDate, getSyncedOnce, getHasReleases, getSyncing } from '../selectors';
 import { showSettingsModal, showPlaylistModal } from '../actions';
 import { getLastSyncHuman, saveInterval } from '../helpers';
 import SpotifySyncButton from './SpotifySyncButton';
 
 function Navbar() {
+  const syncing = useSelector(getSyncing);
   const syncedOnce = useSelector(getSyncedOnce);
   const lastSyncDate = useSelector(getLastSyncDate);
   const hasReleases = useSelector(getHasReleases);
@@ -40,6 +41,7 @@ function Navbar() {
           <button
             className="button is-rounded is-dark has-text-weight-semibold"
             onClick={() => dispatch(showPlaylistModal())}
+            disabled={syncing}
           >
             <span className="icon">
               <i className="fas fa-plus"></i>
@@ -52,6 +54,7 @@ function Navbar() {
         <button
           className="button is-rounded is-dark has-text-weight-semibold"
           onClick={() => dispatch(showSettingsModal())}
+          disabled={syncing}
         >
           <span className="icon">
             <i className="fas fa-cog"></i>

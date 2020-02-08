@@ -1,25 +1,20 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
-import moment from 'moment';
-import { getReleasesMinMaxDates } from '../../selectors';
+import { getReleasesMinMaxDatesMoment } from '../../selectors';
+import DateRangeShortcuts from './DateRangeShortcuts';
 
 function DateRangeField({ startDateName, endDateName }) {
-  const [minDate, maxDate] = useSelector(getReleasesMinMaxDates);
+  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
   const [focus, setFocus] = useState(null);
   const { register, watch, errors, setValue, triggerValidation } = useFormContext();
 
-  const [minDateMoment, maxDateMoment] = useMemo(() => [moment(minDate), moment(maxDate)], [
-    minDate,
-    maxDate,
-  ]);
-
   const isOutsideRangeHandler = useCallback(
-    (day) => !day.isBetween(minDateMoment, maxDateMoment, 'day', '[]'),
-    [minDateMoment, maxDateMoment]
+    (day) => !day.isBetween(minDate, maxDate, 'day', '[]'),
+    [minDate, maxDate]
   );
 
   const datesChangeHandler = useCallback(
@@ -31,7 +26,7 @@ function DateRangeField({ startDateName, endDateName }) {
         triggerValidation([startDateName, endDateName]);
       }
     },
-    [setValue, triggerValidation]
+    [setValue, startDateName, endDateName, triggerValidation]
   );
 
   register({ name: startDateName }, { required: true });
@@ -51,8 +46,8 @@ function DateRangeField({ startDateName, endDateName }) {
               startDateId="new_playlist_start_date"
               endDate={endDate}
               endDateId="new_playlist_end_date"
-              minDate={minDateMoment}
-              maxDate={maxDateMoment}
+              minDate={minDate}
+              maxDate={maxDate}
               onDatesChange={datesChangeHandler}
               isOutsideRange={isOutsideRangeHandler}
               focusedInput={focus}
@@ -74,14 +69,7 @@ function DateRangeField({ startDateName, endDateName }) {
         </p>
       )}
 
-      <div className="date-helpers">
-        <button className="button is-dark is-rounded is-small">
-          <span>Last week</span>
-        </button>
-        <button className="button is-dark is-rounded is-small">
-          <span>Last 2 weeks</span>
-        </button>
-      </div>
+      <DateRangeShortcuts startDateName={startDateName} endDateName={endDateName} />
     </div>
   );
 }

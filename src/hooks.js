@@ -7,7 +7,16 @@ import { getToken, getTokenExpires } from './selectors';
 
 export function useModal(hideModal) {
   const dispatch = useDispatch();
-  const closeModal = useCallback(() => dispatch(hideModal()), [dispatch, hideModal]);
+  const closeModal = useCallback(
+    (event) => {
+      if (event) {
+        event.preventDefault();
+      }
+
+      dispatch(hideModal());
+    },
+    [dispatch, hideModal]
+  );
 
   useEffect(() => {
     const escHandler = ({ key }) => {
