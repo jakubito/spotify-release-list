@@ -6,7 +6,21 @@ function DateRangeShortcuts() {
   const shortcuts = useMemo(
     () => [
       {
-        title: 'Current week',
+        title: 'Today',
+        start: moment().startOf('day'),
+        end: moment().endOf('day'),
+      },
+      {
+        title: 'Yesterday',
+        start: moment()
+          .subtract(1, 'day')
+          .startOf('day'),
+        end: moment()
+          .subtract(1, 'day')
+          .endOf('day'),
+      },
+      {
+        title: 'This week',
         start: moment().startOf('isoWeek'),
         end: moment().endOf('isoWeek'),
       },

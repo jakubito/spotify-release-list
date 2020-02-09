@@ -8,6 +8,7 @@ export const getSyncedOnce = (state) => state.syncedOnce;
 export const getLastSync = (state) => state.lastSync;
 export const getToken = (state) => state.token;
 export const getTokenExpires = (state) => state.tokenExpires;
+export const getTokenScope = (state) => state.tokenScope;
 export const getNonce = (state) => state.nonce;
 export const getArtists = (state) => state.artists;
 export const getAlbums = (state) => state.albums;
@@ -16,6 +17,8 @@ export const getSettingsModalVisible = (state) => state.settingsModalVisible;
 export const getResetModalVisible = (state) => state.resetModalVisible;
 export const getPlaylistModalVisible = (state) => state.playlistModalVisible;
 export const getErrorMessage = (state) => state.errorMessage;
+export const getPlaylist = (state) => state.playlist;
+export const getCreatingPlaylist = (state) => state.creatingPlaylist;
 
 export const getArtistsCount = createSelector(
   getArtists,

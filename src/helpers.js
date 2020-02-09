@@ -39,7 +39,7 @@ export function mergeAlbumArtists(album, artistsMap) {
     }, album.artists);
 }
 
-export async function sleep(ms) {
+export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -91,7 +91,14 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
     return null;
   }
 
-  return `${startDate.format('MMM D')} - ${endDate.format('MMM D')} Releases`;
+  const startDateFormatted = startDate.format('MMM D');
+  const endDateFormatted = endDate.format('MMM D');
+
+  if (startDateFormatted === endDateFormatted) {
+    return `${startDateFormatted} Releases`;
+  }
+
+  return `${startDateFormatted} - ${endDateFormatted} Releases`;
 }
 
 function getImage(images) {

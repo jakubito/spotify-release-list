@@ -37,17 +37,16 @@ function Navbar() {
         </div>
       )}
       <div className="right">
-        {syncedOnce && hasReleases && (
+        {syncedOnce && hasReleases && !syncing && (
           <button
             className="button is-rounded is-dark has-text-weight-semibold"
             onClick={() => dispatch(showPlaylistModal())}
-            disabled={syncing}
           >
             <span className="icon">
               <i className="fas fa-plus"></i>
             </span>
             <Media query={{ minWidth: 769 }}>
-              {(matches) => matches && <span>Create playlist</span>}
+              {(matches) => matches && <span>New playlist</span>}
             </Media>
           </button>
         )}

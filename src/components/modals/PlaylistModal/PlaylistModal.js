@@ -1,51 +1,23 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm, FormContext } from 'react-hook-form';
-import { hidePlaylistModal } from '../../actions';
-import { useModal } from '../../hooks';
-import { getDayReleasesMap } from '../../selectors';
-import { FieldName } from '../../enums';
-import { DateRangeField, NameField, DescriptionField, VisibilityField } from '../playlist';
-
-function useReleasesCount(watch) {
-  const releases = useSelector(getDayReleasesMap);
-  const startDate = watch(FieldName.START_DATE);
-  const endDate = watch(FieldName.END_DATE);
-
-  return useMemo(() => {
-    if (!startDate || !endDate) {
-      return null;
-    }
-
-    let current = startDate.clone();
-    let count = 0;
-
-    while (current <= endDate) {
-      const currentFormatted = current.format('YYYY-MM-DD');
-
-      if (releases[currentFormatted]) {
-        count += releases[currentFormatted].length;
-      }
-
-      current.add(1, 'day');
-    }
-
-    return count;
-  }, [releases, startDate, endDate]);
-}
+import classNames from 'classnames';
+import { hidePlaylistModal } from '../../../actions';
+import { useModal } from '../../../hooks';
+import { getCreatingPlaylist } from '../../../selectors';
+import { FieldName } from '../../../enums';
+import { DateRangeField, NameField, DescriptionField, VisibilityField } from '../../playlist';
+import { useReleasesCount, useOnSubmit } from './hooks';
 
 function PlaylistModal() {
   const closeModal = useModal(hidePlaylistModal);
+  const creatingPlaylist = useSelector(getCreatingPlaylist);
   const form = useForm();
+  const [cancelDisabled, setCancelDisabled] = useState(false);
   const { register, watch, handleSubmit } = form;
   const releasesCount = useReleasesCount(watch);
-
-  const onSubmit = useCallback((data) => {
-    // TODO
-    console.log(data);
-  }, []);
-
-  const onSubmitHandler = useCallback(handleSubmit(onSubmit), [handleSubmit]);
+  const onSubmit = useOnSubmit(setCancelDisabled);
+  const onSubmitHandler = useCallback(handleSubmit(onSubmit), [handleSubmit, onsubmit]);
 
   register({ name: FieldName.NAME_CUSTOM });
 
@@ -55,9 +27,7 @@ function PlaylistModal() {
         <div className="modal-background" onClick={closeModal}></div>
 
         <div className="modal-content has-background-black-bis has-text-light">
-          <h4 className="title is-4 has-text-light has-text-centered">
-            Create playlist from releases
-          </h4>
+          <h4 className="title is-4 has-text-light has-text-centered">New playlist</h4>
 
           <DateRangeField releasesCount={releasesCount} />
           <NameField />
@@ -68,11 +38,17 @@ function PlaylistModal() {
             <div className="column">
               <button
                 type="submit"
-                className="button is-primary is-rounded has-text-weight-semibold"
-                disabled={!releasesCount}
+                className={classNames(
+                  'button',
+                  'is-primary',
+                  'is-rounded',
+                  'has-text-weight-semibold',
+                  { 'is-loading': creatingPlaylist }
+                )}
+                disabled={creatingPlaylist || !releasesCount}
               >
                 <span className="icon">
-                  <i className="fas fa-check"></i>
+                  <i className="fas fa-asterisk"></i>
                 </span>
                 <span>Create</span>
               </button>
@@ -82,6 +58,7 @@ function PlaylistModal() {
               <button
                 className="button is-dark is-rounded has-text-weight-semibold"
                 onClick={closeModal}
+                disabled={cancelDisabled}
               >
                 <span className="icon">
                   <i className="fas fa-times"></i>

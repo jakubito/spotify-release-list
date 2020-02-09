@@ -4,9 +4,10 @@ import { getDaysAgoDate, chunks, reflect, filterResolved } from './helpers';
 import { getSettings, getToken } from './selectors';
 import {
   SYNC,
+  CREATE_PLAYLIST,
   setUser,
   syncFinished,
-  syncFinishedWithError,
+  syncError,
   addAlbums,
   setArtists,
   showErrorMessage,
@@ -35,14 +36,17 @@ function* syncSaga() {
     yield put(syncFinished());
   } catch (error) {
     yield put(showErrorMessage());
-    yield put(syncFinishedWithError());
+    yield put(syncError());
 
     throw error;
   }
 }
 
+function* createPlaylistSaga() {}
+
 function* saga() {
   yield takeLatest(SYNC, syncSaga);
+  yield takeLatest(CREATE_PLAYLIST, createPlaylistSaga);
 }
 
 export default saga;

@@ -7,7 +7,8 @@ import createSagaMiddleware from 'redux-saga';
 import {
   SYNC,
   SYNC_FINISHED,
-  SYNC_FINISHED_WITH_ERROR,
+  SYNC_ERROR,
+  SET_SYNCING,
   SET_USER,
   ADD_ALBUMS,
   SET_ARTISTS,
@@ -23,6 +24,9 @@ import {
   SET_NONCE,
   SHOW_ERROR_MESSAGE,
   HIDE_ERROR_MESSAGE,
+  SET_PLAYLIST,
+  SET_CREATING_PLAYLIST,
+  CREATE_PLAYLIST,
 } from './actions';
 import saga from './sagas';
 
@@ -35,34 +39,43 @@ const persistConfig = {
   storage: localForage,
   stateReconciler: autoMergeLevel2,
   whitelist: [
-    'user',
+    'artists',
+    'albums',
     'syncedOnce',
     'lastSync',
+    'playlist',
     'token',
     'tokenExpires',
     'tokenScope',
+    'user',
     'nonce',
-    'artists',
-    'albums',
     'settings',
   ],
 };
 
 const initialState = {
-  user: null,
+  artists: {},
+  albums: {},
   syncing: false,
   syncedOnce: false,
   lastSync: null,
+  creatingPlaylist: false,
+  playlist: {
+    startDate: null,
+    endDate: null,
+    name: null,
+    description: null,
+    isPrivate: null,
+  },
   token: null,
   tokenExpires: null,
   tokenScope: null,
+  user: null,
   nonce: null,
+  errorMessage: null,
   settingsModalVisible: false,
   resetModalVisible: false,
   playlistModalVisible: false,
-  artists: {},
-  albums: {},
-  errorMessage: null,
   settings: {
     groups: ['album', 'single', 'compilation', 'appears_on'],
     days: 30,
@@ -90,10 +103,15 @@ function reducer(state = initialState, action) {
         syncedOnce: true,
         lastSync: new Date().toISOString(),
       };
-    case SYNC_FINISHED_WITH_ERROR:
+    case SYNC_ERROR:
       return {
         ...state,
         syncing: false,
+      };
+    case SET_SYNCING:
+      return {
+        ...state,
+        syncing: payload.syncing,
       };
     case SET_USER:
       return {
@@ -178,11 +196,11 @@ function reducer(state = initialState, action) {
         ...state,
         token: payload.token,
         tokenExpires: payload.tokenExpires,
+        tokenScope: payload.tokenScope,
       };
     case SET_NONCE:
       return {
         ...state,
-        syncing: true,
         nonce: payload.nonce,
       };
     case RESET:
@@ -199,6 +217,28 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         errorMessage: null,
+      };
+    case SET_PLAYLIST:
+      return {
+        ...state,
+        playlist: {
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+          name: payload.name,
+          description: payload.description,
+          isPrivate: payload.isPrivate,
+        },
+      };
+    case SET_CREATING_PLAYLIST:
+      return {
+        ...state,
+        creatingPlaylist: payload.creatingPlaylist,
+      };
+    case CREATE_PLAYLIST:
+      return {
+        ...state,
+        creatingPlaylist: true,
+        playlistModalVisible: true,
       };
     default:
       return state;
