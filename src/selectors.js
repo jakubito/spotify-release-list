@@ -75,11 +75,3 @@ export const getReleasesMinMaxDatesMoment = createSelector(
   getReleasesMinMaxDates,
   ([minDate, maxDate]) => [moment(minDate), moment(maxDate)]
 );
-
-export const getAnyModalVisible = createSelector(
-  getSettingsModalVisible,
-  getResetModalVisible,
-  getPlaylistModalVisible,
-  (settingsModalVisible, resetModalVisible, playlistModalVisible) =>
-    settingsModalVisible || resetModalVisible || playlistModalVisible
-);

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import throttle from 'lodash.throttle';
 import classNames from 'classnames';
-import { getAnyModalVisible } from '../selectors';
 import Navbar from './Navbar';
 import Content from './Content';
 import SettingsModalContainer from './modals/SettingsModalContainer';
@@ -12,7 +10,6 @@ import BackToTop from './BackToTop';
 import Error from './Error';
 
 function App() {
-  const anyModalVisible = useSelector(getAnyModalVisible);
   const [backToTopVisible, setBackToTopVisible] = useState(false);
 
   useEffect(() => {
@@ -26,11 +23,7 @@ function App() {
   }, [setBackToTopVisible]);
 
   return (
-    <div
-      className={classNames('App has-background-black has-text-weight-semibold', {
-        'is-clipped': anyModalVisible,
-      })}
-    >
+    <div className="App has-background-black has-text-weight-semibold">
       <Navbar />
       <Content />
       <BackToTop className={classNames({ visible: backToTopVisible })} />

@@ -5,6 +5,12 @@ body,
   height: 100%;
 }
 
+.is-modal-open {
+  position: fixed;
+  overflow: hidden;
+  width: 100%;
+}
+
 .button {
   @include mobile {
     font-size: 1.2em;
@@ -30,7 +36,6 @@ body,
   padding: 30px;
   border-radius: 3px;
   box-shadow: 0px 0px 80px 0px #000000;
-  max-height: calc(100vh - 120px);
 
   .title {
     margin-bottom: 24px;
