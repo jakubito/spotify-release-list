@@ -6,7 +6,7 @@ https://spotifyreleaselist.netlify.com/
 
 ![screenshot.jpg](https://raw.githubusercontent.com/jakubito/spotify-release-list-web/master/public/screenshot.jpg)
 
-This is a browser agnostic, hosted web version of my Google Chrome extension: https://github.com/jakubito/spotify-release-list
+This is hosted version of my [Google Chrome extension](https://github.com/jakubito/spotify-release-list).
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -18,4 +18,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## License
 
-[Unlicense](https://unlicense.org/)
+ISC

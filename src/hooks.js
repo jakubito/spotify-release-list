@@ -22,11 +22,11 @@ export function useModal(hideModal) {
     };
 
     window.addEventListener('keydown', escHandler);
-    document.documentElement.classList.add('is-clipped');
+    document.documentElement.classList.add('is-modal-open');
 
     return () => {
       window.removeEventListener('keydown', escHandler);
-      document.documentElement.classList.remove('is-clipped');
+      document.documentElement.classList.remove('is-modal-open');
     };
   }, [closeModal]);
 
