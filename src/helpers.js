@@ -130,6 +130,14 @@ export function calculateReleasesCount(releases, startDate, endDate) {
   return count;
 }
 
+export function getSpotifyUri(id, entity) {
+  return `spotify:${entity}:${id}`;
+}
+
+export function getSpotifyUrl(id, entity) {
+  return `https://open.spotify.com/${entity}/${id}`;
+}
+
 function getImage(images) {
   if (!images || !images.length) {
     return null;

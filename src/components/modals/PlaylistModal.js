@@ -6,17 +6,24 @@ import {
   hidePlaylistModal,
   createPlaylist,
   setNonce,
-  setPlaylist,
+  setPlaylistForm,
   setCreatingPlaylist,
 } from '../../actions';
 import { useModal } from '../../hooks';
-import { getCreatingPlaylist, getToken, getTokenExpires, getTokenScope } from '../../selectors';
+import {
+  getCreatingPlaylist,
+  getToken,
+  getTokenExpires,
+  getTokenScope,
+  getWorking,
+  getPlaylistId,
+} from '../../selectors';
 import { FieldName } from '../../enums';
 import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from '../../auth';
 import { generateNonce, sleep } from '../../helpers';
 import { PlaylistForm, PlaylistInfo } from '../playlist';
 
-export function useOnSubmit(setCancelDisabled) {
+export function useOnSubmit(setCloseDisabled) {
   const dispatch = useDispatch();
   const token = useSelector(getToken);
   const tokenExpires = useSelector(getTokenExpires);
@@ -30,31 +37,34 @@ export function useOnSubmit(setCancelDisabled) {
       const description = formData.description ? formData.description.trim() : null;
       const isPrivate = formData.visibility === 'private';
 
+      dispatch(setPlaylistForm(startDate, endDate, name, description, isPrivate));
+
       if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
         dispatch(createPlaylist());
       } else {
         const nonce = generateNonce();
 
-        setCancelDisabled(true);
+        setCloseDisabled(true);
         dispatch(setCreatingPlaylist(true));
         dispatch(setNonce(nonce));
-        dispatch(setPlaylist(startDate, endDate, name, description, isPrivate));
         await sleep(500);
 
         startCreatePlaylistAuthFlow(nonce, isPrivate);
       }
     },
-    [setCancelDisabled, token, tokenExpires, tokenScope, dispatch]
+    [setCloseDisabled, token, tokenExpires, tokenScope, dispatch]
   );
 }
 
 function PlaylistModal() {
   const closeModal = useModal(hidePlaylistModal);
   const creatingPlaylist = useSelector(getCreatingPlaylist);
+  const playlistId = useSelector(getPlaylistId);
+  const working = useSelector(getWorking);
   const form = useForm();
-  const [cancelDisabled, setCancelDisabled] = useState(false);
+  const [closeDisabled, setCloseDisabled] = useState(false);
   const { register, handleSubmit } = form;
-  const onSubmit = useOnSubmit(setCancelDisabled);
+  const onSubmit = useOnSubmit(setCloseDisabled);
   const onSubmitHandler = useCallback(handleSubmit(onSubmit), [handleSubmit, onsubmit]);
 
   register({ name: FieldName.RELEASES_COUNT }, { required: true, min: 1 });
@@ -68,7 +78,7 @@ function PlaylistModal() {
         <div className="modal-content has-background-black-bis has-text-light">
           <h4 className="title is-4 has-text-light has-text-centered">New playlist</h4>
 
-          {creatingPlaylist ? <PlaylistInfo /> : <PlaylistForm />}
+          {creatingPlaylist || playlistId ? <PlaylistInfo /> : <PlaylistForm />}
 
           <div className="actions columns is-gapless">
             <div className="column">
@@ -81,6 +91,7 @@ function PlaylistModal() {
                   'has-text-weight-semibold',
                   { 'is-loading': creatingPlaylist }
                 )}
+                disabled={working}
               >
                 <span className="icon">
                   <i className="fas fa-asterisk"></i>
@@ -93,12 +104,12 @@ function PlaylistModal() {
               <button
                 className="button is-dark is-rounded has-text-weight-semibold"
                 onClick={closeModal}
-                disabled={cancelDisabled}
+                disabled={closeDisabled}
               >
                 <span className="icon">
                   <i className="fas fa-times"></i>
                 </span>
-                <span>Cancel</span>
+                <span>Close</span>
               </button>
             </div>
           </div>

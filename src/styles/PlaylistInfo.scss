@@ -1,0 +1,22 @@
+.PlaylistInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+
+  progress {
+    max-width: 400px;
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: #1cb954;
+    text-decoration: none;
+    margin-top: 10px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

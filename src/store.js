@@ -24,9 +24,11 @@ import {
   SET_NONCE,
   SHOW_ERROR_MESSAGE,
   HIDE_ERROR_MESSAGE,
-  SET_PLAYLIST,
+  SET_PLAYLIST_FORM,
   SET_CREATING_PLAYLIST,
   CREATE_PLAYLIST,
+  CREATE_PLAYLIST_FINISHED,
+  CREATE_PLAYLIST_ERROR,
 } from './actions';
 import saga from './sagas';
 
@@ -43,7 +45,7 @@ const persistConfig = {
     'albums',
     'syncedOnce',
     'lastSync',
-    'playlist',
+    'playlistForm',
     'token',
     'tokenExpires',
     'tokenScope',
@@ -60,7 +62,8 @@ const initialState = {
   syncedOnce: false,
   lastSync: null,
   creatingPlaylist: false,
-  playlist: {
+  playlistId: null,
+  playlistForm: {
     startDate: null,
     endDate: null,
     name: null,
@@ -218,10 +221,10 @@ function reducer(state = initialState, action) {
         ...state,
         errorMessage: null,
       };
-    case SET_PLAYLIST:
+    case SET_PLAYLIST_FORM:
       return {
         ...state,
-        playlist: {
+        playlistForm: {
           startDate: payload.startDate,
           endDate: payload.endDate,
           name: payload.name,
@@ -239,6 +242,17 @@ function reducer(state = initialState, action) {
         ...state,
         creatingPlaylist: true,
         playlistModalVisible: true,
+      };
+    case CREATE_PLAYLIST_FINISHED:
+      return {
+        ...state,
+        playlistId: payload.id,
+      };
+    case CREATE_PLAYLIST_ERROR:
+      return {
+        ...state,
+        creatingPlaylist: false,
+        playlistModalVisible: false,
       };
     default:
       return state;

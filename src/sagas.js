@@ -1,7 +1,7 @@
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 import { getUser, getUserFollowedArtists, getArtistAlbums } from './api';
 import { getDaysAgoDate, chunks, reflect, filterResolved } from './helpers';
-import { getSettings, getToken } from './selectors';
+import { getSettings, getToken, getPlaylistForm } from './selectors';
 import {
   SYNC,
   CREATE_PLAYLIST,
@@ -11,6 +11,8 @@ import {
   addAlbums,
   setArtists,
   showErrorMessage,
+  createPlaylistFinished,
+  createPlaylistError,
 } from './actions';
 
 function* syncSaga() {
@@ -42,7 +44,17 @@ function* syncSaga() {
   }
 }
 
-function* createPlaylistSaga() {}
+function* createPlaylistSaga() {
+  try {
+    const playlistForm = yield select(getPlaylistForm);
+    // TODO
+  } catch (error) {
+    yield put(showErrorMessage());
+    yield put(createPlaylistError());
+
+    throw error;
+  }
+}
 
 function* saga() {
   yield takeLatest(SYNC, syncSaga);

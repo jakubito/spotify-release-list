@@ -17,7 +17,8 @@ export const getSettingsModalVisible = (state) => state.settingsModalVisible;
 export const getResetModalVisible = (state) => state.resetModalVisible;
 export const getPlaylistModalVisible = (state) => state.playlistModalVisible;
 export const getErrorMessage = (state) => state.errorMessage;
-export const getPlaylist = (state) => state.playlist;
+export const getPlaylistForm = (state) => state.playlistForm;
+export const getPlaylistId = (state) => state.playlistId;
 export const getCreatingPlaylist = (state) => state.creatingPlaylist;
 
 export const getWorking = createSelector(

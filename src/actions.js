@@ -17,7 +17,7 @@ export const SET_TOKEN = 'SET_TOKEN';
 export const SET_NONCE = 'SET_NONCE';
 export const SHOW_ERROR_MESSAGE = 'SHOW_ERROR_MESSAGE';
 export const HIDE_ERROR_MESSAGE = 'HIDE_ERROR_MESSAGE';
-export const SET_PLAYLIST = 'SET_PLAYLIST';
+export const SET_PLAYLIST_FORM = 'SET_PLAYLIST_FORM';
 export const CREATE_PLAYLIST = 'CREATE_PLAYLIST';
 export const CREATE_PLAYLIST_FINISHED = 'CREATE_PLAYLIST_FINISHED';
 export const CREATE_PLAYLIST_ERROR = 'CREATE_PLAYLIST_ERROR';
@@ -145,9 +145,9 @@ export function hideErrorMessage() {
   };
 }
 
-export function setPlaylist(startDate, endDate, name, description, isPrivate) {
+export function setPlaylistForm(startDate, endDate, name, description, isPrivate) {
   return {
-    type: SET_PLAYLIST,
+    type: SET_PLAYLIST_FORM,
     payload: { startDate, endDate, name, description, isPrivate },
   };
 }
@@ -158,9 +158,10 @@ export function createPlaylist() {
   };
 }
 
-export function createPlaylistFinished() {
+export function createPlaylistFinished(id) {
   return {
     type: CREATE_PLAYLIST_FINISHED,
+    payload: { id },
   };
 }
 

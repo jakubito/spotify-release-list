@@ -14,6 +14,10 @@ export const FieldName = Object.freeze({
   RELEASES_COUNT: 'releasesCount',
 });
 
+export const SpotifyEntity = Object.freeze({
+  PLAYLIST: 'playlist',
+});
+
 export const AlbumGroup = Object.freeze({
   album: 'Albums',
   single: 'Singles',
