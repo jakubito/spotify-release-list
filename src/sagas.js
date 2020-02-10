@@ -29,6 +29,7 @@ import {
   createPlaylistFinished,
   createPlaylistError,
 } from './actions';
+import { SpotifyEntity, Moment, MomentFormat } from './enums';
 
 function* syncSaga() {
   try {
@@ -70,7 +71,7 @@ function* createPlaylistSaga() {
     let current = moment(form.endDate);
 
     while (current.isSameOrAfter(form.startDate)) {
-      const currentFormatted = current.format('YYYY-MM-DD');
+      const currentFormatted = current.format(MomentFormat.ISO_DATE);
 
       if (releases[currentFormatted]) {
         const newAlbumsOrdered = orderBy(releases[currentFormatted], (album) => album.name);
@@ -79,7 +80,7 @@ function* createPlaylistSaga() {
         albumIds = albumIds.concat(newAlbumIds);
       }
 
-      current.subtract(1, 'day');
+      current.subtract(1, Moment.DAY);
     }
 
     let trackIds = [];
@@ -90,7 +91,7 @@ function* createPlaylistSaga() {
       trackIds = trackIds.concat(newTrackIds);
     }
 
-    const trackUris = trackIds.map((trackId) => getSpotifyUri(trackId, 'track'));
+    const trackUris = trackIds.map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK));
     let firstPlaylist;
     let part = 1;
 

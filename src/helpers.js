@@ -2,6 +2,7 @@ import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import subDays from 'date-fns/subDays';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { Moment, MomentFormat } from './enums';
 
 let intervalId;
 
@@ -118,13 +119,13 @@ export function calculateReleasesCount(releases, startDate, endDate) {
   let current = startDate.clone();
 
   while (current.isSameOrBefore(endDate)) {
-    const currentFormatted = current.format('YYYY-MM-DD');
+    const currentFormatted = current.format(MomentFormat.ISO_DATE);
 
     if (releases[currentFormatted]) {
       count += releases[currentFormatted].length;
     }
 
-    current.add(1, 'day');
+    current.add(1, Moment.DAY);
   }
 
   return count;

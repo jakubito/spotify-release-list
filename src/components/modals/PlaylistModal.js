@@ -16,7 +16,7 @@ import {
   getTokenScope,
   getPlaylistId,
 } from '../../selectors';
-import { FieldName } from '../../enums';
+import { FieldName, MomentFormat } from '../../enums';
 import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from '../../auth';
 import { generateNonce, sleep } from '../../helpers';
 import { PlaylistForm, PlaylistInfo, Actions } from '../playlist';
@@ -29,8 +29,8 @@ export function useOnSubmit(setCloseDisabled) {
 
   return useCallback(
     async (formData) => {
-      const startDate = formData.startDate.format('YYYY-MM-DD');
-      const endDate = formData.endDate.format('YYYY-MM-DD');
+      const startDate = formData.startDate.format(MomentFormat.ISO_DATE);
+      const endDate = formData.endDate.format(MomentFormat.ISO_DATE);
       const name = formData.name.trim();
       const description = formData.description ? formData.description.trim() : null;
       const isPrivate = formData.visibility === 'private';

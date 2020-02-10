@@ -195,9 +195,6 @@ function reducer(state = initialState, action) {
         ...state,
         playlistModalVisible: false,
         playlistId: initialState.playlistId,
-        playlistForm: {
-          ...initialState.playlistForm,
-        },
       };
     case SET_TOKEN:
       return {
@@ -263,9 +260,6 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         playlistId: initialState.playlistId,
-        playlistForm: {
-          ...initialState.playlistForm,
-        },
       };
     default:
       return state;

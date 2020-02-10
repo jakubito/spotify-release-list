@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import orderBy from 'lodash.orderby';
 import moment from 'moment';
+import { Moment } from './enums';
 
 export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;
@@ -39,7 +40,7 @@ export const getLastSyncDate = createSelector(getLastSync, (lastSync) =>
 const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums));
 
 const getDayPrecisionAlbums = createSelector(getAlbumsArray, (albums) =>
-  albums.filter((album) => album.releaseDatePrecision === 'day')
+  albums.filter((album) => album.releaseDatePrecision === Moment.DAY)
 );
 
 export const getDayReleasesMap = createSelector(getDayPrecisionAlbums, (albums) =>

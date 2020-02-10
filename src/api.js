@@ -5,7 +5,7 @@ function apiUrl(endpoint) {
 }
 
 function get(endpoint, token) {
-  return callApi(endpoint, token);
+  return callApi(endpoint, token, 'GET');
 }
 
 function post(endpoint, token, body) {
@@ -21,7 +21,7 @@ function post(endpoint, token, body) {
   );
 }
 
-async function callApi(endpoint, token, method = 'GET', headers = {}, body) {
+async function callApi(endpoint, token, method, headers = {}, body) {
   const response = await fetch(endpoint, {
     method,
     body,
