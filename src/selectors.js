@@ -20,6 +20,12 @@ export const getErrorMessage = (state) => state.errorMessage;
 export const getPlaylist = (state) => state.playlist;
 export const getCreatingPlaylist = (state) => state.creatingPlaylist;
 
+export const getWorking = createSelector(
+  getSyncing,
+  getCreatingPlaylist,
+  (syncing, creatingPlaylist) => syncing || creatingPlaylist
+);
+
 export const getArtistsCount = createSelector(
   getArtists,
   (artistsMap) => Object.keys(artistsMap).length

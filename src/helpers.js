@@ -101,6 +101,35 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
   return `${startDateFormatted} - ${endDateFormatted} Releases`;
 }
 
+/**
+ * Get number of releases between startDate and endDate.
+ *
+ * @param {Object} releases Releases map from redux store
+ * @param {Moment} startDate
+ * @param {Moment} endDate
+ * @returns {(number|null)}
+ */
+export function calculateReleasesCount(releases, startDate, endDate) {
+  if (!releases || !startDate || !endDate) {
+    return null;
+  }
+
+  let current = startDate.clone();
+  let count = 0;
+
+  while (current <= endDate) {
+    const currentFormatted = current.format('YYYY-MM-DD');
+
+    if (releases[currentFormatted]) {
+      count += releases[currentFormatted].length;
+    }
+
+    current.add(1, 'day');
+  }
+
+  return count;
+}
+
 function getImage(images) {
   if (!images || !images.length) {
     return null;

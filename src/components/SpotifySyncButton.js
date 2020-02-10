@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { getSyncing, getToken, getTokenExpires, getTokenScope } from '../selectors';
+import { getSyncing, getToken, getTokenExpires, getTokenScope, getWorking } from '../selectors';
 import { generateNonce, sleep } from '../helpers';
 import { setNonce, sync, setSyncing } from '../actions';
 import { startSyncAuthFlow, isValidSyncToken } from '../auth';
@@ -35,6 +35,7 @@ function useClickHandler() {
 
 function SpotifySyncButton({ title, icon, className }) {
   const syncing = useSelector(getSyncing);
+  const working = useSelector(getWorking);
   const clickHandler = useClickHandler();
 
   return (
@@ -48,7 +49,7 @@ function SpotifySyncButton({ title, icon, className }) {
         { 'is-loading': syncing },
         className
       )}
-      disabled={syncing}
+      disabled={working}
       onClick={clickHandler}
     >
       <span className="icon">

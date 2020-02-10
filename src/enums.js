@@ -11,6 +11,7 @@ export const FieldName = Object.freeze({
   NAME_CUSTOM: 'nameCustom',
   DESCRIPTION: 'description',
   VISIBILITY: 'visibility',
+  RELEASES_COUNT: 'releasesCount',
 });
 
 export const AlbumGroup = Object.freeze({

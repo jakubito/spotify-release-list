@@ -1,26 +1,25 @@
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
 import classNames from 'classnames';
-import { getReleasesMinMaxDatesMoment } from '../../selectors';
-import { getPlaylistNameSuggestion } from '../../helpers';
+import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from '../../selectors';
+import { getPlaylistNameSuggestion, calculateReleasesCount } from '../../helpers';
 import { FieldName } from '../../enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
 
-function DateRangeField({ releasesCount }) {
+function useIsOutsideRangeHandler() {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
-  const [focus, setFocus] = useState(null);
-  const { register, watch, errors, setValue, triggerValidation, getValues } = useFormContext();
 
-  const isOutsideRangeHandler = useCallback(
-    (day) => !day.isBetween(minDate, maxDate, 'day', '[]'),
-    [minDate, maxDate]
-  );
+  return useCallback((day) => !day.isBetween(minDate, maxDate, 'day', '[]'), [minDate, maxDate]);
+}
 
-  const datesChangeHandler = useCallback(
+function useDatesChangeHandler() {
+  const releases = useSelector(getDayReleasesMap);
+  const { setValue, triggerValidation, getValues } = useFormContext();
+
+  return useCallback(
     ({ startDate, endDate }) => {
       const values = getValues();
 
@@ -28,21 +27,32 @@ function DateRangeField({ releasesCount }) {
       setValue(FieldName.END_DATE, endDate);
 
       if (startDate && endDate) {
-        triggerValidation([FieldName.START_DATE, FieldName.END_DATE]);
-      }
+        setValue(FieldName.RELEASES_COUNT, calculateReleasesCount(releases, startDate, endDate));
+        triggerValidation([FieldName.START_DATE, FieldName.END_DATE, FieldName.RELEASES_COUNT]);
 
-      if (!values[FieldName.NAME_CUSTOM]) {
-        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate));
+        if (!values[FieldName.NAME_CUSTOM]) {
+          setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate));
+          triggerValidation(FieldName.NAME);
+        }
       }
     },
-    [setValue, getValues, triggerValidation]
+    [setValue, getValues, triggerValidation, releases]
   );
+}
+
+function DateRangeField() {
+  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
+  const [focus, setFocus] = useState(null);
+  const { register, watch, errors } = useFormContext();
+  const isOutsideRangeHandler = useIsOutsideRangeHandler();
+  const datesChangeHandler = useDatesChangeHandler();
 
   register({ name: FieldName.START_DATE }, { required: true });
   register({ name: FieldName.END_DATE }, { required: true });
 
   const startDate = watch(FieldName.START_DATE);
   const endDate = watch(FieldName.END_DATE);
+  const releasesCount = watch(FieldName.RELEASES_COUNT);
 
   return (
     <div className="field">
@@ -70,7 +80,7 @@ function DateRangeField({ releasesCount }) {
           )}
         </Media>
 
-        {releasesCount !== null && (
+        {Number.isInteger(releasesCount) && (
           <div
             className={classNames('matched-count', {
               'has-text-grey': releasesCount > 0,
@@ -96,9 +106,5 @@ function DateRangeField({ releasesCount }) {
     </div>
   );
 }
-
-DateRangeField.propTypes = {
-  releasesCount: PropTypes.number,
-};
 
 export default DateRangeField;

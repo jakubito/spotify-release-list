@@ -28,7 +28,7 @@ function SettingsModal() {
           </div>
         </div>
 
-        <div className="columns is-6 is-variable">
+        <div className="columns">
           <div className="column">
             <TimePeriodField />
           </div>
@@ -37,7 +37,7 @@ function SettingsModal() {
           </div>
         </div>
 
-        <div className="columns is-6 is-variable">
+        <div className="columns">
           <div className="column">
             <UriLinksField />
           </div>
