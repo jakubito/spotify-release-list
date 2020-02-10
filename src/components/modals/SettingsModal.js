@@ -64,7 +64,7 @@ function SettingsModal() {
           <div className="reset has-text-grey-light">
             Logged in as {user.name}
             <button
-              className="button is-dark is-rounded is-small"
+              className="button is-dark is-rounded is-small has-text-weight-semibold"
               onClick={() => dispatch(showResetModal())}
             >
               <span className="icon">

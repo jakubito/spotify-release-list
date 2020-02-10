@@ -29,6 +29,7 @@ import {
   CREATE_PLAYLIST,
   CREATE_PLAYLIST_FINISHED,
   CREATE_PLAYLIST_ERROR,
+  RESET_PLAYLIST,
 } from './actions';
 import saga from './sagas';
 
@@ -193,6 +194,10 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         playlistModalVisible: false,
+        playlistId: initialState.playlistId,
+        playlistForm: {
+          ...initialState.playlistForm,
+        },
       };
     case SET_TOKEN:
       return {
@@ -253,6 +258,14 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         creatingPlaylist: false,
+      };
+    case RESET_PLAYLIST:
+      return {
+        ...state,
+        playlistId: initialState.playlistId,
+        playlistForm: {
+          ...initialState.playlistForm,
+        },
       };
     default:
       return state;

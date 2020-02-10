@@ -22,6 +22,7 @@ export const CREATE_PLAYLIST = 'CREATE_PLAYLIST';
 export const CREATE_PLAYLIST_FINISHED = 'CREATE_PLAYLIST_FINISHED';
 export const CREATE_PLAYLIST_ERROR = 'CREATE_PLAYLIST_ERROR';
 export const SET_CREATING_PLAYLIST = 'SET_CREATING_PLAYLIST';
+export const RESET_PLAYLIST = 'RESET_PLAYLIST';
 
 export function sync() {
   return {
@@ -175,5 +176,11 @@ export function setCreatingPlaylist(creatingPlaylist) {
   return {
     type: SET_CREATING_PLAYLIST,
     payload: { creatingPlaylist },
+  };
+}
+
+export function resetPlaylist() {
+  return {
+    type: RESET_PLAYLIST,
   };
 }

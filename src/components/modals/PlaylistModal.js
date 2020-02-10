@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm, FormContext } from 'react-hook-form';
-import classNames from 'classnames';
 import {
   hidePlaylistModal,
   createPlaylist,
@@ -15,13 +14,12 @@ import {
   getToken,
   getTokenExpires,
   getTokenScope,
-  getWorking,
   getPlaylistId,
 } from '../../selectors';
 import { FieldName } from '../../enums';
 import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from '../../auth';
 import { generateNonce, sleep } from '../../helpers';
-import { PlaylistForm, PlaylistInfo } from '../playlist';
+import { PlaylistForm, PlaylistInfo, Actions } from '../playlist';
 
 export function useOnSubmit(setCloseDisabled) {
   const dispatch = useDispatch();
@@ -60,7 +58,6 @@ function PlaylistModal() {
   const closeModal = useModal(hidePlaylistModal);
   const creatingPlaylist = useSelector(getCreatingPlaylist);
   const playlistId = useSelector(getPlaylistId);
-  const working = useSelector(getWorking);
   const form = useForm();
   const [closeDisabled, setCloseDisabled] = useState(false);
   const { register, handleSubmit } = form;
@@ -82,22 +79,7 @@ function PlaylistModal() {
 
           <div className="actions columns is-gapless">
             <div className="column">
-              <button
-                type="submit"
-                className={classNames(
-                  'button',
-                  'is-primary',
-                  'is-rounded',
-                  'has-text-weight-semibold',
-                  { 'is-loading': creatingPlaylist }
-                )}
-                disabled={working}
-              >
-                <span className="icon">
-                  <i className="fas fa-asterisk"></i>
-                </span>
-                <span>Create</span>
-              </button>
+              <Actions />
             </div>
 
             <div className="column has-text-right">
