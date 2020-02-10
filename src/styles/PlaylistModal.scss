@@ -1,4 +1,4 @@
-.SettingsModal {
+.PlaylistModal {
   .modal-content {
     .control {
       display: flex;
@@ -21,31 +21,18 @@
         }
       }
 
-      .select,
       select {
         width: 100%;
       }
     }
 
-    > .columns {
+    .field {
       margin-bottom: 24px;
     }
 
-    .credits {
-      a {
-        text-decoration: underline;
-
-        &:hover {
-          text-decoration: none;
-        }
-      }
-    }
-
-    .help {
-      margin: 0 0 20px 0;
-    }
-
     .actions {
+      margin-bottom: 0;
+
       .column {
         @include mobile {
           margin-top: 20px;
@@ -63,15 +50,22 @@
       }
     }
 
-    .reset {
-      margin-bottom: 15px;
+    .date-range {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
 
-      button {
-        margin-top: 10px;
+      @include mobile {
+        align-items: flex-start;
+      }
+
+      .matched-count {
+        padding: 0 15px;
+
+        @include mobile {
+          width: 100%;
+          text-align: left;
+          padding: 12px 0 0 0;
+        }
       }
     }
   }

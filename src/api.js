@@ -1,12 +1,32 @@
 import { buildUser, buildArtist, buildAlbum, sleep } from './helpers';
 
-function getApiUrl(endpoint) {
+function apiUrl(endpoint) {
   return `https://api.spotify.com/v1/${endpoint}`;
 }
 
-async function callApi(endpoint, token) {
+function get(endpoint, token) {
+  return callApi(endpoint, token);
+}
+
+function post(endpoint, token, body) {
+  return callApi(
+    endpoint,
+    token,
+    'POST',
+    {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    JSON.stringify(body)
+  );
+}
+
+async function callApi(endpoint, token, method = 'GET', headers = {}, body) {
   const response = await fetch(endpoint, {
+    method,
+    body,
     headers: {
+      ...headers,
       Authorization: `Bearer ${token}`,
     },
   });
@@ -15,22 +35,33 @@ async function callApi(endpoint, token) {
     return response.json();
   }
 
-  // Handle too many requests error
+  // Handle 429 Too many requests
   if (response.status === 429) {
-    const retryAfterMs = Number(response.headers.get('Retry-After')) * 1000 + 100;
+    const waitMs = Number(response.headers.get('Retry-After')) * 1000 + 100;
 
-    await sleep(retryAfterMs);
+    await sleep(waitMs);
 
-    return callApi(endpoint, token);
+    return callApi(endpoint, token, method, headers, body);
   }
 
-  throw new Error(
-    `💢 Fetch Error; Status: ${response.status}; Status text: ${response.statusText}`
-  );
+  if (response.status >= 400 && response.status < 500) {
+    const json = await response.json();
+
+    throw new Error(`
+      Fetch 4XX Response
+      Status: ${response.status} ${response.statusText}
+      Message: ${json.error.message}
+    `);
+  }
+
+  throw new Error(`
+    Fetch Error
+    Status: ${response.status} ${response.statusText}
+  `);
 }
 
 export async function getUser(token) {
-  const userResponse = await callApi(getApiUrl('me'), token);
+  const userResponse = await get(apiUrl('me'), token);
   const user = buildUser(userResponse);
 
   return user;
@@ -38,10 +69,10 @@ export async function getUser(token) {
 
 export async function getUserFollowedArtists(token) {
   let artists = [];
-  let next = getApiUrl('me/following?type=artist&limit=50');
+  let next = apiUrl('me/following?type=artist&limit=50');
 
   while (next) {
-    const response = await callApi(next, token);
+    const response = await get(next, token);
     const newArtists = response.artists.items.map(buildArtist);
 
     artists = artists.concat(newArtists);
@@ -58,8 +89,52 @@ export async function getArtistAlbums(token, artistId, groups, market) {
     url += `&market=${market}`;
   }
 
-  const response = await callApi(getApiUrl(url), token);
+  const response = await get(apiUrl(url), token);
   const albums = response.items.map((album) => buildAlbum(album, artistId));
 
   return albums;
+}
+
+export async function getAlbumsTrackIds(token, albumIds, market) {
+  let trackIds = [];
+  let url = `albums?ids=${albumIds.join(',')}`;
+
+  if (market) {
+    url += `&market=${market}`;
+  }
+
+  const response = await get(apiUrl(url), token);
+
+  for (const album of response.albums) {
+    if (!album) {
+      continue;
+    }
+
+    let albumTrackIds = album.tracks.items.map((track) => track.id);
+    let next = album.tracks.next;
+
+    while (next) {
+      const response = await get(next, token);
+      const newAlbumTrackIds = response.items.map((track) => track.id);
+
+      albumTrackIds = albumTrackIds.concat(newAlbumTrackIds);
+      next = response.next;
+    }
+
+    trackIds = trackIds.concat(albumTrackIds);
+  }
+
+  return trackIds;
+}
+
+export function createPlaylist(token, userId, name, description, isPrivate) {
+  return post(apiUrl(`users/${userId}/playlists`), token, {
+    name,
+    description,
+    public: !isPrivate,
+  });
+}
+
+export function addTracksToPlaylist(token, playlistId, trackUris) {
+  return post(apiUrl(`playlists/${playlistId}/tracks`), token, { uris: trackUris });
 }

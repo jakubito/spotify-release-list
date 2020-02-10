@@ -30,7 +30,7 @@ function ResetModal() {
             onClick={() => dispatch(reset())}
           >
             <span className="icon">
-              <i className="fas fa-trash-alt"></i>
+              <i className="far fa-trash-alt"></i>
             </span>
             <span>Yes, delete all data</span>
           </button>

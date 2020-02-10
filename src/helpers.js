@@ -39,7 +39,7 @@ export function mergeAlbumArtists(album, artistsMap) {
     }, album.artists);
 }
 
-export async function sleep(ms) {
+export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -77,6 +77,65 @@ export function generateNonce() {
       .toString(36)
       .substring(2, 15)
   );
+}
+
+/**
+ * Get playlist name suggestion.
+ *
+ * @param {Moment} startDate
+ * @param {Moment} endDate
+ * @returns {string}
+ */
+export function getPlaylistNameSuggestion(startDate, endDate) {
+  if (!startDate || !endDate) {
+    return null;
+  }
+
+  const startDateFormatted = startDate.format('MMM D');
+  const endDateFormatted = endDate.format('MMM D');
+
+  if (startDateFormatted === endDateFormatted) {
+    return `${startDateFormatted} Releases`;
+  }
+
+  return `${startDateFormatted} - ${endDateFormatted} Releases`;
+}
+
+/**
+ * Get number of releases between startDate and endDate.
+ *
+ * @param {Object} releases Releases map from redux store
+ * @param {Moment} startDate
+ * @param {Moment} endDate
+ * @returns {(number|null)}
+ */
+export function calculateReleasesCount(releases, startDate, endDate) {
+  if (!releases || !startDate || !endDate) {
+    return null;
+  }
+
+  let count = 0;
+  let current = startDate.clone();
+
+  while (current.isSameOrBefore(endDate)) {
+    const currentFormatted = current.format('YYYY-MM-DD');
+
+    if (releases[currentFormatted]) {
+      count += releases[currentFormatted].length;
+    }
+
+    current.add(1, 'day');
+  }
+
+  return count;
+}
+
+export function getSpotifyUri(id, entity) {
+  return `spotify:${entity}:${id}`;
+}
+
+export function getSpotifyUrl(id, entity) {
+  return `https://open.spotify.com/${entity}/${id}`;
 }
 
 function getImage(images) {

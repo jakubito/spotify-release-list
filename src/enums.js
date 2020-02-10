@@ -1,3 +1,23 @@
+export const Scope = Object.freeze({
+  USER_FOLLOW_READ: 'user-follow-read',
+  PLAYLIST_MODIFY_PRIVATE: 'playlist-modify-private',
+  PLAYLIST_MODIFY_PUBLIC: 'playlist-modify-public',
+});
+
+export const FieldName = Object.freeze({
+  START_DATE: 'startDate',
+  END_DATE: 'endDate',
+  NAME: 'name',
+  NAME_CUSTOM: 'nameCustom',
+  DESCRIPTION: 'description',
+  VISIBILITY: 'visibility',
+  RELEASES_COUNT: 'releasesCount',
+});
+
+export const SpotifyEntity = Object.freeze({
+  PLAYLIST: 'playlist',
+});
+
 export const AlbumGroup = Object.freeze({
   album: 'Albums',
   single: 'Singles',

@@ -1,13 +1,42 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { getSyncing } from '../selectors';
-import { useAuthorize } from '../hooks';
+import { getSyncing, getToken, getTokenExpires, getTokenScope, getWorking } from '../selectors';
+import { generateNonce, sleep } from '../helpers';
+import { setNonce, sync, setSyncing } from '../actions';
+import { startSyncAuthFlow, isValidSyncToken } from '../auth';
+
+function useClickHandler() {
+  const dispatch = useDispatch();
+  const token = useSelector(getToken);
+  const tokenExpires = useSelector(getTokenExpires);
+  const tokenScope = useSelector(getTokenScope);
+
+  return useCallback(
+    async (event) => {
+      event.preventDefault();
+
+      if (isValidSyncToken(token, tokenExpires, tokenScope)) {
+        dispatch(sync());
+      } else {
+        const nonce = generateNonce();
+
+        dispatch(setSyncing(true));
+        dispatch(setNonce(nonce));
+        await sleep(500);
+
+        startSyncAuthFlow(nonce);
+      }
+    },
+    [token, tokenExpires, tokenScope, dispatch]
+  );
+}
 
 function SpotifySyncButton({ title, icon, className }) {
   const syncing = useSelector(getSyncing);
-  const authorize = useAuthorize();
+  const working = useSelector(getWorking);
+  const clickHandler = useClickHandler();
 
   return (
     <button
@@ -17,13 +46,11 @@ function SpotifySyncButton({ title, icon, className }) {
         'is-primary',
         'is-rounded',
         'has-text-weight-semibold',
-        {
-          'is-loading': syncing,
-        },
+        { 'is-loading': syncing },
         className
       )}
-      disabled={syncing}
-      onClick={authorize}
+      disabled={working}
+      onClick={clickHandler}
     >
       <span className="icon">
         <i className={icon}></i>

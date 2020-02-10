@@ -8,7 +8,7 @@ function UriLinksField() {
   const dispatch = useDispatch();
 
   const uriLinksChangeHandler = useCallback(
-    (event) => dispatch(setSettings({ uriLinks: !!Number(event.target.name) })),
+    (event) => dispatch(setSettings({ uriLinks: !!Number(event.target.value) })),
     [dispatch]
   );
 
@@ -21,7 +21,8 @@ function UriLinksField() {
             className="is-checkradio has-background-color is-white"
             id="uriLinksFalse"
             type="radio"
-            name="0"
+            name="uriLinks"
+            value="0"
             checked={!uriLinks}
             onChange={uriLinksChangeHandler}
           />
@@ -32,7 +33,8 @@ function UriLinksField() {
             className="is-checkradio has-background-color is-white"
             id="uriLinksTrue"
             type="radio"
-            name="1"
+            name="uriLinks"
+            value="1"
             checked={uriLinks}
             onChange={uriLinksChangeHandler}
           />

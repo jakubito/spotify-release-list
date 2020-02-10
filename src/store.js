@@ -2,10 +2,13 @@ import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import localForage from 'localforage';
+import * as Sentry from '@sentry/browser';
 import createSagaMiddleware from 'redux-saga';
 import {
   SYNC,
   SYNC_FINISHED,
+  SYNC_ERROR,
+  SET_SYNCING,
   SET_USER,
   ADD_ALBUMS,
   SET_ARTISTS,
@@ -15,8 +18,18 @@ import {
   HIDE_SETTINGS_MODAL,
   SHOW_RESET_MODAL,
   HIDE_RESET_MODAL,
+  SHOW_PLAYLIST_MODAL,
+  HIDE_PLAYLIST_MODAL,
   SET_TOKEN,
   SET_NONCE,
+  SHOW_ERROR_MESSAGE,
+  HIDE_ERROR_MESSAGE,
+  SET_PLAYLIST_FORM,
+  SET_CREATING_PLAYLIST,
+  CREATE_PLAYLIST,
+  CREATE_PLAYLIST_FINISHED,
+  CREATE_PLAYLIST_ERROR,
+  RESET_PLAYLIST,
 } from './actions';
 import saga from './sagas';
 
@@ -29,30 +42,44 @@ const persistConfig = {
   storage: localForage,
   stateReconciler: autoMergeLevel2,
   whitelist: [
-    'user',
-    'syncedOnce',
-    'lastSync',
-    'token',
-    'tokenExpires',
-    'nonce',
     'artists',
     'albums',
+    'syncedOnce',
+    'lastSync',
+    'playlistForm',
+    'token',
+    'tokenExpires',
+    'tokenScope',
+    'user',
+    'nonce',
     'settings',
   ],
 };
 
 const initialState = {
-  user: null,
+  artists: {},
+  albums: {},
   syncing: false,
   syncedOnce: false,
   lastSync: null,
+  creatingPlaylist: false,
+  playlistId: null,
+  playlistForm: {
+    startDate: null,
+    endDate: null,
+    name: null,
+    description: null,
+    isPrivate: null,
+  },
   token: null,
   tokenExpires: null,
+  tokenScope: null,
+  user: null,
   nonce: null,
+  errorMessage: null,
   settingsModalVisible: false,
   resetModalVisible: false,
-  artists: {},
-  albums: {},
+  playlistModalVisible: false,
   settings: {
     groups: ['album', 'single', 'compilation', 'appears_on'],
     days: 30,
@@ -79,6 +106,16 @@ function reducer(state = initialState, action) {
         syncing: false,
         syncedOnce: true,
         lastSync: new Date().toISOString(),
+      };
+    case SYNC_ERROR:
+      return {
+        ...state,
+        syncing: false,
+      };
+    case SET_SYNCING:
+      return {
+        ...state,
+        syncing: payload.syncing,
       };
     case SET_USER:
       return {
@@ -148,16 +185,30 @@ function reducer(state = initialState, action) {
         ...state,
         resetModalVisible: false,
       };
+    case SHOW_PLAYLIST_MODAL:
+      return {
+        ...state,
+        playlistModalVisible: true,
+      };
+    case HIDE_PLAYLIST_MODAL:
+      return {
+        ...state,
+        playlistModalVisible: false,
+        playlistId: initialState.playlistId,
+        playlistForm: {
+          ...initialState.playlistForm,
+        },
+      };
     case SET_TOKEN:
       return {
         ...state,
         token: payload.token,
         tokenExpires: payload.tokenExpires,
+        tokenScope: payload.tokenScope,
       };
     case SET_NONCE:
       return {
         ...state,
-        syncing: true,
         nonce: payload.nonce,
       };
     case RESET:
@@ -165,13 +216,68 @@ function reducer(state = initialState, action) {
         ...initialState,
         settings: state.settings,
       };
+    case SHOW_ERROR_MESSAGE:
+      return {
+        ...state,
+        errorMessage: payload.message,
+      };
+    case HIDE_ERROR_MESSAGE:
+      return {
+        ...state,
+        errorMessage: null,
+      };
+    case SET_PLAYLIST_FORM:
+      return {
+        ...state,
+        playlistForm: {
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+          name: payload.name,
+          description: payload.description,
+          isPrivate: payload.isPrivate,
+        },
+      };
+    case SET_CREATING_PLAYLIST:
+      return {
+        ...state,
+        creatingPlaylist: payload.creatingPlaylist,
+      };
+    case CREATE_PLAYLIST:
+      return {
+        ...state,
+        creatingPlaylist: true,
+        playlistModalVisible: true,
+      };
+    case CREATE_PLAYLIST_FINISHED:
+      return {
+        ...state,
+        creatingPlaylist: false,
+        playlistId: payload.id,
+      };
+    case CREATE_PLAYLIST_ERROR:
+      return {
+        ...state,
+        creatingPlaylist: false,
+      };
+    case RESET_PLAYLIST:
+      return {
+        ...state,
+        playlistId: initialState.playlistId,
+        playlistForm: {
+          ...initialState.playlistForm,
+        },
+      };
     default:
       return state;
   }
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer);
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware({
+  onError: (error) => {
+    Sentry.captureException(error);
+  },
+});
 export const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
 export const hydrate = new Promise((resolve) => {
   persistStore(store, null, resolve);
