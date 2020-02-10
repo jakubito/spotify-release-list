@@ -98,7 +98,7 @@ function SettingsModal() {
           >
             github
           </a>{' '}
-          • v1.1.0
+          • v1.1.1
         </div>
       </div>
     </div>
