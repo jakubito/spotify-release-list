@@ -71,7 +71,6 @@ function DateRangeField() {
               isOutsideRange={isOutsideRangeHandler}
               focusedInput={focus}
               onFocusChange={setFocus}
-              displayFormat="YYYY-MM-DD"
               numberOfMonths={1}
               firstDayOfWeek={1}
               minimumNights={0}

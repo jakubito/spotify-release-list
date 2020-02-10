@@ -53,7 +53,7 @@ function DateRangeShortcut({ title, start, end }) {
 
   return (
     <button
-      className="DateRangeShortcut button is-dark is-rounded is-small"
+      className="DateRangeShortcut button is-dark is-rounded is-small has-text-weight-semibold"
       onClick={clickHandler}
       key={buttonTitle}
     >

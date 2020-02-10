@@ -32,10 +32,6 @@ body,
   box-shadow: 0px 0px 80px 0px #000000;
   max-height: calc(100vh - 120px);
 
-  @include mobile {
-    padding: 30px 15px;
-  }
-
   .title {
     margin-bottom: 24px;
   }
