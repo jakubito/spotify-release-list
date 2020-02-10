@@ -246,13 +246,13 @@ function reducer(state = initialState, action) {
     case CREATE_PLAYLIST_FINISHED:
       return {
         ...state,
+        creatingPlaylist: false,
         playlistId: payload.id,
       };
     case CREATE_PLAYLIST_ERROR:
       return {
         ...state,
         creatingPlaylist: false,
-        playlistModalVisible: false,
       };
     default:
       return state;

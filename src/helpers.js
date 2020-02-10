@@ -114,10 +114,10 @@ export function calculateReleasesCount(releases, startDate, endDate) {
     return null;
   }
 
-  let current = startDate.clone();
   let count = 0;
+  let current = startDate.clone();
 
-  while (current <= endDate) {
+  while (current.isSameOrBefore(endDate)) {
     const currentFormatted = current.format('YYYY-MM-DD');
 
     if (releases[currentFormatted]) {
