@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from '@reach/router';
 import queryString from 'query-string';
-import addSeconds from 'date-fns/addSeconds';
+import moment from 'moment';
 import { getNonce } from '../selectors';
 import {
   SYNC,
@@ -12,6 +12,7 @@ import {
   showErrorMessage,
   createPlaylist,
 } from '../actions';
+import { Moment } from '../enums';
 
 function Auth() {
   const dispatch = useDispatch();
@@ -35,7 +36,9 @@ function Auth() {
   }
 
   const token = hash.access_token;
-  const tokenExpires = addSeconds(new Date(), Number(hash.expires_in) - 120).toISOString();
+  const tokenExpires = moment()
+    .add(Number(hash.expires_in) - 120, Moment.SECOND)
+    .toISOString();
   const { action, scope } = state;
 
   dispatch(setToken(token, tokenExpires, scope));

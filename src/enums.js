@@ -16,6 +16,19 @@ export const FieldName = Object.freeze({
 
 export const SpotifyEntity = Object.freeze({
   PLAYLIST: 'playlist',
+  TRACK: 'track',
+});
+
+export const Moment = Object.freeze({
+  SECOND: 'second',
+  DAY: 'day',
+  WEEK: 'week',
+  ISO_WEEK: 'isoWeek',
+  MONTH: 'month',
+});
+
+export const MomentFormat = Object.freeze({
+  ISO_DATE: 'YYYY-MM-DD',
 });
 
 export const AlbumGroup = Object.freeze({

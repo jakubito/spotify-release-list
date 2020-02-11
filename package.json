@@ -8,7 +8,6 @@
     "bulma": "^0.8.0",
     "bulma-checkradio": "^1.1.1",
     "classnames": "^2.2.6",
-    "date-fns": "^2.7.0",
     "localforage": "^1.7.3",
     "lodash.orderby": "^4.6.0",
     "lodash.throttle": "^4.1.1",

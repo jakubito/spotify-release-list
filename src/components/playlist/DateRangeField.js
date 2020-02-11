@@ -6,13 +6,16 @@ import { DateRangePicker } from 'react-dates';
 import classNames from 'classnames';
 import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from '../../selectors';
 import { getPlaylistNameSuggestion, calculateReleasesCount } from '../../helpers';
-import { FieldName } from '../../enums';
+import { FieldName, Moment } from '../../enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
 
 function useIsOutsideRangeHandler() {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
 
-  return useCallback((day) => !day.isBetween(minDate, maxDate, 'day', '[]'), [minDate, maxDate]);
+  return useCallback((day) => !day.isBetween(minDate, maxDate, Moment.DAY, '[]'), [
+    minDate,
+    maxDate,
+  ]);
 }
 
 function useDatesChangeHandler() {

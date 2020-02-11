@@ -9,7 +9,7 @@ import {
   createPlaylist,
   addTracksToPlaylist,
 } from './api';
-import { getDaysAgoDate, chunks, reflect, filterResolved, getSpotifyUri } from './helpers';
+import { chunks, reflect, filterResolved, getSpotifyUri } from './helpers';
 import {
   getSettings,
   getToken,
@@ -29,6 +29,7 @@ import {
   createPlaylistFinished,
   createPlaylistError,
 } from './actions';
+import { SpotifyEntity, Moment, MomentFormat } from './enums';
 
 function* syncSaga() {
   try {
@@ -38,7 +39,9 @@ function* syncSaga() {
     const artists = yield call(getUserFollowedArtists, token);
     yield put(setArtists(artists));
     const { groups, market, days } = yield select(getSettings);
-    const afterDateString = getDaysAgoDate(days);
+    const afterDateString = moment()
+      .subtract(days, Moment.DAY)
+      .format(MomentFormat.ISO_DATE);
 
     for (const artistsChunk of chunks(artists, 6)) {
       const albumCalls = artistsChunk.map((artist) =>
@@ -70,7 +73,7 @@ function* createPlaylistSaga() {
     let current = moment(form.endDate);
 
     while (current.isSameOrAfter(form.startDate)) {
-      const currentFormatted = current.format('YYYY-MM-DD');
+      const currentFormatted = current.format(MomentFormat.ISO_DATE);
 
       if (releases[currentFormatted]) {
         const newAlbumsOrdered = orderBy(releases[currentFormatted], (album) => album.name);
@@ -79,7 +82,7 @@ function* createPlaylistSaga() {
         albumIds = albumIds.concat(newAlbumIds);
       }
 
-      current.subtract(1, 'day');
+      current.subtract(1, Moment.DAY);
     }
 
     let trackIds = [];
@@ -90,7 +93,7 @@ function* createPlaylistSaga() {
       trackIds = trackIds.concat(newTrackIds);
     }
 
-    const trackUris = trackIds.map((trackId) => getSpotifyUri(trackId, 'track'));
+    const trackUris = trackIds.map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK));
     let firstPlaylist;
     let part = 1;
 
