@@ -9,7 +9,7 @@ import {
   createPlaylist,
   addTracksToPlaylist,
 } from './api';
-import { getDaysAgoDate, chunks, reflect, filterResolved, getSpotifyUri } from './helpers';
+import { chunks, reflect, filterResolved, getSpotifyUri } from './helpers';
 import {
   getSettings,
   getToken,
@@ -39,7 +39,9 @@ function* syncSaga() {
     const artists = yield call(getUserFollowedArtists, token);
     yield put(setArtists(artists));
     const { groups, market, days } = yield select(getSettings);
-    const afterDateString = getDaysAgoDate(days);
+    const afterDateString = moment()
+      .subtract(days, Moment.DAY)
+      .format(MomentFormat.ISO_DATE);
 
     for (const artistsChunk of chunks(artists, 6)) {
       const albumCalls = artistsChunk.map((artist) =>

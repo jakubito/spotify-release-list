@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Media from 'react-media';
+import moment from 'moment';
 import { getLastSyncDate, getSyncedOnce, getHasReleases, getSyncing } from '../selectors';
 import { showSettingsModal, showPlaylistModal } from '../actions';
-import { getLastSyncHuman, saveInterval } from '../helpers';
+import { saveInterval } from '../helpers';
 import SpotifySyncButton from './SpotifySyncButton';
 
 function Navbar() {
@@ -12,11 +13,11 @@ function Navbar() {
   const lastSyncDate = useSelector(getLastSyncDate);
   const hasReleases = useSelector(getHasReleases);
   const dispatch = useDispatch();
-  const [lastSyncHuman, setLastSyncHuman] = useState(getLastSyncHuman(lastSyncDate));
+  const [lastSyncHuman, setLastSyncHuman] = useState(moment(lastSyncDate).fromNow());
 
   useEffect(() => {
     const updateLastSyncHuman = () => {
-      setLastSyncHuman(getLastSyncHuman(lastSyncDate));
+      setLastSyncHuman(moment(lastSyncDate).fromNow());
     };
 
     updateLastSyncHuman();
@@ -33,7 +34,7 @@ function Navbar() {
       {syncedOnce && (
         <div className="sync">
           <SpotifySyncButton title="Refresh" icon="fas fa-sync" />
-          <div className="last-update has-text-grey">Last update: {lastSyncHuman}</div>
+          <div className="last-update has-text-grey">Updated {lastSyncHuman}</div>
         </div>
       )}
       <div className="right">

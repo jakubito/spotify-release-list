@@ -20,6 +20,7 @@ export const SpotifyEntity = Object.freeze({
 });
 
 export const Moment = Object.freeze({
+  SECOND: 'second',
   DAY: 'day',
   WEEK: 'week',
   ISO_WEEK: 'isoWeek',

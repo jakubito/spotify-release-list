@@ -1,7 +1,4 @@
-import parseISO from 'date-fns/parseISO';
-import format from 'date-fns/format';
-import subDays from 'date-fns/subDays';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import moment from 'moment';
 import { Moment, MomentFormat } from './enums';
 
 let intervalId;
@@ -12,18 +9,6 @@ export function saveInterval(...args) {
   }
 
   intervalId = setInterval(...args);
-}
-
-export function formatDate(dateISOString, template) {
-  return format(parseISO(dateISOString), template);
-}
-
-export function getDaysAgoDate(days) {
-  return format(subDays(new Date(), days), 'y-MM-dd');
-}
-
-export function getLastSyncHuman(date) {
-  return date ? `${formatDistanceToNow(date)} ago` : 'Never';
 }
 
 export function mergeAlbumArtists(album, artistsMap) {
