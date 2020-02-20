@@ -32,10 +32,10 @@ export const MomentFormat = Object.freeze({
 });
 
 export const AlbumGroup = Object.freeze({
-  album: 'Albums',
-  single: 'Singles',
-  compilation: 'Compilations',
-  appears_on: 'Appearances',
+  ALBUM: 'album',
+  SINGLE: 'single',
+  COMPILATION: 'compilation',
+  APPEARS_ON: 'appears_on',
 });
 
 export const Market = Object.freeze({

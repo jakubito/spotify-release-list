@@ -51,9 +51,11 @@ function Navbar() {
             </Media>
           </button>
         )}
+
         <button
           className="button is-rounded is-dark has-text-weight-semibold"
           onClick={() => dispatch(showSettingsModal())}
+          disabled={syncing}
         >
           <span className="icon">
             <i className="fas fa-cog"></i>

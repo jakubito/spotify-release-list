@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { Moment, MomentFormat } from './enums';
 
 let intervalId;
