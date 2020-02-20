@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistStore, persistReducer, createMigrate } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import localForage from 'localforage';
 import * as Sentry from '@sentry/browser';
@@ -32,6 +32,8 @@ import {
   RESET_PLAYLIST,
 } from './actions';
 import saga from './sagas';
+import migrations from './migrations';
+import { AlbumGroup } from './enums';
 
 localForage.config({
   name: 'spotify-release-list',
@@ -39,8 +41,10 @@ localForage.config({
 
 const persistConfig = {
   key: 'root',
+  version: 0,
   storage: localForage,
   stateReconciler: autoMergeLevel2,
+  migrate: createMigrate(migrations),
   whitelist: [
     'artists',
     'albums',
@@ -81,7 +85,7 @@ const initialState = {
   resetModalVisible: false,
   playlistModalVisible: false,
   settings: {
-    groups: ['album', 'single', 'compilation', 'appears_on'],
+    groups: Object.values(AlbumGroup),
     days: 30,
     market: '',
     uriLinks: false,

@@ -1,3 +1,4 @@
+import findLastIndex from 'lodash.findlastindex';
 import { buildUser, buildArtist, buildAlbum, sleep } from './helpers';
 
 function apiUrl(endpoint) {
@@ -69,7 +70,13 @@ export async function getUser(token) {
 
 export async function getUserFollowedArtists(token) {
   let artists = [];
-  let next = apiUrl('me/following?type=artist&limit=50');
+
+  const params = new URLSearchParams({
+    limit: 50,
+    type: 'artist',
+  });
+
+  let next = apiUrl(`me/following?${params}`);
 
   while (next) {
     const response = await get(next, token);
@@ -82,28 +89,59 @@ export async function getUserFollowedArtists(token) {
   return artists;
 }
 
-export async function getArtistAlbums(token, artistId, groups, market) {
-  let url = `artists/${artistId}/albums?limit=20&include_groups=${groups.join(',')}`;
-
-  if (market) {
-    url += `&market=${market}`;
+export async function getArtistAlbums(token, artistId, groups, market, afterDateString) {
+  if (groups.length === 0) {
+    return [];
   }
 
-  const response = await get(apiUrl(url), token);
-  const albums = response.items.map((album) => buildAlbum(album, artistId));
+  const params = new URLSearchParams({
+    limit: 50,
+    include_groups: groups.join(','),
+    ...(market && { market }),
+  });
 
-  return albums;
+  const url = apiUrl(`artists/${artistId}/albums?${params}`);
+  const response = await get(url, token);
+  const albums = [];
+  const groupCounts = new Map(groups.map((group) => [group, 0]));
+
+  for (const album of response.items) {
+    const albumGroup = album.album_group;
+
+    albums.push(buildAlbum(album, artistId));
+    groupCounts.set(albumGroup, groupCounts.get(albumGroup) + 1);
+  }
+
+  if (!response.next) {
+    return albums;
+  }
+
+  const groupCountsValues = Array.from(groupCounts.values());
+  const lastGroupIndex = findLastIndex(groupCountsValues);
+  const [lastGroup, ...groupsRest] = groups.slice(lastGroupIndex);
+  const lastAlbum = albums[albums.length - 1];
+  const refetchLastGroup = lastGroupIndex > 0 && lastAlbum.releaseDate > afterDateString;
+
+  const restAlbums = await getArtistAlbums(
+    token,
+    artistId,
+    refetchLastGroup ? [lastGroup, ...groupsRest] : groupsRest,
+    market,
+    afterDateString
+  );
+
+  return albums.concat(restAlbums);
 }
 
 export async function getAlbumsTrackIds(token, albumIds, market) {
   let trackIds = [];
-  let url = `albums?ids=${albumIds.join(',')}`;
 
-  if (market) {
-    url += `&market=${market}`;
-  }
+  const params = new URLSearchParams({
+    ids: albumIds.join(','),
+    ...(market && { market }),
+  });
 
-  const response = await get(apiUrl(url), token);
+  const response = await get(apiUrl(`albums?${params}`), token);
 
   for (const album of response.albums) {
     if (!album) {

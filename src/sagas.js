@@ -45,7 +45,7 @@ function* syncSaga() {
 
     for (const artistsChunk of chunks(artists, 6)) {
       const albumCalls = artistsChunk.map((artist) =>
-        call(reflect, getArtistAlbums, token, artist.id, groups, market)
+        call(reflect, getArtistAlbums, token, artist.id, groups, market, afterDateString)
       );
       const albumResponses = yield all(albumCalls);
       const albums = filterResolved(albumResponses).flat();

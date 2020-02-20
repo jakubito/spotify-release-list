@@ -22,7 +22,7 @@ https://spotifyreleaselist.netlify.com/
 
 ## Bug reporting
 
-If you find a bug, please send me an e-mail to dobes.jakub@gmail.com or open an issue here on github. This project uses Sentry for automatic error reporting but it's always better to have manual bug report.
+If you find a bug, please send me an e-mail to dobes.jakub@gmail.com or open an issue here on github.
 
 ## License
 
