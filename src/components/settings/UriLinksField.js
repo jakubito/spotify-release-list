@@ -9,7 +9,7 @@ function UriLinksField() {
 
   const uriLinksChangeHandler = useCallback(
     (event) => dispatch(setSettings({ uriLinks: !!Number(event.target.value) })),
-    [dispatch]
+    []
   );
 
   return (

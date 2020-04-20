@@ -8,7 +8,7 @@ function Error() {
   const dispatch = useDispatch();
   const hide = useCallback(() => {
     dispatch(hideErrorMessage());
-  }, [dispatch]);
+  }, []);
 
   if (!errorMessage) {
     return null;

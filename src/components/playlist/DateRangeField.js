@@ -39,7 +39,7 @@ function useDatesChangeHandler() {
         }
       }
     },
-    [setValue, getValues, triggerValidation, releases]
+    [releases]
   );
 }
 

@@ -23,7 +23,7 @@ function Navbar() {
     updateLastSyncHuman();
     saveInterval(updateLastSyncHuman, 60000);
     window.onfocus = updateLastSyncHuman;
-  }, [lastSyncDate, setLastSyncHuman]);
+  }, [lastSyncDate]);
 
   return (
     <nav className="Navbar">

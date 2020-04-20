@@ -2,7 +2,7 @@
 
 Display list of Spotify releases from artists you follow.
 
-https://spotifyreleaselist.netlify.com/
+https://spotifyreleaselist.netlify.app/
 
 ![screenshot.jpg](https://raw.githubusercontent.com/jakubito/spotify-release-list-web/master/public/screenshot.jpg)
 

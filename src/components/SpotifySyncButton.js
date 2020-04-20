@@ -29,7 +29,7 @@ function useClickHandler() {
         startSyncAuthFlow(nonce);
       }
     },
-    [token, tokenExpires, tokenScope, dispatch]
+    [token, tokenExpires, tokenScope]
   );
 }
 

@@ -10,7 +10,7 @@ function MarketField() {
 
   const marketChangeHandler = useCallback(
     (event) => dispatch(setSettings({ market: event.target.value })),
-    [dispatch]
+    []
   );
 
   return (

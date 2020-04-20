@@ -30,7 +30,7 @@ function AlbumGroupsField() {
         })
       );
     },
-    [dispatch, groups]
+    [groups]
   );
 
   return (

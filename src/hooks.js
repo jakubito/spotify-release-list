@@ -1,18 +1,11 @@
 import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-export function useModal(hideModal) {
+export function useModal(hideModalAction) {
   const dispatch = useDispatch();
-  const closeModal = useCallback(
-    (event) => {
-      if (event) {
-        event.preventDefault();
-      }
-
-      dispatch(hideModal());
-    },
-    [dispatch, hideModal]
-  );
+  const closeModal = useCallback(() => {
+    dispatch(hideModalAction());
+  }, []);
 
   useEffect(() => {
     const escHandler = ({ key }) => {
@@ -28,7 +21,7 @@ export function useModal(hideModal) {
       window.removeEventListener('keydown', escHandler);
       document.documentElement.classList.remove('is-modal-open');
     };
-  }, [closeModal]);
+  }, []);
 
   return closeModal;
 }
