@@ -91,7 +91,7 @@ function SettingsModal() {
           </a>{' '}
           •{' '}
           <a
-            href="https://github.com/jakubito/spotify-release-list-web"
+            href="https://github.com/jakubito/spotify-release-list"
             className="has-text-grey-light"
             target="_blank"
             rel="noopener noreferrer"
