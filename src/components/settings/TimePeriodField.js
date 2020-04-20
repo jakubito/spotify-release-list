@@ -9,7 +9,7 @@ function TimePeriodField() {
 
   const daysChangeHandler = useCallback(
     (event) => dispatch(setSettings({ days: Number(event.target.value) })),
-    [dispatch]
+    []
   );
 
   return (

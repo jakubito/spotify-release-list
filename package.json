@@ -1,8 +1,9 @@
 {
   "name": "spotify-release-list-web",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "@reach/router": "^1.2.1",
     "@sentry/browser": "^5.11.2",
     "bulma": "^0.8.0",
@@ -22,28 +23,17 @@
     "react-hook-form": "^4.8.0",
     "react-media": "^1.10.0",
     "react-redux": "^7.1.1",
-    "react-scripts": "3.3.0",
+    "react-scripts": "^3.4.1",
     "redux": "^4.0.4",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.1.1",
     "reselect": "^4.0.0"
-  },
-  "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.0",
-    "eslint": "^6.6.0",
-    "eslint-plugin-react": "^7.16.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app",
-    "env": {
-      "browser": true
-    }
   },
   "browserslist": {
     "production": [

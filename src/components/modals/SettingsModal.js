@@ -91,14 +91,14 @@ function SettingsModal() {
           </a>{' '}
           •{' '}
           <a
-            href="https://github.com/jakubito/spotify-release-list-web"
+            href="https://github.com/jakubito/spotify-release-list"
             className="has-text-grey-light"
             target="_blank"
             rel="noopener noreferrer"
           >
             github
           </a>{' '}
-          • v1.2.0
+          • v1.2.1
         </div>
       </div>
     </div>

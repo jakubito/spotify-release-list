@@ -9,7 +9,7 @@ function CoversField() {
 
   const coversChangeHandler = useCallback(
     (event) => dispatch(setSettings({ covers: event.target.checked })),
-    [dispatch]
+    []
   );
 
   return (

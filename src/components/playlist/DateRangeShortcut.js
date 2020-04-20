@@ -30,7 +30,7 @@ function useClickHandler(start, end) {
         triggerValidation(FieldName.NAME);
       }
     },
-    [setValue, getValues, start, end, minDate, maxDate, triggerValidation, releases]
+    [start, end, minDate, maxDate, releases]
   );
 }
 

@@ -50,7 +50,7 @@ export function useOnSubmit(setCloseDisabled) {
         startCreatePlaylistAuthFlow(nonce, isPrivate);
       }
     },
-    [setCloseDisabled, token, tokenExpires, tokenScope, dispatch]
+    [token, tokenExpires, tokenScope]
   );
 }
 
@@ -62,7 +62,7 @@ function PlaylistModal() {
   const [closeDisabled, setCloseDisabled] = useState(false);
   const { register, handleSubmit } = form;
   const onSubmit = useOnSubmit(setCloseDisabled);
-  const onSubmitHandler = useCallback(handleSubmit(onSubmit), [handleSubmit, onsubmit]);
+  const onSubmitHandler = useCallback(handleSubmit(onSubmit), [onSubmit]);
 
   register({ name: FieldName.RELEASES_COUNT }, { required: true, min: 1 });
   register({ name: FieldName.NAME_CUSTOM });
