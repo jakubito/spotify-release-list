@@ -18,7 +18,8 @@ import {
 } from '../../selectors';
 import { FieldName, MomentFormat } from '../../enums';
 import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from '../../auth';
-import { generateNonce, sleep } from '../../helpers';
+import { generateNonce } from '../../helpers';
+import { persistor } from '../../store';
 import { PlaylistForm, PlaylistInfo, Actions } from '../playlist';
 
 export function useOnSubmit(setCloseDisabled) {
@@ -45,7 +46,8 @@ export function useOnSubmit(setCloseDisabled) {
         setCloseDisabled(true);
         dispatch(setCreatingPlaylist(true));
         dispatch(setNonce(nonce));
-        await sleep(500);
+
+        await persistor.flush();
 
         startCreatePlaylistAuthFlow(nonce, isPrivate);
       }
