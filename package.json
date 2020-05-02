@@ -9,6 +9,7 @@
     "bulma": "^0.8.0",
     "bulma-checkradio": "^1.1.1",
     "classnames": "^2.2.6",
+    "js-base64": "^2.5.2",
     "localforage": "^1.7.3",
     "lodash.findlastindex": "^4.6.0",
     "lodash.orderby": "^4.6.0",

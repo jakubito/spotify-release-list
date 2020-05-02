@@ -276,9 +276,12 @@ const sagaMiddleware = createSagaMiddleware({
     Sentry.captureException(error);
   },
 });
+
 export const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
+
+export let persistor;
 export const hydrate = new Promise((resolve) => {
-  persistStore(store, null, resolve);
+  persistor = persistStore(store, null, resolve);
 });
 
 sagaMiddleware.run(saga);

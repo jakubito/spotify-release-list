@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { getSyncing, getToken, getTokenExpires, getTokenScope, getWorking } from '../selectors';
-import { generateNonce, sleep } from '../helpers';
+import { generateNonce } from '../helpers';
+import { persistor } from '../store';
 import { setNonce, sync, setSyncing } from '../actions';
 import { startSyncAuthFlow, isValidSyncToken } from '../auth';
 
@@ -24,7 +25,8 @@ function useClickHandler() {
 
         dispatch(setSyncing(true));
         dispatch(setNonce(nonce));
-        await sleep(500);
+
+        await persistor.flush();
 
         startSyncAuthFlow(nonce);
       }

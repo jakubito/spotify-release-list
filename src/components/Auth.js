@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from '@reach/router';
 import queryString from 'query-string';
 import moment from 'moment';
+import { Base64 } from 'js-base64';
 import { getNonce } from '../selectors';
 import {
   SYNC,
@@ -27,7 +28,7 @@ function Auth() {
   }
 
   const hash = queryString.parse(window.location.hash);
-  const state = JSON.parse(atob(hash.state));
+  const state = JSON.parse(Base64.decode(hash.state));
 
   if (!hash.access_token || !hash.expires_in || state.nonce !== nonce) {
     dispatch(showErrorMessage('Error: Invalid request.'));

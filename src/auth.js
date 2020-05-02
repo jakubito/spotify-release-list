@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { Base64 } from 'js-base64';
 import { SYNC, CREATE_PLAYLIST } from './actions';
 import { Scope } from './enums';
 
@@ -36,7 +37,7 @@ export function startCreatePlaylistAuthFlow(nonce, isPrivate) {
 }
 
 function startAuthFlow(action, scope, nonce) {
-  const state = btoa(JSON.stringify({ action, scope, nonce }));
+  const state = Base64.encodeURI(JSON.stringify({ action, scope, nonce }));
 
   const params = new URLSearchParams({
     client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
