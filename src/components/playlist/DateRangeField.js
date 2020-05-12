@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
-import classNames from 'classnames';
 import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from '../../selectors';
-import { getPlaylistNameSuggestion, calculateReleasesCount } from '../../helpers';
+import { getPlaylistNameSuggestion, getReleasesByDate } from '../../helpers';
 import { FieldName, Moment } from '../../enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
 
@@ -30,8 +29,17 @@ function useDatesChangeHandler() {
       setValue(FieldName.END_DATE, endDate);
 
       if (startDate && endDate) {
-        setValue(FieldName.RELEASES_COUNT, calculateReleasesCount(releases, startDate, endDate));
-        triggerValidation([FieldName.START_DATE, FieldName.END_DATE, FieldName.RELEASES_COUNT]);
+        const filteredReleases = getReleasesByDate(releases, startDate, endDate);
+
+        setValue(FieldName.RELEASES, filteredReleases);
+        setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
+
+        triggerValidation([
+          FieldName.START_DATE,
+          FieldName.END_DATE,
+          FieldName.RELEASES,
+          FieldName.SELECTED_RELEASES,
+        ]);
 
         if (!values[FieldName.NAME_CUSTOM]) {
           setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate));
@@ -55,47 +63,40 @@ function DateRangeField() {
 
   const startDate = watch(FieldName.START_DATE);
   const endDate = watch(FieldName.END_DATE);
-  const releasesCount = watch(FieldName.RELEASES_COUNT);
 
   return (
     <div className="field">
       <label className="label has-text-light">Date range</label>
-      <div className="control date-range has-text-grey">
-        <Media query={{ maxWidth: 425 }}>
-          {(matches) => (
-            <DateRangePicker
-              startDate={startDate}
-              startDateId="new_playlist_start_date"
-              endDate={endDate}
-              endDateId="new_playlist_end_date"
-              minDate={minDate}
-              maxDate={maxDate}
-              onDatesChange={datesChangeHandler}
-              isOutsideRange={isOutsideRangeHandler}
-              focusedInput={focus}
-              onFocusChange={setFocus}
-              numberOfMonths={1}
-              firstDayOfWeek={1}
-              minimumNights={0}
-              readOnly={matches}
-            />
-          )}
-        </Media>
 
-        {Number.isInteger(releasesCount) && (
-          <div
-            className={classNames('matched-count', {
-              'has-text-grey': releasesCount > 0,
-              'has-text-danger': releasesCount === 0,
-            })}
-          >
-            {releasesCount} release{releasesCount !== 1 && 's'} found
-          </div>
+      <Media query={{ maxWidth: 425 }}>
+        {(matches) => (
+          <DateRangePicker
+            startDate={startDate}
+            startDateId="new_playlist_start_date"
+            endDate={endDate}
+            endDateId="new_playlist_end_date"
+            minDate={minDate}
+            maxDate={maxDate}
+            onDatesChange={datesChangeHandler}
+            isOutsideRange={isOutsideRangeHandler}
+            focusedInput={focus}
+            onFocusChange={setFocus}
+            numberOfMonths={1}
+            firstDayOfWeek={1}
+            minimumNights={0}
+            readOnly={matches}
+          />
         )}
-      </div>
+      </Media>
 
-      {(errors[FieldName.START_DATE] || errors[FieldName.END_DATE]) && (
+      {(errors[FieldName.START_DATE] ||
+        errors[FieldName.END_DATE] ||
+        errors[FieldName.RELEASES]) && (
         <p className="help is-danger">
+          {!errors[FieldName.START_DATE] &&
+            !errors[FieldName.END_DATE] &&
+            errors[FieldName.RELEASES] &&
+            'No releases found.'}
           {errors[FieldName.START_DATE] &&
             errors[FieldName.END_DATE] &&
             'Start and end date are required.'}

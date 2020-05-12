@@ -21,6 +21,7 @@ export const getErrorMessage = (state) => state.errorMessage;
 export const getPlaylistForm = (state) => state.playlistForm;
 export const getPlaylistId = (state) => state.playlistId;
 export const getCreatingPlaylist = (state) => state.creatingPlaylist;
+export const getSeenFeatures = (state) => state.seenFeatures;
 
 export const getWorking = createSelector(
   getSyncing,
@@ -56,10 +57,7 @@ export const getDayReleasesMap = createSelector(getDayPrecisionAlbums, (albums) 
 export const getDayReleasesSortedEntries = createSelector(getDayReleasesMap, (dayReleasesMap) => {
   const entriesOriginal = Object.entries(dayReleasesMap);
   const entriesSortedByDay = orderBy(entriesOriginal, ([day]) => day, 'desc');
-  const entries = entriesSortedByDay.map(([day, albums]) => [
-    day,
-    orderBy(albums, (album) => album.name),
-  ]);
+  const entries = entriesSortedByDay.map(([day, albums]) => [day, orderBy(albums, 'name')]);
 
   return entries;
 });

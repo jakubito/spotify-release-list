@@ -1,5 +1,7 @@
-import { useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useCallback, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addSeenFeature } from './actions';
+import { getSeenFeatures } from './selectors';
 
 export function useModal(hideModalAction) {
   const dispatch = useDispatch();
@@ -24,4 +26,18 @@ export function useModal(hideModalAction) {
   }, []);
 
   return closeModal;
+}
+
+export function useFeature(feature) {
+  const dispatch = useDispatch();
+  const seenFeatures = useSelector(getSeenFeatures);
+
+  const seen = useMemo(() => seenFeatures.includes(feature), [seenFeatures]);
+  const setSeen = useCallback(() => {
+    if (!seen) {
+      dispatch(addSeenFeature(feature));
+    }
+  }, [seen]);
+
+  return [seen, setSeen];
 }

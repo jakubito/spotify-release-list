@@ -48,12 +48,12 @@
   }
 
   &__selected {
-    background: #1cb954;
-    border: 1px solid #1cb954;
+    background: $color-primary;
+    border: 1px solid $color-primary;
 
     &:hover {
-      background: #1cb954;
-      border: 1px solid #1cb954;
+      background: $color-primary;
+      border: 1px solid $color-primary;
     }
 
     &_span {
@@ -61,8 +61,8 @@
       border: 1px solid rgba(72, 199, 116, 0.8);
 
       &:hover {
-        background: #1cb954;
-        border: 1px solid #1cb954;
+        background: $color-primary;
+        border: 1px solid $color-primary;
       }
     }
   }
@@ -80,12 +80,12 @@
     &__bottomRight {
       &:hover {
         &:before {
-          border-right: 33px solid #16c453;
+          border-right: 33px solid $color-primary-light;
         }
       }
 
       &:before {
-        border-right: 33px solid #1cb954;
+        border-right: 33px solid $color-primary;
       }
     }
   }

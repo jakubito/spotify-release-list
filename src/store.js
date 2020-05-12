@@ -30,6 +30,7 @@ import {
   CREATE_PLAYLIST_FINISHED,
   CREATE_PLAYLIST_ERROR,
   RESET_PLAYLIST,
+  ADD_SEEN_FEATURE,
 } from './actions';
 import saga from './sagas';
 import migrations from './migrations';
@@ -57,6 +58,7 @@ const persistConfig = {
     'user',
     'nonce',
     'settings',
+    'seenFeatures',
   ],
 };
 
@@ -69,8 +71,7 @@ const initialState = {
   creatingPlaylist: false,
   playlistId: null,
   playlistForm: {
-    startDate: null,
-    endDate: null,
+    albumIds: null,
     name: null,
     description: null,
     isPrivate: null,
@@ -91,6 +92,7 @@ const initialState = {
     uriLinks: false,
     covers: true,
   },
+  seenFeatures: [],
 };
 
 function reducer(state = initialState, action) {
@@ -216,6 +218,7 @@ function reducer(state = initialState, action) {
       return {
         ...initialState,
         settings: state.settings,
+        seenFeatures: state.seenFeatures,
       };
     case SHOW_ERROR_MESSAGE:
       return {
@@ -231,8 +234,7 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         playlistForm: {
-          startDate: payload.startDate,
-          endDate: payload.endDate,
+          albumIds: payload.albumIds,
           name: payload.name,
           description: payload.description,
           isPrivate: payload.isPrivate,
@@ -264,6 +266,11 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         playlistId: initialState.playlistId,
+      };
+    case ADD_SEEN_FEATURE:
+      return {
+        ...state,
+        seenFeatures: [...state.seenFeatures, payload.feature],
       };
     default:
       return state;

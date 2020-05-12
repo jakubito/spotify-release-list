@@ -16,7 +16,7 @@ import {
   getTokenScope,
   getPlaylistId,
 } from '../../selectors';
-import { FieldName, MomentFormat } from '../../enums';
+import { FieldName } from '../../enums';
 import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from '../../auth';
 import { generateNonce } from '../../helpers';
 import { persistor } from '../../store';
@@ -30,13 +30,14 @@ export function useOnSubmit(setCloseDisabled) {
 
   return useCallback(
     async (formData) => {
-      const startDate = formData.startDate.format(MomentFormat.ISO_DATE);
-      const endDate = formData.endDate.format(MomentFormat.ISO_DATE);
-      const name = formData.name.trim();
-      const description = formData.description ? formData.description.trim() : null;
-      const isPrivate = formData.visibility === 'private';
+      const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
+        formData[FieldName.SELECTED_RELEASES].has(releaseId)
+      );
+      const name = formData[FieldName.NAME].trim();
+      const description = formData[FieldName.DESCRIPTION].trim();
+      const isPrivate = formData[FieldName.VISIBILITY] === 'private';
 
-      dispatch(setPlaylistForm(startDate, endDate, name, description, isPrivate));
+      dispatch(setPlaylistForm(albumIds, name, description, isPrivate));
 
       if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
         dispatch(createPlaylist());
@@ -66,7 +67,22 @@ function PlaylistModal() {
   const onSubmit = useOnSubmit(setCloseDisabled);
   const onSubmitHandler = useCallback(handleSubmit(onSubmit), [onSubmit]);
 
-  register({ name: FieldName.RELEASES_COUNT }, { required: true, min: 1 });
+  register(
+    { name: FieldName.RELEASES },
+    {
+      required: true,
+      validate: (value) => value.length > 0,
+    }
+  );
+
+  register(
+    { name: FieldName.SELECTED_RELEASES },
+    {
+      required: true,
+      validate: (value) => value.size > 0,
+    }
+  );
+
   register({ name: FieldName.NAME_CUSTOM });
 
   return (

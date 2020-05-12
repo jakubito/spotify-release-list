@@ -11,7 +11,8 @@ export const FieldName = Object.freeze({
   NAME_CUSTOM: 'nameCustom',
   DESCRIPTION: 'description',
   VISIBILITY: 'visibility',
-  RELEASES_COUNT: 'releasesCount',
+  RELEASES: 'releases',
+  SELECTED_RELEASES: 'selectedReleases',
 });
 
 export const SpotifyEntity = Object.freeze({
@@ -36,6 +37,10 @@ export const AlbumGroup = Object.freeze({
   SINGLE: 'single',
   COMPILATION: 'compilation',
   APPEARS_ON: 'appears_on',
+});
+
+export const Feature = Object.freeze({
+  PLAYLIST_CUSTOM_SELECTION: 'playlistCustomSelection',
 });
 
 export const Market = Object.freeze({

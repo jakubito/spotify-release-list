@@ -12,6 +12,7 @@ const fields = {
   [AlbumGroup.APPEARS_ON]: 'Appearances',
 };
 
+const fieldsEntries = Object.entries(fields);
 const albumGroupValues = Object.values(AlbumGroup);
 
 function sortByAlbumGroup(first, second) {
@@ -26,7 +27,7 @@ function AlbumGroupsField() {
     (event) => {
       dispatch(
         setSettings({
-          groups: xor(groups, [event.target.name]).sort(sortByAlbumGroup),
+          groups: xor(groups, [event.target.value]).sort(sortByAlbumGroup),
         })
       );
     },
@@ -37,17 +38,18 @@ function AlbumGroupsField() {
     <div className="field">
       <label className="label has-text-light">Album types</label>
       <div className="control">
-        {Object.entries(fields).map(([value, name]) => (
+        {fieldsEntries.map(([value, name]) => (
           <div className="field" key={value}>
             <input
-              className="is-checkradio has-background-color is-white"
-              id={`albumGroupInput${value}`}
               type="checkbox"
-              name={value}
+              className="is-checkradio has-background-color is-white"
+              id={`albumGroups[${value}]`}
+              name={`albumGroups[${value}]`}
+              value={value}
               checked={groups.includes(value)}
               onChange={groupsChangeHandler}
             />
-            <label htmlFor={`albumGroupInput${value}`} className="has-text-weight-semibold">
+            <label htmlFor={`albumGroups[${value}]`} className="has-text-weight-semibold">
               {name}
             </label>
           </div>
