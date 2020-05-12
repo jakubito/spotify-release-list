@@ -1,6 +1,5 @@
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 import moment from 'moment';
-import orderBy from 'lodash.orderby';
 import {
   getUser,
   getUserFollowedArtists,
@@ -10,13 +9,7 @@ import {
   addTracksToPlaylist,
 } from './api';
 import { chunks, reflect, filterResolved, getSpotifyUri } from './helpers';
-import {
-  getSettings,
-  getToken,
-  getPlaylistForm,
-  getDayReleasesMap,
-  getUser as getUserSelector,
-} from './selectors';
+import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from './selectors';
 import {
   SYNC,
   CREATE_PLAYLIST,
@@ -65,32 +58,14 @@ function* createPlaylistSaga() {
   try {
     const token = yield select(getToken);
     const user = yield select(getUserSelector);
-    const releases = yield select(getDayReleasesMap);
     const form = yield select(getPlaylistForm);
     const { market } = yield select(getSettings);
+    const trackIds = [];
 
-    let albumIds = [];
-    let current = moment(form.endDate);
-
-    while (current.isSameOrAfter(form.startDate)) {
-      const currentFormatted = current.format(MomentFormat.ISO_DATE);
-
-      if (releases[currentFormatted]) {
-        const newAlbumsOrdered = orderBy(releases[currentFormatted], (album) => album.name);
-        const newAlbumIds = newAlbumsOrdered.map((album) => album.id);
-
-        albumIds = albumIds.concat(newAlbumIds);
-      }
-
-      current.subtract(1, Moment.DAY);
-    }
-
-    let trackIds = [];
-
-    for (const albumIdsChunk of chunks(albumIds, 20)) {
+    for (const albumIdsChunk of chunks(form.albumIds, 20)) {
       const newTrackIds = yield call(getAlbumsTrackIds, token, albumIdsChunk, market);
 
-      trackIds = trackIds.concat(newTrackIds);
+      trackIds.push(...newTrackIds);
     }
 
     const trackUris = trackIds.map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK));

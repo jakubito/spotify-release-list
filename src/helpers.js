@@ -1,3 +1,4 @@
+import orderBy from 'lodash.orderby';
 import { Moment, MomentFormat } from './enums';
 
 let intervalId;
@@ -64,6 +65,16 @@ export function generateNonce() {
   );
 }
 
+export function toggleSetValue(set, value) {
+  if (set.has(value)) {
+    set.delete(value);
+  } else {
+    set.add(value);
+  }
+
+  return set;
+}
+
 /**
  * Get playlist name suggestion.
  *
@@ -87,32 +98,35 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
 }
 
 /**
- * Get number of releases between startDate and endDate.
+ * Get release IDs released between startDate and endDate.
  *
  * @param {Object} releases Releases map from redux store
  * @param {Moment} startDate
  * @param {Moment} endDate
- * @returns {(number|null)}
+ * @returns {(Array|null)}
  */
-export function calculateReleasesCount(releases, startDate, endDate) {
+export function getReleasesByDate(releases, startDate, endDate) {
   if (!releases || !startDate || !endDate) {
     return null;
   }
 
-  let count = 0;
-  let current = startDate.clone();
+  const filteredReleases = [];
+  const current = endDate.clone();
 
-  while (current.isSameOrBefore(endDate)) {
+  while (current.isSameOrAfter(startDate)) {
     const currentFormatted = current.format(MomentFormat.ISO_DATE);
 
     if (releases[currentFormatted]) {
-      count += releases[currentFormatted].length;
+      const currentReleases = orderBy(releases[currentFormatted], 'name');
+      const currentReleasesIds = currentReleases.map(({ id }) => id);
+
+      filteredReleases.push(...currentReleasesIds);
     }
 
-    current.add(1, Moment.DAY);
+    current.subtract(1, Moment.DAY);
   }
 
-  return count;
+  return filteredReleases;
 }
 
 export function getSpotifyUri(id, entity) {

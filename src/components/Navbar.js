@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import classNames from 'classnames';
 import Media from 'react-media';
 import moment from 'moment';
 import { getLastSyncDate, getSyncedOnce, getHasReleases, getSyncing } from '../selectors';
 import { showSettingsModal, showPlaylistModal } from '../actions';
 import { saveInterval } from '../helpers';
+import { Feature } from '../enums';
+import { useFeature } from '../hooks';
 import SpotifySyncButton from './SpotifySyncButton';
 
 function Navbar() {
@@ -14,6 +17,7 @@ function Navbar() {
   const hasReleases = useSelector(getHasReleases);
   const dispatch = useDispatch();
   const [lastSyncHuman, setLastSyncHuman] = useState(moment(lastSyncDate).fromNow());
+  const [featureSeen] = useFeature(Feature.PLAYLIST_CUSTOM_SELECTION);
 
   useEffect(() => {
     const updateLastSyncHuman = () => {
@@ -40,9 +44,16 @@ function Navbar() {
       <div className="right">
         {syncedOnce && hasReleases && !syncing && (
           <button
-            className="button is-rounded is-dark has-text-weight-semibold"
+            className="button is-rounded is-dark has-text-weight-semibold has-badge"
             onClick={() => dispatch(showPlaylistModal())}
           >
+            <div
+              className={classNames('badge is-primary has-text-weight-semibold', {
+                'is-hidden': featureSeen,
+              })}
+            >
+              NEW
+            </div>
             <span className="icon">
               <i className="fas fa-plus"></i>
             </span>

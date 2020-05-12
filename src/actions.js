@@ -23,6 +23,7 @@ export const CREATE_PLAYLIST_FINISHED = 'CREATE_PLAYLIST_FINISHED';
 export const CREATE_PLAYLIST_ERROR = 'CREATE_PLAYLIST_ERROR';
 export const SET_CREATING_PLAYLIST = 'SET_CREATING_PLAYLIST';
 export const RESET_PLAYLIST = 'RESET_PLAYLIST';
+export const ADD_SEEN_FEATURE = 'ADD_SEEN_FEATURE';
 
 export function sync() {
   return {
@@ -146,10 +147,10 @@ export function hideErrorMessage() {
   };
 }
 
-export function setPlaylistForm(startDate, endDate, name, description, isPrivate) {
+export function setPlaylistForm(albumIds, name, description, isPrivate) {
   return {
     type: SET_PLAYLIST_FORM,
-    payload: { startDate, endDate, name, description, isPrivate },
+    payload: { albumIds, name, description, isPrivate },
   };
 }
 
@@ -182,5 +183,12 @@ export function setCreatingPlaylist(creatingPlaylist) {
 export function resetPlaylist() {
   return {
     type: RESET_PLAYLIST,
+  };
+}
+
+export function addSeenFeature(feature) {
+  return {
+    type: ADD_SEEN_FEATURE,
+    payload: { feature },
   };
 }

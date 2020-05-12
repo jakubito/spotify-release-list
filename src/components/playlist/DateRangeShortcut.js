@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { min, max } from 'moment';
 import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from '../../selectors';
 import { FieldName } from '../../enums';
-import { getPlaylistNameSuggestion, calculateReleasesCount } from '../../helpers';
+import { getPlaylistNameSuggestion, getReleasesByDate } from '../../helpers';
 
 function useClickHandler(start, end) {
   const releases = useSelector(getDayReleasesMap);
@@ -16,18 +16,24 @@ function useClickHandler(start, end) {
     (event) => {
       event.preventDefault();
 
-      const values = getValues();
       const startDate = max(start, minDate);
       const endDate = min(end, maxDate);
+      const filteredReleases = getReleasesByDate(releases, startDate, endDate);
 
       setValue(FieldName.START_DATE, startDate);
       setValue(FieldName.END_DATE, endDate);
-      setValue(FieldName.RELEASES_COUNT, calculateReleasesCount(releases, startDate, endDate));
-      triggerValidation([FieldName.START_DATE, FieldName.END_DATE, FieldName.RELEASES_COUNT]);
+      setValue(FieldName.RELEASES, filteredReleases);
+      setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
 
-      if (!values[FieldName.NAME_CUSTOM]) {
-        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate));
-        triggerValidation(FieldName.NAME);
+      triggerValidation([
+        FieldName.START_DATE,
+        FieldName.END_DATE,
+        FieldName.RELEASES,
+        FieldName.SELECTED_RELEASES,
+      ]);
+
+      if (!getValues(FieldName.NAME_CUSTOM)) {
+        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
       }
     },
     [start, end, minDate, maxDate, releases]
@@ -53,7 +59,7 @@ function DateRangeShortcut({ title, start, end }) {
 
   return (
     <button
-      className="DateRangeShortcut button is-dark is-rounded is-small has-text-weight-semibold"
+      className="DateRangeShortcut button is-dark is-darker is-rounded is-small has-text-weight-semibold"
       onClick={clickHandler}
       key={buttonTitle}
     >

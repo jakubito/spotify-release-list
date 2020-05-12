@@ -2,6 +2,7 @@
 @import '~bulma-checkradio/dist/css/bulma-checkradio';
 @import '~react-dates/lib/css/_datepicker';
 
+@import './variables';
 @import './mixins';
 @import './base';
 @import './datepicker';
@@ -19,3 +20,4 @@
 @import './Error';
 @import './DateRangeShortcut';
 @import './PlaylistInfo';
+@import './SelectionField';

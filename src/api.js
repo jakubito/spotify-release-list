@@ -69,8 +69,7 @@ export async function getUser(token) {
 }
 
 export async function getUserFollowedArtists(token) {
-  let artists = [];
-
+  const artists = [];
   const params = new URLSearchParams({
     limit: 50,
     type: 'artist',
@@ -82,7 +81,7 @@ export async function getUserFollowedArtists(token) {
     const response = await get(next, token);
     const newArtists = response.artists.items.map(buildArtist);
 
-    artists = artists.concat(newArtists);
+    artists.push(...newArtists);
     next = response.artists.next;
   }
 
@@ -134,8 +133,7 @@ export async function getArtistAlbums(token, artistId, groups, market, afterDate
 }
 
 export async function getAlbumsTrackIds(token, albumIds, market) {
-  let trackIds = [];
-
+  const trackIds = [];
   const params = new URLSearchParams({
     ids: albumIds.join(','),
     ...(market && { market }),
@@ -148,18 +146,18 @@ export async function getAlbumsTrackIds(token, albumIds, market) {
       continue;
     }
 
-    let albumTrackIds = album.tracks.items.map((track) => track.id);
+    const albumTrackIds = album.tracks.items.map((track) => track.id);
     let next = album.tracks.next;
 
     while (next) {
       const response = await get(next, token);
       const newAlbumTrackIds = response.items.map((track) => track.id);
 
-      albumTrackIds = albumTrackIds.concat(newAlbumTrackIds);
+      albumTrackIds.push(...newAlbumTrackIds);
       next = response.next;
     }
 
-    trackIds = trackIds.concat(albumTrackIds);
+    trackIds.push(...albumTrackIds);
   }
 
   return trackIds;

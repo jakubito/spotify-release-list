@@ -1,0 +1,18 @@
+.SelectionField {
+  .selection {
+    margin-top: 24px;
+
+    button {
+      margin: 0 10px 10px 0;
+    }
+
+    .field {
+      margin-bottom: 10px;
+
+      label {
+        display: block;
+        padding: 0 0 0 28px !important;
+      }
+    }
+  }
+}
