@@ -79,14 +79,20 @@ function SelectionField() {
           className="button is-rounded is-small is-dark is-darker"
           onClick={selectAllHandler}
         >
-          Select all
+          <span className="icon">
+            <i className="fas fa-check-square"></i>
+          </span>
+          <span>Select all</span>
         </button>
         <button
           type="button"
           className="button is-rounded is-small is-dark is-darker"
           onClick={unselectAllHandler}
         >
-          Unselect all
+          <span className="icon">
+            <i className="fas fa-minus-square"></i>
+          </span>
+          <span>Unselect all</span>
         </button>
 
         {releases.map((releaseId) => (
