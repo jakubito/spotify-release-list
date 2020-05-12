@@ -16,7 +16,6 @@ function useClickHandler(start, end) {
     (event) => {
       event.preventDefault();
 
-      const values = getValues();
       const startDate = max(start, minDate);
       const endDate = min(end, maxDate);
       const filteredReleases = getReleasesByDate(releases, startDate, endDate);
@@ -33,9 +32,8 @@ function useClickHandler(start, end) {
         FieldName.SELECTED_RELEASES,
       ]);
 
-      if (!values[FieldName.NAME_CUSTOM]) {
-        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate));
-        triggerValidation(FieldName.NAME);
+      if (!getValues(FieldName.NAME_CUSTOM)) {
+        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
       }
     },
     [start, end, minDate, maxDate, releases]

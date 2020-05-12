@@ -23,8 +23,6 @@ function useDatesChangeHandler() {
 
   return useCallback(
     ({ startDate, endDate }) => {
-      const values = getValues();
-
       setValue(FieldName.START_DATE, startDate);
       setValue(FieldName.END_DATE, endDate);
 
@@ -41,9 +39,8 @@ function useDatesChangeHandler() {
           FieldName.SELECTED_RELEASES,
         ]);
 
-        if (!values[FieldName.NAME_CUSTOM]) {
-          setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate));
-          triggerValidation(FieldName.NAME);
+        if (!getValues(FieldName.NAME_CUSTOM)) {
+          setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
         }
       }
     },
@@ -54,12 +51,9 @@ function useDatesChangeHandler() {
 function DateRangeField() {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
   const [focus, setFocus] = useState(null);
-  const { register, watch, errors } = useFormContext();
+  const { watch, errors } = useFormContext();
   const isOutsideRangeHandler = useIsOutsideRangeHandler();
   const datesChangeHandler = useDatesChangeHandler();
-
-  register({ name: FieldName.START_DATE }, { required: true });
-  register({ name: FieldName.END_DATE }, { required: true });
 
   const startDate = watch(FieldName.START_DATE);
   const endDate = watch(FieldName.END_DATE);
@@ -72,9 +66,9 @@ function DateRangeField() {
         {(matches) => (
           <DateRangePicker
             startDate={startDate}
-            startDateId="new_playlist_start_date"
+            startDateId="newPlaylistStartDate"
             endDate={endDate}
-            endDateId="new_playlist_end_date"
+            endDateId="newPlaylistEndDate"
             minDate={minDate}
             maxDate={maxDate}
             onDatesChange={datesChangeHandler}

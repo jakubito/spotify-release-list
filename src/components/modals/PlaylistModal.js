@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm, FormContext } from 'react-hook-form';
 import {
@@ -67,23 +67,19 @@ function PlaylistModal() {
   const onSubmit = useOnSubmit(setCloseDisabled);
   const onSubmitHandler = useCallback(handleSubmit(onSubmit), [onSubmit]);
 
-  register(
-    { name: FieldName.RELEASES },
-    {
-      required: true,
-      validate: (value) => value.length > 0,
-    }
-  );
-
-  register(
-    { name: FieldName.SELECTED_RELEASES },
-    {
-      required: true,
-      validate: (value) => value.size > 0,
-    }
-  );
-
-  register({ name: FieldName.NAME_CUSTOM });
+  useEffect(() => {
+    register({ name: FieldName.START_DATE }, { required: true });
+    register({ name: FieldName.END_DATE }, { required: true });
+    register({ name: FieldName.NAME_CUSTOM });
+    register(
+      { name: FieldName.RELEASES },
+      { required: true, validate: (value) => value.length > 0 }
+    );
+    register(
+      { name: FieldName.SELECTED_RELEASES },
+      { required: true, validate: (value) => value.size > 0 }
+    );
+  }, []);
 
   return (
     <FormContext {...form}>
