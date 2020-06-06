@@ -7,10 +7,13 @@ function UriLinksField() {
   const { uriLinks } = useSelector(getSettings);
   const dispatch = useDispatch();
 
-  const uriLinksChangeHandler = useCallback(
-    (event) => dispatch(setSettings({ uriLinks: !!Number(event.target.value) })),
-    []
-  );
+  const uriLinksChangeHandler = useCallback((event) => {
+    const value = event.target.value;
+
+    setTimeout(() => {
+      dispatch(setSettings({ uriLinks: Boolean(Number(value)) }));
+    }, 0);
+  }, []);
 
   return (
     <div className="field">
@@ -23,7 +26,7 @@ function UriLinksField() {
             type="radio"
             name="uriLinks"
             value="0"
-            checked={!uriLinks}
+            defaultChecked={!uriLinks}
             onChange={uriLinksChangeHandler}
           />
           <label htmlFor="uriLinksFalse">New tab</label>
@@ -35,7 +38,7 @@ function UriLinksField() {
             type="radio"
             name="uriLinks"
             value="1"
-            checked={uriLinks}
+            defaultChecked={uriLinks}
             onChange={uriLinksChangeHandler}
           />
           <label htmlFor="uriLinksTrue">Spotify app</label>

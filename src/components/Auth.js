@@ -38,7 +38,7 @@ function Auth() {
 
   const token = hash.access_token;
   const tokenExpires = moment()
-    .add(Number(hash.expires_in) - 120, Moment.SECOND)
+    .add(Number(hash.expires_in) - 60 * 6, Moment.SECOND)
     .toISOString();
   const { action, scope } = state;
 
