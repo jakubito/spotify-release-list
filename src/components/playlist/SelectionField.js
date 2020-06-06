@@ -1,23 +1,19 @@
 import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
-import { FieldName, Feature } from '../../enums';
+import { FieldName } from '../../enums';
 import { toggleSetValue } from '../../helpers';
-import { useFeature } from '../../hooks';
 import AlbumFullTitle from './AlbumFullTitle';
 
 function SelectionField() {
   const { setValue, watch, errors } = useFormContext();
   const [expanded, setExpanded] = useState(false);
-  const [featureSeen, setFeatureSeen] = useFeature(Feature.PLAYLIST_CUSTOM_SELECTION);
-
   const releases = watch(FieldName.RELEASES);
   const selectedReleases = watch(FieldName.SELECTED_RELEASES);
 
   const toggleExpandedHandler = useCallback(() => {
-    setFeatureSeen();
     setExpanded((currentExpanded) => !currentExpanded);
-  }, [setFeatureSeen]);
+  }, []);
 
   const selectAllHandler = useCallback(() => {
     setValue(FieldName.SELECTED_RELEASES, new Set(releases), true);
@@ -46,16 +42,9 @@ function SelectionField() {
     <div className="SelectionField field">
       <button
         type="button"
-        className="button is-dark is-rounded is-fullwidth has-text-weight-semibold has-badge"
+        className="button is-dark is-rounded is-fullwidth has-text-weight-semibold"
         onClick={toggleExpandedHandler}
       >
-        <div
-          className={classNames('badge is-primary has-text-weight-semibold', {
-            'is-hidden': featureSeen,
-          })}
-        >
-          NEW
-        </div>
         <span>
           {expanded ? 'Collapse' : 'Expand'} selection ({selectedReleases.size})
         </span>
