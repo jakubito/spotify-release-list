@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getSettings } from '../selectors';
 
-function Link({ uri, url, newTab, children, ...propsRest }) {
+function Link({ uri, url, newTab = true, children, ...propsRest }) {
   const { uriLinks } = useSelector(getSettings);
   let props = propsRest;
 
@@ -27,10 +27,6 @@ Link.propTypes = {
   url: PropTypes.string.isRequired,
   newTab: PropTypes.bool,
   children: PropTypes.node.isRequired,
-};
-
-Link.defaultProps = {
-  newTab: true,
 };
 
 export default Link;

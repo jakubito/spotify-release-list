@@ -35,7 +35,7 @@ function useClickHandler() {
   );
 }
 
-function SpotifySyncButton({ title, icon, className }) {
+function SpotifySyncButton({ title, icon = 'fab fa-spotify', className }) {
   const syncing = useSelector(getSyncing);
   const working = useSelector(getWorking);
   const clickHandler = useClickHandler();
@@ -66,10 +66,6 @@ SpotifySyncButton.propTypes = {
   title: PropTypes.string,
   icon: PropTypes.string,
   className: PropTypes.string,
-};
-
-SpotifySyncButton.defaultProps = {
-  icon: 'fab fa-spotify',
 };
 
 export default SpotifySyncButton;

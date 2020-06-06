@@ -7,10 +7,13 @@ function CoversField() {
   const { covers } = useSelector(getSettings);
   const dispatch = useDispatch();
 
-  const coversChangeHandler = useCallback(
-    (event) => dispatch(setSettings({ covers: event.target.checked })),
-    []
-  );
+  const coversChangeHandler = useCallback((event) => {
+    const checked = event.target.checked;
+
+    setTimeout(() => {
+      dispatch(setSettings({ covers: checked }));
+    }, 0);
+  }, []);
 
   return (
     <div className="field">
@@ -22,7 +25,7 @@ function CoversField() {
             id="covers"
             type="checkbox"
             name="covers"
-            checked={covers}
+            defaultChecked={covers}
             onChange={coversChangeHandler}
           />
           <label htmlFor="covers" className="has-text-weight-semibold">
