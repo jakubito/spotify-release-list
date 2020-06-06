@@ -96,9 +96,18 @@ function SettingsModal() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            github
+            Github
           </a>{' '}
-          • v1.3.0
+          •{' '}
+          <a
+            href="https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md"
+            className="has-text-grey-light"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Privacy Policy
+          </a>{' '}
+          • v{process.env.REACT_APP_VERSION}
         </div>
       </div>
     </div>

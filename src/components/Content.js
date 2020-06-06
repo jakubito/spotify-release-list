@@ -17,6 +17,14 @@ function Content() {
             Display list of Spotify releases from artists you follow.
           </p>
           <SpotifySyncButton title="Connect Spotify account" className="is-medium" />
+          <a
+            href="https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md"
+            className="has-text-grey-light privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Privacy Policy
+          </a>
         </div>
       </div>
     );

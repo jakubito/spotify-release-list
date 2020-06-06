@@ -36,4 +36,13 @@
   .intro {
     margin-bottom: 30px;
   }
+
+  .privacy {
+    margin-top: 30px;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
