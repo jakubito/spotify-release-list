@@ -7,17 +7,16 @@ function TimePeriodField() {
   const { days } = useSelector(getSettings);
   const dispatch = useDispatch();
 
-  const daysChangeHandler = useCallback(
-    (event) => dispatch(setSettings({ days: Number(event.target.value) })),
-    []
-  );
+  const onChange = useCallback((event) => {
+    dispatch(setSettings({ days: Number(event.target.value) }));
+  }, []);
 
   return (
     <div className="field">
       <label className="label has-text-grey-lighter">Time period</label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select value={days.toString()} onChange={daysChangeHandler}>
+          <select value={days.toString()} onChange={onChange}>
             <option value="7">Past week</option>
             <option value="30">Past month</option>
             <option value="90">Past 3 months</option>

@@ -38,7 +38,7 @@ async function callApi(endpoint, token, method, headers = {}, body) {
 
   // Handle 429 Too many requests
   if (response.status === 429) {
-    const waitMs = Number(response.headers.get('Retry-After')) * 1000 + 100;
+    const waitMs = Number(response.headers.get('Retry-After')) * 1000;
 
     await sleep(waitMs);
 

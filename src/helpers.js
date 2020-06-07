@@ -29,6 +29,12 @@ export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function delay(fn, ms, ...args) {
+  setTimeout(() => {
+    fn(...args);
+  }, ms);
+}
+
 export async function reflect(fn, ...args) {
   try {
     const data = await fn(...args);

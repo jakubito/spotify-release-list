@@ -8,17 +8,16 @@ function MarketField() {
   const { market } = useSelector(getSettings);
   const dispatch = useDispatch();
 
-  const marketChangeHandler = useCallback(
-    (event) => dispatch(setSettings({ market: event.target.value })),
-    []
-  );
+  const onChange = useCallback((event) => {
+    dispatch(setSettings({ market: event.target.value }));
+  }, []);
 
   return (
     <div className="field">
       <label className="label has-text-light">Market country</label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select value={market} onChange={marketChangeHandler}>
+          <select value={market} onChange={onChange}>
             <option value="">All markets</option>
             {Object.entries(Market).map(([code, name]) => (
               <option value={code} key={code}>

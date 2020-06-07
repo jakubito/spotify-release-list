@@ -23,13 +23,11 @@ function AlbumGroupsField() {
   const { groups } = useSelector(getSettings);
   const dispatch = useDispatch();
 
-  const groupsChangeHandler = useCallback(
+  const onChange = useCallback(
     (event) => {
-      dispatch(
-        setSettings({
-          groups: xor(groups, [event.target.value]).sort(sortByAlbumGroup),
-        })
-      );
+      const newGroups = xor(groups, [event.target.value]).sort(sortByAlbumGroup);
+
+      dispatch(setSettings({ groups: newGroups }));
     },
     [groups]
   );
@@ -47,7 +45,7 @@ function AlbumGroupsField() {
               name={`albumGroups[${value}]`}
               value={value}
               checked={groups.includes(value)}
-              onChange={groupsChangeHandler}
+              onChange={onChange}
             />
             <label htmlFor={`albumGroups[${value}]`} className="has-text-weight-semibold">
               {name}

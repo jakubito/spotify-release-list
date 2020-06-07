@@ -68,9 +68,6 @@ function SelectionField() {
           className="button is-rounded is-small is-dark is-darker"
           onClick={selectAllHandler}
         >
-          <span className="icon">
-            <i className="fas fa-check-square"></i>
-          </span>
           <span>Select all</span>
         </button>
         <button
@@ -78,9 +75,6 @@ function SelectionField() {
           className="button is-rounded is-small is-dark is-darker"
           onClick={unselectAllHandler}
         >
-          <span className="icon">
-            <i className="fas fa-minus-square"></i>
-          </span>
           <span>Unselect all</span>
         </button>
 
