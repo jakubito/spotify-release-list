@@ -5,10 +5,10 @@ import { Router, Redirect } from '@reach/router';
 import * as Sentry from '@sentry/browser';
 import '@fortawesome/fontawesome-free/js/all';
 import 'react-dates/initialize';
-import Auth from './components/Auth';
-import App from './components/App';
-import { store, hydrate } from './store';
-import './styles/index.scss';
+import Auth from 'components/Auth';
+import App from 'components/App';
+import { store, hydrate } from 'store';
+import 'styles/index.scss';
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
 

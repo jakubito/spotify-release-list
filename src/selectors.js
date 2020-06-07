@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import orderBy from 'lodash.orderby';
 import moment from 'moment';
-import { Moment } from './enums';
+import { Moment } from 'enums';
 
 export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;

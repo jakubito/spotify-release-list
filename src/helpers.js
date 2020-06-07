@@ -1,5 +1,5 @@
 import orderBy from 'lodash.orderby';
-import { Moment, MomentFormat } from './enums';
+import { Moment, MomentFormat } from 'enums';
 
 let intervalId;
 

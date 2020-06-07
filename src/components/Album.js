@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getArtists, getSettings } from '../selectors';
-import { mergeAlbumArtists } from '../helpers';
+import { getArtists, getSettings } from 'selectors';
+import { mergeAlbumArtists } from 'helpers';
 import Link from './Link';
 
 function Album(album) {

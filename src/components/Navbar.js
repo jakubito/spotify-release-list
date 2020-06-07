@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Media from 'react-media';
 import moment from 'moment';
-import { getLastSyncDate, getSyncedOnce, getHasReleases, getSyncing } from '../selectors';
-import { showSettingsModal, showPlaylistModal } from '../actions';
-import { saveInterval } from '../helpers';
+import { getLastSyncDate, getSyncedOnce, getHasReleases, getSyncing } from 'selectors';
+import { showSettingsModal, showPlaylistModal } from 'actions';
+import { saveInterval } from 'helpers';
 import SpotifySyncButton from './SpotifySyncButton';
 
 function Navbar() {

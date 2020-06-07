@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getSyncing, getSyncedOnce } from '../selectors';
+import { getSyncing, getSyncedOnce } from 'selectors';
 import Loading from './Loading';
 import Releases from './Releases';
 import SpotifySyncButton from './SpotifySyncButton';

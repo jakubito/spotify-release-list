@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
-import { FieldName } from '../../enums';
-import { toggleSetValue } from '../../helpers';
+import { FieldName } from 'enums';
+import { toggleSetValue } from 'helpers';
 import AlbumFullTitle from './AlbumFullTitle';
 
 function SelectionField() {

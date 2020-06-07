@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getDayReleasesSortedEntries } from '../selectors';
+import { getDayReleasesSortedEntries } from 'selectors';
 import NoData from './NoData';
 import ReleaseDay from './ReleaseDay';
 

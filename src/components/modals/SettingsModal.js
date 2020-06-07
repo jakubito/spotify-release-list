@@ -1,15 +1,15 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { hideSettingsModal, showResetModal } from '../../actions';
-import { useModal } from '../../hooks';
-import { getUser } from '../../selectors';
+import { hideSettingsModal, showResetModal } from 'actions';
+import { useModal } from 'hooks';
+import { getUser } from 'selectors';
 import {
   AlbumGroupsField,
   TimePeriodField,
   MarketField,
   UriLinksField,
   CoversField,
-} from '../settings';
+} from 'components/settings';
 
 function SettingsModal() {
   const dispatch = useDispatch();

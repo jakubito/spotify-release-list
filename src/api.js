@@ -1,5 +1,5 @@
 import findLastIndex from 'lodash.findlastindex';
-import { buildUser, buildArtist, buildAlbum, sleep } from './helpers';
+import { buildUser, buildArtist, buildAlbum, sleep } from 'helpers';
 
 function apiUrl(endpoint) {
   return `https://api.spotify.com/v1/${endpoint}`;

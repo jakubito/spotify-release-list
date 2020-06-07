@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Market } from '../../enums';
-import { getSettings } from '../../selectors';
-import { setSettings } from '../../actions';
+import { Market } from 'enums';
+import { getSettings } from 'selectors';
+import { setSettings } from 'actions';
 
 function MarketField() {
   const { market } = useSelector(getSettings);

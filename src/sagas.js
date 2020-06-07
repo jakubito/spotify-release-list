@@ -7,9 +7,9 @@ import {
   getAlbumsTrackIds,
   createPlaylist,
   addTracksToPlaylist,
-} from './api';
-import { chunks, reflect, filterResolved, getSpotifyUri } from './helpers';
-import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from './selectors';
+} from 'api';
+import { chunks, reflect, filterResolved, getSpotifyUri } from 'helpers';
+import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from 'selectors';
 import {
   SYNC,
   CREATE_PLAYLIST,
@@ -21,16 +21,20 @@ import {
   showErrorMessage,
   createPlaylistFinished,
   createPlaylistError,
-} from './actions';
-import { SpotifyEntity, Moment, MomentFormat } from './enums';
+} from 'actions';
+import { SpotifyEntity, Moment, MomentFormat } from 'enums';
 
 function* syncSaga() {
   try {
     const token = yield select(getToken);
     const user = yield call(getUser, token);
+
     yield put(setUser(user));
+
     const artists = yield call(getUserFollowedArtists, token);
+
     yield put(setArtists(artists));
+
     const { groups, market, days } = yield select(getSettings);
     const afterDateString = moment()
       .subtract(days, Moment.DAY)
@@ -42,6 +46,7 @@ function* syncSaga() {
       );
       const albumResponses = yield all(albumCalls);
       const albums = filterResolved(albumResponses).flat();
+
       yield put(addAlbums(albums, afterDateString));
     }
 

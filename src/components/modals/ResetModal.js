@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { reset, hideResetModal, showSettingsModal } from '../../actions';
-import { useModal } from '../../hooks';
+import { reset, hideResetModal, showSettingsModal } from 'actions';
+import { useModal } from 'hooks';
 
 function ResetModal() {
   const dispatch = useDispatch();

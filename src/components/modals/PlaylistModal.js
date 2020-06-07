@@ -7,20 +7,20 @@ import {
   setNonce,
   setPlaylistForm,
   setCreatingPlaylist,
-} from '../../actions';
-import { useModal } from '../../hooks';
+} from 'actions';
+import { useModal } from 'hooks';
 import {
   getCreatingPlaylist,
   getToken,
   getTokenExpires,
   getTokenScope,
   getPlaylistId,
-} from '../../selectors';
-import { FieldName } from '../../enums';
-import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from '../../auth';
-import { generateNonce } from '../../helpers';
-import { persistor } from '../../store';
-import { PlaylistForm, PlaylistInfo, Actions } from '../playlist';
+} from 'selectors';
+import { FieldName } from 'enums';
+import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from 'auth';
+import { generateNonce } from 'helpers';
+import { persistor } from 'store';
+import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist';
 
 export function useOnSubmit(setCloseDisabled) {
   const dispatch = useDispatch();

@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getAlbums, getArtists } from '../../selectors';
-import { mergeAlbumArtists } from '../../helpers';
+import { getAlbums, getArtists } from 'selectors';
+import { mergeAlbumArtists } from 'helpers';
 
 function AlbumFullTitle({ id }) {
   const albums = useSelector(getAlbums);

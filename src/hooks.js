@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addSeenFeature } from './actions';
-import { getSeenFeatures } from './selectors';
+import { addSeenFeature } from 'actions';
+import { getSeenFeatures } from 'selectors';
 
 export function useModal(hideModalAction) {
   const dispatch = useDispatch();

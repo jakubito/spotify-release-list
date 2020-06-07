@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import classNames from 'classnames';
-import { getCreatingPlaylist, getWorking, getPlaylistId } from '../../selectors';
-import { resetPlaylist } from '../../actions';
+import { getCreatingPlaylist, getWorking, getPlaylistId } from 'selectors';
+import { resetPlaylist } from 'actions';
 
 function Actions() {
   const dispatch = useDispatch();

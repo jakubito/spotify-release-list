@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import xor from 'lodash.xor';
 import { useSelector, useDispatch } from 'react-redux';
-import { AlbumGroup } from '../../enums';
-import { getSettings } from '../../selectors';
-import { setSettings } from '../../actions';
+import { AlbumGroup } from 'enums';
+import { getSettings } from 'selectors';
+import { setSettings } from 'actions';
 
 const fields = {
   [AlbumGroup.ALBUM]: 'Albums',

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import moment from 'moment';
 import DateRangeShortcut from './DateRangeShortcut';
-import { Moment } from '../../enums';
+import { Moment } from 'enums';
 
 function DateRangeShortcuts() {
   const shortcuts = useMemo(

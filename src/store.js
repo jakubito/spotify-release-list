@@ -31,10 +31,10 @@ import {
   CREATE_PLAYLIST_ERROR,
   RESET_PLAYLIST,
   ADD_SEEN_FEATURE,
-} from './actions';
-import saga from './sagas';
-import migrations from './migrations';
-import { AlbumGroup } from './enums';
+} from 'actions';
+import saga from 'sagas';
+import migrations from 'migrations';
+import { AlbumGroup } from 'enums';
 
 localForage.config({
   name: 'spotify-release-list',
@@ -278,6 +278,7 @@ function reducer(state = initialState, action) {
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer);
+
 const sagaMiddleware = createSagaMiddleware({
   onError: (error) => {
     Sentry.captureException(error);
@@ -287,6 +288,7 @@ const sagaMiddleware = createSagaMiddleware({
 export const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
 
 export let persistor;
+
 export const hydrate = new Promise((resolve) => {
   persistor = persistStore(store, null, resolve);
 });

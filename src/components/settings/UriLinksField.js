@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSettings } from '../../selectors';
-import { setSettings } from '../../actions';
+import { getSettings } from 'selectors';
+import { setSettings } from 'actions';
 
 function UriLinksField() {
   const { uriLinks } = useSelector(getSettings);

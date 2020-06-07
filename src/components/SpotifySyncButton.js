@@ -2,11 +2,11 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { getSyncing, getToken, getTokenExpires, getTokenScope, getWorking } from '../selectors';
-import { generateNonce } from '../helpers';
-import { persistor } from '../store';
-import { setNonce, sync, setSyncing } from '../actions';
-import { startSyncAuthFlow, isValidSyncToken } from '../auth';
+import { getSyncing, getToken, getTokenExpires, getTokenScope, getWorking } from 'selectors';
+import { generateNonce } from 'helpers';
+import { persistor } from 'store';
+import { setNonce, sync, setSyncing } from 'actions';
+import { startSyncAuthFlow, isValidSyncToken } from 'auth';
 
 function useClickHandler() {
   const dispatch = useDispatch();
