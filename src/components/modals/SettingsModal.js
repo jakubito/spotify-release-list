@@ -9,6 +9,7 @@ import {
   MarketField,
   UriLinksField,
   CoversField,
+  ThemeField,
 } from 'components/settings';
 
 function SettingsModal() {
@@ -34,6 +35,12 @@ function SettingsModal() {
           </div>
           <div className="column">
             <MarketField />
+          </div>
+        </div>
+
+        <div className="columns">
+          <div className="column is-half">
+            <ThemeField />
           </div>
         </div>
 

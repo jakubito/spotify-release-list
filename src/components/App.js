@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import throttle from 'lodash.throttle';
 import classNames from 'classnames';
+import { getSettings } from 'selectors';
+import { Theme } from 'enums';
 import Navbar from './Navbar';
 import Content from './Content';
 import SettingsModalContainer from './modals/SettingsModalContainer';
@@ -9,7 +12,10 @@ import PlaylistModalContainer from './modals/PlaylistModalContainer';
 import BackToTop from './BackToTop';
 import Error from './Error';
 
+const themeValues = Object.values(Theme);
+
 function App() {
+  const { theme } = useSelector(getSettings);
   const [backToTopVisible, setBackToTopVisible] = useState(false);
 
   useEffect(() => {
@@ -22,6 +28,14 @@ function App() {
       }, 200)
     );
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.remove(...themeValues);
+
+    if (theme) {
+      document.documentElement.classList.add(...theme.split(' '));
+    }
+  }, [theme]);
 
   return (
     <div className="App has-background-black has-text-weight-semibold">

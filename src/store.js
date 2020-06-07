@@ -89,6 +89,7 @@ const initialState = {
     groups: Object.values(AlbumGroup),
     days: 30,
     market: '',
+    theme: '',
     uriLinks: false,
     covers: true,
   },
