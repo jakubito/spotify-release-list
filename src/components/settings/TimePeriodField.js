@@ -2,13 +2,14 @@ import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSettings } from 'selectors';
 import { setSettings } from 'actions';
+import { delay } from 'helpers';
 
 function TimePeriodField() {
   const { days } = useSelector(getSettings);
   const dispatch = useDispatch();
 
   const onChange = useCallback((event) => {
-    dispatch(setSettings({ days: Number(event.target.value) }));
+    delay(dispatch, 0, setSettings({ days: Number(event.target.value) }));
   }, []);
 
   return (
@@ -16,7 +17,7 @@ function TimePeriodField() {
       <label className="label has-text-grey-lighter">Time period</label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select value={days.toString()} onChange={onChange}>
+          <select defaultValue={days.toString()} onChange={onChange}>
             <option value="7">Past week</option>
             <option value="30">Past month</option>
             <option value="90">Past 3 months</option>

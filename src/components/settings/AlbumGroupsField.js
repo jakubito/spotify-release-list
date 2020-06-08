@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AlbumGroup } from 'enums';
 import { getSettings } from 'selectors';
 import { setSettings } from 'actions';
+import { delay } from 'helpers';
 
 const fields = {
   [AlbumGroup.ALBUM]: 'Albums',
@@ -27,7 +28,7 @@ function AlbumGroupsField() {
     (event) => {
       const newGroups = xor(groups, [event.target.value]).sort(sortByAlbumGroup);
 
-      dispatch(setSettings({ groups: newGroups }));
+      delay(dispatch, 0, setSettings({ groups: newGroups }));
     },
     [groups]
   );
@@ -44,7 +45,7 @@ function AlbumGroupsField() {
               id={`albumGroups[${value}]`}
               name={`albumGroups[${value}]`}
               value={value}
-              checked={groups.includes(value)}
+              defaultChecked={groups.includes(value)}
               onChange={onChange}
             />
             <label htmlFor={`albumGroups[${value}]`} className="has-text-weight-semibold">
