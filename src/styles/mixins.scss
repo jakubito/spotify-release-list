@@ -3,3 +3,9 @@
     @content;
   }
 }
+
+@mixin theme($name) {
+  html.#{$name} & {
+    @content;
+  }
+}

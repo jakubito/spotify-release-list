@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import throttle from 'lodash.throttle';
 import classNames from 'classnames';
@@ -14,8 +14,7 @@ import Error from './Error';
 
 const themeValues = Object.values(Theme);
 
-function App() {
-  const { theme } = useSelector(getSettings);
+function useBackToTop() {
   const [backToTopVisible, setBackToTopVisible] = useState(false);
 
   useEffect(() => {
@@ -29,13 +28,33 @@ function App() {
     );
   }, []);
 
+  return backToTopVisible;
+}
+
+function useTheme() {
+  const { theme } = useSelector(getSettings);
+  const firstRender = useRef(true);
+
   useEffect(() => {
+    if (firstRender.current) {
+      // Theme already applied before first render, skip effect
+      firstRender.current = false;
+
+      return;
+    }
+
     document.documentElement.classList.remove(...themeValues);
 
     if (theme) {
       document.documentElement.classList.add(...theme.split(' '));
     }
   }, [theme]);
+}
+
+function App() {
+  const backToTopVisible = useBackToTop();
+
+  useTheme();
 
   return (
     <div className="App has-background-black has-text-weight-semibold">

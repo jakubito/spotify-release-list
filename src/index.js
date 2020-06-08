@@ -8,13 +8,20 @@ import 'react-dates/initialize';
 import Auth from 'components/Auth';
 import App from 'components/App';
 import { store, hydrate } from 'store';
+import { getSettings } from 'selectors';
 import 'styles/index.scss';
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
 
-(async function() {
-  await hydrate;
+function applyTheme() {
+  const { theme } = getSettings(store.getState());
 
+  if (theme) {
+    document.documentElement.classList.add(...theme.split(' '));
+  }
+}
+
+function renderApp() {
   ReactDOM.render(
     <Provider store={store}>
       <Router>
@@ -25,4 +32,6 @@ Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
     </Provider>,
     document.getElementById('root')
   );
-})();
+}
+
+hydrate.then(applyTheme).then(renderApp);
