@@ -36,9 +36,7 @@ function* syncSaga() {
     yield put(setArtists(artists));
 
     const { groups, market, days } = yield select(getSettings);
-    const afterDateString = moment()
-      .subtract(days, Moment.DAY)
-      .format(MomentFormat.ISO_DATE);
+    const afterDateString = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE);
 
     for (const artistsChunk of chunks(artists, 6)) {
       const albumCalls = artistsChunk.map((artist) =>

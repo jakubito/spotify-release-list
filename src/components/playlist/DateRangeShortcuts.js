@@ -13,12 +13,8 @@ function DateRangeShortcuts() {
       },
       {
         title: 'Yesterday',
-        start: moment()
-          .subtract(1, Moment.DAY)
-          .startOf(Moment.DAY),
-        end: moment()
-          .subtract(1, Moment.DAY)
-          .endOf(Moment.DAY),
+        start: moment().subtract(1, Moment.DAY).startOf(Moment.DAY),
+        end: moment().subtract(1, Moment.DAY).endOf(Moment.DAY),
       },
       {
         title: 'This week',
@@ -27,12 +23,8 @@ function DateRangeShortcuts() {
       },
       {
         title: 'Last week',
-        start: moment()
-          .subtract(1, Moment.WEEK)
-          .startOf(Moment.ISO_WEEK),
-        end: moment()
-          .subtract(1, Moment.WEEK)
-          .endOf(Moment.ISO_WEEK),
+        start: moment().subtract(1, Moment.WEEK).startOf(Moment.ISO_WEEK),
+        end: moment().subtract(1, Moment.WEEK).endOf(Moment.ISO_WEEK),
       },
       {
         title: (start) => start.format('MMMM'),
@@ -41,12 +33,8 @@ function DateRangeShortcuts() {
       },
       {
         title: (start) => start.format('MMMM'),
-        start: moment()
-          .subtract(1, Moment.MONTH)
-          .startOf(Moment.MONTH),
-        end: moment()
-          .subtract(1, Moment.MONTH)
-          .endOf(Moment.MONTH),
+        start: moment().subtract(1, Moment.MONTH).startOf(Moment.MONTH),
+        end: moment().subtract(1, Moment.MONTH).endOf(Moment.MONTH),
       },
     ],
     []

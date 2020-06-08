@@ -61,14 +61,7 @@ export function chunks(inputArray, chunkSize) {
 }
 
 export function generateNonce() {
-  return (
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15)
-  );
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
 export function toggleSetValue(set, value) {
