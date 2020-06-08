@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import throttle from 'lodash.throttle';
-import classNames from 'classnames';
 import { getSettings } from 'selectors';
 import { Theme } from 'enums';
 import Navbar from './Navbar';
@@ -12,27 +10,9 @@ import PlaylistModalContainer from './modals/PlaylistModalContainer';
 import BackToTop from './BackToTop';
 import Error from './Error';
 
-const themeValues = Object.values(Theme);
-
-function useBackToTop() {
-  const [backToTopVisible, setBackToTopVisible] = useState(false);
-
-  useEffect(() => {
-    window.addEventListener(
-      'scroll',
-      throttle(() => {
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-
-        setBackToTopVisible(scrollTop > 200);
-      }, 200)
-    );
-  }, []);
-
-  return backToTopVisible;
-}
-
 function useTheme() {
   const { theme } = useSelector(getSettings);
+  const themes = useMemo(() => Object.values(Theme), []);
   const firstRender = useRef(true);
 
   useEffect(() => {
@@ -43,7 +23,7 @@ function useTheme() {
       return;
     }
 
-    document.documentElement.classList.remove(...themeValues);
+    document.documentElement.classList.remove(...themes);
 
     if (theme) {
       document.documentElement.classList.add(...theme.split(' '));
@@ -52,15 +32,13 @@ function useTheme() {
 }
 
 function App() {
-  const backToTopVisible = useBackToTop();
-
   useTheme();
 
   return (
     <div className="App has-background-black has-text-weight-semibold">
       <Navbar />
       <Content />
-      <BackToTop className={classNames({ visible: backToTopVisible })} />
+      <BackToTop />
       <SettingsModalContainer />
       <ResetModalContainer />
       <PlaylistModalContainer />
