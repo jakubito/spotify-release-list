@@ -90,6 +90,7 @@ function SettingsModal() {
           by{' '}
           <a
             href="https://github.com/jakubito"
+            title="Jakub Dobes on Github"
             className="has-text-grey-light"
             target="_blank"
             rel="noopener noreferrer"
@@ -99,6 +100,7 @@ function SettingsModal() {
           •{' '}
           <a
             href="https://github.com/jakubito/spotify-release-list"
+            title="Github Repository"
             className="has-text-grey-light"
             target="_blank"
             rel="noopener noreferrer"
@@ -108,6 +110,7 @@ function SettingsModal() {
           •{' '}
           <a
             href="https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md"
+            title="Privacy Policy"
             className="has-text-grey-light"
             target="_blank"
             rel="noopener noreferrer"

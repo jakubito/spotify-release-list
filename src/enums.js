@@ -46,7 +46,6 @@ export const Feature = Object.freeze({
 
 export const Theme = Object.freeze({
   COMPACT: 'theme-compact',
-  LIGHT: 'theme-light',
 });
 
 export const Market = Object.freeze({

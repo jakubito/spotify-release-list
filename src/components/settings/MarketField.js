@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Market } from 'enums';
-import { getSettings } from 'selectors';
+import { getSettingsMarket } from 'selectors';
 import { setSettings } from 'actions';
 import { delay } from 'helpers';
 
 function MarketField() {
-  const { market } = useSelector(getSettings);
+  const market = useSelector(getSettingsMarket);
   const dispatch = useDispatch();
 
   const onChange = useCallback((event) => {

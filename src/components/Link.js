@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getSettings } from 'selectors';
+import { getSettingsUriLinks } from 'selectors';
 
 function Link({ uri, url, newTab = true, children, ...propsRest }) {
-  const { uriLinks } = useSelector(getSettings);
+  const uriLinks = useSelector(getSettingsUriLinks);
   let props = propsRest;
 
   if (!uriLinks && newTab) {

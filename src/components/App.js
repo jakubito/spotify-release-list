@@ -10,30 +10,7 @@ import PlaylistModalContainer from './modals/PlaylistModalContainer';
 import BackToTop from './BackToTop';
 import Error from './Error';
 
-function useTheme() {
-  const { theme } = useSelector(getSettings);
-  const themes = useMemo(() => Object.values(Theme), []);
-  const firstRender = useRef(true);
-
-  useEffect(() => {
-    if (firstRender.current) {
-      // Theme already applied before first render, skip effect
-      firstRender.current = false;
-
-      return;
-    }
-
-    document.documentElement.classList.remove(...themes);
-
-    if (theme) {
-      document.documentElement.classList.add(...theme.split(' '));
-    }
-  }, [theme]);
-}
-
 function App() {
-  useTheme();
-
   return (
     <div className="App has-background-black has-text-weight-semibold">
       <Navbar />

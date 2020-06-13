@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSettings } from 'selectors';
+import { getSettingsCovers } from 'selectors';
 import { setSettings } from 'actions';
 import { delay } from 'helpers';
 
 function CoversField() {
-  const { covers } = useSelector(getSettings);
+  const covers = useSelector(getSettingsCovers);
   const dispatch = useDispatch();
 
   const onChange = useCallback((event) => {

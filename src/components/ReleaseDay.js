@@ -9,7 +9,7 @@ function ReleaseDay({ date, albums }) {
       <div className="column is-size-4 date">{moment(date).format('MMMM D')}</div>
       <div className="column albums">
         {albums.map((album) => (
-          <Album {...album} key={album.id} />
+          <Album album={album} key={album.id} />
         ))}
       </div>
     </div>

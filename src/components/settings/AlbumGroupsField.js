@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import xor from 'lodash.xor';
 import { useSelector, useDispatch } from 'react-redux';
 import { AlbumGroup } from 'enums';
-import { getSettings } from 'selectors';
+import { getSettingsGroups } from 'selectors';
 import { setSettings } from 'actions';
 import { delay } from 'helpers';
 
@@ -21,7 +21,7 @@ function sortByAlbumGroup(first, second) {
 }
 
 function AlbumGroupsField() {
-  const { groups } = useSelector(getSettings);
+  const groups = useSelector(getSettingsGroups);
   const dispatch = useDispatch();
 
   const onChange = useCallback(

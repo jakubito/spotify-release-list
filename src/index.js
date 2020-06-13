@@ -8,13 +8,13 @@ import 'react-dates/initialize';
 import Auth from 'components/Auth';
 import App from 'components/App';
 import { store, hydrate } from 'store';
-import { getSettings } from 'selectors';
+import { getSettingsTheme } from 'selectors';
 import 'styles/index.scss';
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
 
 function applyTheme() {
-  const { theme } = getSettings(store.getState());
+  const theme = getSettingsTheme(store.getState());
 
   if (theme) {
     document.documentElement.classList.add(...theme.split(' '));

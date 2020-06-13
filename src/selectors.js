@@ -23,6 +23,13 @@ export const getPlaylistId = (state) => state.playlistId;
 export const getCreatingPlaylist = (state) => state.creatingPlaylist;
 export const getSeenFeatures = (state) => state.seenFeatures;
 
+export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups);
+export const getSettingsDays = createSelector(getSettings, (settings) => settings.days);
+export const getSettingsMarket = createSelector(getSettings, (settings) => settings.market);
+export const getSettingsTheme = createSelector(getSettings, (settings) => settings.theme);
+export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks);
+export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers);
+
 export const getWorking = createSelector(
   getSyncing,
   getCreatingPlaylist,

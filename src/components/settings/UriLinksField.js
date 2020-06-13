@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSettings } from 'selectors';
+import { getSettingsUriLinks } from 'selectors';
 import { setSettings } from 'actions';
 import { delay } from 'helpers';
 
 function UriLinksField() {
-  const { uriLinks } = useSelector(getSettings);
+  const uriLinks = useSelector(getSettingsUriLinks);
   const dispatch = useDispatch();
 
   const onChange = useCallback((event) => {
