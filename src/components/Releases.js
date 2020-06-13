@@ -10,7 +10,6 @@ const DAYS_INCREMENT = 20;
 function Releases() {
   const releases = useSelector(getDayReleasesSortedEntries);
   const [daysLimit, setDaysLimit] = useState(DAYS_INCREMENT);
-  const waypointVisible = useMemo(() => releases.length > daysLimit, [releases, daysLimit]);
 
   const waypointOnEnter = useCallback(() => {
     setDaysLimit((currentLimit) => currentLimit + DAYS_INCREMENT);
@@ -25,7 +24,7 @@ function Releases() {
       {releases.slice(0, daysLimit).map(([date, albums]) => (
         <ReleaseDay date={date} albums={albums} key={date} />
       ))}
-      {waypointVisible && (
+      {daysLimit < releases.length && (
         <Waypoint bottomOffset="-100%" onEnter={waypointOnEnter} key={daysLimit} />
       )}
     </>
