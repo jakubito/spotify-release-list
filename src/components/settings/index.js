@@ -4,3 +4,4 @@ export { default as MarketField } from './MarketField';
 export { default as TimePeriodField } from './TimePeriodField';
 export { default as UriLinksField } from './UriLinksField';
 export { default as ThemeField } from './ThemeField';
+export { default as Credits } from './Credits';

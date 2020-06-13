@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Album from './Album';
@@ -21,4 +21,4 @@ ReleaseDay.propTypes = {
   albums: PropTypes.array.isRequired,
 };
 
-export default ReleaseDay;
+export default memo(ReleaseDay);

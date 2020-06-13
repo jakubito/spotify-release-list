@@ -10,6 +10,7 @@ import {
   UriLinksField,
   CoversField,
   ThemeField,
+  Credits,
 } from 'components/settings';
 
 function SettingsModal() {
@@ -82,43 +83,7 @@ function SettingsModal() {
           </div>
         )}
 
-        <div className="credits has-text-centered has-text-grey">
-          Made with{' '}
-          <span role="img" aria-label="heart emoji">
-            💛
-          </span>{' '}
-          by{' '}
-          <a
-            href="https://github.com/jakubito"
-            title="Jakub Dobes on Github"
-            className="has-text-grey-light"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Jakub Dobes
-          </a>{' '}
-          •{' '}
-          <a
-            href="https://github.com/jakubito/spotify-release-list"
-            title="Github Repository"
-            className="has-text-grey-light"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Github
-          </a>{' '}
-          •{' '}
-          <a
-            href="https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md"
-            title="Privacy Policy"
-            className="has-text-grey-light"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Privacy Policy
-          </a>{' '}
-          • v{process.env.REACT_APP_VERSION}
-        </div>
+        <Credits />
       </div>
     </div>
   );
