@@ -1,7 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { getSettings } from 'selectors';
-import { Theme } from 'enums';
+import React from 'react';
 import Navbar from './Navbar';
 import Content from './Content';
 import SettingsModalContainer from './modals/SettingsModalContainer';
