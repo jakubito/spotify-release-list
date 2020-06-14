@@ -5,16 +5,23 @@ import { Router, Redirect } from '@reach/router';
 import * as Sentry from '@sentry/browser';
 import '@fortawesome/fontawesome-free/js/all';
 import 'react-dates/initialize';
-import Auth from './components/Auth';
-import App from './components/App';
-import { store, hydrate } from './store';
-import './styles/index.scss';
+import Auth from 'components/Auth';
+import App from 'components/App';
+import { store, hydrate } from 'store';
+import { getSettingsTheme } from 'selectors';
+import 'styles/index.scss';
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
 
-(async function() {
-  await hydrate;
+function applyTheme() {
+  const theme = getSettingsTheme(store.getState());
 
+  if (theme) {
+    document.documentElement.classList.add(...theme.split(' '));
+  }
+}
+
+function renderApp() {
   ReactDOM.render(
     <Provider store={store}>
       <Router>
@@ -25,4 +32,6 @@ Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
     </Provider>,
     document.getElementById('root')
   );
-})();
+}
+
+hydrate.then(applyTheme).then(renderApp);

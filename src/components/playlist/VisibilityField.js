@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { FieldName } from '../../enums';
+import { FieldName } from 'enums';
 
 function VisibilityField() {
   const { register } = useFormContext();

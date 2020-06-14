@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { hideSettingsModal, showResetModal } from '../../actions';
-import { useModal } from '../../hooks';
-import { getUser } from '../../selectors';
+import { hideSettingsModal, showResetModal } from 'actions';
+import { useModal, useFeature } from 'hooks';
+import { Feature } from 'enums';
+import { getUser } from 'selectors';
 import {
   AlbumGroupsField,
   TimePeriodField,
   MarketField,
   UriLinksField,
   CoversField,
-} from '../settings';
+  ThemeField,
+  Credits,
+} from 'components/settings';
 
 function SettingsModal() {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
-  const closeModal = useModal(hideSettingsModal);
+  const closeModalOriginal = useModal(hideSettingsModal);
+  const [, setFeatureSeen] = useFeature(Feature.THEMES);
+
+  const closeModal = useCallback(() => {
+    setFeatureSeen();
+    closeModalOriginal();
+  }, [setFeatureSeen]);
 
   return (
     <div className="SettingsModal modal is-active">
@@ -34,6 +43,12 @@ function SettingsModal() {
           </div>
           <div className="column">
             <MarketField />
+          </div>
+        </div>
+
+        <div className="columns">
+          <div className="column is-half">
+            <ThemeField />
           </div>
         </div>
 
@@ -75,40 +90,7 @@ function SettingsModal() {
           </div>
         )}
 
-        <div className="credits has-text-centered has-text-grey">
-          Made with{' '}
-          <span role="img" aria-label="heart emoji">
-            💛
-          </span>{' '}
-          by{' '}
-          <a
-            href="https://github.com/jakubito"
-            className="has-text-grey-light"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Jakub Dobes
-          </a>{' '}
-          •{' '}
-          <a
-            href="https://github.com/jakubito/spotify-release-list"
-            className="has-text-grey-light"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Github
-          </a>{' '}
-          •{' '}
-          <a
-            href="https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md"
-            className="has-text-grey-light"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Privacy Policy
-          </a>{' '}
-          • v{process.env.REACT_APP_VERSION}
-        </div>
+        <Credits />
       </div>
     </div>
   );

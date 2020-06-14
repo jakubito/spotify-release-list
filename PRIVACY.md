@@ -12,10 +12,12 @@ There are two external services that are being used by the app - Spotify and Sen
 
 ### Sentry
 
-[Sentry](https://sentry.io/) is a 3rd party service used to track errors encountered by users. It helps me to track bugs that would not be reported otherwise. When an error occurs while using the app, essential information about the error will be automatically sent to Sentry for further inspection. No personal information is being collected. The list of data being sent is limited to:
+[Sentry](https://sentry.io/) is a 3rd party service used to track errors encountered by users. It helps me to track bugs that would not be reported otherwise. When an error occurs while using the app, essential information about the error is automatically sent to Sentry for further inspection. No personal information is being collected. The list of data being sent is limited to:
 
 - Error message
-- [User-agent](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent) header (information about your browser + operating system)
+- [User-Agent](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent) header (anonymous information about browser and operating system being used)
+
+Sentry also saves IP addresses by default, but I turned this option off for better privacy. **No IP addresses are being saved.**
 
 ## Data Storage
 

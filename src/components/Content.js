@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getSyncing, getSyncedOnce } from '../selectors';
+import { getSyncing, getSyncedOnce } from 'selectors';
 import Loading from './Loading';
 import Releases from './Releases';
 import SpotifySyncButton from './SpotifySyncButton';
@@ -16,7 +16,7 @@ function Content() {
           <p className="has-text-light is-size-5 has-text-centered intro">
             Display list of Spotify releases from artists you follow.
           </p>
-          <SpotifySyncButton title="Connect Spotify account" className="is-medium" />
+          <SpotifySyncButton title="Log in with Spotify" className="is-medium" />
           <a
             href="https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md"
             className="has-text-grey-light privacy"

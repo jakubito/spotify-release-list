@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
-import { FieldName } from '../../enums';
+import { FieldName } from 'enums';
 
 function NameField() {
   const { register, errors, setValue } = useFormContext();

@@ -41,6 +41,12 @@ export const AlbumGroup = Object.freeze({
 
 export const Feature = Object.freeze({
   PLAYLIST_CUSTOM_SELECTION: 'playlistCustomSelection',
+  THEMES: 'themes',
+});
+
+export const Theme = Object.freeze({
+  COMPACT: 'theme-compact',
+  SINGLE_COLUMN: 'theme-single-column',
 });
 
 export const Market = Object.freeze({

@@ -1,5 +1,5 @@
 import orderBy from 'lodash.orderby';
-import { Moment, MomentFormat } from './enums';
+import { Moment, MomentFormat } from 'enums';
 
 let intervalId;
 
@@ -29,6 +29,12 @@ export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function delay(fn, ms, ...args) {
+  setTimeout(() => {
+    fn(...args);
+  }, ms);
+}
+
 export async function reflect(fn, ...args) {
   try {
     const data = await fn(...args);
@@ -55,14 +61,7 @@ export function chunks(inputArray, chunkSize) {
 }
 
 export function generateNonce() {
-  return (
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15)
-  );
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
 export function toggleSetValue(set, value) {

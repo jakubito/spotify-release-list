@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Album from './Album';
@@ -9,7 +9,7 @@ function ReleaseDay({ date, albums }) {
       <div className="column is-size-4 date">{moment(date).format('MMMM D')}</div>
       <div className="column albums">
         {albums.map((album) => (
-          <Album {...album} key={album.id} />
+          <Album album={album} key={album.id} />
         ))}
       </div>
     </div>
@@ -21,4 +21,4 @@ ReleaseDay.propTypes = {
   albums: PropTypes.array.isRequired,
 };
 
-export default ReleaseDay;
+export default memo(ReleaseDay);

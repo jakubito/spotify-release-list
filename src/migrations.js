@@ -1,4 +1,4 @@
-import { AlbumGroup } from './enums';
+import { AlbumGroup } from 'enums';
 
 export default {
   0: (state) => {

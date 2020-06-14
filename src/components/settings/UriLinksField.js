@@ -1,18 +1,17 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSettings } from '../../selectors';
-import { setSettings } from '../../actions';
+import { getSettingsUriLinks } from 'selectors';
+import { setSettings } from 'actions';
+import { delay } from 'helpers';
 
 function UriLinksField() {
-  const { uriLinks } = useSelector(getSettings);
+  const uriLinks = useSelector(getSettingsUriLinks);
   const dispatch = useDispatch();
 
-  const uriLinksChangeHandler = useCallback((event) => {
-    const value = event.target.value;
+  const onChange = useCallback((event) => {
+    const newUriLinks = Boolean(Number(event.target.value));
 
-    setTimeout(() => {
-      dispatch(setSettings({ uriLinks: Boolean(Number(value)) }));
-    }, 0);
+    delay(dispatch, 0, setSettings({ uriLinks: newUriLinks }));
   }, []);
 
   return (
@@ -27,7 +26,7 @@ function UriLinksField() {
             name="uriLinks"
             value="0"
             defaultChecked={!uriLinks}
-            onChange={uriLinksChangeHandler}
+            onChange={onChange}
           />
           <label htmlFor="uriLinksFalse">New tab</label>
         </div>
@@ -39,7 +38,7 @@ function UriLinksField() {
             name="uriLinks"
             value="1"
             defaultChecked={uriLinks}
-            onChange={uriLinksChangeHandler}
+            onChange={onChange}
           />
           <label htmlFor="uriLinksTrue">Spotify app</label>
         </div>

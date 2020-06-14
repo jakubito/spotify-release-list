@@ -4,16 +4,9 @@ import { Redirect } from '@reach/router';
 import queryString from 'query-string';
 import moment from 'moment';
 import { Base64 } from 'js-base64';
-import { getNonce } from '../selectors';
-import {
-  SYNC,
-  CREATE_PLAYLIST,
-  sync,
-  setToken,
-  showErrorMessage,
-  createPlaylist,
-} from '../actions';
-import { Moment } from '../enums';
+import { getNonce } from 'selectors';
+import { SYNC, CREATE_PLAYLIST, sync, setToken, showErrorMessage, createPlaylist } from 'actions';
+import { Moment } from 'enums';
 
 function Auth() {
   const dispatch = useDispatch();

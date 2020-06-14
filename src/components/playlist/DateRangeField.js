@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
-import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from '../../selectors';
-import { getPlaylistNameSuggestion, getReleasesByDate } from '../../helpers';
-import { FieldName, Moment } from '../../enums';
+import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from 'selectors';
+import { getPlaylistNameSuggestion, getReleasesByDate } from 'helpers';
+import { FieldName, Moment } from 'enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
 
 function useIsOutsideRangeHandler() {

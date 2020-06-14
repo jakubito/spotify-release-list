@@ -1,18 +1,15 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSettings } from '../../selectors';
-import { setSettings } from '../../actions';
+import { getSettingsCovers } from 'selectors';
+import { setSettings } from 'actions';
+import { delay } from 'helpers';
 
 function CoversField() {
-  const { covers } = useSelector(getSettings);
+  const covers = useSelector(getSettingsCovers);
   const dispatch = useDispatch();
 
-  const coversChangeHandler = useCallback((event) => {
-    const checked = event.target.checked;
-
-    setTimeout(() => {
-      dispatch(setSettings({ covers: checked }));
-    }, 0);
+  const onChange = useCallback((event) => {
+    delay(dispatch, 0, setSettings({ covers: event.target.checked }));
   }, []);
 
   return (
@@ -26,7 +23,7 @@ function CoversField() {
             type="checkbox"
             name="covers"
             defaultChecked={covers}
-            onChange={coversChangeHandler}
+            onChange={onChange}
           />
           <label htmlFor="covers" className="has-text-weight-semibold">
             Display album covers

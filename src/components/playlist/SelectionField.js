@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
-import { FieldName } from '../../enums';
-import { toggleSetValue } from '../../helpers';
+import { FieldName } from 'enums';
+import { toggleSetValue } from 'helpers';
 import AlbumFullTitle from './AlbumFullTitle';
 
 function SelectionField() {
@@ -68,9 +68,6 @@ function SelectionField() {
           className="button is-rounded is-small is-dark is-darker"
           onClick={selectAllHandler}
         >
-          <span className="icon">
-            <i className="fas fa-check-square"></i>
-          </span>
           <span>Select all</span>
         </button>
         <button
@@ -78,9 +75,6 @@ function SelectionField() {
           className="button is-rounded is-small is-dark is-darker"
           onClick={unselectAllHandler}
         >
-          <span className="icon">
-            <i className="fas fa-minus-square"></i>
-          </span>
           <span>Unselect all</span>
         </button>
 

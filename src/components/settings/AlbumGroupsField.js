@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react';
 import xor from 'lodash.xor';
 import { useSelector, useDispatch } from 'react-redux';
-import { AlbumGroup } from '../../enums';
-import { getSettings } from '../../selectors';
-import { setSettings } from '../../actions';
+import { AlbumGroup } from 'enums';
+import { getSettingsGroups } from 'selectors';
+import { setSettings } from 'actions';
+import { delay } from 'helpers';
 
 const fields = {
   [AlbumGroup.ALBUM]: 'Albums',
@@ -20,16 +21,14 @@ function sortByAlbumGroup(first, second) {
 }
 
 function AlbumGroupsField() {
-  const { groups } = useSelector(getSettings);
+  const groups = useSelector(getSettingsGroups);
   const dispatch = useDispatch();
 
-  const groupsChangeHandler = useCallback(
+  const onChange = useCallback(
     (event) => {
-      dispatch(
-        setSettings({
-          groups: xor(groups, [event.target.value]).sort(sortByAlbumGroup),
-        })
-      );
+      const newGroups = xor(groups, [event.target.value]).sort(sortByAlbumGroup);
+
+      delay(dispatch, 0, setSettings({ groups: newGroups }));
     },
     [groups]
   );
@@ -46,8 +45,8 @@ function AlbumGroupsField() {
               id={`albumGroups[${value}]`}
               name={`albumGroups[${value}]`}
               value={value}
-              checked={groups.includes(value)}
-              onChange={groupsChangeHandler}
+              defaultChecked={groups.includes(value)}
+              onChange={onChange}
             />
             <label htmlFor={`albumGroups[${value}]`} className="has-text-weight-semibold">
               {name}

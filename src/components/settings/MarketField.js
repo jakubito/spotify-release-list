@@ -1,24 +1,24 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Market } from '../../enums';
-import { getSettings } from '../../selectors';
-import { setSettings } from '../../actions';
+import { Market } from 'enums';
+import { getSettingsMarket } from 'selectors';
+import { setSettings } from 'actions';
+import { delay } from 'helpers';
 
 function MarketField() {
-  const { market } = useSelector(getSettings);
+  const market = useSelector(getSettingsMarket);
   const dispatch = useDispatch();
 
-  const marketChangeHandler = useCallback(
-    (event) => dispatch(setSettings({ market: event.target.value })),
-    []
-  );
+  const onChange = useCallback((event) => {
+    delay(dispatch, 0, setSettings({ market: event.target.value }));
+  }, []);
 
   return (
     <div className="field">
       <label className="label has-text-light">Market country</label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select value={market} onChange={marketChangeHandler}>
+          <select defaultValue={market} onChange={onChange}>
             <option value="">All markets</option>
             {Object.entries(Market).map(([code, name]) => (
               <option value={code} key={code}>

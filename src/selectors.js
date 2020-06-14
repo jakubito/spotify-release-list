@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import orderBy from 'lodash.orderby';
 import moment from 'moment';
-import { Moment } from './enums';
+import { Moment } from 'enums';
 
 export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;
@@ -22,6 +22,13 @@ export const getPlaylistForm = (state) => state.playlistForm;
 export const getPlaylistId = (state) => state.playlistId;
 export const getCreatingPlaylist = (state) => state.creatingPlaylist;
 export const getSeenFeatures = (state) => state.seenFeatures;
+
+export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups);
+export const getSettingsDays = createSelector(getSettings, (settings) => settings.days);
+export const getSettingsMarket = createSelector(getSettings, (settings) => settings.market);
+export const getSettingsTheme = createSelector(getSettings, (settings) => settings.theme);
+export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks);
+export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers);
 
 export const getWorking = createSelector(
   getSyncing,

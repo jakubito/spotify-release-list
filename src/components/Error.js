@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getErrorMessage } from '../selectors';
-import { hideErrorMessage } from '../actions';
+import { getErrorMessage } from 'selectors';
+import { hideErrorMessage } from 'actions';
 
 function Error() {
   const errorMessage = useSelector(getErrorMessage);

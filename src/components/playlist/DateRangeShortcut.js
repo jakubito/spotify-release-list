@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import { min, max } from 'moment';
-import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from '../../selectors';
-import { FieldName } from '../../enums';
-import { getPlaylistNameSuggestion, getReleasesByDate } from '../../helpers';
+import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from 'selectors';
+import { FieldName } from 'enums';
+import { getPlaylistNameSuggestion, getReleasesByDate } from 'helpers';
 
 function useClickHandler(start, end) {
   const releases = useSelector(getDayReleasesMap);

@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { persistStore, persistReducer, createMigrate } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import localForage from 'localforage';
@@ -31,10 +31,10 @@ import {
   CREATE_PLAYLIST_ERROR,
   RESET_PLAYLIST,
   ADD_SEEN_FEATURE,
-} from './actions';
-import saga from './sagas';
-import migrations from './migrations';
-import { AlbumGroup } from './enums';
+} from 'actions';
+import saga from 'sagas';
+import migrations from 'migrations';
+import { AlbumGroup } from 'enums';
 
 localForage.config({
   name: 'spotify-release-list',
@@ -89,6 +89,7 @@ const initialState = {
     groups: Object.values(AlbumGroup),
     days: 30,
     market: '',
+    theme: '',
     uriLinks: false,
     covers: true,
   },
@@ -278,15 +279,22 @@ function reducer(state = initialState, action) {
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer);
+
 const sagaMiddleware = createSagaMiddleware({
   onError: (error) => {
     Sentry.captureException(error);
   },
 });
 
-export const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+export const store = createStore(
+  persistedReducer,
+  composeEnhancers(applyMiddleware(sagaMiddleware))
+);
 
 export let persistor;
+
 export const hydrate = new Promise((resolve) => {
   persistor = persistStore(store, null, resolve);
 });
