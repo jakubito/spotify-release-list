@@ -2,12 +2,6 @@
 
 Spotify Release List is a simple application written in Javascript that runs entirely in your browser.
 
-## Motivation
-
-The idea behind this app is not new. [Almost 2000 people have requested this basic feature over the course of 5 years](https://community.spotify.com/t5/Live-Ideas/Discover-New-Release-Section-for-Followed-Artists/idi-p/949039). I didn't wait for Spotify and decided to build it myself. I also made sure there is no cost of running this project online - [Netlify](https://www.netlify.com/) provides everything for free (Thanks Netlify!).
-
-**Spotify Release List is a hobby project with no revenue, no ads and is 100% free to use.**
-
 ## Services
 
 There are two external services that are being used by the app - Spotify and Sentry.
