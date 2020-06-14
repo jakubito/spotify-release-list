@@ -5,7 +5,7 @@
 }
 
 @mixin theme($name) {
-  html.#{$name} & {
+  html.theme-#{$name} & {
     @content;
   }
 }

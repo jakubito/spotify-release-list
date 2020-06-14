@@ -1,5 +1,5 @@
 .Content {
-  padding: 15px 15px 50px;
+  padding: 10px 15px 50px;
   flex: 1 1 auto;
   position: relative;
 
@@ -9,7 +9,7 @@
     bottom: 0;
     right: 0;
     left: 0;
-    padding: 15px 15px 50px;
+    padding: 10px 15px 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,7 +24,7 @@
   }
 
   .loading {
-    opacity: 0.5;
+    opacity: 0.6;
 
     progress {
       width: 100%;

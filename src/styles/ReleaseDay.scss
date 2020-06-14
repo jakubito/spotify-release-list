@@ -13,9 +13,9 @@
 
   .column {
     &.date {
-      flex: 0 0 240px;
+      flex: 0 0 225px;
       line-height: 30px;
-      margin: 20px 0 0 0 !important;
+      margin: 25px 0 0 0 !important;
       text-align: right;
 
       @include desktop-only {
