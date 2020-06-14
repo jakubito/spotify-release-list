@@ -10,14 +10,17 @@ function useBackToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    window.addEventListener(
-      'scroll',
-      throttle(() => {
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const listener = throttle(() => {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
 
-        setVisible(scrollTop > 200);
-      }, 200)
-    );
+      setVisible(scrollTop > 200);
+    }, 200);
+
+    window.addEventListener('scroll', listener);
+
+    return () => {
+      window.removeEventListener('scroll', listener);
+    };
   }, []);
 
   return visible;
