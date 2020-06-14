@@ -4,34 +4,74 @@
   border: none !important;
   flex: 0 0 400px;
 
+  @include theme(compact) {
+    margin-top: 20px !important;
+    flex: 0 0 300px;
+  }
+
   @include desktop-only {
     flex: 0 0 calc(50% - 20px);
+
+    @include theme(compact) {
+      flex: 0 0 calc(33.33333333% - 20px);
+    }
   }
 
   @include touch {
-    margin-left: 0 !important;
     margin-top: 20px !important;
+
+    @include theme(compact) {
+      margin-left: 15px !important;
+      margin-top: 15px !important;
+    }
   }
 
   @include tablet-only {
     flex: 0 0 calc(50% - 10px);
 
-    &:nth-child(even) {
-      margin-left: 20px !important;
+    &:nth-child(2n + 1) {
+      margin-left: 0 !important;
+    }
+
+    @include theme(compact) {
+      &:nth-child(2n + 1) {
+        margin-left: 15px !important;
+      }
+
+      &:nth-child(3n + 1) {
+        margin-left: 0 !important;
+      }
+
+      flex: 0 0 calc(33.33333333% - 10px) !important;
     }
   }
 
   @include mobile {
     flex: 0 0 calc(100%);
+    margin-left: 0 !important;
+
+    @include theme(compact) {
+      flex: 0 0 calc(100%);
+      margin-left: 0 !important;
+    }
   }
 
   .media-left {
     margin: 0 15px 0 0 !important;
 
+    @include theme(compact) {
+      margin-right: 10px !important;
+    }
+
     figure {
       border-radius: 3px;
       height: 60px;
       width: 60px;
+
+      @include theme(compact) {
+        height: 40px;
+        width: 40px;
+      }
 
       img {
         border-radius: 3px;
@@ -51,9 +91,23 @@
 
     .title {
       display: block;
-      margin-top: 5px;
+      margin-top: 4px;
       margin-bottom: 5px;
-      line-height: 1.1;
+      line-height: 1.2;
+
+      @include theme(compact) {
+        font-size: 1rem !important;
+        margin-top: 1px;
+        margin-bottom: 4px;
+      }
+    }
+
+    .artists {
+      line-height: 1.3;
+
+      @include theme(compact) {
+        font-size: 0.8rem;
+      }
     }
   }
 }
