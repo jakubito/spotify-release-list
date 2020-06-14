@@ -39,6 +39,10 @@ function ThemeField() {
           <select defaultValue={theme} onChange={onChange}>
             <option value="">Default</option>
             <option value={Theme.COMPACT}>Compact</option>
+            <option value={Theme.SINGLE_COLUMN}>Single Column</option>
+            <option value={`${Theme.SINGLE_COLUMN} ${Theme.COMPACT}`}>
+              Single Column - Compact
+            </option>
           </select>
         </div>
         <span className="icon is-left">

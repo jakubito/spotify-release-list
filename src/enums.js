@@ -46,6 +46,7 @@ export const Feature = Object.freeze({
 
 export const Theme = Object.freeze({
   COMPACT: 'theme-compact',
+  SINGLE_COLUMN: 'theme-single-column',
 });
 
 export const Market = Object.freeze({

@@ -4,8 +4,14 @@
   }
 }
 
-@mixin theme($name) {
-  html.theme-#{$name} & {
+@mixin theme($names...) {
+  $selector: '';
+
+  @for $i from 0 to length($names) {
+    $selector: '#{$selector}.theme-#{nth($names, $i + 1)}';
+  }
+
+  html#{$selector} & {
     @content;
   }
 }
