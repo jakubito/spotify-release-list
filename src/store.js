@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { persistStore, persistReducer, createMigrate } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import localForage from 'localforage';
@@ -286,7 +286,12 @@ const sagaMiddleware = createSagaMiddleware({
   },
 });
 
-export const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware));
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+export const store = createStore(
+  persistedReducer,
+  composeEnhancers(applyMiddleware(sagaMiddleware))
+);
 
 export let persistor;
 
