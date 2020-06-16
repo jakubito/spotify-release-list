@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, Redirect } from '@reach/router';
+import PWAPrompt from 'react-ios-pwa-prompt';
 import * as Sentry from '@sentry/browser';
 import '@fortawesome/fontawesome-free/js/all';
 import 'react-dates/initialize';
@@ -26,13 +27,16 @@ function applyTheme() {
 
 function renderApp() {
   ReactDOM.render(
-    <Provider store={store}>
-      <Router>
-        <Auth path="auth" />
-        <App path="/" />
-        <Redirect from="/*" to="/" default noThrow />
-      </Router>
-    </Provider>,
+    <>
+      <Provider store={store}>
+        <Router>
+          <Auth path="auth" />
+          <App path="/" />
+          <Redirect from="/*" to="/" default noThrow />
+        </Router>
+      </Provider>
+      <PWAPrompt />
+    </>,
     document.getElementById('root')
   );
 }

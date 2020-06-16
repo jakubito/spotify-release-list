@@ -1,7 +1,7 @@
 html,
 body,
 #root,
-#root > div {
+#root > div:first-child {
   height: 100%;
 }
 
