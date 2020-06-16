@@ -6,7 +6,7 @@
             <square150x150logo src="/mstile-150x150.png?v=XBbM5Lb5Q4"/>
             <square310x310logo src="/mstile-310x310.png?v=XBbM5Lb5Q4"/>
             <wide310x150logo src="/mstile-310x150.png?v=XBbM5Lb5Q4"/>
-            <TileColor>#000000</TileColor>
+            <TileColor>#0a0a0a</TileColor>
         </tile>
     </msapplication>
 </browserconfig>
