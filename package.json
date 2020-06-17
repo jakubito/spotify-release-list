@@ -1,6 +1,6 @@
 {
   "name": "spotify-release-list",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
