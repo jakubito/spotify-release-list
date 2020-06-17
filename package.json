@@ -1,6 +1,6 @@
 {
   "name": "spotify-release-list",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
@@ -21,6 +21,7 @@
     "react-dates": "^21.8.0",
     "react-dom": "^16.10.2",
     "react-hook-form": "^5.7.1",
+    "react-ios-pwa-prompt": "^1.8.0",
     "react-media": "^1.10.0",
     "react-redux": "^7.1.1",
     "react-scripts": "^3.4.1",
