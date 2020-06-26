@@ -5,7 +5,6 @@ import { Moment } from 'enums';
 
 export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;
-export const getSyncedOnce = (state) => state.syncedOnce;
 export const getLastSync = (state) => state.lastSync;
 export const getToken = (state) => state.token;
 export const getTokenExpires = (state) => state.tokenExpires;

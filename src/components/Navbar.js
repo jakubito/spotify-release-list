@@ -3,16 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Media from 'react-media';
 import moment from 'moment';
-import { getLastSyncDate, getSyncedOnce, getHasReleases, getSyncing } from 'selectors';
+import { getLastSyncDate, getHasReleases, getSyncing } from 'selectors';
 import { showSettingsModal, showPlaylistModal } from 'actions';
 import { saveInterval } from 'helpers';
 import { Feature } from 'enums';
 import { useFeature } from 'hooks';
-import SpotifySyncButton from './SpotifySyncButton';
+import SyncButton from './SyncButton';
 
 function Navbar() {
   const syncing = useSelector(getSyncing);
-  const syncedOnce = useSelector(getSyncedOnce);
   const lastSyncDate = useSelector(getLastSyncDate);
   const hasReleases = useSelector(getHasReleases);
   const dispatch = useDispatch();
@@ -35,14 +34,14 @@ function Navbar() {
         Spotify <Media query={{ maxWidth: 375 }}>{(matches) => matches && <br />}</Media>
         Release List
       </div>
-      {syncedOnce && (
+      {lastSyncDate && (
         <div className="sync">
-          <SpotifySyncButton title="Refresh" icon="fas fa-sync" />
+          <SyncButton title="Refresh" icon="fas fa-sync" />
           <div className="last-update has-text-grey">Updated {lastSyncHuman}</div>
         </div>
       )}
       <div className="right">
-        {syncedOnce && hasReleases && !syncing && (
+        {lastSyncDate && hasReleases && !syncing && (
           <button
             className="button is-rounded is-dark has-text-weight-semibold"
             onClick={() => dispatch(showPlaylistModal())}

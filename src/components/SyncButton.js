@@ -35,7 +35,7 @@ function useClickHandler() {
   );
 }
 
-function SpotifySyncButton({ title, icon = 'fab fa-spotify', className }) {
+function SyncButton({ title, icon = 'fab fa-spotify', className }) {
   const syncing = useSelector(getSyncing);
   const working = useSelector(getWorking);
   const clickHandler = useClickHandler();
@@ -43,7 +43,7 @@ function SpotifySyncButton({ title, icon = 'fab fa-spotify', className }) {
   return (
     <button
       className={classNames(
-        'SpotifySyncButton',
+        'SyncButton',
         'button',
         'is-primary',
         'is-rounded',
@@ -62,10 +62,10 @@ function SpotifySyncButton({ title, icon = 'fab fa-spotify', className }) {
   );
 }
 
-SpotifySyncButton.propTypes = {
+SyncButton.propTypes = {
   title: PropTypes.string,
   icon: PropTypes.string,
   className: PropTypes.string,
 };
 
-export default SpotifySyncButton;
+export default SyncButton;

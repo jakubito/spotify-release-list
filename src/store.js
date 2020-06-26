@@ -49,7 +49,6 @@ const persistConfig = {
   whitelist: [
     'artists',
     'albums',
-    'syncedOnce',
     'lastSync',
     'playlistForm',
     'token',
@@ -66,7 +65,6 @@ const initialState = {
   artists: {},
   albums: {},
   syncing: false,
-  syncedOnce: false,
   lastSync: null,
   creatingPlaylist: false,
   playlistId: null,
@@ -111,7 +109,6 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         syncing: false,
-        syncedOnce: true,
         lastSync: new Date().toISOString(),
       };
     case SYNC_ERROR:

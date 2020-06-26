@@ -35,7 +35,7 @@ function AlbumGroupsField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Album types</label>
+      <label className="label has-text-light">Include</label>
       <div className="control">
         {fieldsEntries.map(([value, name]) => (
           <div className="field" key={value}>
