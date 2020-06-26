@@ -9,6 +9,7 @@ import {
   SYNC_FINISHED,
   SYNC_ERROR,
   SET_SYNCING,
+  SET_SYNCING_PROGRESS,
   SET_USER,
   ADD_ALBUMS,
   SET_ARTISTS,
@@ -65,6 +66,7 @@ const initialState = {
   artists: {},
   albums: {},
   syncing: false,
+  syncingProgress: null,
   lastSync: null,
   creatingPlaylist: false,
   playlistId: null,
@@ -102,6 +104,7 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         syncing: true,
+        syncingProgress: null,
         artists: {},
         albums: {},
       };
@@ -120,6 +123,11 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         syncing: payload.syncing,
+      };
+    case SET_SYNCING_PROGRESS:
+      return {
+        ...state,
+        syncingProgress: payload.syncingProgress,
       };
     case SET_USER:
       return {

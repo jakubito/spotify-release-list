@@ -8,11 +8,12 @@ import {
   createPlaylist,
   addTracksToPlaylist,
 } from 'api';
-import { chunks, reflect, filterResolved, getSpotifyUri } from 'helpers';
+import { chunks, reflect, filterResolved, getSpotifyUri, sleep } from 'helpers';
 import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from 'selectors';
 import {
   SYNC,
   CREATE_PLAYLIST,
+  setSyncingProgress,
   setUser,
   syncFinished,
   syncError,
@@ -24,6 +25,8 @@ import {
 } from 'actions';
 import { SpotifyEntity, Moment, MomentFormat } from 'enums';
 
+const ARTISTS_CHUNK_SIZE = 6;
+
 function* syncSaga() {
   try {
     const token = yield select(getToken);
@@ -34,20 +37,25 @@ function* syncSaga() {
     const artists = yield call(getUserFollowedArtists, token);
 
     yield put(setArtists(artists));
+    yield put(setSyncingProgress(0));
 
     const { groups, market, days } = yield select(getSettings);
     const afterDateString = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE);
+    let artistsFetched = 0;
 
-    for (const artistsChunk of chunks(artists, 6)) {
+    for (const artistsChunk of chunks(artists, ARTISTS_CHUNK_SIZE)) {
       const albumCalls = artistsChunk.map((artist) =>
         call(reflect, getArtistAlbums, token, artist.id, groups, market, afterDateString)
       );
       const albumResponses = yield all(albumCalls);
       const albums = filterResolved(albumResponses).flat();
+      artistsFetched += ARTISTS_CHUNK_SIZE;
 
       yield put(addAlbums(albums, afterDateString));
+      yield put(setSyncingProgress((artistsFetched / artists.length) * 100));
     }
 
+    yield call(sleep, 600); // wait for progress bar animation
     yield put(syncFinished());
   } catch (error) {
     yield put(showErrorMessage());

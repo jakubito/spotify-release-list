@@ -2,6 +2,7 @@ export const SYNC = 'SYNC';
 export const SYNC_FINISHED = 'SYNC_FINISHED';
 export const SYNC_ERROR = 'SYNC_ERROR';
 export const SET_SYNCING = 'SET_SYNCING';
+export const SET_SYNCING_PROGRESS = 'SET_SYNCING_PROGRESS';
 export const SET_USER = 'SET_USER';
 export const SET_ARTISTS = 'SET_ARTISTS';
 export const ADD_ALBUMS = 'ADD_ALBUMS';
@@ -47,6 +48,13 @@ export function setSyncing(syncing) {
   return {
     type: SET_SYNCING,
     payload: { syncing },
+  };
+}
+
+export function setSyncingProgress(syncingProgress) {
+  return {
+    type: SET_SYNCING_PROGRESS,
+    payload: { syncingProgress },
   };
 }
 
