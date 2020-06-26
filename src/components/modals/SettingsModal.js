@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { hideSettingsModal, showResetModal } from 'actions';
-import { useModal, useFeature } from 'hooks';
-import { Feature } from 'enums';
+import { useModal } from 'hooks';
 import { getUser } from 'selectors';
 import {
   AlbumGroupsField,
@@ -17,13 +16,7 @@ import {
 function SettingsModal() {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
-  const closeModalOriginal = useModal(hideSettingsModal);
-  const [, setFeatureSeen] = useFeature(Feature.THEMES);
-
-  const closeModal = useCallback(() => {
-    setFeatureSeen();
-    closeModalOriginal();
-  }, [setFeatureSeen]);
+  const closeModal = useModal(hideSettingsModal);
 
   return (
     <div className="SettingsModal modal is-active">
