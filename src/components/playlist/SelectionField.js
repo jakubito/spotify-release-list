@@ -17,11 +17,11 @@ function SelectionField() {
 
   const selectAllHandler = useCallback(() => {
     setValue(FieldName.SELECTED_RELEASES, new Set(releases), true);
-  }, [releases]);
+  }, [releases, setValue]);
 
   const unselectAllHandler = useCallback(() => {
     setValue(FieldName.SELECTED_RELEASES, new Set([]), true);
-  }, []);
+  }, [setValue]);
 
   const releaseChangeHandler = useCallback(
     (event) => {
@@ -31,10 +31,10 @@ function SelectionField() {
         true
       );
     },
-    [selectedReleases]
+    [selectedReleases, setValue]
   );
 
-  if (!releases || releases.length === 0) {
+  if (!releases || !selectedReleases || releases.length === 0) {
     return null;
   }
 

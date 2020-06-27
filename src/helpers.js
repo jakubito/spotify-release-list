@@ -29,7 +29,7 @@ export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function delay(fn, ms, ...args) {
+export function delay(fn, ms = 0, ...args) {
   setTimeout(() => {
     fn(...args);
   }, ms);

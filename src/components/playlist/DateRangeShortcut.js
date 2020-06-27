@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { min, max } from 'moment';
 import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from 'selectors';
 import { FieldName } from 'enums';
-import { getPlaylistNameSuggestion, getReleasesByDate } from 'helpers';
+import { getPlaylistNameSuggestion, getReleasesByDate, delay } from 'helpers';
 
 function useClickHandler(start, end) {
   const releases = useSelector(getDayReleasesMap);
@@ -18,25 +18,29 @@ function useClickHandler(start, end) {
 
       const startDate = max(start, minDate);
       const endDate = min(end, maxDate);
-      const filteredReleases = getReleasesByDate(releases, startDate, endDate);
 
       setValue(FieldName.START_DATE, startDate);
       setValue(FieldName.END_DATE, endDate);
-      setValue(FieldName.RELEASES, filteredReleases);
-      setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
 
-      triggerValidation([
-        FieldName.START_DATE,
-        FieldName.END_DATE,
-        FieldName.RELEASES,
-        FieldName.SELECTED_RELEASES,
-      ]);
+      delay(() => {
+        const filteredReleases = getReleasesByDate(releases, startDate, endDate);
 
-      if (!getValues(FieldName.NAME_CUSTOM)) {
-        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
-      }
+        setValue(FieldName.RELEASES, filteredReleases);
+        setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
+
+        triggerValidation([
+          FieldName.START_DATE,
+          FieldName.END_DATE,
+          FieldName.RELEASES,
+          FieldName.SELECTED_RELEASES,
+        ]);
+
+        if (!getValues(FieldName.NAME_CUSTOM)) {
+          setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
+        }
+      });
     },
-    [start, end, minDate, maxDate, releases]
+    [start, end, minDate, maxDate, releases, setValue, triggerValidation, getValues]
   );
 }
 

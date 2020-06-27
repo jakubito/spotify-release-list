@@ -79,7 +79,7 @@ function PlaylistModal() {
       { name: FieldName.SELECTED_RELEASES },
       { required: true, validate: (value) => value.size > 0 }
     );
-  }, []);
+  }, [register]);
 
   return (
     <FormContext {...form}>

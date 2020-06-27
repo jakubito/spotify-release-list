@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
 import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from 'selectors';
-import { getPlaylistNameSuggestion, getReleasesByDate } from 'helpers';
+import { getPlaylistNameSuggestion, getReleasesByDate, delay } from 'helpers';
 import { FieldName, Moment } from 'enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
 
@@ -27,24 +27,26 @@ function useDatesChangeHandler() {
       setValue(FieldName.END_DATE, endDate);
 
       if (startDate && endDate) {
-        const filteredReleases = getReleasesByDate(releases, startDate, endDate);
+        delay(() => {
+          const filteredReleases = getReleasesByDate(releases, startDate, endDate);
 
-        setValue(FieldName.RELEASES, filteredReleases);
-        setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
+          setValue(FieldName.RELEASES, filteredReleases);
+          setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
 
-        triggerValidation([
-          FieldName.START_DATE,
-          FieldName.END_DATE,
-          FieldName.RELEASES,
-          FieldName.SELECTED_RELEASES,
-        ]);
+          triggerValidation([
+            FieldName.START_DATE,
+            FieldName.END_DATE,
+            FieldName.RELEASES,
+            FieldName.SELECTED_RELEASES,
+          ]);
 
-        if (!getValues(FieldName.NAME_CUSTOM)) {
-          setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
-        }
+          if (!getValues(FieldName.NAME_CUSTOM)) {
+            setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
+          }
+        });
       }
     },
-    [releases]
+    [releases, setValue, triggerValidation, getValues]
   );
 }
 

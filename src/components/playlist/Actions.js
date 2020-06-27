@@ -12,11 +12,14 @@ function Actions() {
   const playlistId = useSelector(getPlaylistId);
   const { reset } = useFormContext();
 
-  const resetButtonClickHandler = useCallback((event) => {
-    event.preventDefault();
-    reset();
-    dispatch(resetPlaylist());
-  }, []);
+  const resetButtonClickHandler = useCallback(
+    (event) => {
+      event.preventDefault();
+      reset();
+      dispatch(resetPlaylist());
+    },
+    [reset]
+  );
 
   if (playlistId) {
     return (

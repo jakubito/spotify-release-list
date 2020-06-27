@@ -8,7 +8,7 @@ function NameField() {
 
   const changeHandler = useCallback(() => {
     setValue(FieldName.NAME_CUSTOM, true);
-  }, []);
+  }, [setValue]);
 
   return (
     <div className="field">
