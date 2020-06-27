@@ -43,7 +43,7 @@ function Progress() {
   const syncingProgress = useSelector(getSyncingProgress);
   const style = { width: `${syncingProgress}%` };
 
-  return <span className="Progress has-background-dark" style={style}></span>;
+  return <span className="Progress" style={style}></span>;
 }
 
 function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = true }) {
