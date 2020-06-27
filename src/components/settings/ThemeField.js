@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSettingsTheme } from 'selectors';
 import { setSettings } from 'actions';
-import { delay } from 'helpers';
+import { defer } from 'helpers';
 import { Theme } from 'enums';
 
 const themes = Object.values(Theme);
@@ -13,7 +13,7 @@ function ThemeField() {
   const firstRender = useRef(true);
 
   const onChange = useCallback((event) => {
-    delay(dispatch, 0, setSettings({ theme: event.target.value }));
+    defer(dispatch, setSettings({ theme: event.target.value }));
   }, []);
 
   useEffect(() => {

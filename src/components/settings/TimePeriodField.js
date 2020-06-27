@@ -2,14 +2,14 @@ import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSettingsDays } from 'selectors';
 import { setSettings } from 'actions';
-import { delay } from 'helpers';
+import { defer } from 'helpers';
 
 function TimePeriodField() {
   const days = useSelector(getSettingsDays);
   const dispatch = useDispatch();
 
   const onChange = useCallback((event) => {
-    delay(dispatch, 0, setSettings({ days: Number(event.target.value) }));
+    defer(dispatch, setSettings({ days: Number(event.target.value) }));
   }, []);
 
   return (

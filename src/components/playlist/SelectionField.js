@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 import { FieldName } from 'enums';
-import { toggleSetValue } from 'helpers';
+import { toggleSetValue, defer } from 'helpers';
 import AlbumFullTitle from './AlbumFullTitle';
 
 function SelectionField() {
@@ -12,20 +12,21 @@ function SelectionField() {
   const selectedReleases = watch(FieldName.SELECTED_RELEASES);
 
   const toggleExpandedHandler = useCallback(() => {
-    setExpanded((currentExpanded) => !currentExpanded);
+    defer(setExpanded, (currentExpanded) => !currentExpanded);
   }, []);
 
   const selectAllHandler = useCallback(() => {
-    setValue(FieldName.SELECTED_RELEASES, new Set(releases), true);
+    defer(setValue, FieldName.SELECTED_RELEASES, new Set(releases), true);
   }, [releases, setValue]);
 
   const unselectAllHandler = useCallback(() => {
-    setValue(FieldName.SELECTED_RELEASES, new Set([]), true);
+    defer(setValue, FieldName.SELECTED_RELEASES, new Set([]), true);
   }, [setValue]);
 
   const releaseChangeHandler = useCallback(
     (event) => {
-      setValue(
+      defer(
+        setValue,
         FieldName.SELECTED_RELEASES,
         toggleSetValue(selectedReleases, event.target.value),
         true

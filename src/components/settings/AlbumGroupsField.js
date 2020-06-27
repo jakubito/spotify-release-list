@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AlbumGroup } from 'enums';
 import { getSettingsGroups } from 'selectors';
 import { setSettings } from 'actions';
-import { delay } from 'helpers';
+import { defer } from 'helpers';
 
 const fields = {
   [AlbumGroup.ALBUM]: 'Albums',
@@ -28,7 +28,7 @@ function AlbumGroupsField() {
     (event) => {
       const newGroups = xor(groups, [event.target.value]).sort(sortByAlbumGroup);
 
-      delay(dispatch, 0, setSettings({ groups: newGroups }));
+      defer(dispatch, setSettings({ groups: newGroups }));
     },
     [groups]
   );

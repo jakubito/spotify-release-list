@@ -2,14 +2,14 @@ import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSettingsCovers } from 'selectors';
 import { setSettings } from 'actions';
-import { delay } from 'helpers';
+import { defer } from 'helpers';
 
 function CoversField() {
   const covers = useSelector(getSettingsCovers);
   const dispatch = useDispatch();
 
   const onChange = useCallback((event) => {
-    delay(dispatch, 0, setSettings({ covers: event.target.checked }));
+    defer(dispatch, setSettings({ covers: event.target.checked }));
   }, []);
 
   return (

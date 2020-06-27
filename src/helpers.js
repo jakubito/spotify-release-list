@@ -29,10 +29,14 @@ export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function delay(fn, ms = 0, ...args) {
+export function delay(fn, ms, ...args) {
   setTimeout(() => {
     fn(...args);
   }, ms);
+}
+
+export function defer(fn, ...args) {
+  delay(fn, 0, ...args);
 }
 
 export async function reflect(fn, ...args) {
