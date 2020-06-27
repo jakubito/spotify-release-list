@@ -16,7 +16,7 @@ import { generateNonce } from 'helpers';
 import { persistor } from 'store';
 import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist';
 
-export function useOnSubmit(setActionsDisabled) {
+export function useOnSubmit(setSubmitTriggered) {
   const dispatch = useDispatch();
   const token = useSelector(getToken);
   const tokenExpires = useSelector(getTokenExpires);
@@ -38,7 +38,7 @@ export function useOnSubmit(setActionsDisabled) {
       } else {
         const nonce = generateNonce();
 
-        setActionsDisabled(true);
+        setSubmitTriggered(true);
         dispatch(setNonce(nonce));
 
         await persistor.flush();
@@ -57,9 +57,9 @@ function PlaylistModal() {
   const creatingPlaylist = useSelector(getCreatingPlaylist);
   const playlistId = useSelector(getPlaylistId);
   const form = useForm();
-  const [actionsDisabled, setActionsDisabled] = useState(false);
+  const [submitTriggered, setSubmitTriggered] = useState(false);
   const { register, handleSubmit } = form;
-  const onSubmit = useOnSubmit(setActionsDisabled);
+  const onSubmit = useOnSubmit(setSubmitTriggered);
   const onSubmitHandler = useCallback(handleSubmit(onSubmit), [onSubmit]);
 
   useEffect(() => {
@@ -88,7 +88,7 @@ function PlaylistModal() {
 
           <div className="actions columns is-gapless">
             <div className="column">
-              <Actions actionsDisabled={actionsDisabled} />
+              <Actions submitTriggered={submitTriggered} />
             </div>
 
             {!creatingPlaylist && (
@@ -96,7 +96,7 @@ function PlaylistModal() {
                 <button
                   className="button is-dark is-rounded has-text-weight-semibold"
                   onClick={closeModal}
-                  disabled={actionsDisabled}
+                  disabled={submitTriggered}
                 >
                   <span className="icon">
                     <i className="fas fa-times"></i>

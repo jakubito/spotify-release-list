@@ -2,10 +2,11 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
+import classNames from 'classnames';
 import { getCreatingPlaylist, getWorking, getPlaylistId } from 'selectors';
 import { resetPlaylist, createPlaylistCancel } from 'actions';
 
-function Actions({ actionsDisabled }) {
+function Actions({ submitTriggered }) {
   const dispatch = useDispatch();
   const creatingPlaylist = useSelector(getCreatingPlaylist);
   const working = useSelector(getWorking);
@@ -57,8 +58,10 @@ function Actions({ actionsDisabled }) {
   return (
     <button
       type="submit"
-      className="button is-primary is-rounded has-text-weight-semibold"
-      disabled={working || actionsDisabled}
+      className={classNames('button is-primary is-rounded has-text-weight-semibold', {
+        'is-loading': submitTriggered,
+      })}
+      disabled={working || submitTriggered}
       key="submit"
     >
       <span className="icon">
@@ -70,7 +73,7 @@ function Actions({ actionsDisabled }) {
 }
 
 Actions.propTypes = {
-  actionsDisabled: PropTypes.bool.isRequired,
+  submitTriggered: PropTypes.bool.isRequired,
 };
 
 export default Actions;
