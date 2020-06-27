@@ -21,25 +21,22 @@ function useClickHandler() {
   const tokenExpires = useSelector(getTokenExpires);
   const tokenScope = useSelector(getTokenScope);
 
-  return useCallback(
-    async (event) => {
-      event.preventDefault();
+  const clickHandler = useCallback(async () => {
+    if (isValidSyncToken(token, tokenExpires, tokenScope)) {
+      dispatch(sync());
+    } else {
+      const nonce = generateNonce();
 
-      if (isValidSyncToken(token, tokenExpires, tokenScope)) {
-        dispatch(sync());
-      } else {
-        const nonce = generateNonce();
+      dispatch(setSyncing(true));
+      dispatch(setNonce(nonce));
 
-        dispatch(setSyncing(true));
-        dispatch(setNonce(nonce));
+      await persistor.flush();
 
-        await persistor.flush();
+      startSyncAuthFlow(nonce);
+    }
+  }, [token, tokenExpires, tokenScope]);
 
-        startSyncAuthFlow(nonce);
-      }
-    },
-    [token, tokenExpires, tokenScope]
-  );
+  return clickHandler;
 }
 
 function Progress() {
@@ -56,6 +53,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
 
   return (
     <button
+      type="button"
       className={classNames(
         'SyncButton',
         'button',

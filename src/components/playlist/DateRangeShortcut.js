@@ -12,36 +12,33 @@ function useClickHandler(start, end) {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
   const { setValue, triggerValidation, getValues } = useFormContext();
 
-  return useCallback(
-    (event) => {
-      event.preventDefault();
+  const clickHandler = useCallback(() => {
+    const startDate = max(start, minDate);
+    const endDate = min(end, maxDate);
 
-      const startDate = max(start, minDate);
-      const endDate = min(end, maxDate);
+    setValue(FieldName.START_DATE, startDate);
+    setValue(FieldName.END_DATE, endDate);
 
-      setValue(FieldName.START_DATE, startDate);
-      setValue(FieldName.END_DATE, endDate);
+    defer(() => {
+      const filteredReleases = getReleasesByDate(releases, startDate, endDate);
 
-      defer(() => {
-        const filteredReleases = getReleasesByDate(releases, startDate, endDate);
+      setValue(FieldName.RELEASES, filteredReleases);
+      setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
 
-        setValue(FieldName.RELEASES, filteredReleases);
-        setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
+      triggerValidation([
+        FieldName.START_DATE,
+        FieldName.END_DATE,
+        FieldName.RELEASES,
+        FieldName.SELECTED_RELEASES,
+      ]);
 
-        triggerValidation([
-          FieldName.START_DATE,
-          FieldName.END_DATE,
-          FieldName.RELEASES,
-          FieldName.SELECTED_RELEASES,
-        ]);
+      if (!getValues(FieldName.NAME_CUSTOM)) {
+        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
+      }
+    });
+  }, [start, end, minDate, maxDate, releases, setValue, triggerValidation, getValues]);
 
-        if (!getValues(FieldName.NAME_CUSTOM)) {
-          setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
-        }
-      });
-    },
-    [start, end, minDate, maxDate, releases, setValue, triggerValidation, getValues]
-  );
+  return clickHandler;
 }
 
 function useButtonTitle(title, start, end) {
@@ -63,6 +60,7 @@ function DateRangeShortcut({ title, start, end }) {
 
   return (
     <button
+      type="button"
       className="DateRangeShortcut button is-dark is-darker is-rounded is-small has-text-weight-semibold"
       onClick={clickHandler}
       key={buttonTitle}

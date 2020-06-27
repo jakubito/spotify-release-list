@@ -8,8 +8,8 @@ import Link from 'components/Link';
 function Creating() {
   return (
     <>
-      <progress className="progress is-small is-success"></progress>
-      Creating...
+      <progress className="progress is-small"></progress>
+      Creating playlist, please wait...
     </>
   );
 }

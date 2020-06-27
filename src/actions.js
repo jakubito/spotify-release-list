@@ -22,7 +22,7 @@ export const SET_PLAYLIST_FORM = 'SET_PLAYLIST_FORM';
 export const CREATE_PLAYLIST = 'CREATE_PLAYLIST';
 export const CREATE_PLAYLIST_FINISHED = 'CREATE_PLAYLIST_FINISHED';
 export const CREATE_PLAYLIST_ERROR = 'CREATE_PLAYLIST_ERROR';
-export const SET_CREATING_PLAYLIST = 'SET_CREATING_PLAYLIST';
+export const CREATE_PLAYLIST_CANCEL = 'CREATE_PLAYLIST_CANCEL';
 export const RESET_PLAYLIST = 'RESET_PLAYLIST';
 export const ADD_SEEN_FEATURE = 'ADD_SEEN_FEATURE';
 
@@ -181,10 +181,9 @@ export function createPlaylistError() {
   };
 }
 
-export function setCreatingPlaylist(creatingPlaylist) {
+export function createPlaylistCancel() {
   return {
-    type: SET_CREATING_PLAYLIST,
-    payload: { creatingPlaylist },
+    type: CREATE_PLAYLIST_CANCEL,
   };
 }
 

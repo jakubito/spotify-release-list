@@ -1,13 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm, FormContext } from 'react-hook-form';
-import {
-  hidePlaylistModal,
-  createPlaylist,
-  setNonce,
-  setPlaylistForm,
-  setCreatingPlaylist,
-} from 'actions';
+import { hidePlaylistModal, createPlaylist, setNonce, setPlaylistForm } from 'actions';
 import { useModal } from 'hooks';
 import {
   getCreatingPlaylist,
@@ -22,13 +16,13 @@ import { generateNonce } from 'helpers';
 import { persistor } from 'store';
 import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist';
 
-export function useOnSubmit(setCloseDisabled) {
+export function useOnSubmit(setActionsDisabled) {
   const dispatch = useDispatch();
   const token = useSelector(getToken);
   const tokenExpires = useSelector(getTokenExpires);
   const tokenScope = useSelector(getTokenScope);
 
-  return useCallback(
+  const onSubmit = useCallback(
     async (formData) => {
       const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
         formData[FieldName.SELECTED_RELEASES].has(releaseId)
@@ -44,8 +38,7 @@ export function useOnSubmit(setCloseDisabled) {
       } else {
         const nonce = generateNonce();
 
-        setCloseDisabled(true);
-        dispatch(setCreatingPlaylist(true));
+        setActionsDisabled(true);
         dispatch(setNonce(nonce));
 
         await persistor.flush();
@@ -55,6 +48,8 @@ export function useOnSubmit(setCloseDisabled) {
     },
     [token, tokenExpires, tokenScope]
   );
+
+  return onSubmit;
 }
 
 function PlaylistModal() {
@@ -62,9 +57,9 @@ function PlaylistModal() {
   const creatingPlaylist = useSelector(getCreatingPlaylist);
   const playlistId = useSelector(getPlaylistId);
   const form = useForm();
-  const [closeDisabled, setCloseDisabled] = useState(false);
+  const [actionsDisabled, setActionsDisabled] = useState(false);
   const { register, handleSubmit } = form;
-  const onSubmit = useOnSubmit(setCloseDisabled);
+  const onSubmit = useOnSubmit(setActionsDisabled);
   const onSubmitHandler = useCallback(handleSubmit(onSubmit), [onSubmit]);
 
   useEffect(() => {
@@ -93,21 +88,23 @@ function PlaylistModal() {
 
           <div className="actions columns is-gapless">
             <div className="column">
-              <Actions />
+              <Actions actionsDisabled={actionsDisabled} />
             </div>
 
-            <div className="column has-text-right">
-              <button
-                className="button is-dark is-rounded has-text-weight-semibold"
-                onClick={closeModal}
-                disabled={closeDisabled}
-              >
-                <span className="icon">
-                  <i className="fas fa-times"></i>
-                </span>
-                <span>Close</span>
-              </button>
-            </div>
+            {!creatingPlaylist && (
+              <div className="column has-text-right">
+                <button
+                  className="button is-dark is-rounded has-text-weight-semibold"
+                  onClick={closeModal}
+                  disabled={actionsDisabled}
+                >
+                  <span className="icon">
+                    <i className="fas fa-times"></i>
+                  </span>
+                  <span>Close</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </form>

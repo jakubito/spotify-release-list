@@ -21,7 +21,7 @@ function useDatesChangeHandler() {
   const releases = useSelector(getDayReleasesMap);
   const { setValue, triggerValidation, getValues } = useFormContext();
 
-  return useCallback(
+  const datesChangeHandler = useCallback(
     ({ startDate, endDate }) => {
       setValue(FieldName.START_DATE, startDate);
       setValue(FieldName.END_DATE, endDate);
@@ -48,6 +48,8 @@ function useDatesChangeHandler() {
     },
     [releases, setValue, triggerValidation, getValues]
   );
+
+  return datesChangeHandler;
 }
 
 function DateRangeField() {

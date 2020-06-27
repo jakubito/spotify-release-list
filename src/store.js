@@ -26,10 +26,10 @@ import {
   SHOW_ERROR_MESSAGE,
   HIDE_ERROR_MESSAGE,
   SET_PLAYLIST_FORM,
-  SET_CREATING_PLAYLIST,
   CREATE_PLAYLIST,
   CREATE_PLAYLIST_FINISHED,
   CREATE_PLAYLIST_ERROR,
+  CREATE_PLAYLIST_CANCEL,
   RESET_PLAYLIST,
   ADD_SEEN_FEATURE,
 } from 'actions';
@@ -246,11 +246,6 @@ function reducer(state = initialState, action) {
           isPrivate: payload.isPrivate,
         },
       };
-    case SET_CREATING_PLAYLIST:
-      return {
-        ...state,
-        creatingPlaylist: payload.creatingPlaylist,
-      };
     case CREATE_PLAYLIST:
       return {
         ...state,
@@ -264,6 +259,11 @@ function reducer(state = initialState, action) {
         playlistId: payload.id,
       };
     case CREATE_PLAYLIST_ERROR:
+      return {
+        ...state,
+        creatingPlaylist: false,
+      };
+    case CREATE_PLAYLIST_CANCEL:
       return {
         ...state,
         creatingPlaylist: false,

@@ -1,4 +1,4 @@
-import { all, call, put, select, takeLatest } from 'redux-saga/effects';
+import { all, call, put, select, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import moment from 'moment';
 import {
   getUser,
@@ -13,6 +13,7 @@ import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } fr
 import {
   SYNC,
   CREATE_PLAYLIST,
+  CREATE_PLAYLIST_CANCEL,
   setSyncingProgress,
   setUser,
   syncFinished,
@@ -26,6 +27,24 @@ import {
 import { SpotifyEntity, Moment, MomentFormat } from 'enums';
 
 const ARTISTS_CHUNK_SIZE = 6;
+
+function takeLatestCancellable(triggerAction, cancelAction, saga, ...args) {
+  return fork(function* () {
+    let task;
+
+    while (true) {
+      const action = yield take([triggerAction, cancelAction]);
+
+      if (task) {
+        yield cancel(task);
+      }
+
+      if (action.type === triggerAction) {
+        task = yield fork(saga, ...args.concat(action));
+      }
+    }
+  });
+}
 
 function* syncSaga() {
   try {
@@ -82,7 +101,7 @@ function* createPlaylistSaga() {
     let firstPlaylist;
     let part = 1;
 
-    for (const playlistTrackUrisChunk of chunks(trackUris, 10000)) {
+    for (const playlistTrackUrisChunk of chunks(trackUris, 9500)) {
       const name = part > 1 ? `${form.name} (${part})` : form.name;
       const playlist = yield call(
         createPlaylist,
@@ -115,7 +134,7 @@ function* createPlaylistSaga() {
 
 function* saga() {
   yield takeLatest(SYNC, syncSaga);
-  yield takeLatest(CREATE_PLAYLIST, createPlaylistSaga);
+  yield takeLatestCancellable(CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL, createPlaylistSaga);
 }
 
 export default saga;
