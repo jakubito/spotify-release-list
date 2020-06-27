@@ -66,7 +66,7 @@ const initialState = {
   artists: {},
   albums: {},
   syncing: false,
-  syncingProgress: null,
+  syncingProgress: 0,
   lastSync: null,
   creatingPlaylist: false,
   playlistId: null,
@@ -104,7 +104,7 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         syncing: true,
-        syncingProgress: null,
+        syncingProgress: 0,
         artists: {},
         albums: {},
       };

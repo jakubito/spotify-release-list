@@ -2,7 +2,14 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { getSyncing, getToken, getTokenExpires, getTokenScope, getWorking } from 'selectors';
+import {
+  getSyncing,
+  getToken,
+  getTokenExpires,
+  getTokenScope,
+  getWorking,
+  getSyncingProgress,
+} from 'selectors';
 import { generateNonce } from 'helpers';
 import { persistor } from 'store';
 import { setNonce, sync, setSyncing } from 'actions';
@@ -35,7 +42,14 @@ function useClickHandler() {
   );
 }
 
-function SyncButton({ title, icon = 'fab fa-spotify', className }) {
+function Progress() {
+  const syncingProgress = useSelector(getSyncingProgress);
+  const style = { width: `${syncingProgress}%` };
+
+  return <span className="Progress has-background-dark" style={style}></span>;
+}
+
+function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = true }) {
   const syncing = useSelector(getSyncing);
   const working = useSelector(getWorking);
   const clickHandler = useClickHandler();
@@ -58,6 +72,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className }) {
         <i className={icon}></i>
       </span>
       <span>{title}</span>
+      {showProgress && syncing && <Progress />}
     </button>
   );
 }
@@ -66,6 +81,7 @@ SyncButton.propTypes = {
   title: PropTypes.string,
   icon: PropTypes.string,
   className: PropTypes.string,
+  showProgress: PropTypes.bool,
 };
 
 export default SyncButton;

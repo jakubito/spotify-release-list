@@ -109,7 +109,7 @@
       text-decoration: none;
 
       &:hover {
-        text-decoration: underline;
+        text-decoration-line: underline;
       }
     }
 
@@ -118,6 +118,7 @@
       margin-top: 4px;
       margin-bottom: 5px;
       line-height: 1.2;
+      text-decoration-color: $color-primary-dark;
 
       @include theme(compact) {
         font-size: 1rem !important;

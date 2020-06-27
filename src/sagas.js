@@ -37,7 +37,6 @@ function* syncSaga() {
     const artists = yield call(getUserFollowedArtists, token);
 
     yield put(setArtists(artists));
-    yield put(setSyncingProgress(0));
 
     const { groups, market, days } = yield select(getSettings);
     const afterDateString = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE);

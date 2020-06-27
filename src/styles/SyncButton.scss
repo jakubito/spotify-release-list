@@ -1,0 +1,15 @@
+.SyncButton {
+  overflow: hidden;
+  border: none;
+  padding-left: calc(1em + 0.25em + 1px) !important;
+  padding-right: calc(1em + 0.25em + 1px) !important;
+
+  .Progress {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: width 0.5s linear;
+  }
+}

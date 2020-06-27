@@ -81,3 +81,7 @@ body,
 .progress::-webkit-progress-value {
   transition: width 0.5s linear;
 }
+
+.button[disabled] {
+  opacity: 0.6;
+}
