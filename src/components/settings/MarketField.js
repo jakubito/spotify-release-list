@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Market } from 'enums';
 import { getSettingsMarket } from 'selectors';
 import { setSettings } from 'actions';
-import { delay } from 'helpers';
+import { defer } from 'helpers';
 
 function MarketField() {
   const market = useSelector(getSettingsMarket);
   const dispatch = useDispatch();
 
   const onChange = useCallback((event) => {
-    delay(dispatch, 0, setSettings({ market: event.target.value }));
+    defer(dispatch, setSettings({ market: event.target.value }));
   }, []);
 
   return (

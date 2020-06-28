@@ -5,7 +5,7 @@ import { Moment } from 'enums';
 
 export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;
-export const getSyncedOnce = (state) => state.syncedOnce;
+export const getSyncingProgress = (state) => state.syncingProgress;
 export const getLastSync = (state) => state.lastSync;
 export const getToken = (state) => state.token;
 export const getTokenExpires = (state) => state.tokenExpires;
@@ -34,11 +34,6 @@ export const getWorking = createSelector(
   getSyncing,
   getCreatingPlaylist,
   (syncing, creatingPlaylist) => syncing || creatingPlaylist
-);
-
-export const getArtistsCount = createSelector(
-  getArtists,
-  (artistsMap) => Object.keys(artistsMap).length
 );
 
 export const getLastSyncDate = createSelector(getLastSync, (lastSync) =>

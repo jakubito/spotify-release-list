@@ -35,18 +35,8 @@ export function delay(fn, ms, ...args) {
   }, ms);
 }
 
-export async function reflect(fn, ...args) {
-  try {
-    const data = await fn(...args);
-
-    return { data, status: 'resolved' };
-  } catch (error) {
-    return { error, status: 'rejected' };
-  }
-}
-
-export function filterResolved(responses) {
-  return responses.filter(({ status }) => status === 'resolved').map(({ data }) => data);
+export function defer(fn, ...args) {
+  delay(fn, 0, ...args);
 }
 
 export function chunks(inputArray, chunkSize) {

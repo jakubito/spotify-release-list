@@ -1,10 +1,12 @@
 export const SYNC = 'SYNC';
+export const SYNC_START = 'SYNC_START';
 export const SYNC_FINISHED = 'SYNC_FINISHED';
 export const SYNC_ERROR = 'SYNC_ERROR';
 export const SET_SYNCING = 'SET_SYNCING';
+export const SET_SYNCING_PROGRESS = 'SET_SYNCING_PROGRESS';
 export const SET_USER = 'SET_USER';
 export const SET_ARTISTS = 'SET_ARTISTS';
-export const ADD_ALBUMS = 'ADD_ALBUMS';
+export const SET_ALBUMS = 'SET_ALBUMS';
 export const RESET = 'RESET';
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const SHOW_SETTINGS_MODAL = 'SHOW_SETTINGS_MODAL';
@@ -19,15 +21,22 @@ export const SHOW_ERROR_MESSAGE = 'SHOW_ERROR_MESSAGE';
 export const HIDE_ERROR_MESSAGE = 'HIDE_ERROR_MESSAGE';
 export const SET_PLAYLIST_FORM = 'SET_PLAYLIST_FORM';
 export const CREATE_PLAYLIST = 'CREATE_PLAYLIST';
+export const CREATE_PLAYLIST_START = 'CREATE_PLAYLIST_START';
 export const CREATE_PLAYLIST_FINISHED = 'CREATE_PLAYLIST_FINISHED';
 export const CREATE_PLAYLIST_ERROR = 'CREATE_PLAYLIST_ERROR';
-export const SET_CREATING_PLAYLIST = 'SET_CREATING_PLAYLIST';
+export const CREATE_PLAYLIST_CANCEL = 'CREATE_PLAYLIST_CANCEL';
 export const RESET_PLAYLIST = 'RESET_PLAYLIST';
 export const ADD_SEEN_FEATURE = 'ADD_SEEN_FEATURE';
 
 export function sync() {
   return {
     type: SYNC,
+  };
+}
+
+export function syncStart() {
+  return {
+    type: SYNC_START,
   };
 }
 
@@ -50,6 +59,13 @@ export function setSyncing(syncing) {
   };
 }
 
+export function setSyncingProgress(syncingProgress) {
+  return {
+    type: SET_SYNCING_PROGRESS,
+    payload: { syncingProgress },
+  };
+}
+
 export function setUser(user) {
   return {
     type: SET_USER,
@@ -64,10 +80,10 @@ export function setArtists(artists) {
   };
 }
 
-export function addAlbums(albums, afterDateString) {
+export function setAlbums(albums, minDate) {
   return {
-    type: ADD_ALBUMS,
-    payload: { albums, afterDateString },
+    type: SET_ALBUMS,
+    payload: { albums, minDate },
   };
 }
 
@@ -160,6 +176,12 @@ export function createPlaylist() {
   };
 }
 
+export function createPlaylistStart() {
+  return {
+    type: CREATE_PLAYLIST_START,
+  };
+}
+
 export function createPlaylistFinished(id) {
   return {
     type: CREATE_PLAYLIST_FINISHED,
@@ -173,10 +195,9 @@ export function createPlaylistError() {
   };
 }
 
-export function setCreatingPlaylist(creatingPlaylist) {
+export function createPlaylistCancel() {
   return {
-    type: SET_CREATING_PLAYLIST,
-    payload: { creatingPlaylist },
+    type: CREATE_PLAYLIST_CANCEL,
   };
 }
 

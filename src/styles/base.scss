@@ -77,3 +77,11 @@ body,
     margin-bottom: 24px;
   }
 }
+
+.progress::-webkit-progress-value {
+  transition: width 0.5s linear;
+}
+
+.button[disabled] {
+  opacity: 0.7;
+}

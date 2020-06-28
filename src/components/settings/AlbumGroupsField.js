@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AlbumGroup } from 'enums';
 import { getSettingsGroups } from 'selectors';
 import { setSettings } from 'actions';
-import { delay } from 'helpers';
+import { defer } from 'helpers';
 
 const fields = {
   [AlbumGroup.ALBUM]: 'Albums',
@@ -28,14 +28,14 @@ function AlbumGroupsField() {
     (event) => {
       const newGroups = xor(groups, [event.target.value]).sort(sortByAlbumGroup);
 
-      delay(dispatch, 0, setSettings({ groups: newGroups }));
+      defer(dispatch, setSettings({ groups: newGroups }));
     },
     [groups]
   );
 
   return (
     <div className="field">
-      <label className="label has-text-light">Album types</label>
+      <label className="label has-text-light">Include</label>
       <div className="control">
         {fieldsEntries.map(([value, name]) => (
           <div className="field" key={value}>

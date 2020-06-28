@@ -10,8 +10,13 @@ https://spotifyreleaselist.netlify.app/
 
 - Display releases day by day - you won't miss a thing!
 - Create playlists from releases
-- Client only application - all data is stored locally
+- Installable progressive web application (PWA) with fullscreen support
+- All application data stored locally
 - Completely free to use
+
+## Privacy Policy
+
+See [PRIVACY.md](https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md)
 
 ## Installation
 

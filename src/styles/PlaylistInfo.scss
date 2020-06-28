@@ -12,11 +12,12 @@
 
   a {
     color: $color-primary;
-    text-decoration: none;
+    text-decoration-line: none;
+    text-decoration-color: $color-primary-dark;
     margin-top: 10px;
 
     &:hover {
-      text-decoration: underline;
+      text-decoration-line: underline;
     }
   }
 }
