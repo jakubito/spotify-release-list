@@ -18,7 +18,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
   const working = useSelector(getWorking);
   const syncTrigger = useSync();
 
-  useHotkeys('r', syncTrigger);
+  useHotkeys('r', syncTrigger, {}, [syncTrigger]);
 
   return (
     <button

@@ -2,18 +2,23 @@ import { useEffect, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { addSeenFeature, sync, setSyncing, setNonce } from 'actions';
-import { getSeenFeatures, getToken, getTokenExpires, getTokenScope } from 'selectors';
+import { getSeenFeatures, getWorking, getToken, getTokenExpires, getTokenScope } from 'selectors';
 import { isValidSyncToken, startSyncAuthFlow } from 'auth';
 import { generateNonce } from 'helpers';
 import { persistor } from 'store';
 
 export function useSync() {
   const dispatch = useDispatch();
+  const working = useSelector(getWorking);
   const token = useSelector(getToken);
   const tokenExpires = useSelector(getTokenExpires);
   const tokenScope = useSelector(getTokenScope);
 
   const syncTrigger = useCallback(async () => {
+    if (working) {
+      return;
+    }
+
     if (isValidSyncToken(token, tokenExpires, tokenScope)) {
       dispatch(sync());
     } else {
@@ -26,7 +31,7 @@ export function useSync() {
 
       startSyncAuthFlow(nonce);
     }
-  }, [token, tokenExpires, tokenScope]);
+  }, [working, token, tokenExpires, tokenScope]);
 
   return syncTrigger;
 }
