@@ -1,16 +1,5 @@
-import { channel, eventChannel, buffers } from 'redux-saga';
-import {
-  all,
-  call,
-  race,
-  put,
-  select,
-  take,
-  takeLeading,
-  fork,
-  cancel,
-  cancelled,
-} from 'redux-saga/effects';
+import { channel, buffers } from 'redux-saga';
+import { all, call, race, put, select, take, takeLeading, fork, cancel } from 'redux-saga/effects';
 import moment from 'moment';
 import {
   getUser,
@@ -60,27 +49,13 @@ function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
 }
 
 function* progressWorker(progress, setProgressAction) {
-  const intervalChannel = yield call(eventChannel, (emitter) => {
-    const intervalId = setInterval(() => {
-      emitter(true);
-    }, PROGRESS_ANIMATION_MS);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  });
-
   try {
     while (true) {
-      yield take(intervalChannel);
+      yield call(sleep, PROGRESS_ANIMATION_MS);
       yield put(setProgressAction(progress.value));
     }
   } finally {
-    if (yield cancelled()) {
-      intervalChannel.close();
-
-      yield put(setProgressAction(progress.value));
-    }
+    yield put(setProgressAction(progress.value));
   }
 }
 

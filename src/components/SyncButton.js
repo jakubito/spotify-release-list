@@ -8,9 +8,9 @@ import { useSync } from 'hooks';
 
 function Progress() {
   const syncingProgress = useSelector(getSyncingProgress);
-  const style = { transform: `translateX(${syncingProgress - 100}%) translateX(-1px)` };
+  const style = { transform: `translateX(${syncingProgress - 100}%)` };
 
-  return <span className="Progress" style={style}></span>;
+  return <span className="progress-bar" style={style}></span>;
 }
 
 function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = true }) {
@@ -30,7 +30,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
         'is-primary',
         'is-rounded',
         'has-text-weight-semibold',
-        { 'is-loading': syncing },
+        { 'is-syncing': syncing },
         className
       )}
       disabled={working}
@@ -41,6 +41,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
       </span>
       <span>{title}</span>
       {showProgress && syncing && <Progress />}
+      {syncing && <span className="spinner"></span>}
     </button>
   );
 }
