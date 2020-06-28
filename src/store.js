@@ -150,7 +150,7 @@ function reducer(state = initialState, action) {
         ...state,
         albums: payload.albums.reduce(
           (acc, album) => {
-            if (album.releaseDate < payload.afterDateString) {
+            if (album.releaseDate < payload.minDate) {
               return acc;
             }
 

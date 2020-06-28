@@ -10,7 +10,8 @@
     top: 0;
     left: 0;
     height: 100%;
-    transition: width 0.5s linear;
+    width: 100%;
+    transition: transform 500ms ease;
     background-color: rgba(0, 0, 0, 0.5);
   }
 }

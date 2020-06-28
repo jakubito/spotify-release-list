@@ -1,4 +1,5 @@
-import { all, call, put, select, takeLatest, take, fork, cancel } from 'redux-saga/effects';
+import { channel, eventChannel, buffers } from 'redux-saga';
+import { call, put, select, takeLatest, take, fork, cancel, cancelled } from 'redux-saga/effects';
 import moment from 'moment';
 import {
   getUser,
@@ -8,7 +9,7 @@ import {
   createPlaylist,
   addTracksToPlaylist,
 } from 'api';
-import { chunks, reflect, filterResolved, getSpotifyUri, sleep } from 'helpers';
+import { chunks, getSpotifyUri, sleep } from 'helpers';
 import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from 'selectors';
 import {
   SYNC,
@@ -26,7 +27,10 @@ import {
 } from 'actions';
 import { SpotifyEntity, Moment, MomentFormat } from 'enums';
 
-const ARTISTS_CHUNK_SIZE = 6;
+const REQUEST_WORKERS = 6;
+const PROGRESS_ANIMATION_MS = 550;
+const STATUS_OK = 'STATUS_OK';
+const STATUS_ERROR = 'STATUS_ERROR';
 
 function takeLatestCancellable(triggerAction, cancelAction, saga, ...args) {
   return fork(function* () {
@@ -46,6 +50,45 @@ function takeLatestCancellable(triggerAction, cancelAction, saga, ...args) {
   });
 }
 
+function* progressWorker(progress, setProgressAction) {
+  const intervalChannel = yield call(eventChannel, (emitter) => {
+    const intervalId = setInterval(() => {
+      emitter(true);
+    }, PROGRESS_ANIMATION_MS);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  });
+
+  try {
+    while (true) {
+      yield take(intervalChannel);
+      yield put(setProgressAction(progress.value));
+    }
+  } finally {
+    if (yield cancelled()) {
+      intervalChannel.close();
+
+      yield put(setProgressAction(progress.value));
+    }
+  }
+}
+
+function* requestWorker(requestChannel, responseChannel) {
+  while (true) {
+    const request = yield take(requestChannel);
+
+    try {
+      const result = yield call(...request);
+
+      yield put(responseChannel, { status: STATUS_OK, result });
+    } catch (error) {
+      yield put(responseChannel, { status: STATUS_ERROR, error });
+    }
+  }
+}
+
 function* syncSaga() {
   try {
     const token = yield select(getToken);
@@ -57,23 +100,35 @@ function* syncSaga() {
 
     yield put(setArtists(artists));
 
-    const { groups, market, days } = yield select(getSettings);
-    const afterDateString = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE);
-    let artistsFetched = 0;
+    const requestChannel = yield call(channel, buffers.expanding(10));
+    const responseChannel = yield call(channel, buffers.expanding(10));
 
-    for (const artistsChunk of chunks(artists, ARTISTS_CHUNK_SIZE)) {
-      const albumCalls = artistsChunk.map((artist) =>
-        call(reflect, getArtistAlbums, token, artist.id, groups, market, afterDateString)
-      );
-      const albumResponses = yield all(albumCalls);
-      const albums = filterResolved(albumResponses).flat();
-      artistsFetched += ARTISTS_CHUNK_SIZE;
-
-      yield put(addAlbums(albums, afterDateString));
-      yield put(setSyncingProgress((artistsFetched / artists.length) * 100));
+    for (let i = 0; i < REQUEST_WORKERS; i += 1) {
+      yield fork(requestWorker, requestChannel, responseChannel);
     }
 
-    yield call(sleep, 600); // wait for progress bar animation
+    const progress = { value: 0 };
+    const progressWorkerTask = yield fork(progressWorker, progress, setSyncingProgress);
+
+    const { groups, market, days } = yield select(getSettings);
+    const minDate = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE);
+
+    for (const artist of artists) {
+      yield put(requestChannel, [getArtistAlbums, token, artist.id, groups, market, minDate]);
+    }
+
+    for (let artistsFetched = 0; artistsFetched < artists.length; artistsFetched += 1) {
+      const response = yield take(responseChannel);
+
+      if (response.status === STATUS_OK) {
+        yield put(addAlbums(response.result, minDate));
+      }
+
+      progress.value = ((artistsFetched + 1) / artists.length) * 100;
+    }
+
+    yield cancel(progressWorkerTask);
+    yield call(sleep, PROGRESS_ANIMATION_MS);
     yield put(syncFinished());
   } catch (error) {
     yield put(showErrorMessage());

@@ -41,7 +41,7 @@ function useClickHandler() {
 
 function Progress() {
   const syncingProgress = useSelector(getSyncingProgress);
-  const style = { width: `${syncingProgress}%` };
+  const style = { transform: `translateX(${syncingProgress - 100}%)` };
 
   return <span className="Progress" style={style}></span>;
 }

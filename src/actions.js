@@ -72,10 +72,10 @@ export function setArtists(artists) {
   };
 }
 
-export function addAlbums(albums, afterDateString) {
+export function addAlbums(albums, minDate) {
   return {
     type: ADD_ALBUMS,
-    payload: { albums, afterDateString },
+    payload: { albums, minDate },
   };
 }
 

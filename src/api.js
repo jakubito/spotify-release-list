@@ -88,7 +88,7 @@ export async function getUserFollowedArtists(token) {
   return artists;
 }
 
-export async function getArtistAlbums(token, artistId, groups, market, afterDateString) {
+export async function getArtistAlbums(token, artistId, groups, market, minDate) {
   if (groups.length === 0) {
     return [];
   }
@@ -119,14 +119,14 @@ export async function getArtistAlbums(token, artistId, groups, market, afterDate
   const lastGroupIndex = findLastIndex(groupCountsValues);
   const [lastGroup, ...groupsRest] = groups.slice(lastGroupIndex);
   const lastAlbum = albums[albums.length - 1];
-  const refetchLastGroup = lastGroupIndex > 0 && lastAlbum.releaseDate > afterDateString;
+  const refetchLastGroup = lastGroupIndex > 0 && lastAlbum.releaseDate > minDate;
 
   const restAlbums = await getArtistAlbums(
     token,
     artistId,
     refetchLastGroup ? [lastGroup, ...groupsRest] : groupsRest,
     market,
-    afterDateString
+    minDate
   );
 
   return albums.concat(restAlbums);
