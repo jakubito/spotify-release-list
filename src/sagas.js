@@ -1,5 +1,15 @@
 import { channel, eventChannel, buffers } from 'redux-saga';
-import { call, put, select, takeLatest, take, fork, cancel, cancelled } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  put,
+  select,
+  takeLatest,
+  take,
+  fork,
+  cancel,
+  cancelled,
+} from 'redux-saga/effects';
 import moment from 'moment';
 import {
   getUser,
@@ -144,15 +154,14 @@ function* createPlaylistSaga() {
     const user = yield select(getUserSelector);
     const form = yield select(getPlaylistForm);
     const { market } = yield select(getSettings);
-    const trackIds = [];
+    const trackIdsCalls = [];
 
     for (const albumIdsChunk of chunks(form.albumIds, 20)) {
-      const newTrackIds = yield call(getAlbumsTrackIds, token, albumIdsChunk, market);
-
-      trackIds.push(...newTrackIds);
+      trackIdsCalls.push(call(getAlbumsTrackIds, token, albumIdsChunk, market));
     }
 
-    const trackUris = trackIds.map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK));
+    const trackIds = yield all(trackIdsCalls);
+    const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK));
     let firstPlaylist;
     let part = 1;
 
