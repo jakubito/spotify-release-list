@@ -2,10 +2,11 @@ import { channel, eventChannel, buffers } from 'redux-saga';
 import {
   all,
   call,
+  race,
   put,
   select,
-  takeLatest,
   take,
+  takeLeading,
   fork,
   cancel,
   cancelled,
@@ -27,11 +28,13 @@ import {
   CREATE_PLAYLIST_CANCEL,
   setSyncingProgress,
   setUser,
+  syncStart,
   syncFinished,
   syncError,
-  addAlbums,
+  setAlbums,
   setArtists,
   showErrorMessage,
+  createPlaylistStart,
   createPlaylistFinished,
   createPlaylistError,
 } from 'actions';
@@ -42,19 +45,15 @@ const PROGRESS_ANIMATION_MS = 550;
 const STATUS_OK = 'STATUS_OK';
 const STATUS_ERROR = 'STATUS_ERROR';
 
-function takeLatestCancellable(triggerAction, cancelAction, saga, ...args) {
+function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
   return fork(function* () {
-    let task;
-
     while (true) {
-      const action = yield take([triggerAction, cancelAction]);
+      const action = yield take(triggerAction);
+      const task = yield fork(saga, ...args.concat(action));
+      const [cancelled] = yield race([take(cancelAction), call(task.toPromise)]);
 
-      if (task) {
+      if (cancelled) {
         yield cancel(task);
-      }
-
-      if (action.type === triggerAction) {
-        task = yield fork(saga, ...args.concat(action));
       }
     }
   });
@@ -101,27 +100,26 @@ function* requestWorker(requestChannel, responseChannel) {
 
 function* syncSaga() {
   try {
+    yield put(syncStart());
+
     const token = yield select(getToken);
+    const { groups, market, days } = yield select(getSettings);
+    const minDate = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE);
+    const albums = [];
+
     const user = yield call(getUser, token);
-
-    yield put(setUser(user));
-
     const artists = yield call(getUserFollowedArtists, token);
 
-    yield put(setArtists(artists));
-
+    const tasks = [];
+    const progress = { value: 0 };
     const requestChannel = yield call(channel, buffers.expanding(10));
     const responseChannel = yield call(channel, buffers.expanding(10));
 
     for (let i = 0; i < REQUEST_WORKERS; i += 1) {
-      yield fork(requestWorker, requestChannel, responseChannel);
+      tasks.push(yield fork(requestWorker, requestChannel, responseChannel));
     }
 
-    const progress = { value: 0 };
-    const progressWorkerTask = yield fork(progressWorker, progress, setSyncingProgress);
-
-    const { groups, market, days } = yield select(getSettings);
-    const minDate = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE);
+    tasks.push(yield fork(progressWorker, progress, setSyncingProgress));
 
     for (const artist of artists) {
       yield put(requestChannel, [getArtistAlbums, token, artist.id, groups, market, minDate]);
@@ -131,14 +129,18 @@ function* syncSaga() {
       const response = yield take(responseChannel);
 
       if (response.status === STATUS_OK) {
-        yield put(addAlbums(response.result, minDate));
+        albums.push(...response.result);
       }
 
       progress.value = ((artistsFetched + 1) / artists.length) * 100;
     }
 
-    yield cancel(progressWorkerTask);
+    yield cancel(tasks);
     yield call(sleep, PROGRESS_ANIMATION_MS);
+
+    yield put(setUser(user));
+    yield put(setArtists(artists));
+    yield put(setAlbums(albums, minDate));
     yield put(syncFinished());
   } catch (error) {
     yield put(showErrorMessage());
@@ -150,6 +152,8 @@ function* syncSaga() {
 
 function* createPlaylistSaga() {
   try {
+    yield put(createPlaylistStart());
+
     const token = yield select(getToken);
     const user = yield select(getUserSelector);
     const form = yield select(getPlaylistForm);
@@ -197,8 +201,8 @@ function* createPlaylistSaga() {
 }
 
 function* saga() {
-  yield takeLatest(SYNC, syncSaga);
-  yield takeLatestCancellable(CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL, createPlaylistSaga);
+  yield takeLeading(SYNC, syncSaga);
+  yield takeLeadingCancellable(CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL, createPlaylistSaga);
 }
 
 export default saga;

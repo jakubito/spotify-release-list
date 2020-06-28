@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Media from 'react-media';
 import moment from 'moment';
@@ -6,6 +6,7 @@ import { getLastSyncDate, getHasReleases, getSyncing } from 'selectors';
 import { showSettingsModal, showPlaylistModal } from 'actions';
 import { saveInterval } from 'helpers';
 import SyncButton from './SyncButton';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 function Navbar() {
   const syncing = useSelector(getSyncing);
@@ -13,6 +14,21 @@ function Navbar() {
   const hasReleases = useSelector(getHasReleases);
   const dispatch = useDispatch();
   const [lastSyncHuman, setLastSyncHuman] = useState(moment(lastSyncDate).fromNow());
+
+  const playlistModalTrigger = useCallback(() => {
+    if (lastSyncDate && hasReleases && !syncing) {
+      dispatch(showPlaylistModal());
+    }
+  }, [lastSyncDate, hasReleases, syncing]);
+
+  const settingsModalTrigger = useCallback(() => {
+    if (!syncing) {
+      dispatch(showSettingsModal());
+    }
+  }, [syncing]);
+
+  useHotkeys('n', playlistModalTrigger, {}, [playlistModalTrigger]);
+  useHotkeys('s', settingsModalTrigger, {}, [settingsModalTrigger]);
 
   useEffect(() => {
     const updateLastSyncHuman = () => {
@@ -39,8 +55,9 @@ function Navbar() {
       <div className="right">
         {lastSyncDate && hasReleases && !syncing && (
           <button
+            title="New playlist [N]"
             className="button is-rounded is-dark has-text-weight-semibold"
-            onClick={() => dispatch(showPlaylistModal())}
+            onClick={playlistModalTrigger}
           >
             <span className="icon">
               <i className="fas fa-plus"></i>
@@ -52,8 +69,9 @@ function Navbar() {
         )}
 
         <button
+          title="Settings [S]"
           className="button is-rounded is-dark has-text-weight-semibold"
-          onClick={() => dispatch(showSettingsModal())}
+          onClick={settingsModalTrigger}
           disabled={syncing}
         >
           <span className="icon">

@@ -1,7 +1,35 @@
 import { useEffect, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addSeenFeature } from 'actions';
-import { getSeenFeatures } from 'selectors';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { addSeenFeature, sync, setSyncing, setNonce } from 'actions';
+import { getSeenFeatures, getToken, getTokenExpires, getTokenScope } from 'selectors';
+import { isValidSyncToken, startSyncAuthFlow } from 'auth';
+import { generateNonce } from 'helpers';
+import { persistor } from 'store';
+
+export function useSync() {
+  const dispatch = useDispatch();
+  const token = useSelector(getToken);
+  const tokenExpires = useSelector(getTokenExpires);
+  const tokenScope = useSelector(getTokenScope);
+
+  const syncTrigger = useCallback(async () => {
+    if (isValidSyncToken(token, tokenExpires, tokenScope)) {
+      dispatch(sync());
+    } else {
+      const nonce = generateNonce();
+
+      dispatch(setSyncing(true));
+      dispatch(setNonce(nonce));
+
+      await persistor.flush();
+
+      startSyncAuthFlow(nonce);
+    }
+  }, [token, tokenExpires, tokenScope]);
+
+  return syncTrigger;
+}
 
 export function useModal(hideModalAction) {
   const dispatch = useDispatch();
@@ -9,18 +37,12 @@ export function useModal(hideModalAction) {
     dispatch(hideModalAction());
   }, []);
 
-  useEffect(() => {
-    const escHandler = ({ key }) => {
-      if (['Esc', 'Escape'].includes(key)) {
-        closeModal();
-      }
-    };
+  useHotkeys('esc', closeModal);
 
-    window.addEventListener('keydown', escHandler);
+  useEffect(() => {
     document.documentElement.classList.add('is-modal-open');
 
     return () => {
-      window.removeEventListener('keydown', escHandler);
       document.documentElement.classList.remove('is-modal-open');
     };
   }, []);

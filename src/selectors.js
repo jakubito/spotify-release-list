@@ -36,11 +36,6 @@ export const getWorking = createSelector(
   (syncing, creatingPlaylist) => syncing || creatingPlaylist
 );
 
-export const getArtistsCount = createSelector(
-  getArtists,
-  (artistsMap) => Object.keys(artistsMap).length
-);
-
 export const getLastSyncDate = createSelector(getLastSync, (lastSync) =>
   lastSync ? new Date(lastSync) : lastSync
 );

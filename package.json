@@ -24,6 +24,7 @@
     "react-dates": "^21.8.0",
     "react-dom": "^16.10.2",
     "react-hook-form": "^5.7.1",
+    "react-hotkeys-hook": "^2.1.3",
     "react-ios-pwa-prompt": "^1.8.0",
     "react-media": "^1.10.0",
     "react-redux": "^7.1.1",

@@ -5,13 +5,13 @@ import localForage from 'localforage';
 import * as Sentry from '@sentry/browser';
 import createSagaMiddleware from 'redux-saga';
 import {
-  SYNC,
+  SYNC_START,
   SYNC_FINISHED,
   SYNC_ERROR,
   SET_SYNCING,
   SET_SYNCING_PROGRESS,
   SET_USER,
-  ADD_ALBUMS,
+  SET_ALBUMS,
   SET_ARTISTS,
   RESET,
   SET_SETTINGS,
@@ -26,7 +26,7 @@ import {
   SHOW_ERROR_MESSAGE,
   HIDE_ERROR_MESSAGE,
   SET_PLAYLIST_FORM,
-  CREATE_PLAYLIST,
+  CREATE_PLAYLIST_START,
   CREATE_PLAYLIST_FINISHED,
   CREATE_PLAYLIST_ERROR,
   CREATE_PLAYLIST_CANCEL,
@@ -100,13 +100,11 @@ function reducer(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case SYNC:
+    case SYNC_START:
       return {
         ...state,
         syncing: true,
         syncingProgress: 0,
-        artists: {},
-        albums: {},
       };
     case SYNC_FINISHED:
       return {
@@ -145,27 +143,24 @@ function reducer(state = initialState, action) {
           {}
         ),
       };
-    case ADD_ALBUMS:
+    case SET_ALBUMS:
       return {
         ...state,
-        albums: payload.albums.reduce(
-          (acc, album) => {
-            if (album.releaseDate < payload.minDate) {
-              return acc;
-            }
-
-            const { meta, ...albumRest } = album;
-
-            if (!acc[album.id]) {
-              acc[album.id] = albumRest;
-            }
-
-            acc[album.id].groups[meta.group] = [...acc[album.id].groups[meta.group], meta.artistId];
-
+        albums: payload.albums.reduce((acc, album) => {
+          if (album.releaseDate < payload.minDate) {
             return acc;
-          },
-          { ...state.albums }
-        ),
+          }
+
+          const { meta, ...albumRest } = album;
+
+          if (!acc[album.id]) {
+            acc[album.id] = albumRest;
+          }
+
+          acc[album.id].groups[meta.group] = [...acc[album.id].groups[meta.group], meta.artistId];
+
+          return acc;
+        }, {}),
       };
     case SET_SETTINGS:
       return {
@@ -180,6 +175,7 @@ function reducer(state = initialState, action) {
         ...state,
         settingsModalVisible: true,
         resetModalVisible: false,
+        playlistModalVisible: false,
       };
     case HIDE_SETTINGS_MODAL:
       return {
@@ -191,6 +187,7 @@ function reducer(state = initialState, action) {
         ...state,
         resetModalVisible: true,
         settingsModalVisible: false,
+        playlistModalVisible: false,
       };
     case HIDE_RESET_MODAL:
       return {
@@ -201,6 +198,8 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         playlistModalVisible: true,
+        settingsModalVisible: false,
+        resetModalVisible: false,
       };
     case HIDE_PLAYLIST_MODAL:
       return {
@@ -246,7 +245,7 @@ function reducer(state = initialState, action) {
           isPrivate: payload.isPrivate,
         },
       };
-    case CREATE_PLAYLIST:
+    case CREATE_PLAYLIST_START:
       return {
         ...state,
         creatingPlaylist: true,

@@ -1,47 +1,14 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useHotkeys } from 'react-hotkeys-hook';
 import classNames from 'classnames';
-import {
-  getSyncing,
-  getToken,
-  getTokenExpires,
-  getTokenScope,
-  getWorking,
-  getSyncingProgress,
-} from 'selectors';
-import { generateNonce } from 'helpers';
-import { persistor } from 'store';
-import { setNonce, sync, setSyncing } from 'actions';
-import { startSyncAuthFlow, isValidSyncToken } from 'auth';
-
-function useClickHandler() {
-  const dispatch = useDispatch();
-  const token = useSelector(getToken);
-  const tokenExpires = useSelector(getTokenExpires);
-  const tokenScope = useSelector(getTokenScope);
-
-  const clickHandler = useCallback(async () => {
-    if (isValidSyncToken(token, tokenExpires, tokenScope)) {
-      dispatch(sync());
-    } else {
-      const nonce = generateNonce();
-
-      dispatch(setSyncing(true));
-      dispatch(setNonce(nonce));
-
-      await persistor.flush();
-
-      startSyncAuthFlow(nonce);
-    }
-  }, [token, tokenExpires, tokenScope]);
-
-  return clickHandler;
-}
+import { getSyncing, getWorking, getSyncingProgress } from 'selectors';
+import { useSync } from 'hooks';
 
 function Progress() {
   const syncingProgress = useSelector(getSyncingProgress);
-  const style = { transform: `translateX(${syncingProgress - 100}%)` };
+  const style = { transform: `translateX(${syncingProgress - 100}%) translateX(-1px)` };
 
   return <span className="Progress" style={style}></span>;
 }
@@ -49,10 +16,13 @@ function Progress() {
 function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = true }) {
   const syncing = useSelector(getSyncing);
   const working = useSelector(getWorking);
-  const clickHandler = useClickHandler();
+  const syncTrigger = useSync();
+
+  useHotkeys('r', syncTrigger);
 
   return (
     <button
+      title={`${title} [R]`}
       type="button"
       className={classNames(
         'SyncButton',
@@ -64,7 +34,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
         className
       )}
       disabled={working}
-      onClick={clickHandler}
+      onClick={syncTrigger}
     >
       <span className="icon">
         <i className={icon}></i>
