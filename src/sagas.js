@@ -158,11 +158,10 @@ function* createPlaylistSaga() {
     const user = yield select(getUserSelector);
     const form = yield select(getPlaylistForm);
     const { market } = yield select(getSettings);
-    const trackIdsCalls = [];
 
-    for (const albumIdsChunk of chunks(form.albumIds, 20)) {
-      trackIdsCalls.push(call(getAlbumsTrackIds, token, albumIdsChunk, market));
-    }
+    const trackIdsCalls = chunks(form.albumIds, 20).map((albumIdsChunk) =>
+      call(getAlbumsTrackIds, token, albumIdsChunk, market)
+    );
 
     const trackIds = yield all(trackIdsCalls);
     const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK));
