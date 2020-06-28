@@ -14,6 +14,13 @@ https://spotifyreleaselist.netlify.app/
 - All application data stored locally
 - Completely free to use
 
+## Keyboard shortcuts
+
+<kbd>R</kbd> Refresh list  
+<kbd>S</kbd> Show settings  
+<kbd>N</kbd> New playlist  
+<kbd>ESC</kbd> Close active modal
+
 ## Privacy Policy
 
 See [PRIVACY.md](https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md)
