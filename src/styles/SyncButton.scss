@@ -4,14 +4,24 @@
   padding-left: calc(1em + 0.25em + 1px) !important;
   padding-right: calc(1em + 0.25em + 1px) !important;
 
-  .Progress {
+  &.is-syncing {
+    color: transparent !important;
+  }
+
+  .progress-bar {
     display: block;
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
-    width: calc(100% + 1px);
+    width: 100%;
     transition: transform 500ms ease;
     background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .spinner {
+    @extend %loader;
+    @include center(1em);
+    border-color: transparent transparent #ffffff #ffffff;
   }
 }
