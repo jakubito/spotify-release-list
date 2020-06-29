@@ -11,7 +11,6 @@ export const getToken = (state) => state.token;
 export const getTokenExpires = (state) => state.tokenExpires;
 export const getTokenScope = (state) => state.tokenScope;
 export const getNonce = (state) => state.nonce;
-export const getArtists = (state) => state.artists;
 export const getAlbums = (state) => state.albums;
 export const getSettings = (state) => state.settings;
 export const getSettingsModalVisible = (state) => state.settingsModalVisible;
@@ -48,9 +47,9 @@ const getDayPrecisionAlbums = createSelector(getAlbumsArray, (albums) =>
 
 export const getDayReleasesMap = createSelector(getDayPrecisionAlbums, (albums) =>
   albums.reduce(
-    (acc, album) => ({
-      ...acc,
-      [album.releaseDate]: [...(acc[album.releaseDate] || []), album],
+    (map, album) => ({
+      ...map,
+      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
     }),
     {}
   )

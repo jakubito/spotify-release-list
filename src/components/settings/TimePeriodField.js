@@ -14,7 +14,7 @@ function TimePeriodField() {
 
   return (
     <div className="field">
-      <label className="label has-text-grey-lighter">Time period</label>
+      <label className="label has-text-light">Time period</label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
           <select defaultValue={days.toString()} onChange={onChange}>

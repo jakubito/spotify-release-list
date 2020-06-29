@@ -4,6 +4,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import localForage from 'localforage';
 import * as Sentry from '@sentry/browser';
 import createSagaMiddleware from 'redux-saga';
+import orderBy from 'lodash.orderby';
 import {
   SYNC_START,
   SYNC_FINISHED,
@@ -12,7 +13,6 @@ import {
   SET_SYNCING_PROGRESS,
   SET_USER,
   SET_ALBUMS,
-  SET_ARTISTS,
   RESET,
   SET_SETTINGS,
   SHOW_SETTINGS_MODAL,
@@ -48,7 +48,6 @@ const persistConfig = {
   stateReconciler: autoMergeLevel2,
   migrate: createMigrate(migrations),
   whitelist: [
-    'artists',
     'albums',
     'lastSync',
     'playlistForm',
@@ -63,7 +62,6 @@ const persistConfig = {
 };
 
 const initialState = {
-  artists: {},
   albums: {},
   syncing: false,
   syncingProgress: 0,
@@ -95,6 +93,47 @@ const initialState = {
   },
   seenFeatures: [],
 };
+
+function setAlbums(state, payload) {
+  const artists = payload.artists.reduce(
+    (map, artist) => ({
+      ...map,
+      [artist.id]: artist,
+    }),
+    {}
+  );
+
+  const albums = payload.albums.reduce((map, currentAlbum) => {
+    if (currentAlbum.releaseDate < payload.minDate) {
+      return map;
+    }
+
+    const { artistId, ...album } = currentAlbum;
+    const matched = map[album.id];
+
+    if (!matched) {
+      album.artists = orderBy(album.artists, 'name').filter((artist) => artist.id !== artistId);
+      album.primaryArtists = [artists[artistId]];
+      map[album.id] = album;
+
+      return map;
+    }
+
+    const inPrimary = matched.primaryArtists.find((artist) => artist.id === artistId);
+
+    if (!inPrimary) {
+      matched.artists = matched.artists.filter((artist) => artist.id !== artistId);
+      matched.primaryArtists = orderBy([...matched.primaryArtists, artists[artistId]], 'name');
+    }
+
+    return map;
+  }, {});
+
+  return {
+    ...state,
+    albums,
+  };
+}
 
 function reducer(state = initialState, action) {
   const { type, payload } = action;
@@ -132,36 +171,8 @@ function reducer(state = initialState, action) {
         ...state,
         user: payload.user,
       };
-    case SET_ARTISTS:
-      return {
-        ...state,
-        artists: payload.artists.reduce(
-          (acc, artist) => ({
-            ...acc,
-            [artist.id]: artist,
-          }),
-          {}
-        ),
-      };
     case SET_ALBUMS:
-      return {
-        ...state,
-        albums: payload.albums.reduce((acc, album) => {
-          if (album.releaseDate < payload.minDate) {
-            return acc;
-          }
-
-          const { meta, ...albumRest } = album;
-
-          if (!acc[album.id]) {
-            acc[album.id] = albumRest;
-          }
-
-          acc[album.id].groups[meta.group] = [...acc[album.id].groups[meta.group], meta.artistId];
-
-          return acc;
-        }, {}),
-      };
+      return setAlbums(state, payload);
     case SET_SETTINGS:
       return {
         ...state,

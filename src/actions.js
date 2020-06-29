@@ -5,7 +5,6 @@ export const SYNC_ERROR = 'SYNC_ERROR';
 export const SET_SYNCING = 'SET_SYNCING';
 export const SET_SYNCING_PROGRESS = 'SET_SYNCING_PROGRESS';
 export const SET_USER = 'SET_USER';
-export const SET_ARTISTS = 'SET_ARTISTS';
 export const SET_ALBUMS = 'SET_ALBUMS';
 export const RESET = 'RESET';
 export const SET_SETTINGS = 'SET_SETTINGS';
@@ -73,17 +72,10 @@ export function setUser(user) {
   };
 }
 
-export function setArtists(artists) {
-  return {
-    type: SET_ARTISTS,
-    payload: { artists },
-  };
-}
-
-export function setAlbums(albums, minDate) {
+export function setAlbums(albums, artists, minDate) {
   return {
     type: SET_ALBUMS,
-    payload: { albums, minDate },
+    payload: { albums, artists, minDate },
   };
 }
 

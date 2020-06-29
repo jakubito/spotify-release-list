@@ -21,7 +21,6 @@ import {
   syncFinished,
   syncError,
   setAlbums,
-  setArtists,
   showErrorMessage,
   createPlaylistStart,
   createPlaylistFinished,
@@ -114,8 +113,7 @@ function* syncSaga() {
     yield call(sleep, PROGRESS_ANIMATION_MS);
 
     yield put(setUser(user));
-    yield put(setArtists(artists));
-    yield put(setAlbums(albums, minDate));
+    yield put(setAlbums(albums, artists, minDate));
     yield put(syncFinished());
   } catch (error) {
     yield put(showErrorMessage());
