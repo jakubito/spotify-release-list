@@ -43,7 +43,7 @@ localForage.config({
 
 const persistConfig = {
   key: 'root',
-  version: 0,
+  version: 1,
   storage: localForage,
   stateReconciler: autoMergeLevel2,
   migrate: createMigrate(migrations),
@@ -61,7 +61,7 @@ const persistConfig = {
   ],
 };
 
-const initialState = {
+export const initialState = {
   albums: {},
   syncing: false,
   syncingProgress: 0,
