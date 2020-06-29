@@ -21,7 +21,6 @@ import {
   syncFinished,
   syncError,
   setAlbums,
-  setArtists,
   showErrorMessage,
   createPlaylistStart,
   createPlaylistFinished,
@@ -87,8 +86,8 @@ function* syncSaga() {
 
     const tasks = [];
     const progress = { value: 0 };
-    const requestChannel = yield call(channel, buffers.expanding(10));
-    const responseChannel = yield call(channel, buffers.expanding(10));
+    const requestChannel = yield call(channel, buffers.fixed(artists.length));
+    const responseChannel = yield call(channel, buffers.fixed(REQUEST_WORKERS));
 
     for (let i = 0; i < REQUEST_WORKERS; i += 1) {
       tasks.push(yield fork(requestWorker, requestChannel, responseChannel));
@@ -100,22 +99,21 @@ function* syncSaga() {
       yield put(requestChannel, [getArtistAlbums, token, artist.id, groups, market, minDate]);
     }
 
-    for (let artistsFetched = 0; artistsFetched < artists.length; artistsFetched += 1) {
+    for (let fetched = 0; fetched < artists.length; fetched += 1) {
       const response = yield take(responseChannel);
 
       if (response.status === STATUS_OK) {
         albums.push(...response.result);
       }
 
-      progress.value = ((artistsFetched + 1) / artists.length) * 100;
+      progress.value = ((fetched + 1) / artists.length) * 100;
     }
 
     yield cancel(tasks);
     yield call(sleep, PROGRESS_ANIMATION_MS);
 
     yield put(setUser(user));
-    yield put(setArtists(artists));
-    yield put(setAlbums(albums, minDate));
+    yield put(setAlbums(albums, artists, minDate));
     yield put(syncFinished());
   } catch (error) {
     yield put(showErrorMessage());

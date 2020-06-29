@@ -5,7 +5,7 @@ import { getDayReleasesSortedEntries } from 'selectors';
 import NoData from './NoData';
 import ReleaseDay from './ReleaseDay';
 
-const DAYS_INCREMENT = 20;
+const DAYS_INCREMENT = 15;
 
 function Releases() {
   const releases = useSelector(getDayReleasesSortedEntries);

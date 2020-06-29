@@ -11,20 +11,6 @@ export function saveInterval(...args) {
   intervalId = setInterval(...args);
 }
 
-export function mergeAlbumArtists(album, artistsMap) {
-  return Object.values(album.groups)
-    .flat()
-    .reduce((acc, artistId) => {
-      const artistNotIncluded = acc.findIndex((artist) => artist.id === artistId) === -1;
-
-      if (artistNotIncluded) {
-        return [...acc, artistsMap[artistId]];
-      }
-
-      return acc;
-    }, album.artists);
-}
-
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -167,15 +153,6 @@ export function buildAlbum(source, artistId) {
     artists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
     releaseDatePrecision: source.release_date_precision,
-    groups: {
-      album: [],
-      single: [],
-      compilation: [],
-      appears_on: [],
-    },
-    meta: {
-      group: source.album_group,
-      artistId,
-    },
+    artistId,
   };
 }

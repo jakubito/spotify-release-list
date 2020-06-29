@@ -1,14 +1,12 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getAlbums, getArtists } from 'selectors';
-import { mergeAlbumArtists } from 'helpers';
+import { getAlbums } from 'selectors';
 
 function AlbumFullTitle({ id }) {
   const albums = useSelector(getAlbums);
-  const artistsMap = useSelector(getArtists);
   const album = albums[id];
-  const artists = mergeAlbumArtists(album, artistsMap)
+  const artists = [...album.primaryArtists, ...album.artists]
     .map((artist) => artist.name)
     .join(', ');
 

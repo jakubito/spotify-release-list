@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getArtists, getSettingsCovers } from 'selectors';
-import { mergeAlbumArtists } from 'helpers';
+import { getSettingsCovers } from 'selectors';
 import Link from './Link';
 
 function AlbumCover({ album }) {
@@ -22,25 +21,32 @@ function AlbumCover({ album }) {
   );
 }
 
+function ArtistLink({ artist, className }) {
+  return (
+    <Link
+      title={artist.name}
+      uri={artist.uri}
+      url={artist.url}
+      className={className}
+      key={artist.id}
+    >
+      {artist.name}
+    </Link>
+  );
+}
+
 function AlbumArtists({ album }) {
-  const artistsMap = useSelector(getArtists);
-  const artists = mergeAlbumArtists(album, artistsMap);
+  const primary = album.primaryArtists.map((artist) => (
+    <ArtistLink artist={artist} className="has-text-light" key={artist.id} />
+  ));
+
+  const other = album.artists.map((artist) => (
+    <ArtistLink artist={artist} className="has-text-grey" key={artist.id} />
+  ));
 
   return (
-    <div className="artists">
-      {artists
-        .map((artist) => (
-          <Link
-            title={artist.name}
-            uri={artist.uri}
-            url={artist.url}
-            className="has-text-light"
-            key={artist.id}
-          >
-            {artist.name}
-          </Link>
-        ))
-        .reduce((acc, node) => [acc, ', ', node])}
+    <div className="artists has-text-grey">
+      {[...primary, ...other].reduce((nodes, node) => [nodes, ', ', node])}
     </div>
   );
 }
@@ -69,7 +75,7 @@ Album.propTypes = {
     name: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
     artists: PropTypes.array.isRequired,
-    groups: PropTypes.object.isRequired,
+    primaryArtists: PropTypes.array.isRequired,
   }).isRequired,
 };
 

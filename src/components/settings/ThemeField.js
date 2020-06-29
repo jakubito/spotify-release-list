@@ -33,7 +33,7 @@ function ThemeField() {
 
   return (
     <div className="field">
-      <label className="label has-text-grey-lighter">Theme</label>
+      <label className="label has-text-light">Theme</label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
           <select defaultValue={theme} onChange={onChange}>
