@@ -1,4 +1,5 @@
 import { AlbumGroup } from 'enums';
+import { initialState } from 'store';
 
 export default {
   0: (state) => {
@@ -13,6 +14,12 @@ export default {
         ...state.settings,
         groups: groupsSorted,
       },
+    };
+  },
+  1: (state) => {
+    return {
+      ...initialState,
+      settings: state.settings,
     };
   },
 };
