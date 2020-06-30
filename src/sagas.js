@@ -140,28 +140,20 @@ function* createPlaylistSaga() {
 
     const token = yield select(getToken);
     const user = yield select(getUserSelector);
-    const form = yield select(getPlaylistForm);
+    const { albumIds, name, description, isPrivate } = yield select(getPlaylistForm);
     const { market } = yield select(getSettings);
 
-    const trackIdsCalls = chunks(form.albumIds, 20).map((albumIdsChunk) =>
+    const trackIdsCalls = chunks(albumIds, 20).map((albumIdsChunk) =>
       call(getAlbumsTrackIds, token, albumIdsChunk, market)
     );
 
     const trackIds = yield all(trackIdsCalls);
     const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK));
     let firstPlaylist;
-    let part = 1;
 
-    for (const playlistTrackUrisChunk of chunks(trackUris, 9500)) {
-      const name = part > 1 ? `${form.name} (${part})` : form.name;
-      const playlist = yield call(
-        createPlaylist,
-        token,
-        user.id,
-        name,
-        form.description,
-        form.isPrivate
-      );
+    for (const [part, playlistTrackUrisChunk] of chunks(trackUris, 9500).entries()) {
+      const fullName = part > 0 ? `${name} (${part + 1})` : name;
+      const playlist = yield call(createPlaylist, token, user.id, fullName, description, isPrivate);
 
       if (!firstPlaylist) {
         firstPlaylist = playlist;
@@ -170,8 +162,6 @@ function* createPlaylistSaga() {
       for (const trackUrisChunk of chunks(playlistTrackUrisChunk, 100)) {
         yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk);
       }
-
-      part += 1;
     }
 
     yield put(createPlaylistFinished(firstPlaylist.id));
