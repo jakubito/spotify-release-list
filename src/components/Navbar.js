@@ -4,7 +4,6 @@ import Media from 'react-media';
 import moment from 'moment';
 import { getLastSyncDate, getHasReleases, getSyncing } from 'selectors';
 import { showSettingsModal, showPlaylistModal } from 'actions';
-import { saveInterval } from 'helpers';
 import SyncButton from './SyncButton';
 import { useHotkeys } from 'react-hotkeys-hook';
 
@@ -35,9 +34,14 @@ function Navbar() {
       setLastSyncHuman(moment(lastSyncDate).fromNow());
     };
 
+    const intervalId = setInterval(updateLastSyncHuman, 60000);
+    window.addEventListener('focus', updateLastSyncHuman);
     updateLastSyncHuman();
-    saveInterval(updateLastSyncHuman, 60000);
-    window.onfocus = updateLastSyncHuman;
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('focus', updateLastSyncHuman);
+    };
   }, [lastSyncDate]);
 
   return (
