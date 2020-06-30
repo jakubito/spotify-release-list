@@ -1,6 +1,20 @@
-import { channel, buffers } from 'redux-saga';
-import { all, call, race, put, select, take, takeLeading, fork, cancel } from 'redux-saga/effects';
 import moment from 'moment';
+import { channel, buffers } from 'redux-saga';
+import {
+  all,
+  call,
+  race,
+  put,
+  select,
+  take,
+  takeLeading,
+  fork,
+  cancel,
+  delay,
+} from 'redux-saga/effects';
+import { chunks, getSpotifyUri } from 'helpers';
+import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from 'selectors';
+import { SpotifyEntity, Moment, MomentFormat } from 'enums';
 import {
   getUser,
   getUserFollowedArtists,
@@ -9,8 +23,6 @@ import {
   createPlaylist,
   addTracksToPlaylist,
 } from 'api';
-import { chunks, getSpotifyUri, sleep } from 'helpers';
-import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from 'selectors';
 import {
   SYNC,
   CREATE_PLAYLIST,
@@ -26,7 +38,6 @@ import {
   createPlaylistFinished,
   createPlaylistError,
 } from 'actions';
-import { SpotifyEntity, Moment, MomentFormat } from 'enums';
 
 const REQUEST_WORKERS = 6;
 const PROGRESS_ANIMATION_MS = 550;
@@ -50,8 +61,8 @@ function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
 function* progressWorker(progress, setProgressAction) {
   try {
     while (true) {
-      yield call(sleep, PROGRESS_ANIMATION_MS);
       yield put(setProgressAction(progress.value));
+      yield delay(PROGRESS_ANIMATION_MS);
     }
   } finally {
     yield put(setProgressAction(progress.value));
@@ -110,7 +121,7 @@ function* syncSaga() {
     }
 
     yield cancel(tasks);
-    yield call(sleep, PROGRESS_ANIMATION_MS);
+    yield delay(PROGRESS_ANIMATION_MS);
 
     yield put(setUser(user));
     yield put(setAlbums(albums, artists, minDate));
