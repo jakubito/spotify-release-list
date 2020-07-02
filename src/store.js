@@ -50,6 +50,7 @@ const persistConfig = {
   whitelist: [
     'albums',
     'lastSync',
+    'previousSyncMaxDate',
     'playlistForm',
     'token',
     'tokenExpires',
@@ -66,6 +67,7 @@ export const initialState = {
   syncing: false,
   syncingProgress: 0,
   lastSync: null,
+  previousSyncMaxDate: null,
   creatingPlaylist: false,
   playlistId: null,
   playlistForm: {
@@ -150,6 +152,7 @@ function reducer(state = initialState, action) {
         ...state,
         syncing: false,
         lastSync: new Date().toISOString(),
+        previousSyncMaxDate: payload.previousSyncMaxDate,
       };
     case SYNC_ERROR:
       return {

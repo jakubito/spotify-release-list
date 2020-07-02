@@ -26,6 +26,10 @@
       margin: 25px 0 0 0 !important;
       text-align: right;
 
+      .new {
+        color: $color-primary;
+      }
+
       @include theme(compact) {
         margin-top: 20px !important;
         font-size: 1.2rem !important;

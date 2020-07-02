@@ -7,6 +7,7 @@ export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;
 export const getSyncingProgress = (state) => state.syncingProgress;
 export const getLastSync = (state) => state.lastSync;
+export const getPreviousSyncMaxDate = (state) => state.previousSyncMaxDate;
 export const getToken = (state) => state.token;
 export const getTokenExpires = (state) => state.tokenExpires;
 export const getTokenScope = (state) => state.tokenScope;
@@ -67,11 +68,16 @@ export const getHasReleases = createSelector(getDayReleasesSortedEntries, (entri
   Boolean(entries.length)
 );
 
-export const getReleasesMinMaxDates = createSelector(getDayReleasesSortedEntries, (entries) =>
-  entries.length ? [entries[entries.length - 1][0], entries[0][0]] : null
+export const getReleasesMinDate = createSelector(getDayReleasesSortedEntries, (entries) =>
+  entries.length ? entries[entries.length - 1][0] : null
+);
+
+export const getReleasesMaxDate = createSelector(getDayReleasesSortedEntries, (entries) =>
+  entries.length ? entries[0][0] : null
 );
 
 export const getReleasesMinMaxDatesMoment = createSelector(
-  getReleasesMinMaxDates,
-  ([minDate, maxDate]) => [moment(minDate), moment(maxDate)]
+  getReleasesMinDate,
+  getReleasesMaxDate,
+  (minDate, maxDate) => [moment(minDate), moment(maxDate)]
 );

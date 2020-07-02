@@ -1,16 +1,6 @@
 import orderBy from 'lodash.orderby';
 import { Moment, MomentFormat } from 'enums';
 
-let intervalId;
-
-export function saveInterval(...args) {
-  if (intervalId) {
-    clearInterval(intervalId);
-  }
-
-  intervalId = setInterval(...args);
-}
-
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
