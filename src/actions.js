@@ -39,9 +39,10 @@ export function syncStart() {
   };
 }
 
-export function syncFinished() {
+export function syncFinished(previousSyncMaxDate) {
   return {
     type: SYNC_FINISHED,
+    payload: { previousSyncMaxDate },
   };
 }
 

@@ -13,7 +13,13 @@ import {
   delay,
 } from 'redux-saga/effects';
 import { chunks, getSpotifyUri } from 'helpers';
-import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from 'selectors';
+import {
+  getSettings,
+  getToken,
+  getPlaylistForm,
+  getUser as getUserSelector,
+  getReleasesMaxDate,
+} from 'selectors';
 import { SpotifyEntity, Moment, MomentFormat } from 'enums';
 import {
   getUser,
@@ -89,6 +95,7 @@ function* syncSaga() {
 
     const token = yield select(getToken);
     const { groups, market, days } = yield select(getSettings);
+    const previousSyncMaxDate = yield select(getReleasesMaxDate);
     const minDate = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE);
     const albums = [];
 
@@ -125,7 +132,7 @@ function* syncSaga() {
 
     yield put(setUser(user));
     yield put(setAlbums(albums, artists, minDate));
-    yield put(syncFinished());
+    yield put(syncFinished(previousSyncMaxDate));
   } catch (error) {
     yield put(showErrorMessage());
     yield put(syncError());

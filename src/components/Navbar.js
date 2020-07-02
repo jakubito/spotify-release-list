@@ -7,6 +7,23 @@ import { showSettingsModal, showPlaylistModal } from 'actions';
 import SyncButton from './SyncButton';
 import { useHotkeys } from 'react-hotkeys-hook';
 
+function useLastSyncUpdater(lastSyncDate, setLastSyncHuman) {
+  useEffect(() => {
+    const updateLastSyncHuman = () => {
+      setLastSyncHuman(moment(lastSyncDate).fromNow());
+    };
+
+    const intervalId = setInterval(updateLastSyncHuman, 60 * 1000);
+    window.addEventListener('focus', updateLastSyncHuman);
+    updateLastSyncHuman();
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('focus', updateLastSyncHuman);
+    };
+  }, [lastSyncDate]);
+}
+
 function Navbar() {
   const syncing = useSelector(getSyncing);
   const lastSyncDate = useSelector(getLastSyncDate);
@@ -29,20 +46,7 @@ function Navbar() {
   useHotkeys('n', playlistModalTrigger, {}, [playlistModalTrigger]);
   useHotkeys('s', settingsModalTrigger, {}, [settingsModalTrigger]);
 
-  useEffect(() => {
-    const updateLastSyncHuman = () => {
-      setLastSyncHuman(moment(lastSyncDate).fromNow());
-    };
-
-    const intervalId = setInterval(updateLastSyncHuman, 60000);
-    window.addEventListener('focus', updateLastSyncHuman);
-    updateLastSyncHuman();
-
-    return () => {
-      clearInterval(intervalId);
-      window.removeEventListener('focus', updateLastSyncHuman);
-    };
-  }, [lastSyncDate]);
+  useLastSyncUpdater(lastSyncDate, setLastSyncHuman);
 
   return (
     <nav className="Navbar">
