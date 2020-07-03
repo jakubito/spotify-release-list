@@ -36,43 +36,40 @@ export const getWorking = createSelector(
   (syncing, creatingPlaylist) => syncing || creatingPlaylist
 );
 
-export const getLastSyncDate = createSelector(getLastSync, (lastSync) =>
-  lastSync ? new Date(lastSync) : lastSync
+export const getLastSyncDate = createSelector(
+  getLastSync,
+  (lastSync) => lastSync && new Date(lastSync)
 );
 
-const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums));
-
-const getDayPrecisionAlbums = createSelector(getAlbumsArray, (albums) =>
-  albums.filter((album) => album.releaseDatePrecision === Moment.DAY)
+export const getReleasesMap = createSelector(getAlbums, (albums) =>
+  Object.values(albums)
+    .filter((album) => album.releaseDatePrecision === Moment.DAY)
+    .reduce(
+      (map, album) => ({
+        ...map,
+        [album.releaseDate]: [...(map[album.releaseDate] || []), album],
+      }),
+      {}
+    )
 );
 
-export const getDayReleasesMap = createSelector(getDayPrecisionAlbums, (albums) =>
-  albums.reduce(
-    (map, album) => ({
-      ...map,
-      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
-    }),
-    {}
-  )
-);
-
-export const getDayReleasesSortedEntries = createSelector(getDayReleasesMap, (dayReleasesMap) => {
-  const entriesOriginal = Object.entries(dayReleasesMap);
+export const getReleasesSortedEntries = createSelector(getReleasesMap, (releasesMap) => {
+  const entriesOriginal = Object.entries(releasesMap);
   const entriesSortedByDay = orderBy(entriesOriginal, ([day]) => day, 'desc');
   const entries = entriesSortedByDay.map(([day, albums]) => [day, orderBy(albums, 'name')]);
 
   return entries;
 });
 
-export const getHasReleases = createSelector(getDayReleasesSortedEntries, (entries) =>
+export const getHasReleases = createSelector(getReleasesSortedEntries, (entries) =>
   Boolean(entries.length)
 );
 
-export const getReleasesMinDate = createSelector(getDayReleasesSortedEntries, (entries) =>
+export const getReleasesMinDate = createSelector(getReleasesSortedEntries, (entries) =>
   entries.length ? entries[entries.length - 1][0] : null
 );
 
-export const getReleasesMaxDate = createSelector(getDayReleasesSortedEntries, (entries) =>
+export const getReleasesMaxDate = createSelector(getReleasesSortedEntries, (entries) =>
   entries.length ? entries[0][0] : null
 );
 

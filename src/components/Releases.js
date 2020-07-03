@@ -1,14 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Waypoint } from 'react-waypoint';
-import { getDayReleasesSortedEntries } from 'selectors';
+import { getReleasesSortedEntries } from 'selectors';
 import NoData from './NoData';
 import ReleaseDay from './ReleaseDay';
 
 const DAYS_INCREMENT = 15;
 
 function Releases() {
-  const releases = useSelector(getDayReleasesSortedEntries);
+  const releases = useSelector(getReleasesSortedEntries);
   const [daysLimit, setDaysLimit] = useState(DAYS_INCREMENT);
 
   const waypointOnEnter = useCallback(() => {

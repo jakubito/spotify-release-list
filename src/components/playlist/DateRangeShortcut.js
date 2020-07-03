@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import { min, max } from 'moment';
-import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from 'selectors';
+import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors';
 import { FieldName } from 'enums';
 import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers';
 
 function useClickHandler(start, end) {
-  const releases = useSelector(getDayReleasesMap);
+  const releasesMap = useSelector(getReleasesMap);
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
   const { setValue, triggerValidation, getValues } = useFormContext();
 
@@ -20,7 +20,7 @@ function useClickHandler(start, end) {
     setValue(FieldName.END_DATE, endDate);
 
     defer(() => {
-      const filteredReleases = getReleasesByDate(releases, startDate, endDate);
+      const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate);
 
       setValue(FieldName.RELEASES, filteredReleases);
       setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
@@ -36,7 +36,7 @@ function useClickHandler(start, end) {
         setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
       }
     });
-  }, [start, end, minDate, maxDate, releases, setValue, triggerValidation, getValues]);
+  }, [start, end, minDate, maxDate, releasesMap, setValue, triggerValidation, getValues]);
 
   return clickHandler;
 }

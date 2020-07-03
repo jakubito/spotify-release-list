@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
-import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from 'selectors';
+import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors';
 import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers';
 import { FieldName, Moment } from 'enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
@@ -18,7 +18,7 @@ function useIsOutsideRangeHandler() {
 }
 
 function useDatesChangeHandler() {
-  const releases = useSelector(getDayReleasesMap);
+  const releasesMap = useSelector(getReleasesMap);
   const { setValue, triggerValidation, getValues } = useFormContext();
 
   const datesChangeHandler = useCallback(
@@ -28,7 +28,7 @@ function useDatesChangeHandler() {
 
       if (startDate && endDate) {
         defer(() => {
-          const filteredReleases = getReleasesByDate(releases, startDate, endDate);
+          const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate);
 
           setValue(FieldName.RELEASES, filteredReleases);
           setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
@@ -46,7 +46,7 @@ function useDatesChangeHandler() {
         });
       }
     },
-    [releases, setValue, triggerValidation, getValues]
+    [releasesMap, setValue, triggerValidation, getValues]
   );
 
   return datesChangeHandler;
