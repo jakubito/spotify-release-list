@@ -127,8 +127,6 @@ export function buildUser(source) {
 export function buildArtist(source) {
   return {
     id: source.id,
-    url: source.external_urls.spotify,
-    uri: source.uri,
     name: source.name,
   };
 }
@@ -136,8 +134,6 @@ export function buildArtist(source) {
 export function buildAlbum(source, artistId) {
   return {
     id: source.id,
-    url: source.external_urls.spotify,
-    uri: source.uri,
     name: source.name,
     image: getImage(source.images),
     artists: source.artists.map(buildArtist),
