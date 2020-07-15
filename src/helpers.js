@@ -138,7 +138,6 @@ export function buildAlbum(source, artistId) {
     image: getImage(source.images),
     artists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
-    releaseDatePrecision: source.release_date_precision,
     artistId,
   };
 }

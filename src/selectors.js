@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 import orderBy from 'lodash.orderby';
 import moment from 'moment';
-import { Moment } from 'enums';
 
 export const getUser = (state) => state.user;
 export const getSyncing = (state) => state.syncing;
@@ -42,15 +41,13 @@ export const getLastSyncDate = createSelector(
 );
 
 export const getReleasesMap = createSelector(getAlbums, (albums) =>
-  Object.values(albums)
-    .filter((album) => album.releaseDatePrecision === Moment.DAY)
-    .reduce(
-      (map, album) => ({
-        ...map,
-        [album.releaseDate]: [...(map[album.releaseDate] || []), album],
-      }),
-      {}
-    )
+  Object.values(albums).reduce(
+    (map, album) => ({
+      ...map,
+      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
+    }),
+    {}
+  )
 );
 
 export const getReleasesSortedEntries = createSelector(getReleasesMap, (releasesMap) => {
