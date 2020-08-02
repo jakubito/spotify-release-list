@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getSettingsCovers } from 'selectors';
+import { getSpotifyUri, getSpotifyUrl } from 'helpers';
+import { SpotifyEntity } from 'enums';
 import Link from './Link';
 
 function AlbumCover({ album }) {
-  const { uri, url, image, name } = album;
+  const { id, image, name } = album;
   const covers = useSelector(getSettingsCovers);
 
   if (!covers) {
@@ -13,7 +15,12 @@ function AlbumCover({ album }) {
   }
 
   return (
-    <Link title={name} uri={uri} url={url} className="media-left">
+    <Link
+      title={name}
+      uri={getSpotifyUri(id, SpotifyEntity.ALBUM)}
+      url={getSpotifyUrl(id, SpotifyEntity.ALBUM)}
+      className="media-left"
+    >
       <figure className="image">
         <img src={image} alt={name} />
       </figure>
@@ -22,15 +29,17 @@ function AlbumCover({ album }) {
 }
 
 function ArtistLink({ artist, className }) {
+  const { id, name } = artist;
+
   return (
     <Link
-      title={artist.name}
-      uri={artist.uri}
-      url={artist.url}
+      title={name}
+      uri={getSpotifyUri(id, SpotifyEntity.ARTIST)}
+      url={getSpotifyUrl(id, SpotifyEntity.ARTIST)}
       className={className}
-      key={artist.id}
+      key={id}
     >
-      {artist.name}
+      {name}
     </Link>
   );
 }
@@ -52,14 +61,19 @@ function AlbumArtists({ album }) {
 }
 
 function Album({ album }) {
-  const { uri, url, name } = album;
+  const { id, name } = album;
 
   return (
     <article className="Album media">
       <AlbumCover album={album} />
       <div className="media-content has-text-light">
         <div className="content">
-          <Link title={name} uri={uri} url={url} className="title is-size-5">
+          <Link
+            title={name}
+            uri={getSpotifyUri(id, SpotifyEntity.ALBUM)}
+            url={getSpotifyUrl(id, SpotifyEntity.ALBUM)}
+            className="title is-size-5"
+          >
             {name}
           </Link>
           <AlbumArtists album={album} />
@@ -71,9 +85,9 @@ function Album({ album }) {
 
 Album.propTypes = {
   album: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
     artists: PropTypes.array.isRequired,
     primaryArtists: PropTypes.array.isRequired,
   }).isRequired,

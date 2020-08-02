@@ -1,4 +1,4 @@
-import orderBy from 'lodash.orderby';
+import orderBy from 'lodash/orderBy';
 import { Moment, MomentFormat } from 'enums';
 
 export function sleep(ms) {
@@ -65,13 +65,13 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
 /**
  * Get release IDs released between startDate and endDate.
  *
- * @param {Object} releases Releases map from redux store
+ * @param {Object} releasesMap Releases map from redux store
  * @param {Moment} startDate
  * @param {Moment} endDate
  * @returns {(Array|null)}
  */
-export function getReleasesByDate(releases, startDate, endDate) {
-  if (!releases || !startDate || !endDate) {
+export function getReleasesByDate(releasesMap, startDate, endDate) {
+  if (!releasesMap || !startDate || !endDate) {
     return null;
   }
 
@@ -81,8 +81,8 @@ export function getReleasesByDate(releases, startDate, endDate) {
   while (current.isSameOrAfter(startDate)) {
     const currentFormatted = current.format(MomentFormat.ISO_DATE);
 
-    if (releases[currentFormatted]) {
-      const currentReleases = orderBy(releases[currentFormatted], 'name');
+    if (releasesMap[currentFormatted]) {
+      const currentReleases = orderBy(releasesMap[currentFormatted], 'name');
       const currentReleasesIds = currentReleases.map(({ id }) => id);
 
       filteredReleases.push(...currentReleasesIds);
@@ -127,8 +127,6 @@ export function buildUser(source) {
 export function buildArtist(source) {
   return {
     id: source.id,
-    url: source.external_urls.spotify,
-    uri: source.uri,
     name: source.name,
   };
 }
@@ -136,13 +134,10 @@ export function buildArtist(source) {
 export function buildAlbum(source, artistId) {
   return {
     id: source.id,
-    url: source.external_urls.spotify,
-    uri: source.uri,
     name: source.name,
     image: getImage(source.images),
     artists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
-    releaseDatePrecision: source.release_date_precision,
     artistId,
   };
 }

@@ -16,6 +16,8 @@ export const FieldName = Object.freeze({
 });
 
 export const SpotifyEntity = Object.freeze({
+  ALBUM: 'album',
+  ARTIST: 'artist',
   PLAYLIST: 'playlist',
   TRACK: 'track',
 });

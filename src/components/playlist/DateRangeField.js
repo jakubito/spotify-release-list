@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import Media from 'react-media';
 import { DateRangePicker } from 'react-dates';
-import { getReleasesMinMaxDatesMoment, getDayReleasesMap } from 'selectors';
+import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors';
 import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers';
 import { FieldName, Moment } from 'enums';
 import DateRangeShortcuts from './DateRangeShortcuts';
@@ -18,8 +18,8 @@ function useIsOutsideRangeHandler() {
 }
 
 function useDatesChangeHandler() {
-  const releases = useSelector(getDayReleasesMap);
-  const { setValue, triggerValidation, getValues } = useFormContext();
+  const releasesMap = useSelector(getReleasesMap);
+  const { setValue, trigger, getValues } = useFormContext();
 
   const datesChangeHandler = useCallback(
     ({ startDate, endDate }) => {
@@ -28,12 +28,12 @@ function useDatesChangeHandler() {
 
       if (startDate && endDate) {
         defer(() => {
-          const filteredReleases = getReleasesByDate(releases, startDate, endDate);
+          const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate);
 
           setValue(FieldName.RELEASES, filteredReleases);
           setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
 
-          triggerValidation([
+          trigger([
             FieldName.START_DATE,
             FieldName.END_DATE,
             FieldName.RELEASES,
@@ -41,12 +41,14 @@ function useDatesChangeHandler() {
           ]);
 
           if (!getValues(FieldName.NAME_CUSTOM)) {
-            setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
+            setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
+              shouldValidate: true,
+            });
           }
         });
       }
     },
-    [releases, setValue, triggerValidation, getValues]
+    [releasesMap, setValue, trigger, getValues]
   );
 
   return datesChangeHandler;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useForm, FormContext } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { hidePlaylistModal, createPlaylist, setNonce, setPlaylistForm } from 'actions';
 import { useModal } from 'hooks';
 import {
@@ -77,7 +77,7 @@ function PlaylistModal() {
   }, [register]);
 
   return (
-    <FormContext {...form}>
+    <FormProvider {...form}>
       <form className="PlaylistModal modal is-active" onSubmit={onSubmitHandler}>
         <div className="modal-background" onClick={closeModal}></div>
 
@@ -108,7 +108,7 @@ function PlaylistModal() {
           </div>
         </div>
       </form>
-    </FormContext>
+    </FormProvider>
   );
 }
 

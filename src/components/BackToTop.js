@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import throttle from 'lodash.throttle';
+import throttle from 'lodash/throttle';
 import classNames from 'classnames';
 
 function windowScrollToTop() {

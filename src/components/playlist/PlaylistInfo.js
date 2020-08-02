@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { getCreatingPlaylist, getPlaylistForm, getPlaylistId } from 'selectors';
 import { getSpotifyUri, getSpotifyUrl } from 'helpers';
@@ -18,16 +18,17 @@ function Info() {
   const { name } = useSelector(getPlaylistForm);
   const id = useSelector(getPlaylistId);
 
-  const uri = useMemo(() => getSpotifyUri(id, SpotifyEntity.PLAYLIST), [id]);
-  const url = useMemo(() => getSpotifyUrl(id, SpotifyEntity.PLAYLIST), [id]);
-
   return (
     <>
       <span className="icon is-large">
         <i className="far fa-check-circle fa-2x"></i>
       </span>
       Playlist created
-      <Link uri={uri} url={url} className="is-size-5">
+      <Link
+        uri={getSpotifyUri(id, SpotifyEntity.PLAYLIST)}
+        url={getSpotifyUrl(id, SpotifyEntity.PLAYLIST)}
+        className="is-size-5"
+      >
         {name}
       </Link>
     </>
