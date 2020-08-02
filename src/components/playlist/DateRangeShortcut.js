@@ -10,7 +10,7 @@ import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers';
 function useClickHandler(start, end) {
   const releasesMap = useSelector(getReleasesMap);
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
-  const { setValue, triggerValidation, getValues } = useFormContext();
+  const { setValue, trigger, getValues } = useFormContext();
 
   const clickHandler = useCallback(() => {
     const startDate = max(start, minDate);
@@ -25,7 +25,7 @@ function useClickHandler(start, end) {
       setValue(FieldName.RELEASES, filteredReleases);
       setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
 
-      triggerValidation([
+      trigger([
         FieldName.START_DATE,
         FieldName.END_DATE,
         FieldName.RELEASES,
@@ -33,10 +33,12 @@ function useClickHandler(start, end) {
       ]);
 
       if (!getValues(FieldName.NAME_CUSTOM)) {
-        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
+        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
+          shouldValidate: true,
+        });
       }
     });
-  }, [start, end, minDate, maxDate, releasesMap, setValue, triggerValidation, getValues]);
+  }, [start, end, minDate, maxDate, releasesMap, setValue, trigger, getValues]);
 
   return clickHandler;
 }

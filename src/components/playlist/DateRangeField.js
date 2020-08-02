@@ -19,7 +19,7 @@ function useIsOutsideRangeHandler() {
 
 function useDatesChangeHandler() {
   const releasesMap = useSelector(getReleasesMap);
-  const { setValue, triggerValidation, getValues } = useFormContext();
+  const { setValue, trigger, getValues } = useFormContext();
 
   const datesChangeHandler = useCallback(
     ({ startDate, endDate }) => {
@@ -33,7 +33,7 @@ function useDatesChangeHandler() {
           setValue(FieldName.RELEASES, filteredReleases);
           setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
 
-          triggerValidation([
+          trigger([
             FieldName.START_DATE,
             FieldName.END_DATE,
             FieldName.RELEASES,
@@ -41,12 +41,14 @@ function useDatesChangeHandler() {
           ]);
 
           if (!getValues(FieldName.NAME_CUSTOM)) {
-            setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), true);
+            setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
+              shouldValidate: true,
+            });
           }
         });
       }
     },
-    [releasesMap, setValue, triggerValidation, getValues]
+    [releasesMap, setValue, trigger, getValues]
   );
 
   return datesChangeHandler;

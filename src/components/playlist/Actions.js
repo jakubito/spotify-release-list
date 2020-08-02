@@ -14,12 +14,12 @@ function Actions({ submitTriggered }) {
   const { reset } = useFormContext();
 
   const cancelButtonClickHandler = useCallback(() => {
-    reset();
+    reset({});
     dispatch(createPlaylistCancel());
   }, [reset]);
 
   const resetButtonClickHandler = useCallback(() => {
-    reset();
+    reset({});
     dispatch(resetPlaylist());
   }, [reset]);
 
