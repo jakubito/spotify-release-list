@@ -1,4 +1,4 @@
-import orderBy from 'lodash.orderby';
+import orderBy from 'lodash/orderBy';
 import { Moment, MomentFormat } from 'enums';
 
 export function sleep(ms) {

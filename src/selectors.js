@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import orderBy from 'lodash.orderby';
+import orderBy from 'lodash/orderBy';
 import moment from 'moment';
 
 export const getUser = (state) => state.user;

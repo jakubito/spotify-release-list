@@ -1,4 +1,4 @@
-import findLastIndex from 'lodash.findlastindex';
+import findLastIndex from 'lodash/findLastIndex';
 import { buildUser, buildArtist, buildAlbum, sleep } from 'helpers';
 
 function apiUrl(endpoint) {

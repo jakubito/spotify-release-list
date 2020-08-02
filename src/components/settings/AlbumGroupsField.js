@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import xor from 'lodash.xor';
+import xor from 'lodash/xor';
 import { useSelector, useDispatch } from 'react-redux';
 import { AlbumGroup } from 'enums';
 import { getSettingsGroups } from 'selectors';

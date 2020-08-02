@@ -4,7 +4,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import localForage from 'localforage';
 import * as Sentry from '@sentry/browser';
 import createSagaMiddleware from 'redux-saga';
-import orderBy from 'lodash.orderby';
+import orderBy from 'lodash/orderBy';
 import {
   SYNC_START,
   SYNC_FINISHED,
