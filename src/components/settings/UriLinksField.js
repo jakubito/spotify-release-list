@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSettingsUriLinks } from 'selectors';
 import { setSettings } from 'actions';
@@ -8,11 +8,11 @@ function UriLinksField() {
   const uriLinks = useSelector(getSettingsUriLinks);
   const dispatch = useDispatch();
 
-  const onChange = useCallback((event) => {
+  const onChange = (event) => {
     const newUriLinks = Boolean(Number(event.target.value));
 
     defer(dispatch, setSettings({ uriLinks: newUriLinks }));
-  }, []);
+  };
 
   return (
     <div className="field">

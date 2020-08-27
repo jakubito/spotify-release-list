@@ -38,9 +38,7 @@ export function useSync() {
 
 export function useModal(hideModalAction) {
   const dispatch = useDispatch();
-  const closeModal = useCallback(() => {
-    dispatch(hideModalAction());
-  }, []);
+  const closeModal = useCallback(() => dispatch(hideModalAction()), []);
 
   useHotkeys('esc', closeModal);
 

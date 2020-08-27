@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSettingsTheme } from 'selectors';
 import { setSettings } from 'actions';
@@ -11,10 +11,6 @@ function ThemeField() {
   const theme = useSelector(getSettingsTheme);
   const dispatch = useDispatch();
   const firstRender = useRef(true);
-
-  const onChange = useCallback((event) => {
-    defer(dispatch, setSettings({ theme: event.target.value }));
-  }, []);
 
   useEffect(() => {
     if (firstRender.current) {
@@ -36,7 +32,10 @@ function ThemeField() {
       <label className="label has-text-light">Theme</label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select defaultValue={theme} onChange={onChange}>
+          <select
+            defaultValue={theme}
+            onChange={(event) => defer(dispatch, setSettings({ theme: event.target.value }))}
+          >
             <option value="">Default</option>
             <option value={Theme.COMPACT}>Compact</option>
             <option value={Theme.SINGLE_COLUMN}>Single Column</option>

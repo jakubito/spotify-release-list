@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
@@ -13,22 +13,15 @@ function Actions({ submitTriggered }) {
   const playlistId = useSelector(getPlaylistId);
   const { reset } = useFormContext();
 
-  const cancelButtonClickHandler = useCallback(() => {
-    reset({});
-    dispatch(createPlaylistCancel());
-  }, [reset]);
-
-  const resetButtonClickHandler = useCallback(() => {
-    reset({});
-    dispatch(resetPlaylist());
-  }, [reset]);
-
   if (creatingPlaylist) {
     return (
       <button
         type="button"
         className="button is-rounded is-dark has-text-weight-semibold"
-        onClick={cancelButtonClickHandler}
+        onClick={() => {
+          reset({});
+          dispatch(createPlaylistCancel());
+        }}
         key="cancel"
       >
         <span className="icon">
@@ -44,7 +37,10 @@ function Actions({ submitTriggered }) {
       <button
         type="button"
         className="button is-rounded is-dark has-text-weight-semibold"
-        onClick={resetButtonClickHandler}
+        onClick={() => {
+          reset({});
+          dispatch(resetPlaylist());
+        }}
         key="reset"
       >
         <span className="icon">

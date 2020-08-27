@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm, FormProvider } from 'react-hook-form';
 import { hidePlaylistModal, createPlaylist, setNonce, setPlaylistForm } from 'actions';
@@ -22,32 +22,29 @@ export function useOnSubmit(setSubmitTriggered) {
   const tokenExpires = useSelector(getTokenExpires);
   const tokenScope = useSelector(getTokenScope);
 
-  const onSubmit = useCallback(
-    async (formData) => {
-      const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
-        formData[FieldName.SELECTED_RELEASES].has(releaseId)
-      );
-      const name = formData[FieldName.NAME].trim();
-      const description = formData[FieldName.DESCRIPTION].trim();
-      const isPrivate = formData[FieldName.VISIBILITY] === 'private';
+  const onSubmit = async (formData) => {
+    const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
+      formData[FieldName.SELECTED_RELEASES].has(releaseId)
+    );
+    const name = formData[FieldName.NAME].trim();
+    const description = formData[FieldName.DESCRIPTION].trim();
+    const isPrivate = formData[FieldName.VISIBILITY] === 'private';
 
-      dispatch(setPlaylistForm(albumIds, name, description, isPrivate));
+    dispatch(setPlaylistForm(albumIds, name, description, isPrivate));
 
-      if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
-        dispatch(createPlaylist());
-      } else {
-        const nonce = generateNonce();
+    if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
+      dispatch(createPlaylist());
+    } else {
+      const nonce = generateNonce();
 
-        setSubmitTriggered(true);
-        dispatch(setNonce(nonce));
+      setSubmitTriggered(true);
+      dispatch(setNonce(nonce));
 
-        await persistor.flush();
+      await persistor.flush();
 
-        startCreatePlaylistAuthFlow(nonce, isPrivate);
-      }
-    },
-    [token, tokenExpires, tokenScope]
-  );
+      startCreatePlaylistAuthFlow(nonce, isPrivate);
+    }
+  };
 
   return onSubmit;
 }
@@ -60,7 +57,6 @@ function PlaylistModal() {
   const [submitTriggered, setSubmitTriggered] = useState(false);
   const { register, handleSubmit } = form;
   const onSubmit = useOnSubmit(setSubmitTriggered);
-  const onSubmitHandler = useCallback(handleSubmit(onSubmit), [onSubmit]);
 
   useEffect(() => {
     register({ name: FieldName.START_DATE }, { required: true });
@@ -78,7 +74,7 @@ function PlaylistModal() {
 
   return (
     <FormProvider {...form}>
-      <form className="PlaylistModal modal is-active" onSubmit={onSubmitHandler}>
+      <form className="PlaylistModal modal is-active" onSubmit={handleSubmit(onSubmit)}>
         <div className="modal-background" onClick={closeModal}></div>
 
         <div className="modal-content has-background-black-bis has-text-light">

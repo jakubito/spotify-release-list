@@ -11,10 +11,12 @@ import DateRangeShortcuts from './DateRangeShortcuts';
 function useIsOutsideRangeHandler() {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
 
-  return useCallback((day) => !day.isBetween(minDate, maxDate, Moment.DAY, '[]'), [
-    minDate,
-    maxDate,
-  ]);
+  const isOutsideRangeHandler = useCallback(
+    (day) => !day.isBetween(minDate, maxDate, Moment.DAY, '[]'),
+    [minDate, maxDate]
+  );
+
+  return isOutsideRangeHandler;
 }
 
 function useDatesChangeHandler() {

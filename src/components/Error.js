@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getErrorMessage } from 'selectors';
 import { hideErrorMessage } from 'actions';
@@ -6,9 +6,6 @@ import { hideErrorMessage } from 'actions';
 function Error() {
   const errorMessage = useSelector(getErrorMessage);
   const dispatch = useDispatch();
-  const hide = useCallback(() => {
-    dispatch(hideErrorMessage());
-  }, []);
 
   if (!errorMessage) {
     return null;
@@ -16,7 +13,11 @@ function Error() {
 
   return (
     <div className="Error notification is-danger has-text-centered">
-      <button className="delete" onClick={hide} title="Close"></button>
+      <button
+        className="delete"
+        onClick={() => dispatch(hideErrorMessage())}
+        title="Close"
+      ></button>
       {errorMessage}
     </div>
   );

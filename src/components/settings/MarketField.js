@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Market } from 'enums';
 import { getSettingsMarket } from 'selectors';
@@ -9,16 +9,15 @@ function MarketField() {
   const market = useSelector(getSettingsMarket);
   const dispatch = useDispatch();
 
-  const onChange = useCallback((event) => {
-    defer(dispatch, setSettings({ market: event.target.value }));
-  }, []);
-
   return (
     <div className="field">
       <label className="label has-text-light">Market country</label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select defaultValue={market} onChange={onChange}>
+          <select
+            defaultValue={market}
+            onChange={(event) => defer(dispatch, setSettings({ market: event.target.value }))}
+          >
             <option value="">All markets</option>
             {Object.entries(Market).map(([code, name]) => (
               <option value={code} key={code}>

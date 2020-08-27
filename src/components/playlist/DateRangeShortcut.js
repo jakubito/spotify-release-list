@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
@@ -12,7 +12,7 @@ function useClickHandler(start, end) {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
   const { setValue, trigger, getValues } = useFormContext();
 
-  const clickHandler = useCallback(() => {
+  const clickHandler = () => {
     const startDate = max(start, minDate);
     const endDate = min(end, maxDate);
 
@@ -38,23 +38,15 @@ function useClickHandler(start, end) {
         });
       }
     });
-  }, [start, end, minDate, maxDate, releasesMap, setValue, trigger, getValues]);
+  };
 
   return clickHandler;
-}
-
-function useButtonTitle(title, start, end) {
-  return useMemo(() => (title instanceof Function ? title(start, end) : title), [
-    title,
-    start,
-    end,
-  ]);
 }
 
 function DateRangeShortcut({ title, start, end }) {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
   const clickHandler = useClickHandler(start, end);
-  const buttonTitle = useButtonTitle(title, start, end);
+  const buttonTitle = title instanceof Function ? title(start, end) : title;
 
   if (start.isAfter(maxDate) || end.isBefore(minDate)) {
     return null;

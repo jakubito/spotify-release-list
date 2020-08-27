@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import xor from 'lodash/xor';
 import { useSelector, useDispatch } from 'react-redux';
 import { AlbumGroup } from 'enums';
@@ -24,14 +24,11 @@ function AlbumGroupsField() {
   const groups = useSelector(getSettingsGroups);
   const dispatch = useDispatch();
 
-  const onChange = useCallback(
-    (event) => {
-      const newGroups = xor(groups, [event.target.value]).sort(sortByAlbumGroup);
+  const onChange = (event) => {
+    const newGroups = xor(groups, [event.target.value]).sort(sortByAlbumGroup);
 
-      defer(dispatch, setSettings({ groups: newGroups }));
-    },
-    [groups]
-  );
+    defer(dispatch, setSettings({ groups: newGroups }));
+  };
 
   return (
     <div className="field">

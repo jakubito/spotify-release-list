@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Waypoint } from 'react-waypoint';
 import { getReleasesSortedEntries } from 'selectors';
@@ -11,10 +11,6 @@ function Releases() {
   const releases = useSelector(getReleasesSortedEntries);
   const [daysLimit, setDaysLimit] = useState(DAYS_INCREMENT);
 
-  const waypointOnEnter = useCallback(() => {
-    setDaysLimit((currentLimit) => currentLimit + DAYS_INCREMENT);
-  }, []);
-
   if (!releases.length) {
     return <NoData title="No albums to display 😕" />;
   }
@@ -25,7 +21,11 @@ function Releases() {
         <ReleaseDay date={date} albums={albums} key={date} />
       ))}
       {daysLimit < releases.length && (
-        <Waypoint bottomOffset="-100%" onEnter={waypointOnEnter} key={daysLimit} />
+        <Waypoint
+          bottomOffset="-100%"
+          onEnter={() => setDaysLimit((limit) => limit + DAYS_INCREMENT)}
+          key={daysLimit}
+        />
       )}
     </>
   );

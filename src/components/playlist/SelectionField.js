@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 import { FieldName } from 'enums';
@@ -11,29 +11,14 @@ function SelectionField() {
   const releases = watch(FieldName.RELEASES);
   const selectedReleases = watch(FieldName.SELECTED_RELEASES);
 
-  const toggleExpandedHandler = useCallback(() => {
-    defer(setExpanded, (currentExpanded) => !currentExpanded);
-  }, []);
-
-  const selectAllHandler = useCallback(() => {
-    defer(setValue, FieldName.SELECTED_RELEASES, new Set(releases), true);
-  }, [releases, setValue]);
-
-  const unselectAllHandler = useCallback(() => {
-    defer(setValue, FieldName.SELECTED_RELEASES, new Set([]), true);
-  }, [setValue]);
-
-  const releaseChangeHandler = useCallback(
-    (event) => {
-      defer(
-        setValue,
-        FieldName.SELECTED_RELEASES,
-        toggleSetValue(selectedReleases, event.target.value),
-        true
-      );
-    },
-    [selectedReleases, setValue]
-  );
+  const releaseChangeHandler = (event) => {
+    defer(
+      setValue,
+      FieldName.SELECTED_RELEASES,
+      toggleSetValue(selectedReleases, event.target.value),
+      true
+    );
+  };
 
   if (!releases || !selectedReleases || releases.length === 0) {
     return null;
@@ -44,7 +29,7 @@ function SelectionField() {
       <button
         type="button"
         className="button is-dark is-rounded is-fullwidth has-text-weight-semibold"
-        onClick={toggleExpandedHandler}
+        onClick={() => defer(setExpanded, (currentExpanded) => !currentExpanded)}
       >
         <span>
           {expanded ? 'Collapse' : 'Expand'} selection ({selectedReleases.size})
@@ -67,14 +52,14 @@ function SelectionField() {
         <button
           type="button"
           className="button is-rounded is-small is-dark is-darker"
-          onClick={selectAllHandler}
+          onClick={() => defer(setValue, FieldName.SELECTED_RELEASES, new Set(releases), true)}
         >
           <span>Select all</span>
         </button>
         <button
           type="button"
           className="button is-rounded is-small is-dark is-darker"
-          onClick={unselectAllHandler}
+          onClick={() => defer(setValue, FieldName.SELECTED_RELEASES, new Set([]), true)}
         >
           <span>Unselect all</span>
         </button>
