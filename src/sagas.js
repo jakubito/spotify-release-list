@@ -1,17 +1,6 @@
 import moment from 'moment';
 import { channel, buffers } from 'redux-saga';
-import {
-  all,
-  call,
-  race,
-  put,
-  select,
-  take,
-  takeLeading,
-  fork,
-  cancel,
-  delay,
-} from 'redux-saga/effects';
+import { all, call, race, put, select, take, fork, cancel, delay } from 'redux-saga/effects';
 import { chunks, getSpotifyUri } from 'helpers';
 import {
   getSettings,
@@ -31,6 +20,7 @@ import {
 } from 'api';
 import {
   SYNC,
+  SYNC_CANCEL,
   CREATE_PLAYLIST,
   CREATE_PLAYLIST_CANCEL,
   setSyncingProgress,
@@ -181,7 +171,7 @@ function* createPlaylistSaga() {
 }
 
 function* saga() {
-  yield takeLeading(SYNC, syncSaga);
+  yield takeLeadingCancellable(SYNC, SYNC_CANCEL, syncSaga);
   yield takeLeadingCancellable(CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL, createPlaylistSaga);
 }
 

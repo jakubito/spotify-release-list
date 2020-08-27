@@ -9,6 +9,7 @@ import {
   SYNC_START,
   SYNC_FINISHED,
   SYNC_ERROR,
+  SYNC_CANCEL,
   SET_SYNCING,
   SET_SYNCING_PROGRESS,
   SET_USER,
@@ -155,6 +156,7 @@ function reducer(state = initialState, action) {
         previousSyncMaxDate: payload.previousSyncMaxDate,
       };
     case SYNC_ERROR:
+    case SYNC_CANCEL:
       return {
         ...state,
         syncing: false,
@@ -272,10 +274,6 @@ function reducer(state = initialState, action) {
         playlistId: payload.id,
       };
     case CREATE_PLAYLIST_ERROR:
-      return {
-        ...state,
-        creatingPlaylist: false,
-      };
     case CREATE_PLAYLIST_CANCEL:
       return {
         ...state,

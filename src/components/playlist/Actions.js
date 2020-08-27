@@ -25,7 +25,7 @@ function Actions({ submitTriggered }) {
         key="cancel"
       >
         <span className="icon">
-          <i className="fas fa-ban"></i>
+          <i className="fas fa-times"></i>
         </span>
         <span>Cancel</span>
       </button>

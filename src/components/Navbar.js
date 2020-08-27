@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Media from 'react-media';
+import { useHotkeys } from 'react-hotkeys-hook';
 import moment from 'moment';
 import { getLastSyncDate, getHasReleases, getSyncing } from 'selectors';
 import { showSettingsModal, showPlaylistModal } from 'actions';
 import SyncButton from './SyncButton';
-import { useHotkeys } from 'react-hotkeys-hook';
 
 function useLastSyncUpdater(lastSyncDate, setLastSyncHuman) {
   useEffect(() => {
@@ -57,7 +57,7 @@ function Navbar() {
       {lastSyncDate && (
         <div className="sync">
           <SyncButton title="Refresh" icon="fas fa-sync" />
-          <div className="last-update has-text-grey">Updated {lastSyncHuman}</div>
+          {!syncing && <div className="last-update has-text-grey">Updated {lastSyncHuman}</div>}
         </div>
       )}
       <div className="right">

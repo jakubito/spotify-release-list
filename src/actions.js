@@ -2,6 +2,7 @@ export const SYNC = 'SYNC';
 export const SYNC_START = 'SYNC_START';
 export const SYNC_FINISHED = 'SYNC_FINISHED';
 export const SYNC_ERROR = 'SYNC_ERROR';
+export const SYNC_CANCEL = 'SYNC_CANCEL';
 export const SET_SYNCING = 'SET_SYNCING';
 export const SET_SYNCING_PROGRESS = 'SET_SYNCING_PROGRESS';
 export const SET_USER = 'SET_USER';
@@ -49,6 +50,12 @@ export function syncFinished(previousSyncMaxDate) {
 export function syncError() {
   return {
     type: SYNC_ERROR,
+  };
+}
+
+export function syncCancel() {
+  return {
+    type: SYNC_CANCEL,
   };
 }
 

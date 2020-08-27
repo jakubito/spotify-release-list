@@ -12,7 +12,7 @@ export function delay(fn, ms, ...args) {
 }
 
 export function defer(fn, ...args) {
-  delay(fn, 0, ...args);
+  requestAnimationFrame(() => delay(fn, 0, ...args));
 }
 
 export function chunks(inputArray, chunkSize) {
