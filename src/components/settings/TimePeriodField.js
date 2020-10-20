@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getSettingsDays } from 'selectors';
 import { setSettings } from 'actions';
 import { defer } from 'helpers';
+import HelpText from './HelpText';
 
 function TimePeriodField() {
   const days = useSelector(getSettingsDays);
@@ -10,7 +11,9 @@ function TimePeriodField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Time period</label>
+      <label className="label has-text-light">
+        Time period <HelpText>/ affects storage usage</HelpText>
+      </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
           <select

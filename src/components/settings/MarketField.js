@@ -4,6 +4,7 @@ import { Market } from 'enums';
 import { getSettingsMarket } from 'selectors';
 import { setSettings } from 'actions';
 import { defer } from 'helpers';
+import HelpText from './HelpText';
 
 function MarketField() {
   const market = useSelector(getSettingsMarket);
@@ -11,7 +12,9 @@ function MarketField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Market country</label>
+      <label className="label has-text-light">
+        Market country <HelpText>/ prevent duplicates</HelpText>
+      </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
           <select

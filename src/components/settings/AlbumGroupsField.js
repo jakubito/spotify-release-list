@@ -5,6 +5,7 @@ import { AlbumGroup } from 'enums';
 import { getSettingsGroups } from 'selectors';
 import { setSettings } from 'actions';
 import { defer } from 'helpers';
+import HelpText from './HelpText';
 
 const fields = {
   [AlbumGroup.ALBUM]: 'Albums',
@@ -32,7 +33,9 @@ function AlbumGroupsField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Include</label>
+      <label className="label has-text-light">
+        Request <HelpText>/ less is faster</HelpText>
+      </label>
       <div className="control">
         {fieldsEntries.map(([value, name]) => (
           <div className="field" key={value}>

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getSettingsUriLinks } from 'selectors';
 import { setSettings } from 'actions';
 import { defer } from 'helpers';
+import HelpText from './HelpText';
 
 function UriLinksField() {
   const uriLinks = useSelector(getSettingsUriLinks);
@@ -16,7 +17,9 @@ function UriLinksField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Open links in</label>
+      <label className="label has-text-light">
+        Open links in <HelpText>/ URL or URI</HelpText>
+      </label>
       <div className="control">
         <div className="field">
           <input
