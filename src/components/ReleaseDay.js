@@ -1,12 +1,12 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import moment from 'moment';
-import { getPreviousSyncMaxDate } from 'selectors';
-import Album from './Album';
+import React, { memo } from 'react'
+import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
+import moment from 'moment'
+import { getPreviousSyncMaxDate } from 'selectors'
+import Album from './Album'
 
 function ReleaseDay({ date, albums }) {
-  const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate);
+  const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate)
 
   return (
     <div className="ReleaseDay columns is-gapless has-text-grey has-text-weight-semibold">
@@ -20,12 +20,12 @@ function ReleaseDay({ date, albums }) {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 ReleaseDay.propTypes = {
   date: PropTypes.string.isRequired,
   albums: PropTypes.array.isRequired,
-};
+}
 
-export default memo(ReleaseDay);
+export default memo(ReleaseDay)

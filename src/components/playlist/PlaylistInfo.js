@@ -1,9 +1,9 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { getCreatingPlaylist, getPlaylistForm, getPlaylistId } from 'selectors';
-import { getSpotifyUri, getSpotifyUrl } from 'helpers';
-import { SpotifyEntity } from 'enums';
-import Link from 'components/Link';
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { getCreatingPlaylist, getPlaylistForm, getPlaylistId } from 'selectors'
+import { getSpotifyUri, getSpotifyUrl } from 'helpers'
+import { SpotifyEntity } from 'enums'
+import Link from 'components/Link'
 
 function Creating() {
   return (
@@ -11,12 +11,12 @@ function Creating() {
       <progress className="progress is-small"></progress>
       Creating playlist, please wait...
     </>
-  );
+  )
 }
 
 function Info() {
-  const { name } = useSelector(getPlaylistForm);
-  const id = useSelector(getPlaylistId);
+  const { name } = useSelector(getPlaylistForm)
+  const id = useSelector(getPlaylistId)
 
   return (
     <>
@@ -32,15 +32,15 @@ function Info() {
         {name}
       </Link>
     </>
-  );
+  )
 }
 
 function PlaylistInfo() {
-  const creatingPlaylist = useSelector(getCreatingPlaylist);
+  const creatingPlaylist = useSelector(getCreatingPlaylist)
 
   return (
     <div className="PlaylistInfo has-text-light">{creatingPlaylist ? <Creating /> : <Info />}</div>
-  );
+  )
 }
 
-export default PlaylistInfo;
+export default PlaylistInfo

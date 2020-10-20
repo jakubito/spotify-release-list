@@ -1,9 +1,9 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { FieldName } from 'enums';
+import React from 'react'
+import { useFormContext } from 'react-hook-form'
+import { FieldName } from 'enums'
 
 function DescriptionField() {
-  const { register, errors } = useFormContext();
+  const { register, errors } = useFormContext()
 
   return (
     <div className="field">
@@ -21,7 +21,7 @@ function DescriptionField() {
         <p className="help is-danger">Description can&apos;t exceed 300 characters.</p>
       )}
     </div>
-  );
+  )
 }
 
-export default DescriptionField;
+export default DescriptionField

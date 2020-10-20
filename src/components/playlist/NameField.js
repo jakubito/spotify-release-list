@@ -1,14 +1,10 @@
-import React, { useCallback } from 'react';
-import classNames from 'classnames';
-import { useFormContext } from 'react-hook-form';
-import { FieldName } from 'enums';
+import React from 'react'
+import classNames from 'classnames'
+import { useFormContext } from 'react-hook-form'
+import { FieldName } from 'enums'
 
 function NameField() {
-  const { register, errors, setValue } = useFormContext();
-
-  const changeHandler = useCallback(() => {
-    setValue(FieldName.NAME_CUSTOM, true);
-  }, [setValue]);
+  const { register, errors, setValue } = useFormContext()
 
   return (
     <div className="field">
@@ -18,7 +14,7 @@ function NameField() {
           name={FieldName.NAME}
           className={classNames('input is-rounded', { 'is-danger': errors[FieldName.NAME] })}
           type="text"
-          onChange={changeHandler}
+          onChange={() => setValue(FieldName.NAME_CUSTOM, true)}
           ref={register({ required: true, maxLength: 100 })}
         />
       </div>
@@ -29,7 +25,7 @@ function NameField() {
         </p>
       )}
     </div>
-  );
+  )
 }
 
-export default NameField;
+export default NameField

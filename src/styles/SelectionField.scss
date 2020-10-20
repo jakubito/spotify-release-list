@@ -1,9 +1,30 @@
+@keyframes slideFromBottom {
+  0% {
+    transform: translateY(-10px);
+  }
+  30% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .SelectionField {
   .selection {
     margin-top: 24px;
 
     button {
       margin: 0 10px 10px 0;
+    }
+
+    .container {
+      max-height: 250px;
+      overflow: scroll;
+
+      .inner.animate {
+        animation: 0.6s ease 0s 1 slideFromBottom;
+      }
     }
 
     .field {

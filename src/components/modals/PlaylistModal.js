@@ -1,84 +1,80 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useForm, FormProvider } from 'react-hook-form';
-import { hidePlaylistModal, createPlaylist, setNonce, setPlaylistForm } from 'actions';
-import { useModal } from 'hooks';
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useForm, FormProvider } from 'react-hook-form'
+import { hidePlaylistModal, createPlaylist, setNonce, setPlaylistForm } from 'actions'
+import { useModal } from 'hooks'
 import {
   getCreatingPlaylist,
   getToken,
   getTokenExpires,
   getTokenScope,
   getPlaylistId,
-} from 'selectors';
-import { FieldName } from 'enums';
-import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from 'auth';
-import { generateNonce } from 'helpers';
-import { persistor } from 'store';
-import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist';
+} from 'selectors'
+import { FieldName } from 'enums'
+import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from 'auth'
+import { generateNonce } from 'helpers'
+import { persistor } from 'store'
+import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist'
 
 export function useOnSubmit(setSubmitTriggered) {
-  const dispatch = useDispatch();
-  const token = useSelector(getToken);
-  const tokenExpires = useSelector(getTokenExpires);
-  const tokenScope = useSelector(getTokenScope);
+  const dispatch = useDispatch()
+  const token = useSelector(getToken)
+  const tokenExpires = useSelector(getTokenExpires)
+  const tokenScope = useSelector(getTokenScope)
 
-  const onSubmit = useCallback(
-    async (formData) => {
-      const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
-        formData[FieldName.SELECTED_RELEASES].has(releaseId)
-      );
-      const name = formData[FieldName.NAME].trim();
-      const description = formData[FieldName.DESCRIPTION].trim();
-      const isPrivate = formData[FieldName.VISIBILITY] === 'private';
+  const onSubmit = async (formData) => {
+    const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
+      formData[FieldName.SELECTED_RELEASES].has(releaseId)
+    )
+    const name = formData[FieldName.NAME].trim()
+    const description = formData[FieldName.DESCRIPTION].trim()
+    const isPrivate = formData[FieldName.VISIBILITY] === 'private'
 
-      dispatch(setPlaylistForm(albumIds, name, description, isPrivate));
+    dispatch(setPlaylistForm(albumIds, name, description, isPrivate))
 
-      if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
-        dispatch(createPlaylist());
-      } else {
-        const nonce = generateNonce();
+    if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
+      dispatch(createPlaylist())
+    } else {
+      const nonce = generateNonce()
 
-        setSubmitTriggered(true);
-        dispatch(setNonce(nonce));
+      setSubmitTriggered(true)
+      dispatch(setNonce(nonce))
 
-        await persistor.flush();
+      await persistor.flush()
 
-        startCreatePlaylistAuthFlow(nonce, isPrivate);
-      }
-    },
-    [token, tokenExpires, tokenScope]
-  );
+      startCreatePlaylistAuthFlow(nonce, isPrivate)
+    }
+  }
 
-  return onSubmit;
+  return onSubmit
 }
 
 function PlaylistModal() {
-  const closeModal = useModal(hidePlaylistModal);
-  const creatingPlaylist = useSelector(getCreatingPlaylist);
-  const playlistId = useSelector(getPlaylistId);
-  const form = useForm();
-  const [submitTriggered, setSubmitTriggered] = useState(false);
-  const { register, handleSubmit } = form;
-  const onSubmit = useOnSubmit(setSubmitTriggered);
-  const onSubmitHandler = useCallback(handleSubmit(onSubmit), [onSubmit]);
+  const closeModal = useModal(hidePlaylistModal)
+  const creatingPlaylist = useSelector(getCreatingPlaylist)
+  const playlistId = useSelector(getPlaylistId)
+  const form = useForm()
+  const [submitTriggered, setSubmitTriggered] = useState(false)
+  const { register, handleSubmit } = form
+  const onSubmit = useOnSubmit(setSubmitTriggered)
 
   useEffect(() => {
-    register({ name: FieldName.START_DATE }, { required: true });
-    register({ name: FieldName.END_DATE }, { required: true });
-    register({ name: FieldName.NAME_CUSTOM });
+    register({ name: FieldName.START_DATE }, { required: true })
+    register({ name: FieldName.END_DATE }, { required: true })
+    register({ name: FieldName.NAME_CUSTOM })
     register(
       { name: FieldName.RELEASES },
       { required: true, validate: (value) => value.length > 0 }
-    );
+    )
     register(
       { name: FieldName.SELECTED_RELEASES },
       { required: true, validate: (value) => value.size > 0 }
-    );
-  }, [register]);
+    )
+  }, [register])
 
   return (
     <FormProvider {...form}>
-      <form className="PlaylistModal modal is-active" onSubmit={onSubmitHandler}>
+      <form className="PlaylistModal modal is-active" onSubmit={handleSubmit(onSubmit)}>
         <div className="modal-background" onClick={closeModal}></div>
 
         <div className="modal-content has-background-black-bis has-text-light">
@@ -109,7 +105,7 @@ function PlaylistModal() {
         </div>
       </form>
     </FormProvider>
-  );
+  )
 }
 
-export default PlaylistModal;
+export default PlaylistModal

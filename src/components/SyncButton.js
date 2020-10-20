@@ -1,24 +1,24 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { useHotkeys } from 'react-hotkeys-hook';
-import classNames from 'classnames';
-import { getSyncing, getWorking, getSyncingProgress } from 'selectors';
-import { useSync } from 'hooks';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
+import { useHotkeys } from 'react-hotkeys-hook'
+import classNames from 'classnames'
+import { getSyncing, getWorking, getSyncingProgress } from 'selectors'
+import { useSync } from 'hooks'
 
 function Progress() {
-  const syncingProgress = useSelector(getSyncingProgress);
-  const style = { transform: `translateX(${syncingProgress - 100}%)` };
+  const syncingProgress = useSelector(getSyncingProgress)
+  const style = { transform: `translateX(${syncingProgress - 100}%)` }
 
-  return <span className="progress-bar" style={style}></span>;
+  return <span className="progress-bar" style={style}></span>
 }
 
 function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = true }) {
-  const syncing = useSelector(getSyncing);
-  const working = useSelector(getWorking);
-  const syncTrigger = useSync();
+  const syncing = useSelector(getSyncing)
+  const working = useSelector(getWorking)
+  const syncTrigger = useSync()
 
-  useHotkeys('r', syncTrigger, {}, [syncTrigger]);
+  useHotkeys('r', syncTrigger, {}, [syncTrigger])
 
   return (
     <button
@@ -43,7 +43,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
       {showProgress && syncing && <Progress />}
       {syncing && <span className="spinner"></span>}
     </button>
-  );
+  )
 }
 
 SyncButton.propTypes = {
@@ -51,6 +51,6 @@ SyncButton.propTypes = {
   icon: PropTypes.string,
   className: PropTypes.string,
   showProgress: PropTypes.bool,
-};
+}
 
-export default SyncButton;
+export default SyncButton

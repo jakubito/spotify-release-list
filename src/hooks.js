@@ -1,70 +1,68 @@
-import { useEffect, useCallback, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { addSeenFeature, sync, setSyncing, setNonce } from 'actions';
-import { getSeenFeatures, getWorking, getToken, getTokenExpires, getTokenScope } from 'selectors';
-import { isValidSyncToken, startSyncAuthFlow } from 'auth';
-import { generateNonce } from 'helpers';
-import { persistor } from 'store';
+import { useEffect, useCallback, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { addSeenFeature, sync, setSyncing, setNonce } from 'actions'
+import { getSeenFeatures, getWorking, getToken, getTokenExpires, getTokenScope } from 'selectors'
+import { isValidSyncToken, startSyncAuthFlow } from 'auth'
+import { generateNonce } from 'helpers'
+import { persistor } from 'store'
 
 export function useSync() {
-  const dispatch = useDispatch();
-  const working = useSelector(getWorking);
-  const token = useSelector(getToken);
-  const tokenExpires = useSelector(getTokenExpires);
-  const tokenScope = useSelector(getTokenScope);
+  const dispatch = useDispatch()
+  const working = useSelector(getWorking)
+  const token = useSelector(getToken)
+  const tokenExpires = useSelector(getTokenExpires)
+  const tokenScope = useSelector(getTokenScope)
 
   const syncTrigger = useCallback(async () => {
     if (working) {
-      return;
+      return
     }
 
     if (isValidSyncToken(token, tokenExpires, tokenScope)) {
-      dispatch(sync());
+      dispatch(sync())
     } else {
-      const nonce = generateNonce();
+      const nonce = generateNonce()
 
-      dispatch(setSyncing(true));
-      dispatch(setNonce(nonce));
+      dispatch(setSyncing(true))
+      dispatch(setNonce(nonce))
 
-      await persistor.flush();
+      await persistor.flush()
 
-      startSyncAuthFlow(nonce);
+      startSyncAuthFlow(nonce)
     }
-  }, [working, token, tokenExpires, tokenScope]);
+  }, [working, token, tokenExpires, tokenScope])
 
-  return syncTrigger;
+  return syncTrigger
 }
 
 export function useModal(hideModalAction) {
-  const dispatch = useDispatch();
-  const closeModal = useCallback(() => {
-    dispatch(hideModalAction());
-  }, []);
+  const dispatch = useDispatch()
+  const closeModal = useCallback(() => dispatch(hideModalAction()), [])
 
-  useHotkeys('esc', closeModal);
+  useHotkeys('esc', closeModal)
 
   useEffect(() => {
-    document.documentElement.classList.add('is-modal-open');
+    document.documentElement.classList.add('is-modal-open')
 
     return () => {
-      document.documentElement.classList.remove('is-modal-open');
-    };
-  }, []);
+      document.documentElement.classList.remove('is-modal-open')
+    }
+  }, [])
 
-  return closeModal;
+  return closeModal
 }
 
 export function useFeature(feature) {
-  const dispatch = useDispatch();
-  const seenFeatures = useSelector(getSeenFeatures);
+  const dispatch = useDispatch()
+  const seenFeatures = useSelector(getSeenFeatures)
 
-  const seen = useMemo(() => seenFeatures.includes(feature), [seenFeatures]);
+  const seen = useMemo(() => seenFeatures.includes(feature), [seenFeatures])
   const setSeen = useCallback(() => {
     if (!seen) {
-      dispatch(addSeenFeature(feature));
+      dispatch(addSeenFeature(feature))
     }
-  }, [seen]);
+  }, [seen])
 
-  return [seen, setSeen];
+  return [seen, setSeen]
 }

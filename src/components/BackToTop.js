@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import throttle from 'lodash/throttle';
-import classNames from 'classnames';
+import React, { useState, useEffect } from 'react'
+import throttle from 'lodash/throttle'
+import classNames from 'classnames'
 
 function windowScrollToTop() {
-  window.scrollTo(0, 0);
+  window.scrollTo(0, 0)
 }
 
 function useBackToTop() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     const listener = throttle(() => {
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
 
-      setVisible(scrollTop > 200);
-    }, 200);
+      setVisible(scrollTop > 200)
+    }, 200)
 
-    window.addEventListener('scroll', listener);
+    window.addEventListener('scroll', listener)
 
     return () => {
-      window.removeEventListener('scroll', listener);
-    };
-  }, []);
+      window.removeEventListener('scroll', listener)
+    }
+  }, [])
 
-  return visible;
+  return visible
 }
 
 function BackToTop() {
-  const visible = useBackToTop();
+  const visible = useBackToTop()
 
   return (
     <button
@@ -39,7 +39,7 @@ function BackToTop() {
         <i className="fas fa-arrow-up"></i>
       </span>
     </button>
-  );
+  )
 }
 
-export default BackToTop;
+export default BackToTop

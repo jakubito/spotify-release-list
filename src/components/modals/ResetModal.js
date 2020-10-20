@@ -1,11 +1,11 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { reset, hideResetModal, showSettingsModal } from 'actions';
-import { useModal } from 'hooks';
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { reset, hideResetModal, showSettingsModal } from 'actions'
+import { useModal } from 'hooks'
 
 function ResetModal() {
-  const dispatch = useDispatch();
-  const closeModal = useModal(hideResetModal);
+  const dispatch = useDispatch()
+  const closeModal = useModal(hideResetModal)
 
   return (
     <div className="ResetModal modal is-active">
@@ -37,7 +37,7 @@ function ResetModal() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ResetModal;
+export default ResetModal

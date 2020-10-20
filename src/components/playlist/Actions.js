@@ -1,42 +1,35 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
-import { useFormContext } from 'react-hook-form';
-import classNames from 'classnames';
-import { getCreatingPlaylist, getWorking, getPlaylistId } from 'selectors';
-import { resetPlaylist, createPlaylistCancel } from 'actions';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { useSelector, useDispatch } from 'react-redux'
+import { useFormContext } from 'react-hook-form'
+import classNames from 'classnames'
+import { getCreatingPlaylist, getWorking, getPlaylistId } from 'selectors'
+import { resetPlaylist, createPlaylistCancel } from 'actions'
 
 function Actions({ submitTriggered }) {
-  const dispatch = useDispatch();
-  const creatingPlaylist = useSelector(getCreatingPlaylist);
-  const working = useSelector(getWorking);
-  const playlistId = useSelector(getPlaylistId);
-  const { reset } = useFormContext();
-
-  const cancelButtonClickHandler = useCallback(() => {
-    reset({});
-    dispatch(createPlaylistCancel());
-  }, [reset]);
-
-  const resetButtonClickHandler = useCallback(() => {
-    reset({});
-    dispatch(resetPlaylist());
-  }, [reset]);
+  const dispatch = useDispatch()
+  const creatingPlaylist = useSelector(getCreatingPlaylist)
+  const working = useSelector(getWorking)
+  const playlistId = useSelector(getPlaylistId)
+  const { reset } = useFormContext()
 
   if (creatingPlaylist) {
     return (
       <button
         type="button"
         className="button is-rounded is-dark has-text-weight-semibold"
-        onClick={cancelButtonClickHandler}
+        onClick={() => {
+          reset({})
+          dispatch(createPlaylistCancel())
+        }}
         key="cancel"
       >
         <span className="icon">
-          <i className="fas fa-ban"></i>
+          <i className="fas fa-times"></i>
         </span>
         <span>Cancel</span>
       </button>
-    );
+    )
   }
 
   if (playlistId) {
@@ -44,7 +37,10 @@ function Actions({ submitTriggered }) {
       <button
         type="button"
         className="button is-rounded is-dark has-text-weight-semibold"
-        onClick={resetButtonClickHandler}
+        onClick={() => {
+          reset({})
+          dispatch(resetPlaylist())
+        }}
         key="reset"
       >
         <span className="icon">
@@ -52,7 +48,7 @@ function Actions({ submitTriggered }) {
         </span>
         <span>Start over</span>
       </button>
-    );
+    )
   }
 
   return (
@@ -69,11 +65,11 @@ function Actions({ submitTriggered }) {
       </span>
       <span>Create</span>
     </button>
-  );
+  )
 }
 
 Actions.propTypes = {
   submitTriggered: PropTypes.bool.isRequired,
-};
+}
 
-export default Actions;
+export default Actions

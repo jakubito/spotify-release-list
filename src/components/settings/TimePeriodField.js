@@ -1,23 +1,25 @@
-import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getSettingsDays } from 'selectors';
-import { setSettings } from 'actions';
-import { defer } from 'helpers';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { getSettingsDays } from 'selectors'
+import { setSettings } from 'actions'
+import { defer } from 'helpers'
+import HelpText from './HelpText'
 
 function TimePeriodField() {
-  const days = useSelector(getSettingsDays);
-  const dispatch = useDispatch();
-
-  const onChange = useCallback((event) => {
-    defer(dispatch, setSettings({ days: Number(event.target.value) }));
-  }, []);
+  const days = useSelector(getSettingsDays)
+  const dispatch = useDispatch()
 
   return (
     <div className="field">
-      <label className="label has-text-light">Time period</label>
+      <label className="label has-text-light">
+        Time period <HelpText>/ affects storage usage</HelpText>
+      </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select defaultValue={days.toString()} onChange={onChange}>
+          <select
+            defaultValue={days.toString()}
+            onChange={(event) => defer(dispatch, setSettings({ days: Number(event.target.value) }))}
+          >
             <option value="7">Past week</option>
             <option value="30">Past month</option>
             <option value="90">Past 3 months</option>
@@ -30,7 +32,7 @@ function TimePeriodField() {
         </span>
       </div>
     </div>
-  );
+  )
 }
 
-export default TimePeriodField;
+export default TimePeriodField

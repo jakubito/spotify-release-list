@@ -1,50 +1,29 @@
-import React, { useState, useCallback } from 'react';
-import classNames from 'classnames';
-import { useFormContext } from 'react-hook-form';
-import { FieldName } from 'enums';
-import { toggleSetValue, defer } from 'helpers';
-import AlbumFullTitle from './AlbumFullTitle';
+import React, { useState } from 'react'
+import classNames from 'classnames'
+import { useFormContext } from 'react-hook-form'
+import { FieldName } from 'enums'
+import { defer } from 'helpers'
+import SelectionEntries from './SelectionEntries'
 
 function SelectionField() {
-  const { setValue, watch, errors } = useFormContext();
-  const [expanded, setExpanded] = useState(false);
-  const releases = watch(FieldName.RELEASES);
-  const selectedReleases = watch(FieldName.SELECTED_RELEASES);
+  const { watch, errors } = useFormContext()
+  const [expanded, setExpanded] = useState(false)
 
-  const toggleExpandedHandler = useCallback(() => {
-    defer(setExpanded, (currentExpanded) => !currentExpanded);
-  }, []);
-
-  const selectAllHandler = useCallback(() => {
-    defer(setValue, FieldName.SELECTED_RELEASES, new Set(releases), true);
-  }, [releases, setValue]);
-
-  const unselectAllHandler = useCallback(() => {
-    defer(setValue, FieldName.SELECTED_RELEASES, new Set([]), true);
-  }, [setValue]);
-
-  const releaseChangeHandler = useCallback(
-    (event) => {
-      defer(
-        setValue,
-        FieldName.SELECTED_RELEASES,
-        toggleSetValue(selectedReleases, event.target.value),
-        true
-      );
-    },
-    [selectedReleases, setValue]
-  );
+  const releases = watch(FieldName.RELEASES)
+  const selectedReleases = watch(FieldName.SELECTED_RELEASES)
 
   if (!releases || !selectedReleases || releases.length === 0) {
-    return null;
+    return null
   }
 
   return (
     <div className="SelectionField field">
       <button
         type="button"
-        className="button is-dark is-rounded is-fullwidth has-text-weight-semibold"
-        onClick={toggleExpandedHandler}
+        className={classNames('button is-dark is-rounded is-fullwidth has-text-weight-semibold', {
+          'is-darker': !expanded,
+        })}
+        onClick={() => defer(setExpanded, (currentExpanded) => !currentExpanded)}
       >
         <span>
           {expanded ? 'Collapse' : 'Expand'} selection ({selectedReleases.size})
@@ -59,56 +38,13 @@ function SelectionField() {
         </span>
       </button>
 
-      <div
-        className={classNames('selection', {
-          'is-hidden': !expanded,
-        })}
-      >
-        <button
-          type="button"
-          className="button is-rounded is-small is-dark is-darker"
-          onClick={selectAllHandler}
-        >
-          <span>Select all</span>
-        </button>
-        <button
-          type="button"
-          className="button is-rounded is-small is-dark is-darker"
-          onClick={unselectAllHandler}
-        >
-          <span>Unselect all</span>
-        </button>
-
-        {releases.map((releaseId) => (
-          <div className="field" key={releaseId}>
-            <input
-              type="checkbox"
-              className={classNames('is-checkradio is-small is-white', {
-                'has-background-color': selectedReleases.has(releaseId),
-              })}
-              id={`selectedReleases[${releaseId}]`}
-              name={`selectedReleases[${releaseId}]`}
-              value={releaseId}
-              checked={selectedReleases.has(releaseId)}
-              onChange={releaseChangeHandler}
-            />
-            <label
-              htmlFor={`selectedReleases[${releaseId}]`}
-              className={classNames('is-unselectable', {
-                'has-text-grey': !selectedReleases.has(releaseId),
-              })}
-            >
-              <AlbumFullTitle id={releaseId} />
-            </label>
-          </div>
-        ))}
-      </div>
+      {expanded && <SelectionEntries />}
 
       {errors[FieldName.SELECTED_RELEASES] && (
         <p className="help is-danger">No releases selected.</p>
       )}
     </div>
-  );
+  )
 }
 
-export default SelectionField;
+export default SelectionField

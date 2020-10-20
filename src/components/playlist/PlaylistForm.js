@@ -1,5 +1,5 @@
-import React from 'react';
-import { DateRangeField, SelectionField, NameField, DescriptionField, VisibilityField } from '.';
+import React from 'react'
+import { DateRangeField, SelectionField, NameField, DescriptionField, VisibilityField } from '.'
 
 function PlaylistForm() {
   return (
@@ -10,7 +10,7 @@ function PlaylistForm() {
       <DescriptionField />
       <VisibilityField />
     </div>
-  );
+  )
 }
 
-export default PlaylistForm;
+export default PlaylistForm

@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
 
 function Link({ children, ...props }) {
   return (
     <a className="has-text-grey-light" target="_blank" rel="noopener noreferrer" {...props}>
       {children}
     </a>
-  );
+  )
 }
 
 function Bullet() {
-  return ' • ';
+  return ' - '
 }
 
 function Credits(props) {
@@ -40,7 +40,7 @@ function Credits(props) {
       </Link>
       <Bullet />v{process.env.REACT_APP_VERSION}
     </div>
-  );
+  )
 }
 
-export default Credits;
+export default Credits

@@ -1,24 +1,26 @@
-import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Market } from 'enums';
-import { getSettingsMarket } from 'selectors';
-import { setSettings } from 'actions';
-import { defer } from 'helpers';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Market } from 'enums'
+import { getSettingsMarket } from 'selectors'
+import { setSettings } from 'actions'
+import { defer } from 'helpers'
+import HelpText from './HelpText'
 
 function MarketField() {
-  const market = useSelector(getSettingsMarket);
-  const dispatch = useDispatch();
-
-  const onChange = useCallback((event) => {
-    defer(dispatch, setSettings({ market: event.target.value }));
-  }, []);
+  const market = useSelector(getSettingsMarket)
+  const dispatch = useDispatch()
 
   return (
     <div className="field">
-      <label className="label has-text-light">Market country</label>
+      <label className="label has-text-light">
+        Market country <HelpText>/ prevent duplicates</HelpText>
+      </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select defaultValue={market} onChange={onChange}>
+          <select
+            defaultValue={market}
+            onChange={(event) => defer(dispatch, setSettings({ market: event.target.value }))}
+          >
             <option value="">All markets</option>
             {Object.entries(Market).map(([code, name]) => (
               <option value={code} key={code}>
@@ -32,7 +34,7 @@ function MarketField() {
         </span>
       </div>
     </div>
-  );
+  )
 }
 
-export default MarketField;
+export default MarketField

@@ -1,43 +1,43 @@
-import orderBy from 'lodash/orderBy';
-import { Moment, MomentFormat } from 'enums';
+import orderBy from 'lodash/orderBy'
+import { Moment, MomentFormat } from 'enums'
 
 export function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export function delay(fn, ms, ...args) {
   setTimeout(() => {
-    fn(...args);
-  }, ms);
+    fn(...args)
+  }, ms)
 }
 
 export function defer(fn, ...args) {
-  delay(fn, 0, ...args);
+  requestAnimationFrame(() => delay(fn, 0, ...args))
 }
 
 export function chunks(inputArray, chunkSize) {
-  const input = [...inputArray];
-  const result = [];
+  const input = [...inputArray]
+  const result = []
 
   while (input.length > 0) {
-    result.push(input.splice(0, chunkSize));
+    result.push(input.splice(0, chunkSize))
   }
 
-  return result;
+  return result
 }
 
 export function generateNonce() {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
 
 export function toggleSetValue(set, value) {
   if (set.has(value)) {
-    set.delete(value);
+    set.delete(value)
   } else {
-    set.add(value);
+    set.add(value)
   }
 
-  return set;
+  return set
 }
 
 /**
@@ -49,17 +49,17 @@ export function toggleSetValue(set, value) {
  */
 export function getPlaylistNameSuggestion(startDate, endDate) {
   if (!startDate || !endDate) {
-    return null;
+    return null
   }
 
-  const startDateFormatted = startDate.format('MMM D');
-  const endDateFormatted = endDate.format('MMM D');
+  const startDateFormatted = startDate.format('MMM D')
+  const endDateFormatted = endDate.format('MMM D')
 
   if (startDateFormatted === endDateFormatted) {
-    return `${startDateFormatted} Releases`;
+    return `${startDateFormatted} Releases`
   }
 
-  return `${startDateFormatted} - ${endDateFormatted} Releases`;
+  return `${startDateFormatted} - ${endDateFormatted} Releases`
 }
 
 /**
@@ -72,48 +72,48 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
  */
 export function getReleasesByDate(releasesMap, startDate, endDate) {
   if (!releasesMap || !startDate || !endDate) {
-    return null;
+    return null
   }
 
-  const filteredReleases = [];
-  const current = endDate.clone();
+  const filteredReleases = []
+  const current = endDate.clone()
 
   while (current.isSameOrAfter(startDate)) {
-    const currentFormatted = current.format(MomentFormat.ISO_DATE);
+    const currentFormatted = current.format(MomentFormat.ISO_DATE)
 
     if (releasesMap[currentFormatted]) {
-      const currentReleases = orderBy(releasesMap[currentFormatted], 'name');
-      const currentReleasesIds = currentReleases.map(({ id }) => id);
+      const currentReleases = orderBy(releasesMap[currentFormatted], 'name')
+      const currentReleasesIds = currentReleases.map(({ id }) => id)
 
-      filteredReleases.push(...currentReleasesIds);
+      filteredReleases.push(...currentReleasesIds)
     }
 
-    current.subtract(1, Moment.DAY);
+    current.subtract(1, Moment.DAY)
   }
 
-  return filteredReleases;
+  return filteredReleases
 }
 
 export function getSpotifyUri(id, entity) {
-  return `spotify:${entity}:${id}`;
+  return `spotify:${entity}:${id}`
 }
 
 export function getSpotifyUrl(id, entity) {
-  return `https://open.spotify.com/${entity}/${id}`;
+  return `https://open.spotify.com/${entity}/${id}`
 }
 
 function getImage(images) {
   if (!images || !images.length) {
-    return null;
+    return null
   }
 
   for (const image of images) {
     if (image.width === 300) {
-      return image.url;
+      return image.url
     }
   }
 
-  return images[0].url;
+  return images[0].url
 }
 
 export function buildUser(source) {
@@ -121,14 +121,14 @@ export function buildUser(source) {
     id: source.id,
     name: source.display_name,
     image: getImage(source.images),
-  };
+  }
 }
 
 export function buildArtist(source) {
   return {
     id: source.id,
     name: source.name,
-  };
+  }
 }
 
 export function buildAlbum(source, artistId) {
@@ -139,5 +139,5 @@ export function buildAlbum(source, artistId) {
     artists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
     artistId,
-  };
+  }
 }

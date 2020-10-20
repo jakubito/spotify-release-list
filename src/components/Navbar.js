@@ -1,52 +1,52 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Media from 'react-media';
-import moment from 'moment';
-import { getLastSyncDate, getHasReleases, getSyncing } from 'selectors';
-import { showSettingsModal, showPlaylistModal } from 'actions';
-import SyncButton from './SyncButton';
-import { useHotkeys } from 'react-hotkeys-hook';
+import React, { useState, useEffect, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import Media from 'react-media'
+import { useHotkeys } from 'react-hotkeys-hook'
+import moment from 'moment'
+import { getLastSyncDate, getHasReleases, getSyncing } from 'selectors'
+import { showSettingsModal, showPlaylistModal } from 'actions'
+import SyncButton from './SyncButton'
 
 function useLastSyncUpdater(lastSyncDate, setLastSyncHuman) {
   useEffect(() => {
     const updateLastSyncHuman = () => {
-      setLastSyncHuman(moment(lastSyncDate).fromNow());
-    };
+      setLastSyncHuman(moment(lastSyncDate).fromNow())
+    }
 
-    const intervalId = setInterval(updateLastSyncHuman, 60 * 1000);
-    window.addEventListener('focus', updateLastSyncHuman);
-    updateLastSyncHuman();
+    const intervalId = setInterval(updateLastSyncHuman, 60 * 1000)
+    window.addEventListener('focus', updateLastSyncHuman)
+    updateLastSyncHuman()
 
     return () => {
-      clearInterval(intervalId);
-      window.removeEventListener('focus', updateLastSyncHuman);
-    };
-  }, [lastSyncDate]);
+      clearInterval(intervalId)
+      window.removeEventListener('focus', updateLastSyncHuman)
+    }
+  }, [lastSyncDate])
 }
 
 function Navbar() {
-  const syncing = useSelector(getSyncing);
-  const lastSyncDate = useSelector(getLastSyncDate);
-  const hasReleases = useSelector(getHasReleases);
-  const dispatch = useDispatch();
-  const [lastSyncHuman, setLastSyncHuman] = useState(moment(lastSyncDate).fromNow());
+  const syncing = useSelector(getSyncing)
+  const lastSyncDate = useSelector(getLastSyncDate)
+  const hasReleases = useSelector(getHasReleases)
+  const dispatch = useDispatch()
+  const [lastSyncHuman, setLastSyncHuman] = useState(moment(lastSyncDate).fromNow())
 
   const playlistModalTrigger = useCallback(() => {
     if (lastSyncDate && hasReleases && !syncing) {
-      dispatch(showPlaylistModal());
+      dispatch(showPlaylistModal())
     }
-  }, [lastSyncDate, hasReleases, syncing]);
+  }, [lastSyncDate, hasReleases, syncing])
 
   const settingsModalTrigger = useCallback(() => {
     if (!syncing) {
-      dispatch(showSettingsModal());
+      dispatch(showSettingsModal())
     }
-  }, [syncing]);
+  }, [syncing])
 
-  useHotkeys('n', playlistModalTrigger, {}, [playlistModalTrigger]);
-  useHotkeys('s', settingsModalTrigger, {}, [settingsModalTrigger]);
+  useHotkeys('n', playlistModalTrigger, {}, [playlistModalTrigger])
+  useHotkeys('s', settingsModalTrigger, {}, [settingsModalTrigger])
 
-  useLastSyncUpdater(lastSyncDate, setLastSyncHuman);
+  useLastSyncUpdater(lastSyncDate, setLastSyncHuman)
 
   return (
     <nav className="Navbar">
@@ -57,7 +57,7 @@ function Navbar() {
       {lastSyncDate && (
         <div className="sync">
           <SyncButton title="Refresh" icon="fas fa-sync" />
-          <div className="last-update has-text-grey">Updated {lastSyncHuman}</div>
+          {!syncing && <div className="last-update has-text-grey">Updated {lastSyncHuman}</div>}
         </div>
       )}
       <div className="right">
@@ -89,7 +89,7 @@ function Navbar() {
         </button>
       </div>
     </nav>
-  );
+  )
 }
 
-export default Navbar;
+export default Navbar

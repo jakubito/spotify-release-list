@@ -2,7 +2,7 @@ export const Scope = Object.freeze({
   USER_FOLLOW_READ: 'user-follow-read',
   PLAYLIST_MODIFY_PRIVATE: 'playlist-modify-private',
   PLAYLIST_MODIFY_PUBLIC: 'playlist-modify-public',
-});
+})
 
 export const FieldName = Object.freeze({
   START_DATE: 'startDate',
@@ -13,14 +13,14 @@ export const FieldName = Object.freeze({
   VISIBILITY: 'visibility',
   RELEASES: 'releases',
   SELECTED_RELEASES: 'selectedReleases',
-});
+})
 
 export const SpotifyEntity = Object.freeze({
   ALBUM: 'album',
   ARTIST: 'artist',
   PLAYLIST: 'playlist',
   TRACK: 'track',
-});
+})
 
 export const Moment = Object.freeze({
   SECOND: 'second',
@@ -28,28 +28,28 @@ export const Moment = Object.freeze({
   WEEK: 'week',
   ISO_WEEK: 'isoWeek',
   MONTH: 'month',
-});
+})
 
 export const MomentFormat = Object.freeze({
   ISO_DATE: 'YYYY-MM-DD',
-});
+})
 
 export const AlbumGroup = Object.freeze({
   ALBUM: 'album',
   SINGLE: 'single',
   COMPILATION: 'compilation',
   APPEARS_ON: 'appears_on',
-});
+})
 
 export const Feature = Object.freeze({
   PLAYLIST_CUSTOM_SELECTION: 'playlistCustomSelection',
   THEMES: 'themes',
-});
+})
 
 export const Theme = Object.freeze({
   COMPACT: 'theme-compact',
   SINGLE_COLUMN: 'theme-single-column',
-});
+})
 
 export const Market = Object.freeze({
   DZ: 'Algeria',
@@ -131,4 +131,4 @@ export const Market = Object.freeze({
   US: 'United States',
   UY: 'Uruguay',
   VN: 'Vietnam',
-});
+})

@@ -1,63 +1,55 @@
-import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { useFormContext } from 'react-hook-form';
-import { min, max } from 'moment';
-import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors';
-import { FieldName } from 'enums';
-import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
+import { useFormContext } from 'react-hook-form'
+import { min, max } from 'moment'
+import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors'
+import { FieldName } from 'enums'
+import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
 
 function useClickHandler(start, end) {
-  const releasesMap = useSelector(getReleasesMap);
-  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
-  const { setValue, trigger, getValues } = useFormContext();
+  const releasesMap = useSelector(getReleasesMap)
+  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment)
+  const { setValue, trigger, getValues } = useFormContext()
 
-  const clickHandler = useCallback(() => {
-    const startDate = max(start, minDate);
-    const endDate = min(end, maxDate);
+  const clickHandler = () => {
+    const startDate = max(start, minDate)
+    const endDate = min(end, maxDate)
 
-    setValue(FieldName.START_DATE, startDate);
-    setValue(FieldName.END_DATE, endDate);
+    setValue(FieldName.START_DATE, startDate)
+    setValue(FieldName.END_DATE, endDate)
 
     defer(() => {
-      const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate);
+      const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate)
 
-      setValue(FieldName.RELEASES, filteredReleases);
-      setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
+      setValue(FieldName.RELEASES, filteredReleases)
+      setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases))
 
       trigger([
         FieldName.START_DATE,
         FieldName.END_DATE,
         FieldName.RELEASES,
         FieldName.SELECTED_RELEASES,
-      ]);
+      ])
 
       if (!getValues(FieldName.NAME_CUSTOM)) {
         setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
           shouldValidate: true,
-        });
+        })
       }
-    });
-  }, [start, end, minDate, maxDate, releasesMap, setValue, trigger, getValues]);
+    })
+  }
 
-  return clickHandler;
-}
-
-function useButtonTitle(title, start, end) {
-  return useMemo(() => (title instanceof Function ? title(start, end) : title), [
-    title,
-    start,
-    end,
-  ]);
+  return clickHandler
 }
 
 function DateRangeShortcut({ title, start, end }) {
-  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
-  const clickHandler = useClickHandler(start, end);
-  const buttonTitle = useButtonTitle(title, start, end);
+  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment)
+  const clickHandler = useClickHandler(start, end)
+  const buttonTitle = title instanceof Function ? title(start, end) : title
 
   if (start.isAfter(maxDate) || end.isBefore(minDate)) {
-    return null;
+    return null
   }
 
   return (
@@ -69,13 +61,13 @@ function DateRangeShortcut({ title, start, end }) {
     >
       <span>{buttonTitle}</span>
     </button>
-  );
+  )
 }
 
 DateRangeShortcut.propTypes = {
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
   start: PropTypes.object.isRequired,
   end: PropTypes.object.isRequired,
-};
+}
 
-export default DateRangeShortcut;
+export default DateRangeShortcut
