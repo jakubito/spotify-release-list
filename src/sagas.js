@@ -37,8 +37,8 @@ import {
 
 const REQUEST_WORKERS = 6;
 const PROGRESS_ANIMATION_MS = 550;
-const STATUS_OK = 'STATUS_OK';
-const STATUS_ERROR = 'STATUS_ERROR';
+const STATUS_OK = Symbol('STATUS_OK');
+const STATUS_ERROR = Symbol('STATUS_ERROR');
 
 function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
   return fork(function* () {

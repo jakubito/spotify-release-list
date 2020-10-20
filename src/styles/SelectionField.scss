@@ -1,9 +1,9 @@
 @keyframes slideFromBottom {
   0% {
-    transform: translateY(30px);
+    transform: translateY(-10px);
   }
-  70% {
-    transform: translateY(-20px);
+  30% {
+    transform: translateY(10px);
   }
   100% {
     transform: translateY(0);

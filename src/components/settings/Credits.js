@@ -9,7 +9,7 @@ function Link({ children, ...props }) {
 }
 
 function Bullet() {
-  return ' • ';
+  return ' - ';
 }
 
 function Credits(props) {
