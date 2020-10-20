@@ -1,10 +1,10 @@
-import React from 'react';
-import classNames from 'classnames';
-import { useFormContext } from 'react-hook-form';
-import { FieldName } from 'enums';
+import React from 'react'
+import classNames from 'classnames'
+import { useFormContext } from 'react-hook-form'
+import { FieldName } from 'enums'
 
 function NameField() {
-  const { register, errors, setValue } = useFormContext();
+  const { register, errors, setValue } = useFormContext()
 
   return (
     <div className="field">
@@ -25,7 +25,7 @@ function NameField() {
         </p>
       )}
     </div>
-  );
+  )
 }
 
-export default NameField;
+export default NameField

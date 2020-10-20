@@ -1,8 +1,8 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { hideSettingsModal, showResetModal } from 'actions';
-import { useModal } from 'hooks';
-import { getUser } from 'selectors';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { hideSettingsModal, showResetModal } from 'actions'
+import { useModal } from 'hooks'
+import { getUser } from 'selectors'
 import {
   AlbumGroupsField,
   TimePeriodField,
@@ -11,12 +11,12 @@ import {
   CoversField,
   ThemeField,
   Credits,
-} from 'components/settings';
+} from 'components/settings'
 
 function SettingsModal() {
-  const dispatch = useDispatch();
-  const user = useSelector(getUser);
-  const closeModal = useModal(hideSettingsModal);
+  const dispatch = useDispatch()
+  const user = useSelector(getUser)
+  const closeModal = useModal(hideSettingsModal)
 
   return (
     <div className="SettingsModal modal is-active">
@@ -86,7 +86,7 @@ function SettingsModal() {
         <Credits />
       </div>
     </div>
-  );
+  )
 }
 
-export default SettingsModal;
+export default SettingsModal

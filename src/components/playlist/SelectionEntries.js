@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { useFormContext } from 'react-hook-form';
-import { Waypoint } from 'react-waypoint';
-import { FieldName } from 'enums';
-import { toggleSetValue, defer } from 'helpers';
-import AlbumFullTitle from './AlbumFullTitle';
+import React, { useState, useRef, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import { useFormContext } from 'react-hook-form'
+import { Waypoint } from 'react-waypoint'
+import { FieldName } from 'enums'
+import { toggleSetValue, defer } from 'helpers'
+import AlbumFullTitle from './AlbumFullTitle'
 
-const LIMIT_INCREMENT = 50;
+const LIMIT_INCREMENT = 50
 
 function Shortcut({ label, onClick }) {
   return (
@@ -18,7 +18,7 @@ function Shortcut({ label, onClick }) {
     >
       <span>{label}</span>
     </button>
-  );
+  )
 }
 
 function ReleaseField({ releaseId, selectedReleases, onChange }) {
@@ -44,18 +44,18 @@ function ReleaseField({ releaseId, selectedReleases, onChange }) {
         <AlbumFullTitle id={releaseId} />
       </label>
     </div>
-  );
+  )
 }
 
 function SelectionEntries() {
-  const { setValue, watch } = useFormContext();
-  const [limit, setLimit] = useState(LIMIT_INCREMENT);
-  const [animate, setAnimate] = useState(false);
-  const container = useRef();
-  const inner = useRef();
+  const { setValue, watch } = useFormContext()
+  const [limit, setLimit] = useState(LIMIT_INCREMENT)
+  const [animate, setAnimate] = useState(false)
+  const container = useRef()
+  const inner = useRef()
 
-  const releases = watch(FieldName.RELEASES);
-  const selectedReleases = watch(FieldName.SELECTED_RELEASES);
+  const releases = watch(FieldName.RELEASES)
+  const selectedReleases = watch(FieldName.SELECTED_RELEASES)
 
   const onChangeHandler = (event) => {
     defer(
@@ -63,12 +63,12 @@ function SelectionEntries() {
       FieldName.SELECTED_RELEASES,
       toggleSetValue(selectedReleases, event.target.value),
       true
-    );
-  };
+    )
+  }
 
   useEffect(() => {
-    setAnimate(inner.current.scrollHeight > container.current.clientHeight);
-  }, [releases]);
+    setAnimate(inner.current.scrollHeight > container.current.clientHeight)
+  }, [releases])
 
   return (
     <div className="selection">
@@ -101,18 +101,18 @@ function SelectionEntries() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 Shortcut.propTypes = {
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
-};
+}
 
 ReleaseField.propTypes = {
   releaseId: PropTypes.string.isRequired,
   selectedReleases: PropTypes.instanceOf(Set).isRequired,
   onChange: PropTypes.func.isRequired,
-};
+}
 
-export default SelectionEntries;
+export default SelectionEntries

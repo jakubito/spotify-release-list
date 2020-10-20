@@ -1,12 +1,12 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getSettingsCovers } from 'selectors';
-import { setSettings } from 'actions';
-import { defer } from 'helpers';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { getSettingsCovers } from 'selectors'
+import { setSettings } from 'actions'
+import { defer } from 'helpers'
 
 function CoversField() {
-  const covers = useSelector(getSettingsCovers);
-  const dispatch = useDispatch();
+  const covers = useSelector(getSettingsCovers)
+  const dispatch = useDispatch()
 
   return (
     <div className="field">
@@ -27,7 +27,7 @@ function CoversField() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default CoversField;
+export default CoversField

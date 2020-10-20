@@ -1,16 +1,16 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { getResetModalVisible } from 'selectors';
-import ResetModal from './ResetModal';
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { getResetModalVisible } from 'selectors'
+import ResetModal from './ResetModal'
 
 function ResetModalContainer() {
-  const visible = useSelector(getResetModalVisible);
+  const visible = useSelector(getResetModalVisible)
 
   if (!visible) {
-    return null;
+    return null
   }
 
-  return <ResetModal />;
+  return <ResetModal />
 }
 
-export default ResetModalContainer;
+export default ResetModalContainer

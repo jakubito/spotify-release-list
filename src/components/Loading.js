@@ -1,14 +1,14 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { defer } from 'helpers';
-import { syncCancel } from 'actions';
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { defer } from 'helpers'
+import { syncCancel } from 'actions'
 
 function Loading() {
-  const dispatch = useDispatch();
-  const cancelSyncTrigger = () => defer(dispatch, syncCancel());
+  const dispatch = useDispatch()
+  const cancelSyncTrigger = () => defer(dispatch, syncCancel())
 
-  useHotkeys('esc', cancelSyncTrigger);
+  useHotkeys('esc', cancelSyncTrigger)
 
   return (
     <div className="Loading center">
@@ -26,7 +26,7 @@ function Loading() {
         <span>Cancel</span>
       </button>
     </div>
-  );
+  )
 }
 
-export default Loading;
+export default Loading

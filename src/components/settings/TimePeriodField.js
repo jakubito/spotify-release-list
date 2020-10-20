@@ -1,13 +1,13 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getSettingsDays } from 'selectors';
-import { setSettings } from 'actions';
-import { defer } from 'helpers';
-import HelpText from './HelpText';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { getSettingsDays } from 'selectors'
+import { setSettings } from 'actions'
+import { defer } from 'helpers'
+import HelpText from './HelpText'
 
 function TimePeriodField() {
-  const days = useSelector(getSettingsDays);
-  const dispatch = useDispatch();
+  const days = useSelector(getSettingsDays)
+  const dispatch = useDispatch()
 
   return (
     <div className="field">
@@ -32,7 +32,7 @@ function TimePeriodField() {
         </span>
       </div>
     </div>
-  );
+  )
 }
 
-export default TimePeriodField;
+export default TimePeriodField

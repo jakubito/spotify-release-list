@@ -1,70 +1,70 @@
-import React, { useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { useFormContext } from 'react-hook-form';
-import Media from 'react-media';
-import { DateRangePicker } from 'react-dates';
-import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors';
-import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers';
-import { FieldName, Moment } from 'enums';
-import DateRangeShortcuts from './DateRangeShortcuts';
+import React, { useState, useCallback } from 'react'
+import { useSelector } from 'react-redux'
+import { useFormContext } from 'react-hook-form'
+import Media from 'react-media'
+import { DateRangePicker } from 'react-dates'
+import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors'
+import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
+import { FieldName, Moment } from 'enums'
+import DateRangeShortcuts from './DateRangeShortcuts'
 
 function useIsOutsideRangeHandler() {
-  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
+  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment)
 
   const isOutsideRangeHandler = useCallback(
     (day) => !day.isBetween(minDate, maxDate, Moment.DAY, '[]'),
     [minDate, maxDate]
-  );
+  )
 
-  return isOutsideRangeHandler;
+  return isOutsideRangeHandler
 }
 
 function useDatesChangeHandler() {
-  const releasesMap = useSelector(getReleasesMap);
-  const { setValue, trigger, getValues } = useFormContext();
+  const releasesMap = useSelector(getReleasesMap)
+  const { setValue, trigger, getValues } = useFormContext()
 
   const datesChangeHandler = useCallback(
     ({ startDate, endDate }) => {
-      setValue(FieldName.START_DATE, startDate);
-      setValue(FieldName.END_DATE, endDate);
+      setValue(FieldName.START_DATE, startDate)
+      setValue(FieldName.END_DATE, endDate)
 
       if (startDate && endDate) {
         defer(() => {
-          const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate);
+          const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate)
 
-          setValue(FieldName.RELEASES, filteredReleases);
-          setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases));
+          setValue(FieldName.RELEASES, filteredReleases)
+          setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases))
 
           trigger([
             FieldName.START_DATE,
             FieldName.END_DATE,
             FieldName.RELEASES,
             FieldName.SELECTED_RELEASES,
-          ]);
+          ])
 
           if (!getValues(FieldName.NAME_CUSTOM)) {
             setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
               shouldValidate: true,
-            });
+            })
           }
-        });
+        })
       }
     },
     [releasesMap, setValue, trigger, getValues]
-  );
+  )
 
-  return datesChangeHandler;
+  return datesChangeHandler
 }
 
 function DateRangeField() {
-  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment);
-  const [focus, setFocus] = useState(null);
-  const { watch, errors } = useFormContext();
-  const isOutsideRangeHandler = useIsOutsideRangeHandler();
-  const datesChangeHandler = useDatesChangeHandler();
+  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment)
+  const [focus, setFocus] = useState(null)
+  const { watch, errors } = useFormContext()
+  const isOutsideRangeHandler = useIsOutsideRangeHandler()
+  const datesChangeHandler = useDatesChangeHandler()
 
-  const startDate = watch(FieldName.START_DATE);
-  const endDate = watch(FieldName.END_DATE);
+  const startDate = watch(FieldName.START_DATE)
+  const endDate = watch(FieldName.END_DATE)
 
   return (
     <div className="field">
@@ -109,7 +109,7 @@ function DateRangeField() {
 
       <DateRangeShortcuts />
     </div>
-  );
+  )
 }
 
-export default DateRangeField;
+export default DateRangeField

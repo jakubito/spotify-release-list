@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 function Profile({ name, image, className }) {
   return (
@@ -12,13 +12,13 @@ function Profile({ name, image, className }) {
         </figure>
       )}
     </div>
-  );
+  )
 }
 
 Profile.propTypes = {
   name: PropTypes.string.isRequired,
   image: PropTypes.string,
   className: PropTypes.string,
-};
+}
 
-export default Profile;
+export default Profile

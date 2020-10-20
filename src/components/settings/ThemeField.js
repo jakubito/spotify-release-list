@@ -1,31 +1,31 @@
-import React, { useRef, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getSettingsTheme } from 'selectors';
-import { setSettings } from 'actions';
-import { defer } from 'helpers';
-import { Theme } from 'enums';
+import React, { useRef, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { getSettingsTheme } from 'selectors'
+import { setSettings } from 'actions'
+import { defer } from 'helpers'
+import { Theme } from 'enums'
 
-const themes = Object.values(Theme);
+const themes = Object.values(Theme)
 
 function ThemeField() {
-  const theme = useSelector(getSettingsTheme);
-  const dispatch = useDispatch();
-  const firstRender = useRef(true);
+  const theme = useSelector(getSettingsTheme)
+  const dispatch = useDispatch()
+  const firstRender = useRef(true)
 
   useEffect(() => {
     if (firstRender.current) {
       // Theme already applied before first render, skip effect
-      firstRender.current = false;
+      firstRender.current = false
 
-      return;
+      return
     }
 
-    document.documentElement.classList.remove(...themes);
+    document.documentElement.classList.remove(...themes)
 
     if (theme) {
-      document.documentElement.classList.add(...theme.split(' '));
+      document.documentElement.classList.add(...theme.split(' '))
     }
-  }, [theme]);
+  }, [theme])
 
   return (
     <div className="field">
@@ -49,7 +49,7 @@ function ThemeField() {
         </span>
       </div>
     </div>
-  );
+  )
 }
 
-export default ThemeField;
+export default ThemeField

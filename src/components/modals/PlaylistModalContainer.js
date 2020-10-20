@@ -1,16 +1,16 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { getPlaylistModalVisible } from 'selectors';
-import PlaylistModal from './PlaylistModal';
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { getPlaylistModalVisible } from 'selectors'
+import PlaylistModal from './PlaylistModal'
 
 function PlaylistModalContainer() {
-  const visible = useSelector(getPlaylistModalVisible);
+  const visible = useSelector(getPlaylistModalVisible)
 
   if (!visible) {
-    return null;
+    return null
   }
 
-  return <PlaylistModal />;
+  return <PlaylistModal />
 }
 
-export default PlaylistModalContainer;
+export default PlaylistModalContainer

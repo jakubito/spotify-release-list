@@ -1,13 +1,13 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { getSyncing, getLastSync } from 'selectors';
-import Loading from './Loading';
-import Releases from './Releases';
-import SyncButton from './SyncButton';
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { getSyncing, getLastSync } from 'selectors'
+import Loading from './Loading'
+import Releases from './Releases'
+import SyncButton from './SyncButton'
 
 function Content() {
-  const syncing = useSelector(getSyncing);
-  const lastSync = useSelector(getLastSync);
+  const syncing = useSelector(getSyncing)
+  const lastSync = useSelector(getLastSync)
 
   if (!lastSync) {
     return (
@@ -27,10 +27,10 @@ function Content() {
           </a>
         </div>
       </div>
-    );
+    )
   }
 
-  return <div className="Content">{syncing ? <Loading /> : <Releases />}</div>;
+  return <div className="Content">{syncing ? <Loading /> : <Releases />}</div>
 }
 
-export default Content;
+export default Content

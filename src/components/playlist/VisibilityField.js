@@ -1,9 +1,9 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { FieldName } from 'enums';
+import React from 'react'
+import { useFormContext } from 'react-hook-form'
+import { FieldName } from 'enums'
 
 function VisibilityField() {
-  const { register } = useFormContext();
+  const { register } = useFormContext()
 
   return (
     <div className="field">
@@ -34,7 +34,7 @@ function VisibilityField() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default VisibilityField;
+export default VisibilityField

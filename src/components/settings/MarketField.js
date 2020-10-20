@@ -1,14 +1,14 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Market } from 'enums';
-import { getSettingsMarket } from 'selectors';
-import { setSettings } from 'actions';
-import { defer } from 'helpers';
-import HelpText from './HelpText';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Market } from 'enums'
+import { getSettingsMarket } from 'selectors'
+import { setSettings } from 'actions'
+import { defer } from 'helpers'
+import HelpText from './HelpText'
 
 function MarketField() {
-  const market = useSelector(getSettingsMarket);
-  const dispatch = useDispatch();
+  const market = useSelector(getSettingsMarket)
+  const dispatch = useDispatch()
 
   return (
     <div className="field">
@@ -34,7 +34,7 @@ function MarketField() {
         </span>
       </div>
     </div>
-  );
+  )
 }
 
-export default MarketField;
+export default MarketField

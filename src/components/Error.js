@@ -1,14 +1,14 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getErrorMessage } from 'selectors';
-import { hideErrorMessage } from 'actions';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { getErrorMessage } from 'selectors'
+import { hideErrorMessage } from 'actions'
 
 function Error() {
-  const errorMessage = useSelector(getErrorMessage);
-  const dispatch = useDispatch();
+  const errorMessage = useSelector(getErrorMessage)
+  const dispatch = useDispatch()
 
   if (!errorMessage) {
-    return null;
+    return null
   }
 
   return (
@@ -20,7 +20,7 @@ function Error() {
       ></button>
       {errorMessage}
     </div>
-  );
+  )
 }
 
-export default Error;
+export default Error
