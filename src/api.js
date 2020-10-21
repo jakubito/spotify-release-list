@@ -14,10 +14,7 @@ function post(endpoint, token, body) {
     endpoint,
     token,
     'POST',
-    {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    { Accept: 'application/json', 'Content-Type': 'application/json' },
     JSON.stringify(body)
   )
 }

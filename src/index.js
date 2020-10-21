@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Redirect } from '@reach/router'
 import PWAPrompt from 'react-ios-pwa-prompt'
@@ -14,7 +14,6 @@ import App from 'components/App'
 import 'styles/index.scss'
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
-
 serviceWorker.register()
 
 function applyTheme() {
@@ -26,7 +25,7 @@ function applyTheme() {
 }
 
 function renderApp() {
-  ReactDOM.render(
+  render(
     <>
       <Provider store={store}>
         <Router>

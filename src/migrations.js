@@ -1,5 +1,5 @@
 import { AlbumGroup } from 'enums'
-import { initialState } from 'store'
+import { initialState } from 'reducer'
 
 export default {
   0: (state) => {
@@ -8,18 +8,9 @@ export default {
       (first, second) => albumGroupValues.indexOf(first) - albumGroupValues.indexOf(second)
     )
 
-    return {
-      ...state,
-      settings: {
-        ...state.settings,
-        groups: groupsSorted,
-      },
-    }
+    return { ...state, settings: { ...state.settings, groups: groupsSorted } }
   },
   1: (state) => {
-    return {
-      ...initialState,
-      settings: state.settings,
-    }
+    return { ...initialState, settings: state.settings }
   },
 }

@@ -20,9 +20,6 @@ function Loading() {
         className="cancel button is-rounded is-dark has-text-weight-semibold"
         onClick={cancelSyncTrigger}
       >
-        <span className="icon">
-          <i className="fas fa-times"></i>
-        </span>
         <span>Cancel</span>
       </button>
     </div>

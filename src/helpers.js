@@ -6,9 +6,7 @@ export function sleep(ms) {
 }
 
 export function delay(fn, ms, ...args) {
-  setTimeout(() => {
-    fn(...args)
-  }, ms)
+  setTimeout(() => fn(...args), ms)
 }
 
 export function defer(fn, ...args) {

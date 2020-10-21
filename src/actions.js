@@ -28,188 +28,122 @@ export const CREATE_PLAYLIST_CANCEL = 'CREATE_PLAYLIST_CANCEL'
 export const RESET_PLAYLIST = 'RESET_PLAYLIST'
 export const ADD_SEEN_FEATURE = 'ADD_SEEN_FEATURE'
 
+function action(type, payload) {
+  return { type, payload }
+}
+
 export function sync() {
-  return {
-    type: SYNC,
-  }
+  return action(SYNC)
 }
 
 export function syncStart() {
-  return {
-    type: SYNC_START,
-  }
+  return action(SYNC_START)
 }
 
 export function syncFinished(previousSyncMaxDate) {
-  return {
-    type: SYNC_FINISHED,
-    payload: { previousSyncMaxDate },
-  }
+  return action(SYNC_FINISHED, { previousSyncMaxDate })
 }
 
 export function syncError() {
-  return {
-    type: SYNC_ERROR,
-  }
+  return action(SYNC_ERROR)
 }
 
 export function syncCancel() {
-  return {
-    type: SYNC_CANCEL,
-  }
+  return action(SYNC_CANCEL)
 }
 
 export function setSyncing(syncing) {
-  return {
-    type: SET_SYNCING,
-    payload: { syncing },
-  }
+  return action(SET_SYNCING, { syncing })
 }
 
 export function setSyncingProgress(syncingProgress) {
-  return {
-    type: SET_SYNCING_PROGRESS,
-    payload: { syncingProgress },
-  }
+  return action(SET_SYNCING_PROGRESS, { syncingProgress })
 }
 
 export function setUser(user) {
-  return {
-    type: SET_USER,
-    payload: { user },
-  }
+  return action(SET_USER, { user })
 }
 
 export function setAlbums(albums, artists, minDate) {
-  return {
-    type: SET_ALBUMS,
-    payload: { albums, artists, minDate },
-  }
+  return action(SET_ALBUMS, { albums, artists, minDate })
 }
 
 export function reset() {
-  return {
-    type: RESET,
-  }
+  return action(RESET)
 }
 
 export function setSettings(settings) {
-  return {
-    type: SET_SETTINGS,
-    payload: { settings },
-  }
+  return action(SET_SETTINGS, { settings })
 }
 
 export function showSettingsModal() {
-  return {
-    type: SHOW_SETTINGS_MODAL,
-  }
+  return action(SHOW_SETTINGS_MODAL)
 }
 
 export function hideSettingsModal() {
-  return {
-    type: HIDE_SETTINGS_MODAL,
-  }
+  return action(HIDE_SETTINGS_MODAL)
 }
 
 export function showResetModal() {
-  return {
-    type: SHOW_RESET_MODAL,
-  }
+  return action(SHOW_RESET_MODAL)
 }
 
 export function hideResetModal() {
-  return {
-    type: HIDE_RESET_MODAL,
-  }
+  return action(HIDE_RESET_MODAL)
 }
 
 export function showPlaylistModal() {
-  return {
-    type: SHOW_PLAYLIST_MODAL,
-  }
+  return action(SHOW_PLAYLIST_MODAL)
 }
 
 export function hidePlaylistModal() {
-  return {
-    type: HIDE_PLAYLIST_MODAL,
-  }
+  return action(HIDE_PLAYLIST_MODAL)
 }
 
 export function setToken(token, tokenExpires, tokenScope) {
-  return {
-    type: SET_TOKEN,
-    payload: { token, tokenExpires, tokenScope },
-  }
+  return action(SET_TOKEN, { token, tokenExpires, tokenScope })
 }
 
 export function setNonce(nonce) {
-  return {
-    type: SET_NONCE,
-    payload: { nonce },
-  }
+  return action(SET_NONCE, { nonce })
 }
 
 export function showErrorMessage(message = 'Oops! Something went wrong.') {
-  return {
-    type: SHOW_ERROR_MESSAGE,
-    payload: { message },
-  }
+  return action(SHOW_ERROR_MESSAGE, { message })
 }
 
 export function hideErrorMessage() {
-  return {
-    type: HIDE_ERROR_MESSAGE,
-  }
+  return action(HIDE_ERROR_MESSAGE)
 }
 
 export function setPlaylistForm(albumIds, name, description, isPrivate) {
-  return {
-    type: SET_PLAYLIST_FORM,
-    payload: { albumIds, name, description, isPrivate },
-  }
+  return action(SET_PLAYLIST_FORM, { albumIds, name, description, isPrivate })
 }
 
 export function createPlaylist() {
-  return {
-    type: CREATE_PLAYLIST,
-  }
+  return action(CREATE_PLAYLIST)
 }
 
 export function createPlaylistStart() {
-  return {
-    type: CREATE_PLAYLIST_START,
-  }
+  return action(CREATE_PLAYLIST_START)
 }
 
 export function createPlaylistFinished(id) {
-  return {
-    type: CREATE_PLAYLIST_FINISHED,
-    payload: { id },
-  }
+  return action(CREATE_PLAYLIST_FINISHED, { id })
 }
 
 export function createPlaylistError() {
-  return {
-    type: CREATE_PLAYLIST_ERROR,
-  }
+  return action(CREATE_PLAYLIST_ERROR)
 }
 
 export function createPlaylistCancel() {
-  return {
-    type: CREATE_PLAYLIST_CANCEL,
-  }
+  return action(CREATE_PLAYLIST_CANCEL)
 }
 
 export function resetPlaylist() {
-  return {
-    type: RESET_PLAYLIST,
-  }
+  return action(RESET_PLAYLIST)
 }
 
 export function addSeenFeature(feature) {
-  return {
-    type: ADD_SEEN_FEATURE,
-    payload: { feature },
-  }
+  return action(ADD_SEEN_FEATURE, { feature })
 }
