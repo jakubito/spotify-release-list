@@ -1,6 +1,8 @@
 import orderBy from 'lodash/orderBy'
 import { Moment, MomentFormat } from 'enums'
 
+const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -24,8 +26,12 @@ export function chunks(inputArray, chunkSize) {
   return result
 }
 
-export function generateNonce() {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+function pickRandom(input) {
+  return input[Math.floor(Math.random() * input.length)]
+}
+
+export function generateNonce(length = 20, charSet = ALPHA_NUMERIC) {
+  return Array.from(Array(length), () => pickRandom(charSet)).join('')
 }
 
 export function toggleSetValue(set, value) {
