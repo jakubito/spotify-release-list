@@ -1,10 +1,8 @@
 import { AlbumGroup } from 'enums'
 import { initialState } from 'state'
 
-/** @typedef {import('redux-persist').PersistedState & State} PersistedState */
-
-export default {
-  /** @param {PersistedState} state */
+/** @type {{ [version: number]: (state: PersistedState) => PersistedState }} */
+const migrations = {
   0: (state) => {
     const albumGroupValues = Object.values(AlbumGroup)
     const groupsSorted = state.settings.groups.sort(
@@ -13,8 +11,9 @@ export default {
 
     return { ...state, settings: { ...state.settings, groups: groupsSorted } }
   },
-  /** @param {PersistedState} state */
   1: (state) => {
     return { ...state, ...initialState, settings: state.settings }
   },
 }
+
+export default migrations

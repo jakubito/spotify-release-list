@@ -108,5 +108,6 @@
  * @typedef {(...args: any[]) => Action} ActionCreator
  * @typedef {import('react').ReactNode} ReactNode
  * @typedef {import('@reach/router').RouteComponentProps} RouteComponentProps
+ * @typedef {import('redux-persist').PersistedState & State} PersistedState
  * @typedef {moment.Moment} Moment
  */
