@@ -1,10 +1,12 @@
-export const Scope = Object.freeze({
+/** @enum {string} */
+export const Scope = {
   USER_FOLLOW_READ: 'user-follow-read',
   PLAYLIST_MODIFY_PRIVATE: 'playlist-modify-private',
   PLAYLIST_MODIFY_PUBLIC: 'playlist-modify-public',
-})
+}
 
-export const FieldName = Object.freeze({
+/** @enum {string} */
+export const FieldName = {
   START_DATE: 'startDate',
   END_DATE: 'endDate',
   NAME: 'name',
@@ -13,45 +15,43 @@ export const FieldName = Object.freeze({
   VISIBILITY: 'visibility',
   RELEASES: 'releases',
   SELECTED_RELEASES: 'selectedReleases',
-})
+}
 
-export const SpotifyEntity = Object.freeze({
+/** @enum {string} */
+export const SpotifyEntity = {
   ALBUM: 'album',
   ARTIST: 'artist',
   PLAYLIST: 'playlist',
   TRACK: 'track',
-})
+}
 
-export const Moment = Object.freeze({
-  SECOND: 'second',
-  DAY: 'day',
-  WEEK: 'week',
-  ISO_WEEK: 'isoWeek',
-  MONTH: 'month',
-})
-
-export const MomentFormat = Object.freeze({
+/** @enum {string} */
+export const MomentFormat = {
   ISO_DATE: 'YYYY-MM-DD',
-})
+}
 
-export const AlbumGroup = Object.freeze({
+/** @enum {string} */
+export const AlbumGroup = {
   ALBUM: 'album',
   SINGLE: 'single',
   COMPILATION: 'compilation',
   APPEARS_ON: 'appears_on',
-})
+}
 
-export const Feature = Object.freeze({
+/** @enum {string} */
+export const Feature = {
   PLAYLIST_CUSTOM_SELECTION: 'playlistCustomSelection',
   THEMES: 'themes',
-})
+}
 
-export const Theme = Object.freeze({
+/** @enum {string} */
+export const Theme = {
   COMPACT: 'theme-compact',
   SINGLE_COLUMN: 'theme-single-column',
-})
+}
 
-export const Market = Object.freeze({
+/** @enum {string} */
+export const Market = {
   DZ: 'Algeria',
   AD: 'Andorra',
   AR: 'Argentina',
@@ -131,4 +131,4 @@ export const Market = Object.freeze({
   US: 'United States',
   UY: 'Uruguay',
   VN: 'Vietnam',
-})
+}

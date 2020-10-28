@@ -5,8 +5,13 @@ import { addSeenFeature, sync, setSyncing, setNonce } from 'actions'
 import { getSeenFeatures, getWorking, getToken, getTokenExpires, getTokenScope } from 'selectors'
 import { isValidSyncToken, startSyncAuthFlow } from 'auth'
 import { generateNonce } from 'helpers'
-import { persistor } from 'store'
+import { persistor } from 'state'
 
+/**
+ * Sync trigger hook
+ *
+ * @returns {() => void} Sync trigger handler
+ */
 export function useSync() {
   const dispatch = useDispatch()
   const working = useSelector(getWorking)
@@ -36,9 +41,17 @@ export function useSync() {
   return syncTrigger
 }
 
+/**
+ * Modal hook
+ *
+ * @param {ActionCreator} hideModalAction
+ * @returns {() => void} Close modal handler
+ */
 export function useModal(hideModalAction) {
   const dispatch = useDispatch()
-  const closeModal = useCallback(() => dispatch(hideModalAction()), [])
+  const closeModal = useCallback(() => {
+    dispatch(hideModalAction())
+  }, [])
 
   useHotkeys('esc', closeModal)
 
@@ -53,6 +66,12 @@ export function useModal(hideModalAction) {
   return closeModal
 }
 
+/**
+ * Feature hook
+ *
+ * @param {string} feature
+ * @returns {[boolean, () => void]}
+ */
 export function useFeature(feature) {
   const dispatch = useDispatch()
   const seenFeatures = useSelector(getSeenFeatures)

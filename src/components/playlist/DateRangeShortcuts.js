@@ -1,45 +1,45 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import moment from 'moment'
 import DateRangeShortcut from './DateRangeShortcut'
-import { Moment } from 'enums'
 
+/** @type {DateRangeShortcut[]} */
+const shortcuts = [
+  {
+    title: 'Today',
+    start: moment().startOf('day'),
+    end: moment().endOf('day'),
+  },
+  {
+    title: 'Yesterday',
+    start: moment().subtract(1, 'day').startOf('day'),
+    end: moment().subtract(1, 'day').endOf('day'),
+  },
+  {
+    title: 'This week',
+    start: moment().startOf('isoWeek'),
+    end: moment().endOf('isoWeek'),
+  },
+  {
+    title: 'Last week',
+    start: moment().subtract(1, 'week').startOf('isoWeek'),
+    end: moment().subtract(1, 'week').endOf('isoWeek'),
+  },
+  {
+    title: (start) => start.format('MMMM'),
+    start: moment().startOf('month'),
+    end: moment().endOf('month'),
+  },
+  {
+    title: (start) => start.format('MMMM'),
+    start: moment().subtract(1, 'month').startOf('month'),
+    end: moment().subtract(1, 'month').endOf('month'),
+  },
+]
+
+/**
+ * Render date range shortcuts
+ */
 function DateRangeShortcuts() {
-  const shortcuts = useMemo(
-    () => [
-      {
-        title: 'Today',
-        start: moment().startOf(Moment.DAY),
-        end: moment().endOf(Moment.DAY),
-      },
-      {
-        title: 'Yesterday',
-        start: moment().subtract(1, Moment.DAY).startOf(Moment.DAY),
-        end: moment().subtract(1, Moment.DAY).endOf(Moment.DAY),
-      },
-      {
-        title: 'This week',
-        start: moment().startOf(Moment.ISO_WEEK),
-        end: moment().endOf(Moment.ISO_WEEK),
-      },
-      {
-        title: 'Last week',
-        start: moment().subtract(1, Moment.WEEK).startOf(Moment.ISO_WEEK),
-        end: moment().subtract(1, Moment.WEEK).endOf(Moment.ISO_WEEK),
-      },
-      {
-        title: (start) => start.format('MMMM'),
-        start: moment().startOf(Moment.MONTH),
-        end: moment().endOf(Moment.MONTH),
-      },
-      {
-        title: (start) => start.format('MMMM'),
-        start: moment().subtract(1, Moment.MONTH).startOf(Moment.MONTH),
-        end: moment().subtract(1, Moment.MONTH).endOf(Moment.MONTH),
-      },
-    ],
-    []
-  )
-
   return <div className="DateRangeShortcuts">{shortcuts.map(DateRangeShortcut)}</div>
 }
 

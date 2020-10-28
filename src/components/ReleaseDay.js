@@ -5,6 +5,11 @@ import moment from 'moment'
 import { getPreviousSyncMaxDate } from 'selectors'
 import Album from './Album'
 
+/**
+ * Render single release day
+ *
+ * @param {{ date: string, albums: AlbumGrouped[] }} props
+ */
 function ReleaseDay({ date, albums }) {
   const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate)
 

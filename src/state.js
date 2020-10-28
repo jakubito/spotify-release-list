@@ -7,9 +7,46 @@ import createSagaMiddleware from 'redux-saga'
 import saga from 'sagas'
 import migrations from 'migrations'
 import reducer from 'reducer'
+import { AlbumGroup } from 'enums'
+
+/** @type {State} */
+export const initialState = {
+  albums: {},
+  syncing: false,
+  syncingProgress: 0,
+  lastSync: null,
+  previousSyncMaxDate: null,
+  creatingPlaylist: false,
+  playlistId: null,
+  playlistForm: {
+    albumIds: null,
+    name: null,
+    description: null,
+    isPrivate: null,
+  },
+  token: null,
+  tokenExpires: null,
+  tokenScope: null,
+  user: null,
+  nonce: null,
+  errorMessage: null,
+  settingsModalVisible: false,
+  resetModalVisible: false,
+  playlistModalVisible: false,
+  settings: {
+    groups: Object.values(AlbumGroup),
+    days: 30,
+    market: '',
+    theme: '',
+    uriLinks: false,
+    covers: true,
+  },
+  seenFeatures: [],
+}
 
 localForage.config({ name: 'spotify-release-list' })
 
+/** @type {import('redux-persist').PersistConfig<State>} */
 const persistConfig = {
   key: 'root',
   version: 1,
@@ -31,16 +68,19 @@ const persistConfig = {
   ],
 }
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const sagaMiddleware = createSagaMiddleware({ onError: Sentry.captureException })
+const composeEnhancers = /** @type {any} */ (window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const sagaMiddleware = createSagaMiddleware({ onError: (error) => Sentry.captureException(error) })
 
+/** @type {import('redux').Store<State>} */
 export const store = createStore(
   persistReducer(persistConfig, reducer),
   composeEnhancers(applyMiddleware(sagaMiddleware))
 )
 
+/** @type {import('redux-persist').Persistor} */
 export let persistor
 
+/** @type {Promise<void>} */
 export const hydrate = new Promise((resolve) => {
   persistor = persistStore(store, null, resolve)
 })

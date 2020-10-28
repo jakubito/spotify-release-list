@@ -7,24 +7,10 @@ import { getLastSyncDate, getHasReleases, getSyncing } from 'selectors'
 import { showSettingsModal, showPlaylistModal } from 'actions'
 import SyncButton from './SyncButton'
 
-function useLastSyncUpdater(lastSyncDate, setLastSyncHuman) {
-  useEffect(() => {
-    const updateLastSyncHuman = () => {
-      setLastSyncHuman(moment(lastSyncDate).fromNow())
-    }
-
-    const intervalId = setInterval(updateLastSyncHuman, 60 * 1000)
-    window.addEventListener('focus', updateLastSyncHuman)
-    updateLastSyncHuman()
-
-    return () => {
-      clearInterval(intervalId)
-      window.removeEventListener('focus', updateLastSyncHuman)
-    }
-  }, [lastSyncDate])
-}
-
-function Navbar() {
+/**
+ * Render header
+ */
+function Header() {
   const syncing = useSelector(getSyncing)
   const lastSyncDate = useSelector(getLastSyncDate)
   const hasReleases = useSelector(getHasReleases)
@@ -92,4 +78,25 @@ function Navbar() {
   )
 }
 
-export default Navbar
+/**
+ * @param {Date} lastSyncDate
+ * @param {(text: string) => any} setLastSyncHuman
+ */
+function useLastSyncUpdater(lastSyncDate, setLastSyncHuman) {
+  useEffect(() => {
+    const updateLastSyncHuman = () => {
+      setLastSyncHuman(moment(lastSyncDate).fromNow())
+    }
+
+    const intervalId = setInterval(updateLastSyncHuman, 60 * 1000)
+    window.addEventListener('focus', updateLastSyncHuman)
+    updateLastSyncHuman()
+
+    return () => {
+      clearInterval(intervalId)
+      window.removeEventListener('focus', updateLastSyncHuman)
+    }
+  }, [lastSyncDate])
+}
+
+export default Header

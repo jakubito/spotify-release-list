@@ -5,57 +5,12 @@ import Media from 'react-media'
 import { DateRangePicker } from 'react-dates'
 import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors'
 import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
-import { FieldName, Moment } from 'enums'
+import { FieldName } from 'enums'
 import DateRangeShortcuts from './DateRangeShortcuts'
 
-function useIsOutsideRangeHandler() {
-  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment)
-
-  const isOutsideRangeHandler = useCallback(
-    (day) => !day.isBetween(minDate, maxDate, Moment.DAY, '[]'),
-    [minDate, maxDate]
-  )
-
-  return isOutsideRangeHandler
-}
-
-function useDatesChangeHandler() {
-  const releasesMap = useSelector(getReleasesMap)
-  const { setValue, trigger, getValues } = useFormContext()
-
-  const datesChangeHandler = useCallback(
-    ({ startDate, endDate }) => {
-      setValue(FieldName.START_DATE, startDate)
-      setValue(FieldName.END_DATE, endDate)
-
-      if (startDate && endDate) {
-        defer(() => {
-          const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate)
-
-          setValue(FieldName.RELEASES, filteredReleases)
-          setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases))
-
-          trigger([
-            FieldName.START_DATE,
-            FieldName.END_DATE,
-            FieldName.RELEASES,
-            FieldName.SELECTED_RELEASES,
-          ])
-
-          if (!getValues(FieldName.NAME_CUSTOM)) {
-            setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
-              shouldValidate: true,
-            })
-          }
-        })
-      }
-    },
-    [releasesMap, setValue, trigger, getValues]
-  )
-
-  return datesChangeHandler
-}
-
+/**
+ * Date range form field wrapper
+ */
 function DateRangeField() {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment)
   const [focus, setFocus] = useState(null)
@@ -110,6 +65,56 @@ function DateRangeField() {
       <DateRangeShortcuts />
     </div>
   )
+}
+
+function useIsOutsideRangeHandler() {
+  const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment)
+
+  const isOutsideRangeHandler = useCallback(
+    /** @param {Moment} day */
+    (day) => !day.isBetween(minDate, maxDate, 'day', '[]'),
+    [minDate, maxDate]
+  )
+
+  return isOutsideRangeHandler
+}
+
+function useDatesChangeHandler() {
+  const releasesMap = useSelector(getReleasesMap)
+  const { setValue, trigger, getValues } = useFormContext()
+
+  const datesChangeHandler = useCallback(
+    /** @param {{ startDate: Moment, endDate: Moment }} values */
+    ({ startDate, endDate }) => {
+      setValue(FieldName.START_DATE, startDate)
+      setValue(FieldName.END_DATE, endDate)
+
+      if (startDate && endDate) {
+        defer(() => {
+          const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate)
+
+          setValue(FieldName.RELEASES, filteredReleases)
+          setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases))
+
+          trigger([
+            FieldName.START_DATE,
+            FieldName.END_DATE,
+            FieldName.RELEASES,
+            FieldName.SELECTED_RELEASES,
+          ])
+
+          if (!getValues(FieldName.NAME_CUSTOM)) {
+            setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
+              shouldValidate: true,
+            })
+          }
+        })
+      }
+    },
+    [releasesMap, setValue, trigger, getValues]
+  )
+
+  return datesChangeHandler
 }
 
 export default DateRangeField

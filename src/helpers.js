@@ -1,20 +1,48 @@
 import orderBy from 'lodash/orderBy'
-import { Moment, MomentFormat } from 'enums'
+import { MomentFormat } from 'enums'
 
 const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
+/**
+ * Promisified setTimeout
+ *
+ * @param {number} ms
+ * @returns {Promise}
+ */
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+/**
+ * Delay function executions
+ *
+ * @param {function} fn
+ * @param {number} ms
+ * @param {...any} [args] - Arguments to be passed to function
+ * @returns {void}
+ */
 export function delay(fn, ms, ...args) {
   setTimeout(() => fn(...args), ms)
 }
 
+/**
+ * Delay function execution until UI is done updating
+ *
+ * @param {function} fn
+ * @param {...any} [args] - Arguments to be passed to function
+ * @returns {void}
+ */
 export function defer(fn, ...args) {
   requestAnimationFrame(() => delay(fn, 0, ...args))
 }
 
+/**
+ * Split array into chunks
+ *
+ * @param {any[]} inputArray
+ * @param {number} chunkSize
+ * @returns {any[][]}
+ */
 export function chunks(inputArray, chunkSize) {
   const input = [...inputArray]
   const result = []
@@ -26,14 +54,33 @@ export function chunks(inputArray, chunkSize) {
   return result
 }
 
+/**
+ * Pick random character from input string
+ *
+ * @param {string} input
+ * @returns {string}
+ */
 function pickRandom(input) {
   return input[Math.floor(Math.random() * input.length)]
 }
 
-export function generateNonce(length = 20, charSet = ALPHA_NUMERIC) {
-  return Array.from(Array(length), () => pickRandom(charSet)).join('')
+/**
+ * Generate random nonce
+ *
+ * @returns {string}
+ */
+export function generateNonce() {
+  return Array.from(Array(20), () => pickRandom(ALPHA_NUMERIC)).join('')
 }
 
+/**
+ * Toggle value in set
+ *
+ * @template {Set} S
+ * @param {S} set
+ * @param {any} value
+ * @returns {S}
+ */
 export function toggleSetValue(set, value) {
   if (set.has(value)) {
     set.delete(value)
@@ -45,11 +92,11 @@ export function toggleSetValue(set, value) {
 }
 
 /**
- * Get playlist name suggestion.
+ * Get playlist name suggestion
  *
- * @param {Moment} startDate
- * @param {Moment} endDate
- * @returns {string}
+ * @param {Moment} [startDate]
+ * @param {Moment} [endDate]
+ * @returns {string|null}
  */
 export function getPlaylistNameSuggestion(startDate, endDate) {
   if (!startDate || !endDate) {
@@ -67,12 +114,12 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
 }
 
 /**
- * Get release IDs released between startDate and endDate.
+ * Get release IDs released between startDate and endDate
  *
- * @param {Object} releasesMap Releases map from redux store
- * @param {Moment} startDate
- * @param {Moment} endDate
- * @returns {(Array|null)}
+ * @param {Object} [releasesMap] - Releases map from redux store
+ * @param {Moment} [startDate]
+ * @param {Moment} [endDate]
+ * @returns {string[]|null}
  */
 export function getReleasesByDate(releasesMap, startDate, endDate) {
   if (!releasesMap || !startDate || !endDate) {
@@ -92,21 +139,41 @@ export function getReleasesByDate(releasesMap, startDate, endDate) {
       filteredReleases.push(...currentReleasesIds)
     }
 
-    current.subtract(1, Moment.DAY)
+    current.subtract(1, 'day')
   }
 
   return filteredReleases
 }
 
+/**
+ * Create Spotify URI
+ *
+ * @param {string} id
+ * @param {string} entity
+ * @returns {string}
+ */
 export function getSpotifyUri(id, entity) {
   return `spotify:${entity}:${id}`
 }
 
+/**
+ * Create Spotify URL
+ *
+ * @param {string} id
+ * @param {string} entity
+ * @returns {string}
+ */
 export function getSpotifyUrl(id, entity) {
   return `https://open.spotify.com/${entity}/${id}`
 }
 
-function getImage(images) {
+/**
+ * Pick image from array of images and return its URL
+ *
+ * @param {SpotifyImage[]} [images]
+ * @returns {string|null}
+ */
+export function getImage(images) {
   if (!images || !images.length) {
     return null
   }
@@ -120,6 +187,12 @@ function getImage(images) {
   return images[0].url
 }
 
+/**
+ * Create user object
+ *
+ * @param {SpotifyUser} source
+ * @returns {User}
+ */
 export function buildUser(source) {
   return {
     id: source.id,
@@ -128,6 +201,12 @@ export function buildUser(source) {
   }
 }
 
+/**
+ * Create artist object
+ *
+ * @param {SpotifyArtist} source
+ * @returns {Artist}
+ */
 export function buildArtist(source) {
   return {
     id: source.id,
@@ -135,6 +214,13 @@ export function buildArtist(source) {
   }
 }
 
+/**
+ * Create album object
+ *
+ * @param {SpotifyAlbum} source
+ * @param {string} artistId
+ * @returns {Album}
+ */
 export function buildAlbum(source, artistId) {
   return {
     id: source.id,

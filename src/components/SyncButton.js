@@ -6,13 +6,11 @@ import classNames from 'classnames'
 import { getSyncing, getWorking, getSyncingProgress } from 'selectors'
 import { useSync } from 'hooks'
 
-function Progress() {
-  const syncingProgress = useSelector(getSyncingProgress)
-  const style = { transform: `translateX(${syncingProgress - 100}%)` }
-
-  return <span className="progress-bar" style={style}></span>
-}
-
+/**
+ * Render sync button
+ *
+ * @param {{ title: string, icon?: string, className?: string, showProgress?: boolean }} props
+ */
 function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = true }) {
   const syncing = useSelector(getSyncing)
   const working = useSelector(getWorking)
@@ -46,8 +44,18 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
   )
 }
 
+/**
+ * Render progress bar
+ */
+function Progress() {
+  const syncingProgress = useSelector(getSyncingProgress)
+  const style = { transform: `translateX(${syncingProgress - 100}%)` }
+
+  return <span className="progress-bar" style={style}></span>
+}
+
 SyncButton.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.string.isRequired,
   icon: PropTypes.string,
   className: PropTypes.string,
   showProgress: PropTypes.bool,

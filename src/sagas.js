@@ -9,7 +9,7 @@ import {
   getUser as getUserSelector,
   getReleasesMaxDate,
 } from 'selectors'
-import { SpotifyEntity, Moment, MomentFormat } from 'enums'
+import { SpotifyEntity, MomentFormat } from 'enums'
 import {
   getUser,
   getUserFollowedArtists,
@@ -35,11 +35,26 @@ import {
   createPlaylistError,
 } from 'actions'
 
+/**
+ * @typedef {import('redux-saga').Channel} Channel
+ * @typedef {import('redux-saga').Task} Task
+ * @typedef {(...args: any[]) => any} Fn
+ *
+ * @typedef {object} Progress
+ * @prop {number} value
+ */
+
 const REQUEST_WORKERS = 6
 const PROGRESS_ANIMATION_MS = 550
-const STATUS_OK = Symbol('STATUS_OK')
-const STATUS_ERROR = Symbol('STATUS_ERROR')
 
+/**
+ * Behaves the same way as redux-saga's `takeLeading` but can be cancelled
+ *
+ * @param {string} triggerAction
+ * @param {string} cancelAction
+ * @param {Fn} saga
+ * @param {...any} args
+ */
 function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
   return fork(function* () {
     while (true) {
@@ -54,6 +69,12 @@ function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
   })
 }
 
+/**
+ * Saga that updates progress after each animation window
+ *
+ * @param {Progress} progress
+ * @param {ActionCreator} setProgressAction
+ */
 function* progressWorker(progress, setProgressAction) {
   try {
     while (true) {
@@ -65,20 +86,30 @@ function* progressWorker(progress, setProgressAction) {
   }
 }
 
+/**
+ * Saga that takes http requests from `requestChannel` and sends responses to `responseChannel`
+ *
+ * @param {Channel} requestChannel
+ * @param {Channel} responseChannel
+ */
 function* requestWorker(requestChannel, responseChannel) {
   while (true) {
+    /** @type {[Fn, ...any[]]} */
     const request = yield take(requestChannel)
 
     try {
       const result = yield call(...request)
 
-      yield put(responseChannel, { status: STATUS_OK, result })
+      yield put(responseChannel, { result })
     } catch (error) {
-      yield put(responseChannel, { status: STATUS_ERROR, error })
+      yield put(responseChannel, { error })
     }
   }
 }
 
+/**
+ * Main synchronization saga
+ */
 function* syncSaga() {
   try {
     yield put(syncStart())
@@ -86,14 +117,18 @@ function* syncSaga() {
     const token = yield select(getToken)
     const { groups, market, days } = yield select(getSettings)
     const previousSyncMaxDate = yield select(getReleasesMaxDate)
-    const minDate = moment().subtract(days, Moment.DAY).format(MomentFormat.ISO_DATE)
-    const albums = []
 
     const user = yield call(getUser, token)
     const artists = yield call(getUserFollowedArtists, token)
 
+    /** @type {Album[]} */
+    const albums = []
+    /** @type {Task[]} */
     const tasks = []
+    /** @type {Progress} */
     const progress = { value: 0 }
+    const minDate = moment().subtract(days, 'day').format(MomentFormat.ISO_DATE)
+
     const requestChannel = yield call(channel, buffers.fixed(artists.length))
     const responseChannel = yield call(channel, buffers.fixed(REQUEST_WORKERS))
 
@@ -110,7 +145,7 @@ function* syncSaga() {
     for (let fetched = 0; fetched < artists.length; fetched += 1) {
       const response = yield take(responseChannel)
 
-      if (response.status === STATUS_OK) {
+      if (response.result) {
         albums.push(...response.result)
       }
 
@@ -131,6 +166,9 @@ function* syncSaga() {
   }
 }
 
+/**
+ * Playlist creation saga
+ */
 function* createPlaylistSaga() {
   try {
     yield put(createPlaylistStart())
@@ -146,6 +184,7 @@ function* createPlaylistSaga() {
 
     const trackIds = yield all(trackIdsCalls)
     const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK))
+    /** @type {SpotifyPlaylist} */
     let firstPlaylist
 
     for (const [part, playlistTrackUrisChunk] of chunks(trackUris, 9500).entries()) {
@@ -170,6 +209,9 @@ function* createPlaylistSaga() {
   }
 }
 
+/**
+ * Root saga
+ */
 function* saga() {
   yield takeLeadingCancellable(SYNC, SYNC_CANCEL, syncSaga)
   yield takeLeadingCancellable(CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL, createPlaylistSaga)

@@ -4,6 +4,9 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { defer } from 'helpers'
 import { syncCancel } from 'actions'
 
+/**
+ * Render loading screen
+ */
 function Loading() {
   const dispatch = useDispatch()
   const cancelSyncTrigger = () => defer(dispatch, syncCancel())

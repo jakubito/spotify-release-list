@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "checkJs": true,
+    "jsx": "react",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "target": "esnext"
   },
   "include": ["src"]
 }

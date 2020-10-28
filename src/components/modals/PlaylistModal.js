@@ -13,7 +13,7 @@ import {
 import { FieldName } from 'enums'
 import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from 'auth'
 import { generateNonce } from 'helpers'
-import { persistor } from 'store'
+import { persistor } from 'state'
 import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist'
 
 export function useOnSubmit(setSubmitTriggered) {

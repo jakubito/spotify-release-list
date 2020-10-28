@@ -1,5 +1,5 @@
 import orderBy from 'lodash/orderBy'
-import { AlbumGroup } from 'enums'
+import { initialState } from 'state'
 import {
   SYNC_START,
   SYNC_FINISHED,
@@ -30,43 +30,14 @@ import {
   ADD_SEEN_FEATURE,
 } from 'actions'
 
-export const initialState = {
-  albums: {},
-  syncing: false,
-  syncingProgress: 0,
-  lastSync: null,
-  previousSyncMaxDate: null,
-  creatingPlaylist: false,
-  playlistId: null,
-  playlistForm: {
-    albumIds: null,
-    name: null,
-    description: null,
-    isPrivate: null,
-  },
-  token: null,
-  tokenExpires: null,
-  tokenScope: null,
-  user: null,
-  nonce: null,
-  errorMessage: null,
-  settingsModalVisible: false,
-  resetModalVisible: false,
-  playlistModalVisible: false,
-  settings: {
-    groups: Object.values(AlbumGroup),
-    days: 30,
-    market: '',
-    theme: '',
-    uriLinks: false,
-    covers: true,
-  },
-  seenFeatures: [],
-}
-
-function reducer(state = initialState, action) {
-  const { type, payload } = action
-
+/**
+ * State reducer
+ *
+ * @param {State} state
+ * @param {Action} action
+ * @returns {State}
+ */
+function reducer(state = initialState, { type, payload }) {
   switch (type) {
     case SYNC_START:
       return { ...state, syncing: true, syncingProgress: 0 }
@@ -158,6 +129,11 @@ function reducer(state = initialState, action) {
   }
 }
 
+/**
+ * @param {State} state
+ * @param {{ albums: Album[], artists: Artist[], minDate: string }} payload
+ * @returns {State}
+ */
 function setAlbums(state, payload) {
   const artists = payload.artists.reduce(
     (map, artist) => ({
@@ -167,31 +143,40 @@ function setAlbums(state, payload) {
     {}
   )
 
-  const albums = payload.albums.reduce((map, currentAlbum) => {
-    if (currentAlbum.releaseDate < payload.minDate) {
+  const albums = payload.albums.reduce(
+    /** @param {typeof state.albums} map */
+    (map, album) => {
+      if (album.releaseDate < payload.minDate) {
+        return map
+      }
+
+      const { artistId, ...albumRest } = album
+      const matched = map[album.id]
+
+      if (!matched) {
+        /** @type {AlbumGrouped} */
+        const newAlbum = {
+          ...albumRest,
+          artists: orderBy(albumRest.artists, 'name').filter((artist) => artist.id !== artistId),
+          primaryArtists: [artists[artistId]],
+        }
+
+        map[album.id] = newAlbum
+
+        return map
+      }
+
+      const inPrimary = matched.primaryArtists.find((artist) => artist.id === artistId)
+
+      if (!inPrimary) {
+        matched.artists = matched.artists.filter((artist) => artist.id !== artistId)
+        matched.primaryArtists = orderBy([...matched.primaryArtists, artists[artistId]], 'name')
+      }
+
       return map
-    }
-
-    const { artistId, ...album } = currentAlbum
-    const matched = map[album.id]
-
-    if (!matched) {
-      album.artists = orderBy(album.artists, 'name').filter((artist) => artist.id !== artistId)
-      album.primaryArtists = [artists[artistId]]
-      map[album.id] = album
-
-      return map
-    }
-
-    const inPrimary = matched.primaryArtists.find((artist) => artist.id === artistId)
-
-    if (!inPrimary) {
-      matched.artists = matched.artists.filter((artist) => artist.id !== artistId)
-      matched.primaryArtists = orderBy([...matched.primaryArtists, artists[artistId]], 'name')
-    }
-
-    return map
-  }, {})
+    },
+    {}
+  )
 
   return { ...state, albums }
 }
