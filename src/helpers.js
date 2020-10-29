@@ -7,14 +7,14 @@ const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTU
  * Promisified setTimeout
  *
  * @param {number} ms
- * @returns {Promise}
+ * @returns {Promise<void>}
  */
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 /**
- * Delay function executions
+ * Delay function execution
  *
  * @param {function} fn
  * @param {number} ms
@@ -39,9 +39,10 @@ export function defer(fn, ...args) {
 /**
  * Split array into chunks
  *
- * @param {any[]} inputArray
+ * @template T
+ * @param {T[]} inputArray
  * @param {number} chunkSize
- * @returns {any[][]}
+ * @returns {T[][]}
  */
 export function chunks(inputArray, chunkSize) {
   const input = [...inputArray]
@@ -116,7 +117,7 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
 /**
  * Get release IDs released between startDate and endDate
  *
- * @param {Object} [releasesMap] - Releases map from redux store
+ * @param {ReleasesMap} [releasesMap] - Releases map from redux store
  * @param {Moment} [startDate]
  * @param {Moment} [endDate]
  * @returns {string[]|null}

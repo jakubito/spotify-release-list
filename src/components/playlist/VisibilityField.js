@@ -2,6 +2,9 @@ import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { FieldName } from 'enums'
 
+/**
+ * Render playlist visibility form field
+ */
 function VisibilityField() {
   const { register } = useFormContext()
 

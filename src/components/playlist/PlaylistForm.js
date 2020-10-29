@@ -1,6 +1,9 @@
 import React from 'react'
 import { DateRangeField, SelectionField, NameField, DescriptionField, VisibilityField } from '.'
 
+/**
+ * Render playlist form
+ */
 function PlaylistForm() {
   return (
     <div className="PlaylistForm">

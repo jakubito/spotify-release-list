@@ -4,6 +4,9 @@ import { getSettingsCovers } from 'selectors'
 import { setSettings } from 'actions'
 import { defer } from 'helpers'
 
+/**
+ * Render album covers toggle field
+ */
 function CoversField() {
   const covers = useSelector(getSettingsCovers)
   const dispatch = useDispatch()

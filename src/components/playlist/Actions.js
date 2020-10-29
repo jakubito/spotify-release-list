@@ -6,6 +6,11 @@ import classNames from 'classnames'
 import { getCreatingPlaylist, getWorking, getPlaylistId } from 'selectors'
 import { resetPlaylist, createPlaylistCancel } from 'actions'
 
+/**
+ * Render playlist form actions
+ *
+ * @param {{ submitTriggered: boolean }} props
+ */
 function Actions({ submitTriggered }) {
   const dispatch = useDispatch()
   const creatingPlaylist = useSelector(getCreatingPlaylist)

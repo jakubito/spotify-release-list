@@ -9,54 +9,24 @@ import AlbumFullTitle from './AlbumFullTitle'
 
 const LIMIT_INCREMENT = 50
 
-function Shortcut({ label, onClick }) {
-  return (
-    <button
-      type="button"
-      className="button is-rounded is-small is-dark is-darker"
-      onClick={onClick}
-    >
-      <span>{label}</span>
-    </button>
-  )
-}
-
-function ReleaseField({ releaseId, selectedReleases, onChange }) {
-  return (
-    <div className="field" key={releaseId}>
-      <input
-        type="checkbox"
-        className={classNames('is-checkradio is-small is-white', {
-          'has-background-color': selectedReleases.has(releaseId),
-        })}
-        id={`selectedReleases[${releaseId}]`}
-        name={`selectedReleases[${releaseId}]`}
-        value={releaseId}
-        checked={selectedReleases.has(releaseId)}
-        onChange={onChange}
-      />
-      <label
-        htmlFor={`selectedReleases[${releaseId}]`}
-        className={classNames('is-unselectable', {
-          'has-text-grey': !selectedReleases.has(releaseId),
-        })}
-      >
-        <AlbumFullTitle id={releaseId} />
-      </label>
-    </div>
-  )
-}
-
+/**
+ * Lazily render playlist album selection list
+ */
 function SelectionEntries() {
   const { setValue, watch } = useFormContext()
   const [limit, setLimit] = useState(LIMIT_INCREMENT)
   const [animate, setAnimate] = useState(false)
-  const container = useRef()
-  const inner = useRef()
+  /** @type {React.MutableRefObject<HTMLDivElement>} */
+  const container = useRef(null)
+  /** @type {React.MutableRefObject<HTMLDivElement>} */
+  const inner = useRef(null)
 
+  /** @type {string[]} */
   const releases = watch(FieldName.RELEASES)
+  /** @type {Set<string>} */
   const selectedReleases = watch(FieldName.SELECTED_RELEASES)
 
+  /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChangeHandler = (event) => {
     defer(
       setValue,
@@ -67,7 +37,7 @@ function SelectionEntries() {
   }
 
   useEffect(() => {
-    setAnimate(inner.current.scrollHeight > container.current.clientHeight)
+    setAnimate(inner.current?.scrollHeight > container.current?.clientHeight)
   }, [releases])
 
   return (
@@ -104,9 +74,57 @@ function SelectionEntries() {
   )
 }
 
+/**
+ * @param {{ label: string, onClick: React.MouseEventHandler<HTMLButtonElement> }} props
+ */
+function Shortcut({ label, onClick }) {
+  return (
+    <button
+      type="button"
+      className="button is-rounded is-small is-dark is-darker"
+      onClick={onClick}
+    >
+      <span>{label}</span>
+    </button>
+  )
+}
+
 Shortcut.propTypes = {
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+}
+
+/**
+ * @param {{
+ *   releaseId: string
+ *   selectedReleases: Set<string>
+ *   onChange: React.ChangeEventHandler<HTMLInputElement>
+ * }} props
+ */
+function ReleaseField({ releaseId, selectedReleases, onChange }) {
+  return (
+    <div className="field" key={releaseId}>
+      <input
+        type="checkbox"
+        className={classNames('is-checkradio is-small is-white', {
+          'has-background-color': selectedReleases.has(releaseId),
+        })}
+        id={`selectedReleases[${releaseId}]`}
+        name={`selectedReleases[${releaseId}]`}
+        value={releaseId}
+        checked={selectedReleases.has(releaseId)}
+        onChange={onChange}
+      />
+      <label
+        htmlFor={`selectedReleases[${releaseId}]`}
+        className={classNames('is-unselectable', {
+          'has-text-grey': !selectedReleases.has(releaseId),
+        })}
+      >
+        <AlbumFullTitle id={releaseId} />
+      </label>
+    </div>
+  )
 }
 
 ReleaseField.propTypes = {

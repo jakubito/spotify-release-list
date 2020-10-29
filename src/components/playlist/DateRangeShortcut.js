@@ -8,7 +8,7 @@ import { FieldName } from 'enums'
 import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
 
 /**
- * Render date range shortcut
+ * Render date range field shortcut
  *
  * @param {DateRangeShortcut} props
  */

@@ -5,6 +5,17 @@ import { getSpotifyUri, getSpotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import Link from 'components/Link'
 
+/**
+ * Render playlist creation result
+ */
+function PlaylistInfo() {
+  const creatingPlaylist = useSelector(getCreatingPlaylist)
+
+  return (
+    <div className="PlaylistInfo has-text-light">{creatingPlaylist ? <Creating /> : <Info />}</div>
+  )
+}
+
 function Creating() {
   return (
     <>
@@ -25,6 +36,7 @@ function Info() {
       </span>
       Playlist created
       <Link
+        title={name}
         uri={getSpotifyUri(id, SpotifyEntity.PLAYLIST)}
         url={getSpotifyUrl(id, SpotifyEntity.PLAYLIST)}
         className="is-size-5"
@@ -32,14 +44,6 @@ function Info() {
         {name}
       </Link>
     </>
-  )
-}
-
-function PlaylistInfo() {
-  const creatingPlaylist = useSelector(getCreatingPlaylist)
-
-  return (
-    <div className="PlaylistInfo has-text-light">{creatingPlaylist ? <Creating /> : <Info />}</div>
   )
 }
 

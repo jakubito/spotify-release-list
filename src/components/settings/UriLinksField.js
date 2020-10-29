@@ -5,10 +5,14 @@ import { setSettings } from 'actions'
 import { defer } from 'helpers'
 import HelpText from './HelpText'
 
+/**
+ * Render URI / URL links field
+ */
 function UriLinksField() {
   const uriLinks = useSelector(getSettingsUriLinks)
   const dispatch = useDispatch()
 
+  /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChange = (event) => {
     const newUriLinks = Boolean(Number(event.target.value))
 

@@ -77,7 +77,7 @@ export const getLastSyncDate = createSelector(
 )
 
 export const getReleasesMap = createSelector(getAlbums, (albums) => {
-  /** @type {{ [date: string]: AlbumGrouped[] }} */
+  /** @type {ReleasesMap} */
   const releasesMap = Object.values(albums).reduce(
     (map, album) => ({
       ...map,
@@ -92,7 +92,7 @@ export const getReleasesMap = createSelector(getAlbums, (albums) => {
 export const getReleasesSortedEntries = createSelector(getReleasesMap, (releasesMap) => {
   const entriesOriginal = Object.entries(releasesMap)
   const entriesSortedByDay = orderBy(entriesOriginal, ([day]) => day, 'desc')
-  /** @type {[string, AlbumGrouped[]][]} */
+  /** @type {ReleasesSortedEntries} */
   const entries = entriesSortedByDay.map(([day, albums]) => [day, orderBy(albums, 'name')])
 
   return entries
@@ -112,5 +112,6 @@ export const getReleasesMaxDate = createSelector(getReleasesSortedEntries, (entr
 
 export const getReleasesMinMaxDatesMoment = createSelector(
   [getReleasesMinDate, getReleasesMaxDate],
-  (minDate, maxDate) => /** @type {[Moment, Moment]} */ ([moment(minDate), moment(maxDate)])
+  (minDate, maxDate) =>
+    /** @type {[minDate: Moment, maxDate: Moment]} */ ([moment(minDate), moment(maxDate)])
 )

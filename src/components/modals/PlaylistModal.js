@@ -16,39 +16,9 @@ import { generateNonce } from 'helpers'
 import { persistor } from 'state'
 import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist'
 
-export function useOnSubmit(setSubmitTriggered) {
-  const dispatch = useDispatch()
-  const token = useSelector(getToken)
-  const tokenExpires = useSelector(getTokenExpires)
-  const tokenScope = useSelector(getTokenScope)
-
-  const onSubmit = async (formData) => {
-    const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
-      formData[FieldName.SELECTED_RELEASES].has(releaseId)
-    )
-    const name = formData[FieldName.NAME].trim()
-    const description = formData[FieldName.DESCRIPTION].trim()
-    const isPrivate = formData[FieldName.VISIBILITY] === 'private'
-
-    dispatch(setPlaylistForm(albumIds, name, description, isPrivate))
-
-    if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
-      dispatch(createPlaylist())
-    } else {
-      const nonce = generateNonce()
-
-      setSubmitTriggered(true)
-      dispatch(setNonce(nonce))
-
-      await persistor.flush()
-
-      startCreatePlaylistAuthFlow(nonce, isPrivate)
-    }
-  }
-
-  return onSubmit
-}
-
+/**
+ * Render new playlist modal
+ */
 function PlaylistModal() {
   const closeModal = useModal(hidePlaylistModal)
   const creatingPlaylist = useSelector(getCreatingPlaylist)
@@ -106,6 +76,42 @@ function PlaylistModal() {
       </form>
     </FormProvider>
   )
+}
+
+/**
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitTriggered
+ */
+function useOnSubmit(setSubmitTriggered) {
+  const dispatch = useDispatch()
+  const token = useSelector(getToken)
+  const tokenExpires = useSelector(getTokenExpires)
+  const tokenScope = useSelector(getTokenScope)
+
+  const onSubmit = async (formData) => {
+    const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
+      formData[FieldName.SELECTED_RELEASES].has(releaseId)
+    )
+    const name = formData[FieldName.NAME].trim()
+    const description = formData[FieldName.DESCRIPTION].trim()
+    const isPrivate = formData[FieldName.VISIBILITY] === 'private'
+
+    dispatch(setPlaylistForm(albumIds, name, description, isPrivate))
+
+    if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
+      dispatch(createPlaylist())
+    } else {
+      const nonce = generateNonce()
+
+      setSubmitTriggered(true)
+      dispatch(setNonce(nonce))
+
+      await persistor.flush()
+
+      startCreatePlaylistAuthFlow(nonce, isPrivate)
+    }
+  }
+
+  return onSubmit
 }
 
 export default PlaylistModal

@@ -39,7 +39,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
       </span>
       <span>{title}</span>
       {showProgress && syncing && <Progress />}
-      {syncing && <span className="spinner"></span>}
+      {syncing && <span className="spinner" />}
     </button>
   )
 }
@@ -51,7 +51,7 @@ function Progress() {
   const syncingProgress = useSelector(getSyncingProgress)
   const style = { transform: `translateX(${syncingProgress - 100}%)` }
 
-  return <span className="progress-bar" style={style}></span>
+  return <span className="progress-bar" style={style} />
 }
 
 SyncButton.propTypes = {

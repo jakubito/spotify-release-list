@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { getAlbums } from 'selectors'
 
+/**
+ * Render album's full title and all artists
+ */
 function AlbumFullTitle({ id }) {
   const albums = useSelector(getAlbums)
   const album = albums[id]

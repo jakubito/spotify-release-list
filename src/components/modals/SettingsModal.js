@@ -13,6 +13,9 @@ import {
   Credits,
 } from 'components/settings'
 
+/**
+ * Render settings modal
+ */
 function SettingsModal() {
   const dispatch = useDispatch()
   const user = useSelector(getUser)

@@ -6,6 +6,9 @@ import { setSettings } from 'actions'
 import { defer } from 'helpers'
 import HelpText from './HelpText'
 
+/**
+ * Render market selection field
+ */
 function MarketField() {
   const market = useSelector(getSettingsMarket)
   const dispatch = useDispatch()

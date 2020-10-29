@@ -8,21 +8,6 @@ import { getNonce } from 'selectors'
 import { SYNC, CREATE_PLAYLIST, sync, setToken, showErrorMessage, createPlaylist } from 'actions'
 
 /**
- * @typedef {object} AuthQuerySearch
- * @prop {string} [error]
- *
- * @typedef {object} AuthQueryHash
- * @prop {string} [state]
- * @prop {string} [access_token]
- * @prop {string} [expires_in]
- *
- * @typedef {object} AuthQueryState
- * @prop {string} [nonce]
- * @prop {string} [action]
- * @prop {string} [scope]
- */
-
-/**
  * Authorization component that handles all OAuth redirects
  *
  * @param {RouteComponentProps} props
@@ -31,21 +16,21 @@ function Auth(props) {
   const dispatch = useDispatch()
   const nonce = useSelector(getNonce)
 
-  /** @type {AuthQuerySearch} */
+  /** @type {{ error?: string }} */
   const search = queryString.parse(window.location.search)
 
   if (search.error) {
     return redirectWithError(dispatch, 'Error: Access denied')
   }
 
-  /** @type {AuthQueryHash} */
+  /** @type {{ access_token?: string, expires_in?: string, state?: string }} */
   const hash = queryString.parse(window.location.hash)
 
   if (!hash.access_token || !hash.expires_in || !hash.state) {
     return redirectWithError(dispatch, 'Error: Invalid request')
   }
 
-  /** @type {AuthQueryState} */
+  /** @type {{ nonce?: string, action?: string, scope?: string }} */
   const state = JSON.parse(Base64.decode(hash.state))
 
   if (state.nonce !== nonce) {

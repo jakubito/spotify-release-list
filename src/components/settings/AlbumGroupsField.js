@@ -1,5 +1,6 @@
 import React from 'react'
 import xor from 'lodash/xor'
+import orderBy from 'lodash/orderBy'
 import { useSelector, useDispatch } from 'react-redux'
 import { AlbumGroup } from 'enums'
 import { getSettingsGroups } from 'selectors'
@@ -7,28 +8,28 @@ import { setSettings } from 'actions'
 import { defer } from 'helpers'
 import HelpText from './HelpText'
 
-const fields = {
-  [AlbumGroup.ALBUM]: 'Albums',
-  [AlbumGroup.SINGLE]: 'Singles',
-  [AlbumGroup.COMPILATION]: 'Compilations',
-  [AlbumGroup.APPEARS_ON]: 'Appearances',
-}
+/** @type {[group: AlbumGroup, label: string][]} */
+const fields = [
+  [AlbumGroup.ALBUM, 'Albums'],
+  [AlbumGroup.SINGLE, 'Singles'],
+  [AlbumGroup.COMPILATION, 'Compilations'],
+  [AlbumGroup.APPEARS_ON, 'Appearances'],
+]
 
-const fieldsEntries = Object.entries(fields)
-const albumGroupValues = Object.values(AlbumGroup)
-
-function sortByAlbumGroup(first, second) {
-  return albumGroupValues.indexOf(first) - albumGroupValues.indexOf(second)
-}
-
+/**
+ * Render album groups selection field
+ */
 function AlbumGroupsField() {
   const groups = useSelector(getSettingsGroups)
   const dispatch = useDispatch()
 
+  /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChange = (event) => {
-    const newGroups = xor(groups, [event.target.value]).sort(sortByAlbumGroup)
+    const groupValues = Object.values(AlbumGroup)
+    const newValue = xor(groups, [event.target.value])
+    const newValueOrdered = orderBy(newValue, (group) => groupValues.indexOf(group))
 
-    defer(dispatch, setSettings({ groups: newGroups }))
+    defer(dispatch, setSettings({ groups: newValueOrdered }))
   }
 
   return (
@@ -37,19 +38,19 @@ function AlbumGroupsField() {
         Request <HelpText>/ less is faster</HelpText>
       </label>
       <div className="control">
-        {fieldsEntries.map(([value, name]) => (
-          <div className="field" key={value}>
+        {fields.map(([group, label]) => (
+          <div className="field" key={group}>
             <input
               type="checkbox"
               className="is-checkradio has-background-color is-white"
-              id={`albumGroups[${value}]`}
-              name={`albumGroups[${value}]`}
-              value={value}
-              defaultChecked={groups.includes(value)}
+              id={`albumGroups[${group}]`}
+              name={`albumGroups[${group}]`}
+              value={group}
+              defaultChecked={groups.includes(group)}
               onChange={onChange}
             />
-            <label htmlFor={`albumGroups[${value}]`} className="has-text-weight-semibold">
-              {name}
+            <label htmlFor={`albumGroups[${group}]`} className="has-text-weight-semibold">
+              {label}
             </label>
           </div>
         ))}

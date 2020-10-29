@@ -2,6 +2,25 @@ import React, { useState, useEffect } from 'react'
 import throttle from 'lodash/throttle'
 import classNames from 'classnames'
 
+/**
+ * Render back to top button
+ */
+function BackToTop() {
+  const visible = useBackToTop()
+
+  return (
+    <button
+      onClick={windowScrollToTop}
+      className={classNames('BackToTop button is-medium is-dark is-rounded', { visible })}
+      title="Back to top"
+    >
+      <span className="icon">
+        <i className="fas fa-arrow-up"></i>
+      </span>
+    </button>
+  )
+}
+
 function windowScrollToTop() {
   window.scrollTo(0, 0)
 }
@@ -24,22 +43,6 @@ function useBackToTop() {
   }, [])
 
   return visible
-}
-
-function BackToTop() {
-  const visible = useBackToTop()
-
-  return (
-    <button
-      onClick={windowScrollToTop}
-      className={classNames('BackToTop button is-medium is-dark is-rounded', { visible })}
-      title="Back to top"
-    >
-      <span className="icon">
-        <i className="fas fa-arrow-up"></i>
-      </span>
-    </button>
-  )
 }
 
 export default BackToTop

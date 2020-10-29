@@ -3,6 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getErrorMessage } from 'selectors'
 import { hideErrorMessage } from 'actions'
 
+/**
+ * Render error message if exists
+ */
 function Error() {
   const errorMessage = useSelector(getErrorMessage)
   const dispatch = useDispatch()

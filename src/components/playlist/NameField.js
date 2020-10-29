@@ -3,6 +3,9 @@ import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
 import { FieldName } from 'enums'
 
+/**
+ * Render playlist name form field
+ */
 function NameField() {
   const { register, errors, setValue } = useFormContext()
 

@@ -1,91 +1,79 @@
 /**
- * @typedef {object} State
- * @prop {{ [id: string]: AlbumGrouped }} albums
- * @prop {boolean} syncing
- * @prop {number} syncingProgress
- * @prop {string} [lastSync]
- * @prop {string} [previousSyncMaxDate]
- * @prop {boolean} creatingPlaylist
- * @prop {string} [playlistId]
- * @prop {PlaylistForm} playlistForm
- * @prop {string} [token]
- * @prop {string} [tokenExpires]
- * @prop {string} [tokenScope]
- * @prop {User} [user]
- * @prop {string} [nonce]
- * @prop {string} [errorMessage]
- * @prop {boolean} settingsModalVisible
- * @prop {boolean} resetModalVisible
- * @prop {boolean} playlistModalVisible
- * @prop {Settings} settings
- * @prop {Feature[]} seenFeatures
+ * Custom types
  *
- * @typedef {object} PlaylistForm
- * @prop {string[]} [albumIds]
- * @prop {string} [name]
- * @prop {string} [description]
- * @prop {boolean} [isPrivate]
+ * @typedef {{
+ *   albums: { [id: string]: AlbumGrouped }
+ *   syncing: boolean
+ *   syncingProgress: number
+ *   lastSync?: string
+ *   previousSyncMaxDate?: string
+ *   creatingPlaylist: boolean
+ *   playlistId?: string
+ *   playlistForm: PlaylistForm
+ *   token?: string
+ *   tokenExpires?: string
+ *   tokenScope?: string
+ *   user?: User
+ *   nonce?: string
+ *   errorMessage?: string
+ *   settingsModalVisible: boolean
+ *   resetModalVisible: boolean
+ *   playlistModalVisible: boolean
+ *   settings: Settings
+ *   seenFeatures: Feature[]
+ * }} State
  *
- * @typedef {object} Settings
- * @prop {AlbumGroup[]} groups
- * @prop {number} days
- * @prop {Market} market
- * @prop {string} theme
- * @prop {boolean} uriLinks
- * @prop {boolean} covers
+ * @typedef {{
+ *   albumIds?: string[]
+ *   name?: string
+ *   description?: string
+ *   isPrivate?: boolean
+ * }} PlaylistForm
  *
- * @typedef {object} User
- * @prop {string} id
- * @prop {string} name
- * @prop {string} image
+ * @typedef {{
+ *   groups: AlbumGroup[]
+ *   days: number
+ *   market: Market
+ *   theme: string
+ *   uriLinks: boolean
+ *   covers: boolean
+ * }} Settings
  *
- * @typedef {object} Artist
- * @prop {string} id
- * @prop {string} name
+ * @typedef {{
+ *   id: string
+ *   name: string
+ *   image: string
+ *   releaseDate: string
+ *   artists: Artist[]
+ *   artistId: string
+ * }} Album
  *
- * @typedef {object} Album
- * @prop {string} id
- * @prop {string} name
- * @prop {string} image
- * @prop {string} releaseDate
- * @prop {Artist[]} artists
- * @prop {string} artistId
+ * @typedef {{
+ *   id: string
+ *   name: string
+ *   image: string
+ *   releaseDate: string
+ *   artists: Artist[]
+ *   primaryArtists: Artist[]
+ * }} AlbumGrouped
  *
- * @typedef {object} AlbumGrouped
- * @prop {string} id
- * @prop {string} name
- * @prop {string} image
- * @prop {string} releaseDate
- * @prop {Artist[]} artists
- * @prop {Artist[]} primaryArtists
+ * @typedef {{
+ *   title: string | ((start: Moment, end: Moment) => string)
+ *   start: Moment
+ *   end: Moment
+ * }} DateRangeShortcut
  *
- * @typedef {object} SpotifyImage
- * @prop {number} width
- * @prop {number} height
- * @prop {string} url
- *
- * @typedef {object} SpotifyUser
- * @prop {string} id
- * @prop {string} display_name
- * @prop {SpotifyImage[]} images
- *
- * @typedef {object} SpotifyArtist
- * @prop {string} id
- * @prop {string} name
- *
- * @typedef {object} SpotifyAlbum
- * @prop {string} id
- * @prop {string} name
- * @prop {SpotifyImage[]} images
- * @prop {SpotifyArtist[]} artists
- * @prop {string} release_date
- *
- * @typedef {object} SpotifyPlaylist
- * @prop {string} id
- * @prop {string} name
- *
- * @typedef {object} SpotifyPlaylistSnapshot
- * @prop {string} snapshot_id
+ * @typedef {{ id: string, name: string, image: string }} User
+ * @typedef {{ id: string, name: string }} Artist
+ * @typedef {{ [date: string]: AlbumGrouped[] }} ReleasesMap
+ * @typedef {[date: string, albums: AlbumGrouped[]][]} ReleasesSortedEntries
+ * @typedef {{ [prop: string]: any }} AnyProps
+ * @typedef {{ type: string, payload: any }} Action
+ * @typedef {(...args: any[]) => Action} ActionCreator
+ */
+
+/**
+ * Enums
  *
  * @typedef {string} Scope
  * @typedef {string} FieldName
@@ -95,18 +83,29 @@
  * @typedef {string} Feature
  * @typedef {string} Theme
  * @typedef {string} Market
+ */
+
+/**
+ * Spotify objects
  *
- * @typedef {object} Action
- * @prop {string} type
- * @prop {any} payload
+ * @typedef {{
+ *   id: string
+ *   name: string
+ *   images: SpotifyImage[]
+ *   artists: SpotifyArtist[]
+ *   release_date: string
+ * }} SpotifyAlbum
  *
- * @typedef {Object} DateRangeShortcut
- * @property {string | ((start: Moment, end: Moment) => string)} title
- * @property {Moment} start
- * @property {Moment} end
+ * @typedef {{ width: number, height: number, url: string }} SpotifyImage
+ * @typedef {{ id: string, display_name: string, images: SpotifyImage[] }} SpotifyUser
+ * @typedef {{ id: string, name: string }} SpotifyArtist
+ * @typedef {{ id: string, name: string }} SpotifyPlaylist
+ * @typedef {{ snapshot_id: string }} SpotifyPlaylistSnapshot
+ */
+
+/**
+ * Imported types
  *
- * @typedef {(...args: any[]) => Action} ActionCreator
- * @typedef {import('react').ReactNode} ReactNode
  * @typedef {import('@reach/router').RouteComponentProps} RouteComponentProps
  * @typedef {import('redux-persist').PersistedState & State} PersistedState
  * @typedef {moment.Moment} Moment

@@ -2,6 +2,9 @@ import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { FieldName } from 'enums'
 
+/**
+ * Render playlist description form field
+ */
 function DescriptionField() {
   const { register, errors } = useFormContext()
 

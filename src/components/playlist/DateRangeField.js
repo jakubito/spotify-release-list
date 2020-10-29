@@ -9,7 +9,7 @@ import { FieldName } from 'enums'
 import DateRangeShortcuts from './DateRangeShortcuts'
 
 /**
- * Date range form field wrapper
+ * Render date range form field
  */
 function DateRangeField() {
   const [minDate, maxDate] = useSelector(getReleasesMinMaxDatesMoment)

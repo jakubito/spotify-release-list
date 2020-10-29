@@ -5,6 +5,9 @@ import { FieldName } from 'enums'
 import { defer } from 'helpers'
 import SelectionEntries from './SelectionEntries'
 
+/**
+ * Render playlist album selection field
+ */
 function SelectionField() {
   const { watch, errors } = useFormContext()
   const [expanded, setExpanded] = useState(false)
@@ -23,12 +26,18 @@ function SelectionField() {
         className={classNames('button is-dark is-rounded is-fullwidth has-text-weight-semibold', {
           'is-darker': !expanded,
         })}
-        onClick={() => defer(setExpanded, (currentExpanded) => !currentExpanded)}
+        onClick={() =>
+          defer(
+            setExpanded,
+            /** @type {React.SetStateAction<boolean>} */
+            ((currentExpanded) => !currentExpanded)
+          )
+        }
       >
         <span>
           {expanded ? 'Collapse' : 'Expand'} selection ({selectedReleases.size})
         </span>
-        <span className="icon" key={expanded}>
+        <span className="icon" key={Number(expanded)}>
           <i
             className={classNames('fas', {
               'fa-caret-up': expanded,

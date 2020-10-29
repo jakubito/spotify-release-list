@@ -3,29 +3,36 @@ import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { getSettingsUriLinks } from 'selectors'
 
-function Link({ uri, url, newTab = true, children, ...propsRest }) {
+/**
+ * Render link that reacts to URI / URL setting changes
+ *
+ * @param {{
+ *   title: string
+ *   uri: string
+ *   url: string
+ *   className?: string
+ *   children: React.ReactNode
+ * } & AnyProps} props
+ */
+function Link({ title, uri, url, className, children }) {
   const uriLinks = useSelector(getSettingsUriLinks)
-  let props = propsRest
-
-  if (!uriLinks && newTab) {
-    props = {
-      ...props,
-      target: '_blank',
-      rel: 'noopener noreferrer',
-    }
-  }
 
   return (
-    <a href={uriLinks ? uri : url} {...props}>
+    <a
+      title={title}
+      href={uriLinks ? uri : url}
+      className={className}
+      {...(!uriLinks && { target: '_blank', rel: 'noopener noreferrer' })}
+    >
       {children}
     </a>
   )
 }
 
 Link.propTypes = {
+  title: PropTypes.string.isRequired,
   uri: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
-  newTab: PropTypes.bool,
   children: PropTypes.node.isRequired,
 }
 

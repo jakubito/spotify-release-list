@@ -1,29 +1,24 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getSettingsTheme } from 'selectors'
 import { setSettings } from 'actions'
 import { defer } from 'helpers'
 import { Theme } from 'enums'
 
-const themes = Object.values(Theme)
-
+/**
+ * Render theme selection field
+ */
 function ThemeField() {
   const theme = useSelector(getSettingsTheme)
   const dispatch = useDispatch()
-  const firstRender = useRef(true)
 
   useEffect(() => {
-    if (firstRender.current) {
-      // Theme already applied before first render, skip effect
-      firstRender.current = false
+    const { classList } = document.documentElement
 
-      return
-    }
-
-    document.documentElement.classList.remove(...themes)
+    classList.remove(...Object.values(Theme))
 
     if (theme) {
-      document.documentElement.classList.add(...theme.split(' '))
+      classList.add(...theme.split(' '))
     }
   }, [theme])
 
@@ -39,7 +34,7 @@ function ThemeField() {
             <option value="">Default</option>
             <option value={Theme.COMPACT}>Compact</option>
             <option value={Theme.SINGLE_COLUMN}>Single Column</option>
-            <option value={`${Theme.SINGLE_COLUMN} ${Theme.COMPACT}`}>
+            <option value={[Theme.SINGLE_COLUMN, Theme.COMPACT].join(' ')}>
               Single Column - Compact
             </option>
           </select>

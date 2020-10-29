@@ -222,9 +222,10 @@ async function request(endpoint, token, method, headers = {}, body) {
 
   // Handle 429 Too many requests
   if (response.status === 429) {
-    const waitMs = Number(response.headers.get('Retry-After')) * 1000
+    const retryAfter = Number(response.headers.get('Retry-After'))
 
-    await sleep(waitMs)
+    // Add 1 extra second because Retry-After is not accurate
+    await sleep((retryAfter + 1) * 1000)
 
     return request(endpoint, token, method, headers, body)
   }

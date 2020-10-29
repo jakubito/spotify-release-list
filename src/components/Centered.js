@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 /**
  * Render vertically and horizontally centered content
  *
- * @param {{ children: ReactNode }} props
+ * @param {{ children: React.ReactNode }} props
  */
 function Centered({ children }) {
   return (

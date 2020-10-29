@@ -39,9 +39,7 @@ import {
  * @typedef {import('redux-saga').Channel} Channel
  * @typedef {import('redux-saga').Task} Task
  * @typedef {(...args: any[]) => any} Fn
- *
- * @typedef {object} Progress
- * @prop {number} value
+ * @typedef {{ value: number }} Progress
  */
 
 const REQUEST_WORKERS = 6

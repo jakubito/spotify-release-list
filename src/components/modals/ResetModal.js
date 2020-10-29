@@ -3,6 +3,9 @@ import { useDispatch } from 'react-redux'
 import { reset, hideResetModal, showSettingsModal } from 'actions'
 import { useModal } from 'hooks'
 
+/**
+ * Render reset data modal
+ */
 function ResetModal() {
   const dispatch = useDispatch()
   const closeModal = useModal(hideResetModal)

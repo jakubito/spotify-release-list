@@ -2,7 +2,11 @@ import React from 'react'
 import moment from 'moment'
 import DateRangeShortcut from './DateRangeShortcut'
 
-/** @type {DateRangeShortcut[]} */
+/**
+ * Date range field shortcuts definition
+ *
+ * @type {DateRangeShortcut[]}
+ */
 const shortcuts = [
   {
     title: 'Today',
@@ -37,7 +41,7 @@ const shortcuts = [
 ]
 
 /**
- * Render date range shortcuts
+ * Render date range field shortcuts
  */
 function DateRangeShortcuts() {
   return <div className="DateRangeShortcuts">{shortcuts.map(DateRangeShortcut)}</div>
