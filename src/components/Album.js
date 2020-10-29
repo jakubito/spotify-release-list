@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { getSettingsCovers } from 'selectors'
 import { getSpotifyUri, getSpotifyUrl } from 'helpers'
@@ -32,16 +31,6 @@ function Album({ album }) {
       </div>
     </article>
   )
-}
-
-Album.propTypes = {
-  album: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    artists: PropTypes.array.isRequired,
-    primaryArtists: PropTypes.array.isRequired,
-  }).isRequired,
 }
 
 /** @param {{ album: AlbumGrouped }} props */

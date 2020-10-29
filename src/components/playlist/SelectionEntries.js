@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
 import { Waypoint } from 'react-waypoint'
@@ -89,11 +88,6 @@ function Shortcut({ label, onClick }) {
   )
 }
 
-Shortcut.propTypes = {
-  label: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-}
-
 /**
  * @param {{
  *   releaseId: string
@@ -125,12 +119,6 @@ function ReleaseField({ releaseId, selectedReleases, onChange }) {
       </label>
     </div>
   )
-}
-
-ReleaseField.propTypes = {
-  releaseId: PropTypes.string.isRequired,
-  selectedReleases: PropTypes.instanceOf(Set).isRequired,
-  onChange: PropTypes.func.isRequired,
 }
 
 export default SelectionEntries

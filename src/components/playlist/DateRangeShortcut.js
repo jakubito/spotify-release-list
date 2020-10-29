@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { useFormContext } from 'react-hook-form'
 import { min, max } from 'moment'
@@ -31,12 +30,6 @@ function DateRangeShortcut({ title, start, end }) {
       <span>{buttonTitle}</span>
     </button>
   )
-}
-
-DateRangeShortcut.propTypes = {
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
-  start: PropTypes.object.isRequired,
-  end: PropTypes.object.isRequired,
 }
 
 /**

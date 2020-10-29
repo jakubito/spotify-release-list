@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
@@ -52,13 +51,6 @@ function Progress() {
   const style = { transform: `translateX(${syncingProgress - 100}%)` }
 
   return <span className="progress-bar" style={style} />
-}
-
-SyncButton.propTypes = {
-  title: PropTypes.string.isRequired,
-  icon: PropTypes.string,
-  className: PropTypes.string,
-  showProgress: PropTypes.bool,
 }
 
 export default SyncButton

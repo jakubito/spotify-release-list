@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFormContext } from 'react-hook-form'
 import classNames from 'classnames'
@@ -71,10 +70,6 @@ function Actions({ submitTriggered }) {
       <span>Create</span>
     </button>
   )
-}
-
-Actions.propTypes = {
-  submitTriggered: PropTypes.bool.isRequired,
 }
 
 export default Actions

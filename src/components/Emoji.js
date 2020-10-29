@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 /**
  * Render accessible emoji
@@ -12,11 +11,6 @@ function Emoji({ value, label }) {
       {value}
     </span>
   )
-}
-
-Emoji.propTypes = {
-  value: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
 }
 
 export default Emoji

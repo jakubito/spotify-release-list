@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { getSettingsUriLinks } from 'selectors'
 
@@ -27,13 +26,6 @@ function Link({ title, uri, url, className, children }) {
       {children}
     </a>
   )
-}
-
-Link.propTypes = {
-  title: PropTypes.string.isRequired,
-  uri: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
 }
 
 export default Link

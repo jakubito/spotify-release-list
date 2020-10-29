@@ -1,5 +1,4 @@
 import React, { memo } from 'react'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import { getPreviousSyncMaxDate } from 'selectors'
@@ -26,11 +25,6 @@ function ReleaseDay({ date, albums }) {
       </div>
     </div>
   )
-}
-
-ReleaseDay.propTypes = {
-  date: PropTypes.string.isRequired,
-  albums: PropTypes.array.isRequired,
 }
 
 export default memo(ReleaseDay)

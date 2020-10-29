@@ -1,10 +1,11 @@
 import React, { memo } from 'react'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { getAlbums } from 'selectors'
 
 /**
  * Render album's full title and all artists
+ *
+ * @param {{ id: string }} props
  */
 function AlbumFullTitle({ id }) {
   const albums = useSelector(getAlbums)
@@ -19,10 +20,6 @@ function AlbumFullTitle({ id }) {
       <span className="has-text-weight-normal is-italic"> - {artists}</span>
     </span>
   )
-}
-
-AlbumFullTitle.propTypes = {
-  id: PropTypes.string.isRequired,
 }
 
 export default memo(AlbumFullTitle)
