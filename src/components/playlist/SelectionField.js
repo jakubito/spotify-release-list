@@ -43,7 +43,7 @@ function SelectionField() {
               'fa-caret-up': expanded,
               'fa-caret-down': !expanded,
             })}
-          ></i>
+          />
         </span>
       </button>
 

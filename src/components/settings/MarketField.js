@@ -33,7 +33,7 @@ function MarketField() {
           </select>
         </div>
         <span className="icon is-left">
-          <i className="fas fa-globe"></i>
+          <i className="fas fa-globe" />
         </span>
       </div>
     </div>

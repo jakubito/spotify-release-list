@@ -40,7 +40,7 @@ function ThemeField() {
           </select>
         </div>
         <span className="icon is-left">
-          <i className="fas fa-palette"></i>
+          <i className="fas fa-palette" />
         </span>
       </div>
     </div>

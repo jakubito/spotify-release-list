@@ -16,11 +16,7 @@ function Error() {
 
   return (
     <div className="Error notification is-danger has-text-centered">
-      <button
-        className="delete"
-        onClick={() => dispatch(hideErrorMessage())}
-        title="Close"
-      ></button>
+      <button title="Close" className="delete" onClick={() => dispatch(hideErrorMessage())} />
       {errorMessage}
     </div>
   )

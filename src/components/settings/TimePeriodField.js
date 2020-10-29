@@ -31,7 +31,7 @@ function TimePeriodField() {
           </select>
         </div>
         <span className="icon is-left">
-          <i className="fas fa-history"></i>
+          <i className="fas fa-history" />
         </span>
       </div>
     </div>

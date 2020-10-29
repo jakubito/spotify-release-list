@@ -23,7 +23,7 @@ function SettingsModal() {
 
   return (
     <div className="SettingsModal modal is-active">
-      <div className="modal-background" onClick={closeModal}></div>
+      <div className="modal-background" onClick={closeModal} />
       <div className="modal-content has-background-black-bis has-text-light">
         <h4 className="title is-4 has-text-light has-text-centered">Settings</h4>
 
@@ -64,7 +64,7 @@ function SettingsModal() {
               onClick={closeModal}
             >
               <span className="icon">
-                <i className="fas fa-check"></i>
+                <i className="fas fa-check" />
               </span>
               <span>All good</span>
             </button>
@@ -79,7 +79,7 @@ function SettingsModal() {
               onClick={() => dispatch(showResetModal())}
             >
               <span className="icon">
-                <i className="far fa-trash-alt"></i>
+                <i className="far fa-trash-alt" />
               </span>
               <span>Delete all data</span>
             </button>

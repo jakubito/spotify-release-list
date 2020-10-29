@@ -30,7 +30,7 @@ function Actions({ submitTriggered }) {
         key="cancel"
       >
         <span className="icon">
-          <i className="fas fa-times"></i>
+          <i className="fas fa-times" />
         </span>
         <span>Cancel</span>
       </button>
@@ -49,7 +49,7 @@ function Actions({ submitTriggered }) {
         key="reset"
       >
         <span className="icon">
-          <i className="fas fa-undo"></i>
+          <i className="fas fa-undo" />
         </span>
         <span>Start over</span>
       </button>
@@ -66,7 +66,7 @@ function Actions({ submitTriggered }) {
       key="submit"
     >
       <span className="icon">
-        <i className="fas fa-asterisk"></i>
+        <i className="fas fa-asterisk" />
       </span>
       <span>Create</span>
     </button>

@@ -15,7 +15,7 @@ function BackToTop() {
       title="Back to top"
     >
       <span className="icon">
-        <i className="fas fa-arrow-up"></i>
+        <i className="fas fa-arrow-up" />
       </span>
     </button>
   )

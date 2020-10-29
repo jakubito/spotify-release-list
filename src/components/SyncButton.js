@@ -35,7 +35,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
       onClick={syncTrigger}
     >
       <span className="icon">
-        <i className={icon}></i>
+        <i className={icon} />
       </span>
       <span>{title}</span>
       {showProgress && syncing && <Progress />}

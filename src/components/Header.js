@@ -54,7 +54,7 @@ function Header() {
             onClick={playlistModalTrigger}
           >
             <span className="icon">
-              <i className="fas fa-plus"></i>
+              <i className="fas fa-plus" />
             </span>
             <Media query={{ minWidth: 769 }}>
               {(matches) => matches && <span>New playlist</span>}
@@ -69,7 +69,7 @@ function Header() {
           disabled={syncing}
         >
           <span className="icon">
-            <i className="fas fa-cog"></i>
+            <i className="fas fa-cog" />
           </span>
           <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Settings</span>}</Media>
         </button>

@@ -19,7 +19,7 @@ function PlaylistInfo() {
 function Creating() {
   return (
     <>
-      <progress className="progress is-small"></progress>
+      <progress className="progress is-small" />
       Creating playlist, please wait...
     </>
   )
@@ -32,7 +32,7 @@ function Info() {
   return (
     <>
       <span className="icon is-large">
-        <i className="far fa-check-circle fa-2x"></i>
+        <i className="far fa-check-circle fa-2x" />
       </span>
       Playlist created
       <Link

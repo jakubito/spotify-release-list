@@ -45,7 +45,7 @@ function PlaylistModal() {
   return (
     <FormProvider {...form}>
       <form className="PlaylistModal modal is-active" onSubmit={handleSubmit(onSubmit)}>
-        <div className="modal-background" onClick={closeModal}></div>
+        <div className="modal-background" onClick={closeModal} />
 
         <div className="modal-content has-background-black-bis has-text-light">
           <h4 className="title is-4 has-text-light has-text-centered">New playlist</h4>
@@ -65,7 +65,7 @@ function PlaylistModal() {
                   disabled={submitTriggered}
                 >
                   <span className="icon">
-                    <i className="fas fa-times"></i>
+                    <i className="fas fa-times" />
                   </span>
                   <span>Close</span>
                 </button>
