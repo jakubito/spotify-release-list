@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getSettingsTheme } from 'selectors'
-import { setSettings } from 'actions'
+import { getSettingsTheme } from 'state/selectors'
+import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import { Theme } from 'enums'
 

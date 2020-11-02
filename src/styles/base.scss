@@ -11,12 +11,6 @@ body,
   width: 100%;
 }
 
-.button {
-  @include mobile {
-    font-size: 1.2em;
-  }
-}
-
 .button.is-darker {
   background-color: $color-dark;
 }

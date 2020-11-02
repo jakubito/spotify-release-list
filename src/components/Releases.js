@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Waypoint } from 'react-waypoint'
-import { getReleasesSortedEntries } from 'selectors'
+import { getReleasesSortedEntries } from 'state/selectors'
 import Centered from './Centered'
 import ReleaseDay from './ReleaseDay'
 

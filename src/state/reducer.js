@@ -28,7 +28,7 @@ import {
   CREATE_PLAYLIST_CANCEL,
   RESET_PLAYLIST,
   ADD_SEEN_FEATURE,
-} from 'actions'
+} from 'state/actions'
 
 /**
  * State reducer

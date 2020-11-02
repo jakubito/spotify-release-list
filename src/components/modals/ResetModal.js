@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { reset, hideResetModal, showSettingsModal } from 'actions'
+import { reset, hideResetModal, showSettingsModal } from 'state/actions'
 import { useModal } from 'hooks'
 
 /**

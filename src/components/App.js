@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from './Header'
+import Header from './header/Header'
 import Content from './Content'
 import SettingsModalContainer from './modals/SettingsModalContainer'
 import ResetModalContainer from './modals/ResetModalContainer'

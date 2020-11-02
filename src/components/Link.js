@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getSettingsUriLinks } from 'selectors'
+import { getSettingsUriLinks } from 'state/selectors'
 
 /**
  * Render link that reacts to URI / URL setting changes

@@ -1,8 +1,8 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { hideSettingsModal, showResetModal } from 'actions'
+import { hideSettingsModal, showResetModal } from 'state/actions'
 import { useModal } from 'hooks'
-import { getUser } from 'selectors'
+import { getUser } from 'state/selectors'
 import {
   AlbumGroupsField,
   TimePeriodField,

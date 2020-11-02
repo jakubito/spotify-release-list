@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { Base64 } from 'js-base64'
-import { SYNC, CREATE_PLAYLIST } from 'actions'
+import { SYNC, CREATE_PLAYLIST } from 'state/actions'
 import { Scope } from 'enums'
 
 /**

@@ -1,8 +1,8 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Market } from 'enums'
-import { getSettingsMarket } from 'selectors'
-import { setSettings } from 'actions'
+import { getSettingsMarket } from 'state/selectors'
+import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import HelpText from './HelpText'
 

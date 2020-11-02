@@ -2,8 +2,8 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFormContext } from 'react-hook-form'
 import classNames from 'classnames'
-import { getCreatingPlaylist, getWorking, getPlaylistId } from 'selectors'
-import { resetPlaylist, createPlaylistCancel } from 'actions'
+import { getCreatingPlaylist, getWorking, getPlaylistId } from 'state/selectors'
+import { resetPlaylist, createPlaylistCancel } from 'state/actions'
 
 /**
  * Render playlist form actions

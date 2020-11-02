@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useFormContext } from 'react-hook-form'
 import { min, max } from 'moment'
-import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'selectors'
+import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'state/selectors'
 import { FieldName } from 'enums'
 import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
 

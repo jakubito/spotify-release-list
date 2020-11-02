@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getSettingsCovers } from 'selectors'
+import { getSettingsCovers } from 'state/selectors'
 import { getSpotifyUri, getSpotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import Link from './Link'

@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { useSelector } from 'react-redux'
-import { getAlbums } from 'selectors'
+import { getAlbums } from 'state/selectors'
 
 /**
  * Render album's full title and all artists

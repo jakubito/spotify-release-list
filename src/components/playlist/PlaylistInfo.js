@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getCreatingPlaylist, getPlaylistForm, getPlaylistId } from 'selectors'
+import { getCreatingPlaylist, getPlaylistForm, getPlaylistId } from 'state/selectors'
 import { getSpotifyUri, getSpotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import Link from 'components/Link'

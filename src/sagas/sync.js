@@ -1,28 +1,10 @@
 import moment from 'moment'
 import { channel, buffers } from 'redux-saga'
-import { all, call, race, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
-import { chunks, getSpotifyUri } from 'helpers'
+import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
+import { getSettings, getToken, getReleasesMaxDate } from 'state/selectors'
+import { MomentFormat } from 'enums'
+import { getUser, getUserFollowedArtists, getArtistAlbums } from 'api'
 import {
-  getSettings,
-  getToken,
-  getPlaylistForm,
-  getUser as getUserSelector,
-  getReleasesMaxDate,
-} from 'selectors'
-import { SpotifyEntity, MomentFormat } from 'enums'
-import {
-  getUser,
-  getUserFollowedArtists,
-  getArtistAlbums,
-  getAlbumsTrackIds,
-  createPlaylist,
-  addTracksToPlaylist,
-} from 'api'
-import {
-  SYNC,
-  SYNC_CANCEL,
-  CREATE_PLAYLIST,
-  CREATE_PLAYLIST_CANCEL,
   setSyncingProgress,
   setUser,
   syncStart,
@@ -30,42 +12,16 @@ import {
   syncError,
   setAlbums,
   showErrorMessage,
-  createPlaylistStart,
-  createPlaylistFinished,
-  createPlaylistError,
-} from 'actions'
+} from 'state/actions'
 
 /**
  * @typedef {import('redux-saga').Channel} Channel
  * @typedef {import('redux-saga').Task} Task
- * @typedef {(...args: any[]) => any} Fn
  * @typedef {{ value: number }} Progress
  */
 
 const REQUEST_WORKERS = 6
 const PROGRESS_ANIMATION_MS = 550
-
-/**
- * Behaves the same way as redux-saga's `takeLeading` but can be cancelled
- *
- * @param {string} triggerAction
- * @param {string} cancelAction
- * @param {Fn} saga
- * @param {...any} args
- */
-function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
-  return fork(function* () {
-    while (true) {
-      const action = yield take(triggerAction)
-      const task = yield fork(saga, ...args.concat(action))
-      const [cancelled] = yield race([take(cancelAction), call(task.toPromise)])
-
-      if (cancelled) {
-        yield cancel(task)
-      }
-    }
-  })
-}
 
 /**
  * Saga that updates progress after each animation window
@@ -92,7 +48,7 @@ function* progressWorker(progress, setProgressAction) {
  */
 function* requestWorker(requestChannel, responseChannel) {
   while (true) {
-    /** @type {[Fn, ...any[]]} */
+    /** @type {[(...args: any[]) => any, ...any[]]} */
     const request = yield take(requestChannel)
 
     try {
@@ -108,7 +64,7 @@ function* requestWorker(requestChannel, responseChannel) {
 /**
  * Main synchronization saga
  */
-function* syncSaga() {
+export function* syncSaga() {
   try {
     yield put(syncStart())
 
@@ -163,56 +119,3 @@ function* syncSaga() {
     throw error
   }
 }
-
-/**
- * Playlist creation saga
- */
-function* createPlaylistSaga() {
-  try {
-    yield put(createPlaylistStart())
-
-    const token = yield select(getToken)
-    const user = yield select(getUserSelector)
-    const { albumIds, name, description, isPrivate } = yield select(getPlaylistForm)
-    const { market } = yield select(getSettings)
-
-    const trackIdsCalls = chunks(albumIds, 20).map((albumIdsChunk) =>
-      call(getAlbumsTrackIds, token, albumIdsChunk, market)
-    )
-
-    const trackIds = yield all(trackIdsCalls)
-    const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK))
-    /** @type {SpotifyPlaylist} */
-    let firstPlaylist
-
-    for (const [part, playlistTrackUrisChunk] of chunks(trackUris, 9500).entries()) {
-      const fullName = part > 0 ? `${name} (${part + 1})` : name
-      const playlist = yield call(createPlaylist, token, user.id, fullName, description, isPrivate)
-
-      if (!firstPlaylist) {
-        firstPlaylist = playlist
-      }
-
-      for (const trackUrisChunk of chunks(playlistTrackUrisChunk, 100)) {
-        yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk)
-      }
-    }
-
-    yield put(createPlaylistFinished(firstPlaylist.id))
-  } catch (error) {
-    yield put(showErrorMessage())
-    yield put(createPlaylistError())
-
-    throw error
-  }
-}
-
-/**
- * Root saga
- */
-function* saga() {
-  yield takeLeadingCancellable(SYNC, SYNC_CANCEL, syncSaga)
-  yield takeLeadingCancellable(CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL, createPlaylistSaga)
-}
-
-export default saga

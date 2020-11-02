@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getSyncing, getLastSync } from 'selectors'
+import { getSyncing, getLastSync } from 'state/selectors'
 import Intro from './Intro'
 import Loading from './Loading'
 import Releases from './Releases'

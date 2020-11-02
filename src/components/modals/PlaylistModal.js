@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm, FormProvider } from 'react-hook-form'
-import { hidePlaylistModal, createPlaylist, setNonce, setPlaylistForm } from 'actions'
+import { hidePlaylistModal, createPlaylist, setNonce, setPlaylistForm } from 'state/actions'
 import { useModal } from 'hooks'
 import {
   getCreatingPlaylist,
@@ -9,7 +9,7 @@ import {
   getTokenExpires,
   getTokenScope,
   getPlaylistId,
-} from 'selectors'
+} from 'state/selectors'
 import { FieldName } from 'enums'
 import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from 'auth'
 import { generateNonce } from 'helpers'
@@ -48,7 +48,7 @@ function PlaylistModal() {
         <div className="modal-background" onClick={closeModal} />
 
         <div className="modal-content has-background-black-bis has-text-light">
-          <h4 className="title is-4 has-text-light has-text-centered">New playlist</h4>
+          <h4 className="title is-4 has-text-light has-text-centered">Export to a new playlist</h4>
 
           {creatingPlaylist || playlistId ? <PlaylistInfo /> : <PlaylistForm />}
 

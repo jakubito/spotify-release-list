@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
-import { getSyncing, getWorking, getSyncingProgress } from 'selectors'
+import { getSyncing, getWorking, getSyncingProgress } from 'state/selectors'
 import { useSync } from 'hooks'
 
 /**

@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
 import moment from 'moment'
-import { getLastSyncDate, getHasReleases, getSyncing } from 'selectors'
-import { showSettingsModal, showPlaylistModal } from 'actions'
-import SyncButton from './SyncButton'
+import { getLastSyncDate, getHasReleases, getSyncing } from 'state/selectors'
+import { showSettingsModal, showPlaylistModal } from 'state/actions'
+import SyncButton from '../SyncButton'
+import { useLastSyncUpdater } from './hooks'
 
 /**
  * Render header
@@ -30,9 +31,9 @@ function Header() {
   }, [syncing])
 
   useHotkeys('n', playlistModalTrigger, {}, [playlistModalTrigger])
-  useHotkeys('s', settingsModalTrigger, {}, [settingsModalTrigger])
+  useHotkeys('e', settingsModalTrigger, {}, [settingsModalTrigger])
 
-  useLastSyncUpdater(lastSyncDate, setLastSyncHuman)
+  useLastSyncUpdater(setLastSyncHuman)
 
   return (
     <nav className="Navbar">
@@ -49,16 +50,14 @@ function Header() {
       <div className="right">
         {lastSyncDate && hasReleases && !syncing && (
           <button
-            title="New playlist [N]"
+            title="Export to a new playlist [E]"
             className="button is-rounded is-dark has-text-weight-semibold"
             onClick={playlistModalTrigger}
           >
             <span className="icon">
-              <i className="fas fa-plus" />
+              <i className="fas fa-arrow-up" />
             </span>
-            <Media query={{ minWidth: 769 }}>
-              {(matches) => matches && <span>New playlist</span>}
-            </Media>
+            <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
           </button>
         )}
 
@@ -76,27 +75,6 @@ function Header() {
       </div>
     </nav>
   )
-}
-
-/**
- * @param {Date} lastSyncDate
- * @param {(text: string) => any} setLastSyncHuman
- */
-function useLastSyncUpdater(lastSyncDate, setLastSyncHuman) {
-  useEffect(() => {
-    const updateLastSyncHuman = () => {
-      setLastSyncHuman(moment(lastSyncDate).fromNow())
-    }
-
-    const intervalId = setInterval(updateLastSyncHuman, 60 * 1000)
-    window.addEventListener('focus', updateLastSyncHuman)
-    updateLastSyncHuman()
-
-    return () => {
-      clearInterval(intervalId)
-      window.removeEventListener('focus', updateLastSyncHuman)
-    }
-  }, [lastSyncDate])
 }
 
 export default Header

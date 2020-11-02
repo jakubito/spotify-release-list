@@ -4,9 +4,9 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import localForage from 'localforage'
 import * as Sentry from '@sentry/browser'
 import createSagaMiddleware from 'redux-saga'
-import saga from 'sagas'
-import migrations from 'migrations'
-import reducer from 'reducer'
+import rootSaga from 'sagas'
+import migrations from 'state/migrations'
+import reducer from 'state/reducer'
 import { AlbumGroup } from 'enums'
 
 /** @type {State} */
@@ -85,4 +85,4 @@ export const hydrate = new Promise((resolve) => {
   persistor = persistStore(store, null, resolve)
 })
 
-sagaMiddleware.run(saga)
+sagaMiddleware.run(rootSaga)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getErrorMessage } from 'selectors'
-import { hideErrorMessage } from 'actions'
+import { getErrorMessage } from 'state/selectors'
+import { hideErrorMessage } from 'state/actions'
 
 /**
  * Render error message if exists

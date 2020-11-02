@@ -1,8 +1,14 @@
 import { useEffect, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { addSeenFeature, sync, setSyncing, setNonce } from 'actions'
-import { getSeenFeatures, getWorking, getToken, getTokenExpires, getTokenScope } from 'selectors'
+import { addSeenFeature, sync, setSyncing, setNonce } from 'state/actions'
+import {
+  getSeenFeatures,
+  getWorking,
+  getToken,
+  getTokenExpires,
+  getTokenScope,
+} from 'state/selectors'
 import { isValidSyncToken, startSyncAuthFlow } from 'auth'
 import { generateNonce } from 'helpers'
 import { persistor } from 'state'

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getSettingsUriLinks } from 'selectors'
-import { setSettings } from 'actions'
+import { getSettingsUriLinks } from 'state/selectors'
+import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import HelpText from './HelpText'
 
