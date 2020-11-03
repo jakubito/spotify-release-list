@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/browser'
 import createSagaMiddleware from 'redux-saga'
 import rootSaga from 'sagas'
 import migrations from 'state/migrations'
-import reducer from 'state/reducer'
+import rootReducer from 'state/reducers'
 import { AlbumGroup } from 'enums'
 
 /** @type {State} */
@@ -73,7 +73,7 @@ const sagaMiddleware = createSagaMiddleware({ onError: (error) => Sentry.capture
 
 /** @type {import('redux').Store<State>} */
 export const store = createStore(
-  persistReducer(persistConfig, reducer),
+  persistReducer(persistConfig, rootReducer),
   composeEnhancers(applyMiddleware(sagaMiddleware))
 )
 

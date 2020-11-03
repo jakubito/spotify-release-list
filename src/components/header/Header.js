@@ -1,39 +1,31 @@
-import React, { useState, useCallback } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
-import moment from 'moment'
 import { getLastSyncDate, getHasReleases, getSyncing } from 'state/selectors'
 import { showSettingsModal, showPlaylistModal } from 'state/actions'
 import SyncButton from '../SyncButton'
-import { useLastSyncUpdater } from './hooks'
+import { useLastSync } from './hooks'
 
 /**
  * Render header
  */
 function Header() {
+  const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const lastSyncDate = useSelector(getLastSyncDate)
   const hasReleases = useSelector(getHasReleases)
-  const dispatch = useDispatch()
-  const [lastSyncHuman, setLastSyncHuman] = useState(moment(lastSyncDate).fromNow())
+  const lastSync = useLastSync(lastSyncDate)
 
-  const playlistModalTrigger = useCallback(() => {
-    if (lastSyncDate && hasReleases && !syncing) {
-      dispatch(showPlaylistModal())
-    }
-  }, [lastSyncDate, hasReleases, syncing])
+  const openPlaylistModal = () => {
+    dispatch(showPlaylistModal())
+  }
+  const openSettingsModal = () => {
+    dispatch(showSettingsModal())
+  }
 
-  const settingsModalTrigger = useCallback(() => {
-    if (!syncing) {
-      dispatch(showSettingsModal())
-    }
-  }, [syncing])
-
-  useHotkeys('n', playlistModalTrigger, {}, [playlistModalTrigger])
-  useHotkeys('e', settingsModalTrigger, {}, [settingsModalTrigger])
-
-  useLastSyncUpdater(setLastSyncHuman)
+  useHotkeys('e', openPlaylistModal)
+  useHotkeys('s', openSettingsModal)
 
   return (
     <nav className="Navbar">
@@ -44,7 +36,7 @@ function Header() {
       {lastSyncDate && (
         <div className="sync">
           <SyncButton title="Refresh" icon="fas fa-sync" />
-          {!syncing && <div className="last-update has-text-grey">Updated {lastSyncHuman}</div>}
+          {!syncing && <div className="last-update has-text-grey">Updated {lastSync}</div>}
         </div>
       )}
       <div className="right">
@@ -52,7 +44,7 @@ function Header() {
           <button
             title="Export to a new playlist [E]"
             className="button is-rounded is-dark has-text-weight-semibold"
-            onClick={playlistModalTrigger}
+            onClick={openPlaylistModal}
           >
             <span className="icon">
               <i className="fas fa-arrow-up" />
@@ -64,7 +56,7 @@ function Header() {
         <button
           title="Settings [S]"
           className="button is-rounded is-dark has-text-weight-semibold"
-          onClick={settingsModalTrigger}
+          onClick={openSettingsModal}
           disabled={syncing}
         >
           <span className="icon">

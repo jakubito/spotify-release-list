@@ -1,26 +1,28 @@
-import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 import moment from 'moment'
-import { getLastSyncDate } from 'state/selectors'
 
 /**
- * @param {(text: string) => any} setValue
+ * Auto update last sync information every minute and when focused
+ *
+ * @param {Date} lastSyncDate
  */
-export function useLastSyncUpdater(setValue) {
-  const lastSyncDate = useSelector(getLastSyncDate)
+export function useLastSync(lastSyncDate) {
+  const [lastSync, setLastSync] = useState(moment(lastSyncDate).fromNow())
 
   useEffect(() => {
-    const updateLastSyncHuman = () => {
-      setValue(moment(lastSyncDate).fromNow())
+    const updateLastSync = () => {
+      setLastSync(moment(lastSyncDate).fromNow())
     }
 
-    const intervalId = setInterval(updateLastSyncHuman, 60 * 1000)
-    window.addEventListener('focus', updateLastSyncHuman)
-    updateLastSyncHuman()
+    const intervalId = setInterval(updateLastSync, 60 * 1000)
+    window.addEventListener('focus', updateLastSync)
+    updateLastSync()
 
     return () => {
       clearInterval(intervalId)
-      window.removeEventListener('focus', updateLastSyncHuman)
+      window.removeEventListener('focus', updateLastSync)
     }
   }, [lastSyncDate])
+
+  return lastSync
 }
