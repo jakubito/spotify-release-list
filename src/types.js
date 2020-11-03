@@ -70,6 +70,8 @@
  * @typedef {{ [prop: string]: any }} AnyProps
  * @typedef {{ type: string, payload: any }} Action
  * @typedef {(...args: any[]) => Action} ActionCreator
+ * @typedef {{ value: number }} Progress
+ * @typedef {(...args: any[]) => any} Fn
  */
 
 /**
@@ -108,5 +110,7 @@
  *
  * @typedef {import('@reach/router').RouteComponentProps} RouteComponentProps
  * @typedef {import('redux-persist').PersistedState & State} PersistedState
+ * @typedef {import('redux-saga').Channel} Channel
+ * @typedef {import('redux-saga').Task} Task
  * @typedef {moment.Moment} Moment
  */

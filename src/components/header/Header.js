@@ -4,7 +4,7 @@ import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { getLastSyncDate, getHasReleases, getSyncing } from 'state/selectors'
 import { showSettingsModal, showPlaylistModal } from 'state/actions'
-import SyncButton from '../SyncButton'
+import SyncButton from 'components/SyncButton'
 import { useLastSync } from './hooks'
 
 /**

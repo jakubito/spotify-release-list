@@ -1,51 +1,8 @@
 import { useEffect, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { addSeenFeature, sync, setSyncing, setNonce } from 'state/actions'
-import {
-  getSeenFeatures,
-  getWorking,
-  getToken,
-  getTokenExpires,
-  getTokenScope,
-} from 'state/selectors'
-import { isValidSyncToken, startSyncAuthFlow } from 'auth'
-import { generateNonce } from 'helpers'
-import { persistor } from 'state'
-
-/**
- * Sync trigger hook
- *
- * @returns {() => void} Sync trigger handler
- */
-export function useSync() {
-  const dispatch = useDispatch()
-  const working = useSelector(getWorking)
-  const token = useSelector(getToken)
-  const tokenExpires = useSelector(getTokenExpires)
-  const tokenScope = useSelector(getTokenScope)
-
-  const syncTrigger = useCallback(async () => {
-    if (working) {
-      return
-    }
-
-    if (isValidSyncToken(token, tokenExpires, tokenScope)) {
-      dispatch(sync())
-    } else {
-      const nonce = generateNonce()
-
-      dispatch(setSyncing(true))
-      dispatch(setNonce(nonce))
-
-      await persistor.flush()
-
-      startSyncAuthFlow(nonce)
-    }
-  }, [working, token, tokenExpires, tokenScope])
-
-  return syncTrigger
-}
+import { addSeenFeature } from 'state/actions'
+import { getSeenFeatures } from 'state/selectors'
 
 /**
  * Modal hook

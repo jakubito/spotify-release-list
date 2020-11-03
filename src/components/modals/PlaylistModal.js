@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm, FormProvider } from 'react-hook-form'
-import { hidePlaylistModal, createPlaylist, setNonce, setPlaylistForm } from 'state/actions'
+import { hidePlaylistModal, createPlaylist, setPlaylistForm } from 'state/actions'
 import { useModal } from 'hooks'
-import {
-  getCreatingPlaylist,
-  getToken,
-  getTokenExpires,
-  getTokenScope,
-  getPlaylistId,
-} from 'state/selectors'
+import { getCreatingPlaylist, getPlaylistId } from 'state/selectors'
 import { FieldName } from 'enums'
-import { isValidCreatePlaylistToken, startCreatePlaylistAuthFlow } from 'auth'
-import { generateNonce } from 'helpers'
-import { persistor } from 'state'
 import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist'
 
 /**
@@ -41,6 +32,10 @@ function PlaylistModal() {
       { required: true, validate: (value) => value.size > 0 }
     )
   }, [register])
+
+  useEffect(() => {
+    setSubmitTriggered(creatingPlaylist)
+  }, [creatingPlaylist])
 
   return (
     <FormProvider {...form}>
@@ -83,11 +78,9 @@ function PlaylistModal() {
  */
 function useOnSubmit(setSubmitTriggered) {
   const dispatch = useDispatch()
-  const token = useSelector(getToken)
-  const tokenExpires = useSelector(getTokenExpires)
-  const tokenScope = useSelector(getTokenScope)
-
   const onSubmit = async (formData) => {
+    setSubmitTriggered(true)
+
     const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
       formData[FieldName.SELECTED_RELEASES].has(releaseId)
     )
@@ -96,19 +89,7 @@ function useOnSubmit(setSubmitTriggered) {
     const isPrivate = formData[FieldName.VISIBILITY] === 'private'
 
     dispatch(setPlaylistForm(albumIds, name, description, isPrivate))
-
-    if (isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate)) {
-      dispatch(createPlaylist())
-    } else {
-      const nonce = generateNonce()
-
-      setSubmitTriggered(true)
-      dispatch(setNonce(nonce))
-
-      await persistor.flush()
-
-      startCreatePlaylistAuthFlow(nonce, isPrivate)
-    }
+    dispatch(createPlaylist())
   }
 
   return onSubmit

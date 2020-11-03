@@ -1,9 +1,9 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
 import { getSyncing, getWorking, getSyncingProgress } from 'state/selectors'
-import { useSync } from 'hooks'
+import { sync } from 'state/actions'
 
 /**
  * Render sync button
@@ -11,11 +11,15 @@ import { useSync } from 'hooks'
  * @param {{ title: string, icon?: string, className?: string, showProgress?: boolean }} props
  */
 function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = true }) {
+  const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const working = useSelector(getWorking)
-  const syncTrigger = useSync()
 
-  useHotkeys('r', syncTrigger, {}, [syncTrigger])
+  const runSync = () => {
+    dispatch(sync())
+  }
+
+  useHotkeys('r', runSync)
 
   return (
     <button
@@ -31,7 +35,7 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
         className
       )}
       disabled={working}
-      onClick={syncTrigger}
+      onClick={runSync}
     >
       <span className="icon">
         <i className={icon} />

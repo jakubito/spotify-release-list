@@ -1,9 +1,11 @@
 import moment from 'moment'
 import { channel, buffers } from 'redux-saga'
 import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
+import { progressWorker, requestWorker, withValidToken } from 'sagas/helpers'
 import { getSettings, getToken, getReleasesMaxDate } from 'state/selectors'
 import { MomentFormat } from 'enums'
 import { getUser, getUserFollowedArtists, getArtistAlbums } from 'api'
+import { isValidSyncToken, startSyncAuthFlow } from 'auth'
 import {
   setSyncingProgress,
   setUser,
@@ -14,57 +16,20 @@ import {
   showErrorMessage,
 } from 'state/actions'
 
-/**
- * @typedef {import('redux-saga').Channel} Channel
- * @typedef {import('redux-saga').Task} Task
- * @typedef {{ value: number }} Progress
- */
-
 const REQUEST_WORKERS = 6
 const PROGRESS_ANIMATION_MS = 550
 
 /**
- * Saga that updates progress after each animation window
- *
- * @param {Progress} progress
- * @param {ActionCreator} setProgressAction
+ * Synchronization wrapper saga
  */
-function* progressWorker(progress, setProgressAction) {
-  try {
-    while (true) {
-      yield put(setProgressAction(progress.value))
-      yield delay(PROGRESS_ANIMATION_MS)
-    }
-  } finally {
-    yield put(setProgressAction(progress.value))
-  }
-}
-
-/**
- * Saga that takes http requests from `requestChannel` and sends responses to `responseChannel`
- *
- * @param {Channel} requestChannel
- * @param {Channel} responseChannel
- */
-function* requestWorker(requestChannel, responseChannel) {
-  while (true) {
-    /** @type {[(...args: any[]) => any, ...any[]]} */
-    const request = yield take(requestChannel)
-
-    try {
-      const result = yield call(...request)
-
-      yield put(responseChannel, { result })
-    } catch (error) {
-      yield put(responseChannel, { error })
-    }
-  }
+export function* syncSaga() {
+  yield call(withValidToken, syncMainSaga, isValidSyncToken, startSyncAuthFlow)
 }
 
 /**
  * Main synchronization saga
  */
-export function* syncSaga() {
+function* syncMainSaga() {
   try {
     yield put(syncStart())
 
@@ -90,7 +55,7 @@ export function* syncSaga() {
       tasks.push(yield fork(requestWorker, requestChannel, responseChannel))
     }
 
-    tasks.push(yield fork(progressWorker, progress, setSyncingProgress))
+    tasks.push(yield fork(progressWorker, progress, setSyncingProgress, PROGRESS_ANIMATION_MS))
 
     for (const artist of artists) {
       yield put(requestChannel, [getArtistAlbums, token, artist.id, groups, market, minDate])

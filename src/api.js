@@ -1,6 +1,21 @@
 import findLastIndex from 'lodash/findLastIndex'
 import { buildUser, buildArtist, buildAlbum, sleep } from 'helpers'
 
+class FetchError extends Error {
+  /**
+   * @param {number} status
+   * @param {string} statusText
+   * @param {string} [message]
+   */
+  constructor(status, statusText, message) {
+    super(message)
+
+    this.name = 'FetchError'
+    this.status = status
+    this.statusText = statusText
+  }
+}
+
 /**
  * Return current user
  *
@@ -210,11 +225,8 @@ function post(endpoint, token, body) {
  * @returns {Promise<any>}
  */
 async function request(endpoint, token, method, headers = {}, body) {
-  const response = await fetch(endpoint, {
-    method,
-    body,
-    headers: { ...headers, Authorization: `Bearer ${token}` },
-  })
+  const authHeader = { Authorization: `Bearer ${token}` }
+  const response = await fetch(endpoint, { method, body, headers: { ...headers, ...authHeader } })
 
   if (response.ok) {
     return response.json()
@@ -233,15 +245,8 @@ async function request(endpoint, token, method, headers = {}, body) {
   if (response.status >= 400 && response.status < 500) {
     const json = await response.json()
 
-    throw new Error(`
-      Fetch 4XX Response
-      Status: ${response.status} ${response.statusText}
-      Message: ${json.error.message}
-    `)
+    throw new FetchError(response.status, response.statusText, json.error.message)
   }
 
-  throw new Error(`
-    Fetch Error
-    Status: ${response.status} ${response.statusText}
-  `)
+  throw new FetchError(response.status, response.statusText)
 }

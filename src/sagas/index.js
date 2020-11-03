@@ -1,29 +1,7 @@
-import { call, race, take, fork, cancel } from 'redux-saga/effects'
+import { takeLeadingCancellable } from 'sagas/helpers'
+import { syncSaga } from 'sagas/sync'
+import { createPlaylistSaga } from 'sagas/playlist'
 import { SYNC, SYNC_CANCEL, CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL } from 'state/actions'
-import { syncSaga } from './sync'
-import { createPlaylistSaga } from './playlist'
-
-/**
- * Behaves the same way as redux-saga's `takeLeading` but can be cancelled
- *
- * @param {string} triggerAction
- * @param {string} cancelAction
- * @param {(...args: any[]) => any} saga
- * @param {...any} args
- */
-function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
-  return fork(function* () {
-    while (true) {
-      const action = yield take(triggerAction)
-      const task = yield fork(saga, ...args.concat(action))
-      const [cancelled] = yield race([take(cancelAction), call(task.toPromise)])
-
-      if (cancelled) {
-        yield cancel(task)
-      }
-    }
-  })
-}
 
 /**
  * Root saga

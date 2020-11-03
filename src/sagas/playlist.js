@@ -1,24 +1,41 @@
 import { all, call, put, select } from 'redux-saga/effects'
 import { chunks, getSpotifyUri } from 'helpers'
-import { getSettings, getToken, getPlaylistForm, getUser as getUserSelector } from 'state/selectors'
 import { SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
+import { isValidPlaylistToken, startPlaylistAuthFlow } from 'auth'
+import { withValidToken } from 'sagas/helpers'
+import { getPlaylistForm, getSettings, getToken, getUser } from 'state/selectors'
 import {
-  showErrorMessage,
   createPlaylistStart,
   createPlaylistFinished,
   createPlaylistError,
+  showErrorMessage,
 } from 'state/actions'
 
 /**
- * Playlist creation saga
+ * Playlist creation wrapper saga
  */
 export function* createPlaylistSaga() {
+  const { isPrivate } = yield select(getPlaylistForm)
+
+  yield call(
+    withValidToken,
+    createPlaylistMainSaga,
+    isValidPlaylistToken,
+    startPlaylistAuthFlow,
+    isPrivate
+  )
+}
+
+/**
+ * Playlist creation main saga
+ */
+function* createPlaylistMainSaga() {
   try {
     yield put(createPlaylistStart())
 
     const token = yield select(getToken)
-    const user = yield select(getUserSelector)
+    const user = yield select(getUser)
     const { albumIds, name, description, isPrivate } = yield select(getPlaylistForm)
     const { market } = yield select(getSettings)
 
@@ -26,6 +43,7 @@ export function* createPlaylistSaga() {
       call(getAlbumsTrackIds, token, albumIdsChunk, market)
     )
 
+    /** @type {string[][]} */
     const trackIds = yield all(trackIdsCalls)
     const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK))
     /** @type {SpotifyPlaylist} */

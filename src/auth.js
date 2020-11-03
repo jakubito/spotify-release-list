@@ -26,7 +26,7 @@ export function isValidSyncToken(token, tokenExpires, tokenScope) {
  * @param {boolean} isPrivate
  * @returns {boolean}
  */
-export function isValidCreatePlaylistToken(token, tokenExpires, tokenScope, isPrivate) {
+export function isValidPlaylistToken(token, tokenExpires, tokenScope, isPrivate) {
   return (
     isValidToken(token, tokenExpires) &&
     tokenScope &&
@@ -62,7 +62,7 @@ export function startSyncAuthFlow(nonce) {
  * @param {boolean} isPrivate
  * @returns {void}
  */
-export function startCreatePlaylistAuthFlow(nonce, isPrivate) {
+export function startPlaylistAuthFlow(nonce, isPrivate) {
   startAuthFlow(
     CREATE_PLAYLIST,
     [
