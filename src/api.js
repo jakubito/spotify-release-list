@@ -9,7 +9,6 @@ class FetchError extends Error {
    */
   constructor(status, statusText, message) {
     super(message)
-
     this.name = 'FetchError'
     this.status = status
     this.statusText = statusText

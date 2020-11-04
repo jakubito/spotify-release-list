@@ -1,9 +1,55 @@
+import queryString from 'query-string'
 import moment from 'moment'
 import { Base64 } from 'js-base64'
 import { SYNC, CREATE_PLAYLIST } from 'state/actions'
 import { Scope } from 'enums'
 
 const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
+
+export class AuthError extends Error {
+  /** @param {string} [message] */
+  constructor(message) {
+    super(message)
+    this.name = 'AuthError'
+  }
+}
+
+/**
+ * Validate incoming auth request and return parsed data
+ *
+ * @param {string} nonce
+ * @returns {{ action: string, scope: string, token: string, tokenExpires: string }}
+ */
+export function validateAuthRequest(nonce) {
+  /** @type {{ error?: string }} */
+  const search = queryString.parse(window.location.search)
+
+  if (search.error) {
+    throw new AuthError('Access denied')
+  }
+
+  /** @type {{ access_token?: string, expires_in?: string, state?: string }} */
+  const hash = queryString.parse(window.location.hash)
+
+  if (!hash.access_token || !hash.expires_in || !hash.state) {
+    throw new AuthError('Invalid request')
+  }
+
+  /** @type {{ nonce?: string, action?: string, scope?: string }} */
+  const state = JSON.parse(Base64.decode(hash.state))
+
+  if (state.nonce !== nonce) {
+    throw new AuthError('Invalid request')
+  }
+
+  const { action, scope } = state
+  const token = hash.access_token
+  const tokenExpires = moment()
+    .add(Number(hash.expires_in) - 60 * 5, 'seconds') // subtract 5 minutes just to be safe
+    .toISOString()
+
+  return { action, scope, token, tokenExpires }
+}
 
 /**
  * Check if token is valid and contains required scope for syncing
