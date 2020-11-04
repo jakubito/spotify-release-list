@@ -1,3 +1,4 @@
+import orderBy from 'lodash/orderBy'
 import { initialState } from 'state'
 import {
   SYNC_START,
@@ -28,8 +29,6 @@ import {
   RESET_PLAYLIST,
   ADD_SEEN_FEATURE,
 } from 'state/actions'
-import { setAlbums } from './albums'
-import { hideModals, showPlaylistModal, showResetModal, showSettingsModal } from './modals'
 
 /**
  * State root reducer
@@ -58,11 +57,11 @@ function rootReducer(state = initialState, { type, payload }) {
     case SET_SETTINGS:
       return { ...state, settings: { ...state.settings, ...payload.settings } }
     case SHOW_SETTINGS_MODAL:
-      return showSettingsModal(state)
+      return { ...hideModals(state), settingsModalVisible: true }
     case SHOW_RESET_MODAL:
-      return showResetModal(state)
+      return { ...hideModals(state), resetModalVisible: true }
     case SHOW_PLAYLIST_MODAL:
-      return showPlaylistModal(state)
+      return { ...hideModals(state), playlistModalVisible: true }
     case HIDE_SETTINGS_MODAL:
     case HIDE_RESET_MODAL:
       return hideModals(state)
@@ -89,6 +88,64 @@ function rootReducer(state = initialState, { type, payload }) {
       return { ...state, seenFeatures: [...state.seenFeatures, payload.feature] }
     default:
       return state
+  }
+}
+
+/**
+ * @param {State} state
+ * @param {{ albums: Album[], artists: Artist[], minDate: string }} payload
+ * @returns {State}
+ */
+function setAlbums(state, payload) {
+  const artists = payload.artists.reduce((map, artist) => ({ ...map, [artist.id]: artist }), {})
+  const albums = payload.albums.reduce(
+    /** @param {typeof state.albums} map */
+    (map, album) => {
+      if (album.releaseDate < payload.minDate) {
+        return map
+      }
+
+      const { artistId, ...albumRest } = album
+      const matched = map[album.id]
+
+      if (!matched) {
+        /** @type {AlbumGrouped} */
+        const newAlbum = {
+          ...albumRest,
+          artists: orderBy(albumRest.artists, 'name').filter((artist) => artist.id !== artistId),
+          primaryArtists: [artists[artistId]],
+        }
+
+        map[album.id] = newAlbum
+
+        return map
+      }
+
+      const inPrimary = matched.primaryArtists.find((artist) => artist.id === artistId)
+
+      if (!inPrimary) {
+        matched.artists = matched.artists.filter((artist) => artist.id !== artistId)
+        matched.primaryArtists = orderBy([...matched.primaryArtists, artists[artistId]], 'name')
+      }
+
+      return map
+    },
+    {}
+  )
+
+  return { ...state, albums }
+}
+
+/**
+ * @param {State} state
+ * @returns {State}
+ */
+function hideModals(state) {
+  return {
+    ...state,
+    settingsModalVisible: false,
+    resetModalVisible: false,
+    playlistModalVisible: false,
   }
 }
 
