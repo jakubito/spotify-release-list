@@ -1,5 +1,11 @@
-import { SHOW_PLAYLIST_MODAL, SHOW_SETTINGS_MODAL, SYNC } from 'state/actions'
-import { getHasReleases, getLastSyncDate, getModalVisible, getSyncing } from 'state/selectors'
+import { ADD_SEEN_FEATURE, SHOW_PLAYLIST_MODAL, SHOW_SETTINGS_MODAL, SYNC } from 'state/actions'
+import {
+  getHasReleases,
+  getLastSyncDate,
+  getModalVisible,
+  getSeenFeatures,
+  getSyncing,
+} from 'state/selectors'
 
 /**
  * Check if action can be dispatched
@@ -8,14 +14,16 @@ import { getHasReleases, getLastSyncDate, getModalVisible, getSyncing } from 'st
  * @param {State} state
  * @returns {boolean}
  */
-function isActionValid(action, state) {
-  switch (action.type) {
+function isActionValid({ type, payload }, state) {
+  switch (type) {
     case SYNC:
       return !getModalVisible(state)
     case SHOW_SETTINGS_MODAL:
       return !getSyncing(state)
     case SHOW_PLAYLIST_MODAL:
       return !getSyncing(state) && getLastSyncDate(state) && getHasReleases(state)
+    case ADD_SEEN_FEATURE:
+      return !getSeenFeatures(state).includes(payload.feature)
     default:
       return true
   }

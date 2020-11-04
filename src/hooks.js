@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { addSeenFeature } from 'state/actions'
@@ -33,18 +33,16 @@ export function useModal(hideModalAction) {
  * Feature hook
  *
  * @param {string} feature
- * @returns {[boolean, () => void]}
+ * @returns {[seen: boolean, setSeen: () => void]}
  */
 export function useFeature(feature) {
   const dispatch = useDispatch()
   const seenFeatures = useSelector(getSeenFeatures)
 
-  const seen = useMemo(() => seenFeatures.includes(feature), [seenFeatures])
+  const seen = seenFeatures.includes(feature)
   const setSeen = useCallback(() => {
-    if (!seen) {
-      dispatch(addSeenFeature(feature))
-    }
-  }, [seen])
+    dispatch(addSeenFeature(feature))
+  }, [])
 
   return [seen, setSeen]
 }
