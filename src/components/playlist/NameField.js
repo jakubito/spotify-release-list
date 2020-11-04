@@ -13,9 +13,12 @@ function NameField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Name</label>
+      <label className="label has-text-light" htmlFor={NAME}>
+        Name
+      </label>
       <div className="control">
         <input
+          id={NAME}
           name={NAME}
           className={classNames('input is-rounded', { 'is-danger': errors[NAME] })}
           type="text"

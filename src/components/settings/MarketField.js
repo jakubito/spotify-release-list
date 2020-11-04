@@ -15,12 +15,13 @@ function MarketField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">
+      <label className="label has-text-light" htmlFor="market">
         Market country <HelpText>/ prevent duplicates</HelpText>
       </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
           <select
+            id="market"
             defaultValue={market}
             onChange={(event) => defer(dispatch, setSettings({ market: event.target.value }))}
           >

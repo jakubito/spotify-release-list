@@ -17,12 +17,12 @@ function TimePeriodField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">
+      <label className="label has-text-light" htmlFor="timePeriod">
         Time period <HelpText>/ affects storage usage</HelpText>
       </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select defaultValue={days.toString()} onChange={onChange}>
+          <select id="timePeriod" defaultValue={days.toString()} onChange={onChange}>
             <option value="7">Past week</option>
             <option value="30">Past month</option>
             <option value="90">Past 3 months</option>

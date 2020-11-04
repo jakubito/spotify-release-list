@@ -26,10 +26,13 @@ function ThemeField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Theme</label>
+      <label className="label has-text-light" htmlFor="theme">
+        Theme
+      </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
           <select
+            id="theme"
             defaultValue={theme}
             onChange={(event) => defer(dispatch, setSettings({ theme: event.target.value }))}
           >

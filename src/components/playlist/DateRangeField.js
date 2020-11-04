@@ -25,15 +25,17 @@ function DateRangeField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Date range</label>
+      <label className="label has-text-light" htmlFor={START_DATE}>
+        Date range
+      </label>
 
       <Media query={{ maxWidth: 425 }}>
         {(matches) => (
           <DateRangePicker
             startDate={startDate}
-            startDateId="newPlaylistStartDate"
+            startDateId={START_DATE}
             endDate={endDate}
-            endDateId="newPlaylistEndDate"
+            endDateId={END_DATE}
             minDate={minDate}
             maxDate={maxDate}
             onDatesChange={datesChangeHandler}

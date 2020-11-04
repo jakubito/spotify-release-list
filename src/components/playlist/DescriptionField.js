@@ -12,9 +12,12 @@ function DescriptionField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Description</label>
+      <label className="label has-text-light" htmlFor={DESCRIPTION}>
+        Description
+      </label>
       <div className="control">
         <input
+          id={DESCRIPTION}
           name={DESCRIPTION}
           className="input is-rounded"
           type="text"
