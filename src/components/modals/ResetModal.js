@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { reset, hideResetModal, showSettingsModal } from 'state/actions'
 import { useModal } from 'hooks'
+import Button from 'components/Button'
 
 /**
  * Render reset data modal
@@ -19,24 +20,21 @@ function ResetModal() {
         </h4>
 
         <div className="actions has-text-centered">
-          <button
-            className="button is-dark is-rounded has-text-weight-semibold"
+          <Button
+            title="Go back"
+            icon="fas fa-arrow-left"
             onClick={() => dispatch(showSettingsModal())}
           >
-            <span className="icon">
-              <i className="fas fa-arrow-left" />
-            </span>
-            <span>No, go back</span>
-          </button>
-          <button
-            className="button is-danger is-rounded has-text-weight-semibold"
+            No, go back
+          </Button>
+          <Button
+            title="Delete all data"
+            icon="far fa-trash-alt"
             onClick={() => dispatch(reset())}
+            danger
           >
-            <span className="icon">
-              <i className="far fa-trash-alt" />
-            </span>
-            <span>Yes, delete all data</span>
-          </button>
+            Yes, delete all data
+          </Button>
         </div>
       </div>
     </div>

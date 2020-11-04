@@ -75,6 +75,16 @@ export function generateNonce() {
 }
 
 /**
+ * Check if value is string
+ *
+ * @param {any} value
+ * @returns {boolean}
+ */
+export function isString(value) {
+  return typeof value === 'string'
+}
+
+/**
  * Toggle value in set
  *
  * @template {Set} S

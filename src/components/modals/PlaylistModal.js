@@ -6,6 +6,7 @@ import { useModal } from 'hooks'
 import { getCreatingPlaylist, getPlaylistId } from 'state/selectors'
 import { FieldName } from 'enums'
 import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist'
+import Button from 'components/Button'
 
 const {
   START_DATE,
@@ -59,16 +60,14 @@ function PlaylistModal() {
 
             {!creatingPlaylist && (
               <div className="column has-text-right">
-                <button
-                  className="button is-dark is-rounded has-text-weight-semibold"
+                <Button
+                  title="Close"
+                  icon="fas fa-times"
                   onClick={closeModal}
                   disabled={submitTriggered}
                 >
-                  <span className="icon">
-                    <i className="fas fa-times" />
-                  </span>
-                  <span>Close</span>
-                </button>
+                  Close
+                </Button>
               </div>
             )}
           </div>

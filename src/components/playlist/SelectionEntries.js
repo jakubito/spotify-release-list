@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { Waypoint } from 'react-waypoint'
 import { FieldName } from 'enums'
 import { toggleSetValue, defer } from 'helpers'
+import Button from 'components/Button'
 import AlbumFullTitle from './AlbumFullTitle'
 
 const { RELEASES, SELECTED_RELEASES } = FieldName
@@ -37,14 +38,22 @@ function SelectionEntries() {
 
   return (
     <div className="selection">
-      <Shortcut
-        label="Select all"
+      <Button
+        title="Select all"
         onClick={() => defer(setValue, SELECTED_RELEASES, new Set(releases), true)}
-      />
-      <Shortcut
-        label="Unselect all"
+        darker
+        small
+      >
+        Select all
+      </Button>
+      <Button
+        title="Unselect all"
         onClick={() => defer(setValue, SELECTED_RELEASES, new Set([]), true)}
-      />
+        darker
+        small
+      >
+        Unselect all
+      </Button>
 
       <div className="container" ref={container}>
         <div className={classNames('inner', { animate })} ref={inner}>
@@ -66,21 +75,6 @@ function SelectionEntries() {
         </div>
       </div>
     </div>
-  )
-}
-
-/**
- * @param {{ label: string, onClick: React.MouseEventHandler<HTMLButtonElement> }} props
- */
-function Shortcut({ label, onClick }) {
-  return (
-    <button
-      type="button"
-      className="button is-rounded is-small is-dark is-darker"
-      onClick={onClick}
-    >
-      <span>{label}</span>
-    </button>
   )
 }
 

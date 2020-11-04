@@ -10,7 +10,7 @@ function Intro() {
       <p className="has-text-light is-size-5 has-text-centered intro">
         Display list of Spotify releases from artists you follow.
       </p>
-      <SyncButton title="Log in with Spotify" className="is-medium" />
+      <SyncButton title="Log in with Spotify" icon="fab fa-spotify" medium />
       <a
         href="https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md"
         className="has-text-grey-light privacy"

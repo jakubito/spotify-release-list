@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { defer } from 'helpers'
 import { syncCancel } from 'state/actions'
+import Button from 'components/Button'
 
 /**
  * Render loading screen
@@ -18,13 +19,9 @@ function Loading() {
       <div className="has-text-centered has-text-light has-text-weight-semibold is-size-5">
         Loading, please wait...
       </div>
-      <button
-        title="Cancel sync [ESC]"
-        className="cancel button is-rounded is-dark has-text-weight-semibold"
-        onClick={cancelSyncTrigger}
-      >
-        <span>Cancel</span>
-      </button>
+      <Button title="Cancel sync [ESC]" className="cancel" onClick={cancelSyncTrigger}>
+        Cancel
+      </Button>
     </div>
   )
 }

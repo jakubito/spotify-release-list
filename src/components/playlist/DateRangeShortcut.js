@@ -5,6 +5,7 @@ import { min, max } from 'moment'
 import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'state/selectors'
 import { FieldName } from 'enums'
 import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
+import Button from 'components/Button'
 
 const { START_DATE, END_DATE, NAME, NAME_CUSTOM, RELEASES, SELECTED_RELEASES } = FieldName
 
@@ -23,14 +24,16 @@ function DateRangeShortcut({ title, start, end }) {
   }
 
   return (
-    <button
-      type="button"
-      className="DateRangeShortcut button is-dark is-darker is-rounded is-small has-text-weight-semibold"
+    <Button
+      title={buttonTitle}
+      className="DateRangeShortcut"
       onClick={clickHandler}
       key={buttonTitle}
+      darker
+      small
     >
-      <span>{buttonTitle}</span>
-    </button>
+      {buttonTitle}
+    </Button>
   )
 }
 

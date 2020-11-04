@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import classNames from 'classnames'
 import { getCreatingPlaylist, getWorking, getPlaylistId } from 'state/selectors'
 import { resetPlaylist, createPlaylistCancel } from 'state/actions'
+import Button from 'components/Button'
 
 /**
  * Render playlist form actions
@@ -19,56 +20,47 @@ function Actions({ submitTriggered }) {
 
   if (creatingPlaylist) {
     return (
-      <button
-        type="button"
-        className="button is-rounded is-dark has-text-weight-semibold"
+      <Button
+        title="Cancel"
+        key="cancel"
         onClick={() => {
           reset({})
           dispatch(createPlaylistCancel())
         }}
-        key="cancel"
       >
-        <span className="icon">
-          <i className="fas fa-times" />
-        </span>
-        <span>Cancel</span>
-      </button>
+        Cancel
+      </Button>
     )
   }
 
   if (playlistId) {
     return (
-      <button
-        type="button"
-        className="button is-rounded is-dark has-text-weight-semibold"
+      <Button
+        title="Start over"
+        icon="fas fa-undo"
+        key="reset"
         onClick={() => {
           reset({})
           dispatch(resetPlaylist())
         }}
-        key="reset"
       >
-        <span className="icon">
-          <i className="fas fa-undo" />
-        </span>
-        <span>Start over</span>
-      </button>
+        Start over
+      </Button>
     )
   }
 
   return (
-    <button
+    <Button
       type="submit"
-      className={classNames('button is-primary is-rounded has-text-weight-semibold', {
-        'is-loading': submitTriggered,
-      })}
+      title="Create"
+      icon="fas fa-asterisk"
+      className={classNames({ 'is-loading': submitTriggered })}
       disabled={working || submitTriggered}
       key="submit"
+      primary
     >
-      <span className="icon">
-        <i className="fas fa-asterisk" />
-      </span>
-      <span>Create</span>
-    </button>
+      Create
+    </Button>
   )
 }
 

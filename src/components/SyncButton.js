@@ -4,13 +4,14 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
 import { getSyncing, getWorking, getSyncingProgress } from 'state/selectors'
 import { sync } from 'state/actions'
+import Button from 'components/Button'
 
 /**
  * Render sync button
  *
- * @param {{ title: string, icon?: string, className?: string, showProgress?: boolean }} props
+ * @param {{ title: string, icon?: string, medium?: boolean }} props
  */
-function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = true }) {
+function SyncButton({ title, icon, medium }) {
   const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const working = useSelector(getWorking)
@@ -22,28 +23,23 @@ function SyncButton({ title, icon = 'fab fa-spotify', className, showProgress = 
   useHotkeys('r', runSync)
 
   return (
-    <button
+    <Button
       title={`${title} [R]`}
-      type="button"
-      className={classNames(
-        'SyncButton',
-        'button',
-        'is-primary',
-        'is-rounded',
-        'has-text-weight-semibold',
-        { 'is-syncing': syncing },
-        className
-      )}
+      className={classNames('SyncButton', { 'is-syncing': syncing })}
       disabled={working}
       onClick={runSync}
+      icon={icon}
+      medium={medium}
+      primary
     >
-      <span className="icon">
-        <i className={icon} />
-      </span>
       <span>{title}</span>
-      {showProgress && syncing && <Progress />}
-      {syncing && <span className="spinner" />}
-    </button>
+      {syncing && (
+        <>
+          <Progress />
+          <span className="spinner" />
+        </>
+      )}
+    </Button>
   )
 }
 

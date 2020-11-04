@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
 import { FieldName } from 'enums'
 import { defer } from 'helpers'
+import Button from 'components/Button'
 import SelectionEntries from './SelectionEntries'
 
 const { RELEASES, SELECTED_RELEASES } = FieldName
@@ -23,11 +24,10 @@ function SelectionField() {
 
   return (
     <div className="SelectionField field">
-      <button
-        type="button"
-        className={classNames('button is-dark is-rounded is-fullwidth has-text-weight-semibold', {
-          'is-darker': !expanded,
-        })}
+      <Button
+        title={`${expanded ? 'Collapse' : 'Expand'} selection`}
+        className="is-fullwidth"
+        darker={!expanded}
         onClick={() =>
           defer(
             setExpanded,
@@ -47,7 +47,7 @@ function SelectionField() {
             })}
           />
         </span>
-      </button>
+      </Button>
 
       {expanded && <SelectionEntries />}
 

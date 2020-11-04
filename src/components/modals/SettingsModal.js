@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { hideSettingsModal, showResetModal } from 'state/actions'
 import { useModal } from 'hooks'
 import { getUser } from 'state/selectors'
+import Button from 'components/Button'
 import {
   AlbumGroupsField,
   TimePeriodField,
@@ -59,30 +60,23 @@ function SettingsModal() {
 
         <div className="actions columns is-gapless">
           <div className="column">
-            <button
-              className="button is-primary is-rounded has-text-weight-semibold"
-              onClick={closeModal}
-            >
-              <span className="icon">
-                <i className="fas fa-check" />
-              </span>
-              <span>All good</span>
-            </button>
+            <Button title="All good" icon="fas fa-check" onClick={closeModal} primary>
+              All good
+            </Button>
           </div>
         </div>
 
         {user && (
           <div className="reset has-text-grey-light">
             Logged in as {user.name}
-            <button
-              className="button is-dark is-rounded is-small has-text-weight-semibold"
+            <Button
+              title="Delete all data"
+              icon="far fa-trash-alt"
               onClick={() => dispatch(showResetModal())}
+              small
             >
-              <span className="icon">
-                <i className="far fa-trash-alt" />
-              </span>
-              <span>Delete all data</span>
-            </button>
+              Delete all data
+            </Button>
           </div>
         )}
 

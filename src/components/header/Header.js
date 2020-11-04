@@ -5,6 +5,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { getLastSyncDate, getHasReleases, getSyncing } from 'state/selectors'
 import { showSettingsModal, showPlaylistModal } from 'state/actions'
 import SyncButton from 'components/SyncButton'
+import Button from 'components/Button'
 import { useLastSync } from './hooks'
 
 /**
@@ -41,29 +42,23 @@ function Header() {
       )}
       <div className="right">
         {lastSyncDate && hasReleases && !syncing && (
-          <button
+          <Button
             title="Export to a new playlist [E]"
-            className="button is-rounded is-dark has-text-weight-semibold"
+            icon="fas fa-arrow-up"
             onClick={openPlaylistModal}
           >
-            <span className="icon">
-              <i className="fas fa-arrow-up" />
-            </span>
             <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
-          </button>
+          </Button>
         )}
 
-        <button
+        <Button
           title="Settings [S]"
-          className="button is-rounded is-dark has-text-weight-semibold"
+          icon="fas fa-cog"
           onClick={openSettingsModal}
           disabled={syncing}
         >
-          <span className="icon">
-            <i className="fas fa-cog" />
-          </span>
           <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Settings</span>}</Media>
-        </button>
+        </Button>
       </div>
     </nav>
   )

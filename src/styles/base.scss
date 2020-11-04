@@ -25,6 +25,10 @@ body,
   &:hover {
     background-color: $color-primary-light !important;
   }
+
+  &:active {
+    background-color: $color-primary-slightly-darker !important;
+  }
 }
 
 .button.has-badge .icon:nth-child(2) {
