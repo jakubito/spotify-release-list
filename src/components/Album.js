@@ -5,6 +5,8 @@ import { getSpotifyUri, getSpotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import Link from './Link'
 
+const { ALBUM, ARTIST } = SpotifyEntity
+
 /**
  * Render single album
  *
@@ -20,8 +22,8 @@ function Album({ album }) {
         <div className="content">
           <Link
             title={name}
-            uri={getSpotifyUri(id, SpotifyEntity.ALBUM)}
-            url={getSpotifyUrl(id, SpotifyEntity.ALBUM)}
+            uri={getSpotifyUri(id, ALBUM)}
+            url={getSpotifyUrl(id, ALBUM)}
             className="title is-size-5"
           >
             {name}
@@ -45,8 +47,8 @@ function AlbumCover({ album }) {
   return (
     <Link
       title={name}
-      uri={getSpotifyUri(id, SpotifyEntity.ALBUM)}
-      url={getSpotifyUrl(id, SpotifyEntity.ALBUM)}
+      uri={getSpotifyUri(id, ALBUM)}
+      url={getSpotifyUrl(id, ALBUM)}
       className="media-left"
     >
       <figure className="image">
@@ -63,8 +65,8 @@ function ArtistLink({ artist, className }) {
   return (
     <Link
       title={name}
-      uri={getSpotifyUri(id, SpotifyEntity.ARTIST)}
-      url={getSpotifyUrl(id, SpotifyEntity.ARTIST)}
+      uri={getSpotifyUri(id, ARTIST)}
+      url={getSpotifyUrl(id, ARTIST)}
       className={className}
       key={id}
     >

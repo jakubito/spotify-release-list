@@ -6,6 +6,8 @@ import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'state/selectors'
 import { FieldName } from 'enums'
 import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
 
+const { START_DATE, END_DATE, NAME, NAME_CUSTOM, RELEASES, SELECTED_RELEASES } = FieldName
+
 /**
  * Render date range field shortcut
  *
@@ -45,24 +47,18 @@ function useClickHandler(start, end) {
     const startDate = max(start, minDate)
     const endDate = min(end, maxDate)
 
-    setValue(FieldName.START_DATE, startDate)
-    setValue(FieldName.END_DATE, endDate)
+    setValue(START_DATE, startDate)
+    setValue(END_DATE, endDate)
 
     defer(() => {
       const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate)
 
-      setValue(FieldName.RELEASES, filteredReleases)
-      setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases))
+      setValue(RELEASES, filteredReleases)
+      setValue(SELECTED_RELEASES, new Set(filteredReleases))
+      trigger([START_DATE, END_DATE, RELEASES, SELECTED_RELEASES])
 
-      trigger([
-        FieldName.START_DATE,
-        FieldName.END_DATE,
-        FieldName.RELEASES,
-        FieldName.SELECTED_RELEASES,
-      ])
-
-      if (!getValues(FieldName.NAME_CUSTOM)) {
-        setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
+      if (!getValues(NAME_CUSTOM)) {
+        setValue(NAME, getPlaylistNameSuggestion(startDate, endDate), {
           shouldValidate: true,
         })
       }

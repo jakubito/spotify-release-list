@@ -2,6 +2,8 @@ import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { FieldName } from 'enums'
 
+const { VISIBILITY } = FieldName
+
 /**
  * Render playlist visibility form field
  */
@@ -17,7 +19,7 @@ function VisibilityField() {
             className="is-checkradio has-background-color is-white"
             id="uriLinksTrue"
             type="radio"
-            name={FieldName.VISIBILITY}
+            name={VISIBILITY}
             value="private"
             ref={register}
             defaultChecked
@@ -29,7 +31,7 @@ function VisibilityField() {
             className="is-checkradio has-background-color is-white"
             id="uriLinksFalse"
             type="radio"
-            name={FieldName.VISIBILITY}
+            name={VISIBILITY}
             value="public"
             ref={register}
           />

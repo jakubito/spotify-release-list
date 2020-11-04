@@ -3,6 +3,8 @@ import { Base64 } from 'js-base64'
 import { SYNC, CREATE_PLAYLIST } from 'state/actions'
 import { Scope } from 'enums'
 
+const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
+
 /**
  * Check if token is valid and contains required scope for syncing
  *
@@ -12,9 +14,7 @@ import { Scope } from 'enums'
  * @returns {boolean}
  */
 export function isValidSyncToken(token, tokenExpires, tokenScope) {
-  return (
-    isValidToken(token, tokenExpires) && tokenScope && tokenScope.includes(Scope.USER_FOLLOW_READ)
-  )
+  return isValidToken(token, tokenExpires) && tokenScope && tokenScope.includes(USER_FOLLOW_READ)
 }
 
 /**
@@ -30,7 +30,7 @@ export function isValidPlaylistToken(token, tokenExpires, tokenScope, isPrivate)
   return (
     isValidToken(token, tokenExpires) &&
     tokenScope &&
-    tokenScope.includes(isPrivate ? Scope.PLAYLIST_MODIFY_PRIVATE : Scope.PLAYLIST_MODIFY_PUBLIC)
+    tokenScope.includes(isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC)
   )
 }
 
@@ -52,7 +52,7 @@ function isValidToken(token, tokenExpires) {
  * @returns {void}
  */
 export function startSyncAuthFlow(nonce) {
-  startAuthFlow(SYNC, Scope.USER_FOLLOW_READ, nonce)
+  startAuthFlow(SYNC, USER_FOLLOW_READ, nonce)
 }
 
 /**
@@ -65,10 +65,7 @@ export function startSyncAuthFlow(nonce) {
 export function startPlaylistAuthFlow(nonce, isPrivate) {
   startAuthFlow(
     CREATE_PLAYLIST,
-    [
-      Scope.USER_FOLLOW_READ,
-      isPrivate ? Scope.PLAYLIST_MODIFY_PRIVATE : Scope.PLAYLIST_MODIFY_PUBLIC,
-    ].join(' '),
+    [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC].join(' '),
     nonce
   )
 }

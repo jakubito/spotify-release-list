@@ -3,6 +3,8 @@ import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
 import { FieldName } from 'enums'
 
+const { NAME, NAME_CUSTOM } = FieldName
+
 /**
  * Render playlist name form field
  */
@@ -14,17 +16,17 @@ function NameField() {
       <label className="label has-text-light">Name</label>
       <div className="control">
         <input
-          name={FieldName.NAME}
-          className={classNames('input is-rounded', { 'is-danger': errors[FieldName.NAME] })}
+          name={NAME}
+          className={classNames('input is-rounded', { 'is-danger': errors[NAME] })}
           type="text"
-          onChange={() => setValue(FieldName.NAME_CUSTOM, true)}
+          onChange={() => setValue(NAME_CUSTOM, true)}
           ref={register({ required: true, maxLength: 100 })}
         />
       </div>
-      {errors[FieldName.NAME] && (
+      {errors[NAME] && (
         <p className="help is-danger">
-          {errors[FieldName.NAME].type === 'required' && 'Name is required.'}
-          {errors[FieldName.NAME].type === 'maxLength' && "Name can't exceed 100 characters."}
+          {errors[NAME].type === 'required' && 'Name is required.'}
+          {errors[NAME].type === 'maxLength' && "Name can't exceed 100 characters."}
         </p>
       )}
     </div>

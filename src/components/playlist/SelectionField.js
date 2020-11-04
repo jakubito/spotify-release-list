@@ -5,6 +5,8 @@ import { FieldName } from 'enums'
 import { defer } from 'helpers'
 import SelectionEntries from './SelectionEntries'
 
+const { RELEASES, SELECTED_RELEASES } = FieldName
+
 /**
  * Render playlist album selection field
  */
@@ -12,8 +14,8 @@ function SelectionField() {
   const { watch, errors } = useFormContext()
   const [expanded, setExpanded] = useState(false)
 
-  const releases = watch(FieldName.RELEASES)
-  const selectedReleases = watch(FieldName.SELECTED_RELEASES)
+  const releases = watch(RELEASES)
+  const selectedReleases = watch(SELECTED_RELEASES)
 
   if (!releases || !selectedReleases || releases.length === 0) {
     return null
@@ -49,9 +51,7 @@ function SelectionField() {
 
       {expanded && <SelectionEntries />}
 
-      {errors[FieldName.SELECTED_RELEASES] && (
-        <p className="help is-danger">No releases selected.</p>
-      )}
+      {errors[SELECTED_RELEASES] && <p className="help is-danger">No releases selected.</p>}
     </div>
   )
 }

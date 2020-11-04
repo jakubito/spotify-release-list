@@ -8,6 +8,8 @@ import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
 import { FieldName } from 'enums'
 import DateRangeShortcuts from './DateRangeShortcuts'
 
+const { START_DATE, END_DATE, NAME, NAME_CUSTOM, RELEASES, SELECTED_RELEASES } = FieldName
+
 /**
  * Render date range form field
  */
@@ -18,8 +20,8 @@ function DateRangeField() {
   const isOutsideRangeHandler = useIsOutsideRangeHandler()
   const datesChangeHandler = useDatesChangeHandler()
 
-  const startDate = watch(FieldName.START_DATE)
-  const endDate = watch(FieldName.END_DATE)
+  const startDate = watch(START_DATE)
+  const endDate = watch(END_DATE)
 
   return (
     <div className="field">
@@ -46,19 +48,12 @@ function DateRangeField() {
         )}
       </Media>
 
-      {(errors[FieldName.START_DATE] ||
-        errors[FieldName.END_DATE] ||
-        errors[FieldName.RELEASES]) && (
+      {(errors[START_DATE] || errors[END_DATE] || errors[RELEASES]) && (
         <p className="help is-danger">
-          {!errors[FieldName.START_DATE] &&
-            !errors[FieldName.END_DATE] &&
-            errors[FieldName.RELEASES] &&
-            'No releases found.'}
-          {errors[FieldName.START_DATE] &&
-            errors[FieldName.END_DATE] &&
-            'Start and end date are required.'}
-          {errors[FieldName.START_DATE] && !errors[FieldName.END_DATE] && 'Start date is required.'}
-          {errors[FieldName.END_DATE] && !errors[FieldName.START_DATE] && 'End date is required.'}
+          {!errors[START_DATE] && !errors[END_DATE] && errors[RELEASES] && 'No releases found.'}
+          {errors[START_DATE] && errors[END_DATE] && 'Start and end date are required.'}
+          {errors[START_DATE] && !errors[END_DATE] && 'Start date is required.'}
+          {errors[END_DATE] && !errors[START_DATE] && 'End date is required.'}
         </p>
       )}
 
@@ -86,25 +81,19 @@ function useDatesChangeHandler() {
   const datesChangeHandler = useCallback(
     /** @param {{ startDate: Moment, endDate: Moment }} values */
     ({ startDate, endDate }) => {
-      setValue(FieldName.START_DATE, startDate)
-      setValue(FieldName.END_DATE, endDate)
+      setValue(START_DATE, startDate)
+      setValue(END_DATE, endDate)
 
       if (startDate && endDate) {
         defer(() => {
           const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate)
 
-          setValue(FieldName.RELEASES, filteredReleases)
-          setValue(FieldName.SELECTED_RELEASES, new Set(filteredReleases))
+          setValue(RELEASES, filteredReleases)
+          setValue(SELECTED_RELEASES, new Set(filteredReleases))
+          trigger([START_DATE, END_DATE, RELEASES, SELECTED_RELEASES])
 
-          trigger([
-            FieldName.START_DATE,
-            FieldName.END_DATE,
-            FieldName.RELEASES,
-            FieldName.SELECTED_RELEASES,
-          ])
-
-          if (!getValues(FieldName.NAME_CUSTOM)) {
-            setValue(FieldName.NAME, getPlaylistNameSuggestion(startDate, endDate), {
+          if (!getValues(NAME_CUSTOM)) {
+            setValue(NAME, getPlaylistNameSuggestion(startDate, endDate), {
               shouldValidate: true,
             })
           }

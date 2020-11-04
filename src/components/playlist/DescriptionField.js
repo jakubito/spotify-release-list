@@ -2,6 +2,8 @@ import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { FieldName } from 'enums'
 
+const { DESCRIPTION } = FieldName
+
 /**
  * Render playlist description form field
  */
@@ -13,14 +15,14 @@ function DescriptionField() {
       <label className="label has-text-light">Description</label>
       <div className="control">
         <input
-          name={FieldName.DESCRIPTION}
+          name={DESCRIPTION}
           className="input is-rounded"
           type="text"
           placeholder="Optional"
           ref={register({ maxLength: 100 })}
         />
       </div>
-      {errors[FieldName.DESCRIPTION] && (
+      {errors[DESCRIPTION] && (
         <p className="help is-danger">Description can&apos;t exceed 300 characters.</p>
       )}
     </div>

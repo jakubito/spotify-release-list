@@ -7,6 +7,17 @@ import { getCreatingPlaylist, getPlaylistId } from 'state/selectors'
 import { FieldName } from 'enums'
 import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist'
 
+const {
+  START_DATE,
+  END_DATE,
+  NAME,
+  NAME_CUSTOM,
+  DESCRIPTION,
+  VISIBILITY,
+  RELEASES,
+  SELECTED_RELEASES,
+} = FieldName
+
 /**
  * Render new playlist modal
  */
@@ -20,17 +31,11 @@ function PlaylistModal() {
   const onSubmit = useOnSubmit(setSubmitTriggered)
 
   useEffect(() => {
-    register({ name: FieldName.START_DATE }, { required: true })
-    register({ name: FieldName.END_DATE }, { required: true })
-    register({ name: FieldName.NAME_CUSTOM })
-    register(
-      { name: FieldName.RELEASES },
-      { required: true, validate: (value) => value.length > 0 }
-    )
-    register(
-      { name: FieldName.SELECTED_RELEASES },
-      { required: true, validate: (value) => value.size > 0 }
-    )
+    register({ name: START_DATE }, { required: true })
+    register({ name: END_DATE }, { required: true })
+    register({ name: NAME_CUSTOM })
+    register({ name: RELEASES }, { required: true, validate: (value) => value.length > 0 })
+    register({ name: SELECTED_RELEASES }, { required: true, validate: (value) => value.size > 0 })
   }, [register])
 
   useEffect(() => {
@@ -81,12 +86,12 @@ function useOnSubmit(setSubmitTriggered) {
   const onSubmit = async (formData) => {
     setSubmitTriggered(true)
 
-    const albumIds = formData[FieldName.RELEASES].filter((releaseId) =>
-      formData[FieldName.SELECTED_RELEASES].has(releaseId)
+    const albumIds = formData[RELEASES].filter((releaseId) =>
+      formData[SELECTED_RELEASES].has(releaseId)
     )
-    const name = formData[FieldName.NAME].trim()
-    const description = formData[FieldName.DESCRIPTION].trim()
-    const isPrivate = formData[FieldName.VISIBILITY] === 'private'
+    const name = formData[NAME].trim()
+    const description = formData[DESCRIPTION].trim()
+    const isPrivate = formData[VISIBILITY] === 'private'
 
     dispatch(setPlaylistForm(albumIds, name, description, isPrivate))
     dispatch(createPlaylist())

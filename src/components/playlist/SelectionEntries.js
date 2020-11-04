@@ -6,6 +6,7 @@ import { FieldName } from 'enums'
 import { toggleSetValue, defer } from 'helpers'
 import AlbumFullTitle from './AlbumFullTitle'
 
+const { RELEASES, SELECTED_RELEASES } = FieldName
 const LIMIT_INCREMENT = 50
 
 /**
@@ -21,18 +22,13 @@ function SelectionEntries() {
   const inner = useRef(null)
 
   /** @type {string[]} */
-  const releases = watch(FieldName.RELEASES)
+  const releases = watch(RELEASES)
   /** @type {Set<string>} */
-  const selectedReleases = watch(FieldName.SELECTED_RELEASES)
+  const selectedReleases = watch(SELECTED_RELEASES)
 
   /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChangeHandler = (event) => {
-    defer(
-      setValue,
-      FieldName.SELECTED_RELEASES,
-      toggleSetValue(selectedReleases, event.target.value),
-      true
-    )
+    defer(setValue, SELECTED_RELEASES, toggleSetValue(selectedReleases, event.target.value), true)
   }
 
   useEffect(() => {
@@ -43,11 +39,11 @@ function SelectionEntries() {
     <div className="selection">
       <Shortcut
         label="Select all"
-        onClick={() => defer(setValue, FieldName.SELECTED_RELEASES, new Set(releases), true)}
+        onClick={() => defer(setValue, SELECTED_RELEASES, new Set(releases), true)}
       />
       <Shortcut
         label="Unselect all"
-        onClick={() => defer(setValue, FieldName.SELECTED_RELEASES, new Set([]), true)}
+        onClick={() => defer(setValue, SELECTED_RELEASES, new Set([]), true)}
       />
 
       <div className="container" ref={container}>

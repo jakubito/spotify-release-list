@@ -5,6 +5,8 @@ import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import { Theme } from 'enums'
 
+const { COMPACT, SINGLE_COLUMN } = Theme
+
 /**
  * Render theme selection field
  */
@@ -32,11 +34,9 @@ function ThemeField() {
             onChange={(event) => defer(dispatch, setSettings({ theme: event.target.value }))}
           >
             <option value="">Default</option>
-            <option value={Theme.COMPACT}>Compact</option>
-            <option value={Theme.SINGLE_COLUMN}>Single Column</option>
-            <option value={[Theme.SINGLE_COLUMN, Theme.COMPACT].join(' ')}>
-              Single Column - Compact
-            </option>
+            <option value={COMPACT}>Compact</option>
+            <option value={SINGLE_COLUMN}>Single Column</option>
+            <option value={[SINGLE_COLUMN, COMPACT].join(' ')}>Single Column - Compact</option>
           </select>
         </div>
         <span className="icon is-left">
