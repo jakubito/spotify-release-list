@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import Media from 'react-media'
 import { DateRangePicker } from 'react-dates'
 import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'state/selectors'
-import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
+import { getPlaylistNameSuggestion, getReleasesBetween, defer } from 'helpers'
 import { FieldName } from 'enums'
 import DateRangeShortcuts from './DateRangeShortcuts'
 
@@ -88,7 +88,7 @@ function useDatesChangeHandler() {
 
       if (startDate && endDate) {
         defer(() => {
-          const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate)
+          const filteredReleases = getReleasesBetween(releasesMap, startDate, endDate)
 
           setValue(RELEASES, filteredReleases)
           setValue(SELECTED_RELEASES, new Set(filteredReleases))

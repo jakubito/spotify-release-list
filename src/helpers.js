@@ -1,7 +1,7 @@
-import orderBy from 'lodash/orderBy'
 import { MomentFormat } from 'enums'
 
 const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const { ISO_DATE } = MomentFormat
 
 /**
  * Promisified setTimeout
@@ -103,6 +103,22 @@ export function toggleSetValue(set, value) {
 }
 
 /**
+ * Get dates between `startDate` and `endDate`
+ *
+ * @param {Moment} startDate
+ * @param {Moment} endDate
+ * @yields {string}
+ */
+export function* dateRange(startDate, endDate) {
+  const current = startDate.clone()
+
+  while (current.isSameOrBefore(endDate)) {
+    yield current.format(ISO_DATE)
+    current.add(1, 'day')
+  }
+}
+
+/**
  * Get playlist name suggestion
  *
  * @param {Moment} [startDate]
@@ -132,28 +148,20 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
  * @param {Moment} [endDate]
  * @returns {string[]|null}
  */
-export function getReleasesByDate(releasesMap, startDate, endDate) {
+export function getReleasesBetween(releasesMap, startDate, endDate) {
   if (!releasesMap || !startDate || !endDate) {
     return null
   }
 
-  const filteredReleases = []
-  const current = endDate.clone()
+  const releases = []
 
-  while (current.isSameOrAfter(startDate)) {
-    const currentFormatted = current.format(MomentFormat.ISO_DATE)
-
-    if (releasesMap[currentFormatted]) {
-      const currentReleases = orderBy(releasesMap[currentFormatted], 'name')
-      const currentReleasesIds = currentReleases.map(({ id }) => id)
-
-      filteredReleases.push(...currentReleasesIds)
+  for (const date of dateRange(startDate, endDate)) {
+    if (releasesMap[date]) {
+      releases.push(...releasesMap[date].map(({ id }) => id))
     }
-
-    current.subtract(1, 'day')
   }
 
-  return filteredReleases
+  return releases
 }
 
 /**

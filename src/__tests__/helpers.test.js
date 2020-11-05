@@ -7,15 +7,15 @@ import {
   generateNonce,
   toggleSetValue,
   getPlaylistNameSuggestion,
-  getReleasesByDate,
+  getReleasesBetween,
   getSpotifyUri,
   getSpotifyUrl,
   getImage,
   buildUser,
   buildArtist,
   buildAlbum,
-} from '../helpers'
-import { getReleasesMap } from '../selectors'
+} from 'helpers'
+import { getReleasesMap } from 'state/selectors'
 import mockStore from './fixtures/store.json'
 
 describe('sleep', () => {
@@ -205,19 +205,19 @@ describe('getPlaylistNameSuggestion', () => {
   })
 })
 
-describe('getReleasesByDate', () => {
+describe('getReleasesBetween', () => {
   it('returns releases between two different dates', () => {
     const start = moment('2020-07-07')
     const end = moment('2020-07-09')
-    const actual = getReleasesByDate(getReleasesMap(mockStore), start, end)
+    const actual = getReleasesBetween(getReleasesMap(mockStore), start, end)
     const expected = [
-      '4fqgvOdbV99QD6LOwvFCPt',
+      '23NyPBINwg9BI8WgtgEu5t',
+      '4ovUW1PL9ojY7NHS6LB9l0',
+      '4U4HwSCCP5kEbQbZTsDtdY',
+      '0ePzXJp13MsUS3T9CgYwlT',
       '6mHwNoULGKR4jaxRWUcUfB',
       '2xE6oHxNTTMcNYgr2WThMZ',
-      '4ovUW1PL9ojY7NHS6LB9l0',
-      '0ePzXJp13MsUS3T9CgYwlT',
-      '4U4HwSCCP5kEbQbZTsDtdY',
-      '23NyPBINwg9BI8WgtgEu5t',
+      '4fqgvOdbV99QD6LOwvFCPt',
     ]
 
     expect(actual).toEqual(expected)
@@ -226,8 +226,8 @@ describe('getReleasesByDate', () => {
   it('returns releases for single day', () => {
     const start = moment('2020-07-08')
     const end = moment('2020-07-08')
-    const actual = getReleasesByDate(getReleasesMap(mockStore), start, end)
-    const expected = ['4ovUW1PL9ojY7NHS6LB9l0', '0ePzXJp13MsUS3T9CgYwlT', '4U4HwSCCP5kEbQbZTsDtdY']
+    const actual = getReleasesBetween(getReleasesMap(mockStore), start, end)
+    const expected = ['4ovUW1PL9ojY7NHS6LB9l0', '4U4HwSCCP5kEbQbZTsDtdY', '0ePzXJp13MsUS3T9CgYwlT']
 
     expect(actual).toEqual(expected)
   })
@@ -235,7 +235,7 @@ describe('getReleasesByDate', () => {
   it('returns empty array if start date > end date', () => {
     const start = moment('2020-07-10')
     const end = moment('2020-07-07')
-    const actual = getReleasesByDate(getReleasesMap(mockStore), start, end)
+    const actual = getReleasesBetween(getReleasesMap(mockStore), start, end)
 
     expect(actual).toEqual([])
   })
@@ -243,7 +243,7 @@ describe('getReleasesByDate', () => {
   it('returns empty array for non-existing dates', () => {
     const start = moment('2020-05-01')
     const end = moment('2020-05-06')
-    const actual = getReleasesByDate(getReleasesMap(mockStore), start, end)
+    const actual = getReleasesBetween(getReleasesMap(mockStore), start, end)
 
     expect(actual).toEqual([])
   })
@@ -252,10 +252,10 @@ describe('getReleasesByDate', () => {
     const date = moment('2020-05-01')
     const map = getReleasesMap(mockStore)
 
-    expect(getReleasesByDate()).toBeNull()
-    expect(getReleasesByDate(null, date, date)).toBeNull()
-    expect(getReleasesByDate(map, null, date)).toBeNull()
-    expect(getReleasesByDate(map, date, null)).toBeNull()
+    expect(getReleasesBetween()).toBeNull()
+    expect(getReleasesBetween(null, date, date)).toBeNull()
+    expect(getReleasesBetween(map, null, date)).toBeNull()
+    expect(getReleasesBetween(map, date, null)).toBeNull()
   })
 })
 

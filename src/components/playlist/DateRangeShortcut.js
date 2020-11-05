@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { min, max } from 'moment'
 import { getReleasesMinMaxDatesMoment, getReleasesMap } from 'state/selectors'
 import { FieldName } from 'enums'
-import { getPlaylistNameSuggestion, getReleasesByDate, defer } from 'helpers'
+import { getPlaylistNameSuggestion, getReleasesBetween, defer } from 'helpers'
 import Button from 'components/Button'
 
 const { START_DATE, END_DATE, NAME, NAME_CUSTOM, RELEASES, SELECTED_RELEASES } = FieldName
@@ -54,7 +54,7 @@ function useClickHandler(start, end) {
     setValue(END_DATE, endDate)
 
     defer(() => {
-      const filteredReleases = getReleasesByDate(releasesMap, startDate, endDate)
+      const filteredReleases = getReleasesBetween(releasesMap, startDate, endDate)
 
       setValue(RELEASES, filteredReleases)
       setValue(SELECTED_RELEASES, new Set(filteredReleases))
