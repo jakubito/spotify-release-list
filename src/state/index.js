@@ -7,7 +7,7 @@ import createSagaMiddleware from 'redux-saga'
 import rootSaga from 'sagas'
 import migrations from 'state/migrations'
 import rootReducer from 'state/reducer'
-import actionGuardMiddleware from 'state/guards'
+import guardMiddleware from 'state/guard'
 import { AlbumGroup } from 'enums'
 
 /** @type {State} */
@@ -20,7 +20,6 @@ export const initialState = {
   creatingPlaylist: false,
   playlistId: null,
   playlistForm: {
-    albumIds: null,
     name: null,
     description: null,
     isPrivate: null,
@@ -34,6 +33,7 @@ export const initialState = {
   settingsModalVisible: false,
   resetModalVisible: false,
   playlistModalVisible: false,
+  filtersVisible: false,
   settings: {
     groups: Object.values(AlbumGroup),
     days: 30,
@@ -41,6 +41,12 @@ export const initialState = {
     theme: '',
     uriLinks: false,
     covers: true,
+  },
+  filters: {
+    groups: [],
+    search: '',
+    startDate: null,
+    endDate: null,
   },
   seenFeatures: [],
 }
@@ -65,6 +71,8 @@ const persistConfig = {
     'user',
     'nonce',
     'settings',
+    'filters',
+    'filtersVisible',
     'seenFeatures',
   ],
 }
@@ -75,7 +83,7 @@ const sagaMiddleware = createSagaMiddleware({ onError: (error) => Sentry.capture
 /** @type {import('redux').Store<State>} */
 export const store = createStore(
   persistReducer(persistConfig, rootReducer),
-  composeEnhancers(applyMiddleware(actionGuardMiddleware, sagaMiddleware))
+  composeEnhancers(applyMiddleware(guardMiddleware, sagaMiddleware))
 )
 
 /** @type {import('redux-persist').Persistor} */

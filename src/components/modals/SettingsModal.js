@@ -60,9 +60,7 @@ function SettingsModal() {
 
         <div className="actions columns is-gapless">
           <div className="column">
-            <Button title="All good" icon="fas fa-check" onClick={closeModal} primary>
-              All good
-            </Button>
+            <Button title="All good" icon="fas fa-check" onClick={closeModal} primary />
           </div>
         </div>
 
@@ -74,9 +72,7 @@ function SettingsModal() {
               icon="far fa-trash-alt"
               onClick={() => dispatch(showResetModal())}
               small
-            >
-              Delete all data
-            </Button>
+            />
           </div>
         )}
 

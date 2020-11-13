@@ -1,0 +1,13 @@
+.SearchFilter {
+  input {
+    max-width: 940px;
+
+    @include until-widescreen {
+      max-width: none;
+    }
+  }
+
+  .reset {
+    margin-left: 10px;
+  }
+}

@@ -11,7 +11,7 @@ function BackToTop() {
 
   return (
     <Button
-      title="Back to top"
+      titleOnly="Back to top"
       icon="fas fa-arrow-up"
       onClick={windowScrollToTop}
       className={classNames('BackToTop', { visible })}

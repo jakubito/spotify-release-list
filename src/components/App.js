@@ -1,11 +1,12 @@
 import React from 'react'
-import Header from './header/Header'
-import Content from './Content'
-import SettingsModalContainer from './modals/SettingsModalContainer'
-import ResetModalContainer from './modals/ResetModalContainer'
-import PlaylistModalContainer from './modals/PlaylistModalContainer'
-import BackToTop from './BackToTop'
-import Error from './Error'
+import Header from 'components/Header'
+import Filters from 'components/filters'
+import Content from 'components/Content'
+import SettingsModalContainer from 'components/modals/SettingsModalContainer'
+import ResetModalContainer from 'components/modals/ResetModalContainer'
+import PlaylistModalContainer from 'components/modals/PlaylistModalContainer'
+import BackToTop from 'components/BackToTop'
+import Error from 'components/Error'
 
 /**
  * Main app component
@@ -16,6 +17,7 @@ function App(props) {
   return (
     <div className="App has-background-black has-text-weight-semibold">
       <Header />
+      <Filters />
       <Content />
       <BackToTop />
       <SettingsModalContainer />

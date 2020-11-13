@@ -4,7 +4,13 @@ import { SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
 import { isValidPlaylistToken, startPlaylistAuthFlow } from 'auth'
 import { withValidToken } from 'sagas/helpers'
-import { getPlaylistForm, getSettings, getToken, getUser } from 'state/selectors'
+import {
+  getPlaylistForm,
+  getReleasesEntries,
+  getSettings,
+  getToken,
+  getUser,
+} from 'state/selectors'
 import {
   createPlaylistStart,
   createPlaylistFinished,
@@ -16,6 +22,7 @@ import {
  * Playlist creation wrapper saga
  */
 export function* createPlaylistSaga() {
+  /** @type {ReturnType<typeof getPlaylistForm>} */
   const { isPrivate } = yield select(getPlaylistForm)
 
   yield call(
@@ -34,10 +41,21 @@ function* createPlaylistMainSaga() {
   try {
     yield put(createPlaylistStart())
 
+    /** @type {ReturnType<typeof getToken>} */
     const token = yield select(getToken)
+    /** @type {ReturnType<typeof getUser>} */
     const user = yield select(getUser)
-    const { albumIds, name, description, isPrivate } = yield select(getPlaylistForm)
+    /** @type {ReturnType<typeof getPlaylistForm>} */
+    const { name, description, isPrivate } = yield select(getPlaylistForm)
+    /** @type {ReturnType<typeof getSettings>} */
     const { market } = yield select(getSettings)
+    /** @type {ReturnType<typeof getReleasesEntries>} */
+    const releases = yield select(getReleasesEntries)
+
+    const albumIds = releases.reduce(
+      (ids, [, albums]) => [...ids, ...albums.map((album) => album.id)],
+      []
+    )
 
     const trackIdsCalls = chunks(albumIds, 20).map((albumIdsChunk) =>
       call(getAlbumsTrackIds, token, albumIdsChunk, market)
@@ -51,6 +69,7 @@ function* createPlaylistMainSaga() {
 
     for (const [part, playlistTrackUrisChunk] of chunks(trackUris, 9500).entries()) {
       const fullName = part > 0 ? `${name} (${part + 1})` : name
+      /** @type {SpotifyPlaylist} */
       const playlist = yield call(createPlaylist, token, user.id, fullName, description, isPrivate)
 
       if (!firstPlaylist) {

@@ -5,7 +5,7 @@ import { getToken, getTokenExpires, getTokenScope } from 'state/selectors'
 import { setNonce } from 'state/actions'
 
 /**
- * Behaves the same way as redux-saga's `takeLeading` but can be cancelled
+ * Behaves the same way as redux-saga's `takeLeading` but also can be cancelled
  *
  * @param {string} triggerAction
  * @param {string} cancelAction
@@ -36,14 +36,19 @@ export function takeLeadingCancellable(triggerAction, cancelAction, saga, ...arg
  * @param {T} args
  */
 export function* withValidToken(saga, isValidToken, startAuthFlow, ...args) {
+  /** @type {ReturnType<typeof getToken>} */
   const token = yield select(getToken)
+  /** @type {ReturnType<typeof getTokenExpires>} */
   const tokenExpires = yield select(getTokenExpires)
+  /** @type {ReturnType<typeof getTokenScope>} */
   const tokenScope = yield select(getTokenScope)
+  /** @type {ReturnType<typeof isValidToken>} */
   const valid = yield call(isValidToken, token, tokenExpires, tokenScope, ...args)
 
   if (valid) {
     yield call(saga)
   } else {
+    /** @type {ReturnType<typeof generateNonce>} */
     const nonce = yield call(generateNonce)
 
     yield put(setNonce(nonce))

@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect'
-import orderBy from 'lodash/orderBy'
 import moment from 'moment'
+import Fuse from 'fuse.js'
+import intersect from 'fast_array_intersect'
+import { buildReleasesEntries, buildReleasesMap, includesTruthy, getReleasesBetween } from 'helpers'
 
 /** @param {State} state */
 export const getUser = (state) => state.user
@@ -45,6 +47,9 @@ export const getResetModalVisible = (state) => state.resetModalVisible
 export const getPlaylistModalVisible = (state) => state.playlistModalVisible
 
 /** @param {State} state */
+export const getFiltersVisible = (state) => state.filtersVisible
+
+/** @param {State} state */
 export const getErrorMessage = (state) => state.errorMessage
 
 /** @param {State} state */
@@ -59,6 +64,9 @@ export const getCreatingPlaylist = (state) => state.creatingPlaylist
 /** @param {State} state */
 export const getSeenFeatures = (state) => state.seenFeatures
 
+/** @param {State} state */
+export const getFilters = (state) => state.filters
+
 export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups)
 export const getSettingsDays = createSelector(getSettings, (settings) => settings.days)
 export const getSettingsMarket = createSelector(getSettings, (settings) => settings.market)
@@ -66,9 +74,23 @@ export const getSettingsTheme = createSelector(getSettings, (settings) => settin
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)
 
-export const getWorking = createSelector(
-  [getSyncing, getCreatingPlaylist],
-  (syncing, creatingPlaylist) => syncing || creatingPlaylist
+export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)
+export const getFiltersSearch = createSelector(getFilters, (filters) => filters.search)
+export const getFiltersStartDate = createSelector(getFilters, (filters) => filters.startDate)
+export const getFiltersEndDate = createSelector(getFilters, (filters) => filters.endDate)
+
+export const getWorking = createSelector([getSyncing, getCreatingPlaylist], (...values) =>
+  includesTruthy(values)
+)
+
+export const getModalVisible = createSelector(
+  [getSettingsModalVisible, getResetModalVisible, getPlaylistModalVisible],
+  (...values) => includesTruthy(values)
+)
+
+export const getFiltersApplied = createSelector(
+  [getFiltersSearch, getFiltersStartDate, getFiltersEndDate],
+  (...values) => includesTruthy(values)
 )
 
 export const getLastSyncDate = createSelector(
@@ -76,48 +98,68 @@ export const getLastSyncDate = createSelector(
   (lastSync) => lastSync && new Date(lastSync)
 )
 
-export const getReleasesMap = createSelector(getAlbums, (albums) => {
-  /** @type {ReleasesMap} */
-  const releasesMap = Object.values(albums).reduce(
-    (map, album) => ({
-      ...map,
-      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
-    }),
-    {}
-  )
+const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums))
 
-  return releasesMap
-})
+export const getAllReleasesMap = createSelector(getAlbumsArray, buildReleasesMap)
 
-export const getReleasesSortedEntries = createSelector(getReleasesMap, (releasesMap) => {
-  const entriesOriginal = Object.entries(releasesMap)
-  const entriesSortedByDay = orderBy(entriesOriginal, ([day]) => day, 'desc')
-  /** @type {ReleasesSortedEntries} */
-  const entries = entriesSortedByDay.map(([day, albums]) => [day, orderBy(albums, 'name')])
+const getAllReleasesEntries = createSelector(getAllReleasesMap, buildReleasesEntries)
 
-  return entries
-})
-
-export const getHasReleases = createSelector(getReleasesSortedEntries, (entries) =>
-  Boolean(entries.length)
-)
-
-export const getReleasesMinDate = createSelector(getReleasesSortedEntries, (entries) =>
+export const getReleasesMinDate = createSelector(getAllReleasesEntries, (entries) =>
   entries.length ? entries[entries.length - 1][0] : null
 )
 
-export const getReleasesMaxDate = createSelector(getReleasesSortedEntries, (entries) =>
+export const getReleasesMaxDate = createSelector(getAllReleasesEntries, (entries) =>
   entries.length ? entries[0][0] : null
 )
 
-export const getReleasesMinMaxDatesMoment = createSelector(
+export const getReleasesMinMaxDates = createSelector(
   [getReleasesMinDate, getReleasesMaxDate],
-  (minDate, maxDate) =>
-    /** @type {[minDate: Moment, maxDate: Moment]} */ ([moment(minDate), moment(maxDate)])
+  (minDate, maxDate) => minDate && maxDate && { minDate: moment(minDate), maxDate: moment(maxDate) }
 )
 
-export const getModalVisible = createSelector(
-  [getSettingsModalVisible, getResetModalVisible, getPlaylistModalVisible],
-  (settingsVisible, resetVisible, playlistVisible) =>
-    settingsVisible || resetVisible || playlistVisible
+export const getFiltersDates = createSelector(
+  [getFiltersStartDate, getFiltersEndDate],
+  (startDate, endDate) =>
+    startDate && endDate && { startDate: moment(startDate), endDate: moment(endDate) }
 )
+
+const getFuseInstance = createSelector(
+  getAlbumsArray,
+  (albumsArray) =>
+    new Fuse(albumsArray, {
+      keys: ['name', 'primaryArtists.name'],
+      threshold: 0.2,
+      ignoreLocation: true,
+    })
+)
+
+const getSearchAlbums = createSelector(
+  [getFiltersSearch, getFuseInstance],
+  (searchQuery, fuse) => searchQuery && fuse.search(searchQuery).map((result) => result.item.id)
+)
+
+const getDateRangeAlbums = createSelector(
+  [getFiltersDates, getAllReleasesMap],
+  (dates, releasesMap) => dates && getReleasesBetween(releasesMap, dates.startDate, dates.endDate)
+)
+
+const getFilteredAlbumsArray = createSelector(
+  [getAlbums, getSearchAlbums, getDateRangeAlbums],
+  (albums, ...filtered) => intersect(filtered.filter(Array.isArray)).map((id) => albums[id])
+)
+
+const getFilteredReleasesMap = createSelector(getFilteredAlbumsArray, buildReleasesMap)
+
+const getFilteredReleasesEntries = createSelector(getFilteredReleasesMap, buildReleasesEntries)
+
+export const getReleasesEntries = createSelector(
+  [getFiltersApplied, getFilteredReleasesEntries, getAllReleasesEntries],
+  (filtersApplied, filtered, all) => (filtersApplied ? filtered : all)
+)
+
+export const getReleasesCount = createSelector(
+  [getFiltersApplied, getFilteredAlbumsArray, getAlbumsArray],
+  (filtersApplied, filtered, all) => (filtersApplied ? filtered.length : all.length)
+)
+
+export const getHasReleases = createSelector(getReleasesCount, (count) => Boolean(count))

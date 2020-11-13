@@ -19,12 +19,13 @@
  *   settingsModalVisible: boolean
  *   resetModalVisible: boolean
  *   playlistModalVisible: boolean
+ *   filtersVisible: boolean
  *   settings: Settings
+ *   filters: Filters
  *   seenFeatures: Feature[]
  * }} State
  *
  * @typedef {{
- *   albumIds?: string[]
  *   name?: string
  *   description?: string
  *   isPrivate?: boolean
@@ -38,6 +39,13 @@
  *   uriLinks: boolean
  *   covers: boolean
  * }} Settings
+ *
+ * @typedef {{
+ *   groups: AlbumGroup[]
+ *   search: string
+ *   startDate?: string
+ *   endDate?: string
+ * }} Filters
  *
  * @typedef {{
  *   id: string
@@ -66,7 +74,8 @@
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
  * @typedef {{ [date: string]: AlbumGrouped[] }} ReleasesMap
- * @typedef {[date: string, albums: AlbumGrouped[]][]} ReleasesSortedEntries
+ * @typedef {[date: string, albums: AlbumGrouped[]][]} ReleasesEntries
+ * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
  * @typedef {{ [prop: string]: any }} AnyProps
  * @typedef {{ type: string, payload: any }} Action
  * @typedef {(...args: any[]) => Action} ActionCreator

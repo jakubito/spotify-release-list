@@ -11,12 +11,38 @@ body,
   width: 100%;
 }
 
-.button.is-darker {
-  background-color: $color-dark;
-}
-
 .has-text-primary {
   color: $color-primary !important;
+}
+
+.input.is-dark {
+  background-color: $color-dark;
+  border-color: $color-dark;
+  color: $white-ter;
+
+  &:hover,
+  &:focus {
+    box-shadow: 0 0 0 0.125em $black-bis;
+    background-color: $black-ter;
+    border-color: $black-ter;
+  }
+
+  &::placeholder {
+    color: $grey;
+  }
+}
+
+.input.is-danger {
+  border-color: $red;
+
+  &:hover,
+  &:focus {
+    border-color: $red;
+  }
+}
+
+.button.is-darker {
+  background-color: $color-dark;
 }
 
 .button.is-primary {
@@ -28,6 +54,28 @@ body,
 
   &:active {
     background-color: $color-primary-slightly-darker !important;
+  }
+}
+
+.button.is-text {
+  color: $white-bis;
+  padding-left: 6px;
+  padding-right: 6px;
+  border: none !important;
+  box-shadow: none !important;
+  background: none !important;
+
+  &:focus {
+    color: $white-bis;
+  }
+
+  &:hover {
+    color: $grey-lighter;
+    text-decoration: none;
+  }
+
+  &:active {
+    color: $grey-light;
   }
 }
 

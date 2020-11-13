@@ -1,9 +1,12 @@
 import React from 'react'
 import moment from 'moment'
+import { MomentFormat } from 'enums'
 import DateRangeShortcut from './DateRangeShortcut'
 
+const { MONTH_NAME } = MomentFormat
+
 /**
- * Date range field shortcuts definition
+ * Date range filter shortcuts definition
  *
  * @type {DateRangeShortcut[]}
  */
@@ -29,22 +32,36 @@ const shortcuts = [
     end: moment().subtract(1, 'week').endOf('isoWeek'),
   },
   {
-    title: (start) => start.format('MMMM'),
+    title: (start) => start.format(MONTH_NAME),
     start: moment().startOf('month'),
     end: moment().endOf('month'),
   },
   {
-    title: (start) => start.format('MMMM'),
+    title: (start) => start.format(MONTH_NAME),
     start: moment().subtract(1, 'month').startOf('month'),
     end: moment().subtract(1, 'month').endOf('month'),
   },
 ]
 
 /**
- * Render date range field shortcuts
+ * Render date range filter shortcuts
+ *
+ * @param {{ setValues: React.Dispatch<React.SetStateAction<StartEndDates>> }} props
  */
-function DateRangeShortcuts() {
-  return <div className="DateRangeShortcuts">{shortcuts.map(DateRangeShortcut)}</div>
+function DateRangeShortcuts({ setValues }) {
+  return (
+    <div className="DateRangeShortcuts">
+      {shortcuts.map(({ title, start, end }, index) => (
+        <DateRangeShortcut
+          title={title}
+          start={start}
+          end={end}
+          setValues={setValues}
+          key={index}
+        />
+      ))}
+    </div>
+  )
 }
 
 export default DateRangeShortcuts

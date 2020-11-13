@@ -1,9 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getSyncing, getLastSync } from 'state/selectors'
-import Intro from './Intro'
-import Loading from './Loading'
-import Releases from './Releases'
+import { getSyncing, getLastSync, getReleasesEntries } from 'state/selectors'
+import Intro from 'components/Intro'
+import Loading from 'components/Loading'
+import Releases from 'components/Releases'
+import { useRefChangeKey } from 'hooks'
 
 /**
  * Render main content
@@ -11,6 +12,8 @@ import Releases from './Releases'
 function Content() {
   const syncing = useSelector(getSyncing)
   const lastSync = useSelector(getLastSync)
+  const releases = useSelector(getReleasesEntries)
+  const releasesKey = useRefChangeKey(releases)
 
   return (
     <div className="Content">
@@ -23,7 +26,7 @@ function Content() {
           return <Loading />
         }
 
-        return <Releases />
+        return <Releases releases={releases} key={releasesKey} />
       })()}
     </div>
   )

@@ -1,4 +1,10 @@
-import { ADD_SEEN_FEATURE, SHOW_PLAYLIST_MODAL, SHOW_SETTINGS_MODAL, SYNC } from 'state/actions'
+import {
+  ADD_SEEN_FEATURE,
+  SHOW_PLAYLIST_MODAL,
+  SHOW_SETTINGS_MODAL,
+  SYNC,
+  TOGGLE_FILTERS_VISIBLE,
+} from 'state/actions'
 import {
   getHasReleases,
   getLastSyncDate,
@@ -14,9 +20,10 @@ import {
  * @param {State} state
  * @returns {boolean}
  */
-function isActionValid({ type, payload }, state) {
+function valid({ type, payload }, state) {
   switch (type) {
     case SYNC:
+    case TOGGLE_FILTERS_VISIBLE:
       return !getModalVisible(state)
     case SHOW_SETTINGS_MODAL:
       return !getSyncing(state)
@@ -34,10 +41,10 @@ function isActionValid({ type, payload }, state) {
  *
  * @type {import('redux').Middleware<{}, State>}
  */
-const actionGuardMiddleware = (store) => (next) => (action) => {
-  if (isActionValid(action, store.getState())) {
+const guardMiddleware = (store) => (next) => (action) => {
+  if (valid(action, store.getState())) {
     return next(action)
   }
 }
 
-export default actionGuardMiddleware
+export default guardMiddleware

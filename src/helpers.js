@@ -1,7 +1,8 @@
+import orderBy from 'lodash/orderBy'
 import { MomentFormat } from 'enums'
 
-const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const { ISO_DATE } = MomentFormat
+const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 /**
  * Promisified setTimeout
@@ -14,18 +15,6 @@ export function sleep(ms) {
 }
 
 /**
- * Delay function execution
- *
- * @param {function} fn
- * @param {number} ms
- * @param {...any} [args] - Arguments to be passed to function
- * @returns {void}
- */
-export function delay(fn, ms, ...args) {
-  setTimeout(() => fn(...args), ms)
-}
-
-/**
  * Delay function execution until UI is done updating
  *
  * @param {function} fn
@@ -33,7 +22,7 @@ export function delay(fn, ms, ...args) {
  * @returns {void}
  */
 export function defer(fn, ...args) {
-  requestAnimationFrame(() => delay(fn, 0, ...args))
+  requestAnimationFrame(() => setTimeout(() => fn(...args), 0))
 }
 
 /**
@@ -85,6 +74,16 @@ export function isString(value) {
 }
 
 /**
+ * Check if array includes truthy value
+ *
+ * @param {any[]} array
+ * @returns {boolean}
+ */
+export function includesTruthy(array) {
+  return array.some((value) => value)
+}
+
+/**
  * Toggle value in set
  *
  * @template {Set} S
@@ -114,6 +113,7 @@ export function* dateRange(startDate, endDate) {
 
   while (current.isSameOrBefore(endDate)) {
     yield current.format(ISO_DATE)
+
     current.add(1, 'day')
   }
 }
@@ -249,4 +249,36 @@ export function buildAlbum(source, artistId) {
     releaseDate: source.release_date,
     artistId,
   }
+}
+
+/**
+ * Return albums map indexed by release date
+ *
+ * @param {AlbumGrouped[]} albums
+ * @returns {ReleasesMap}
+ */
+export function buildReleasesMap(albums) {
+  return albums.reduce(
+    (map, album) => ({
+      ...map,
+      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
+    }),
+    {}
+  )
+}
+
+/**
+ * Return release entries sorted by day and albums being sorted by name
+ *
+ * @param {ReleasesMap} releasesMap
+ * @returns {ReleasesEntries}
+ */
+export function buildReleasesEntries(releasesMap) {
+  const entriesSortedByDay = orderBy(Object.entries(releasesMap), ([day]) => day, 'desc')
+  const entries = entriesSortedByDay.map(
+    /** @returns {[string, AlbumGrouped[]]} */
+    ([day, albums]) => [day, orderBy(albums, 'name')]
+  )
+
+  return entries
 }

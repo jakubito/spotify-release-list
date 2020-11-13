@@ -1,6 +1,7 @@
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { FieldName } from 'enums'
+import Input from 'components/Input'
 
 const { DESCRIPTION } = FieldName
 
@@ -16,11 +17,9 @@ function DescriptionField() {
         Description
       </label>
       <div className="control">
-        <input
+        <Input
           id={DESCRIPTION}
           name={DESCRIPTION}
-          className="input is-rounded"
-          type="text"
           placeholder="Optional"
           ref={register({ maxLength: 100 })}
         />

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { addSeenFeature } from 'state/actions'
@@ -45,4 +45,17 @@ export function useFeature(feature) {
   }, [])
 
   return [seen, setSeen]
+}
+
+/**
+ * Hook that returns different key for each value change
+ *
+ * @param {any} value
+ * @returns {number}
+ */
+export function useRefChangeKey(value) {
+  const keyRef = useRef(0)
+  const key = useMemo(() => (keyRef.current = 1 - keyRef.current), [value])
+
+  return key
 }

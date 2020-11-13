@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
+import { defer } from 'helpers'
 import { getSyncing, getWorking, getSyncingProgress } from 'state/selectors'
 import { sync } from 'state/actions'
 import Button from 'components/Button'
@@ -15,19 +16,25 @@ function SyncButton({ title, icon, medium }) {
   const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const working = useSelector(getWorking)
+  const [triggered, setTriggered] = useState(false)
 
-  const runSync = () => {
-    dispatch(sync())
+  const onClick = () => {
+    setTriggered(true)
+    defer(dispatch, sync())
   }
 
-  useHotkeys('r', runSync)
+  useHotkeys('r', () => {
+    dispatch(sync())
+  })
+
+  useEffect(() => setTriggered(syncing), [syncing])
 
   return (
     <Button
       title={`${title} [R]`}
       className={classNames('SyncButton', { 'is-syncing': syncing })}
-      disabled={working}
-      onClick={runSync}
+      disabled={triggered || working}
+      onClick={onClick}
       icon={icon}
       medium={medium}
       primary
@@ -35,7 +42,7 @@ function SyncButton({ title, icon, medium }) {
       <span>{title}</span>
       {syncing && (
         <>
-          <Progress />
+          <ProgressBar />
           <span className="spinner" />
         </>
       )}
@@ -46,7 +53,7 @@ function SyncButton({ title, icon, medium }) {
 /**
  * Render progress bar
  */
-function Progress() {
+function ProgressBar() {
   const syncingProgress = useSelector(getSyncingProgress)
   const style = { transform: `translateX(${syncingProgress - 100}%)` }
 

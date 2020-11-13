@@ -33,11 +33,16 @@ function* syncMainSaga() {
   try {
     yield put(syncStart())
 
+    /** @type {ReturnType<typeof getToken>} */
     const token = yield select(getToken)
+    /** @type {ReturnType<typeof getSettings>} */
     const { groups, market, days } = yield select(getSettings)
+    /** @type {ReturnType<typeof getReleasesMaxDate>} */
     const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
+    /** @type {User} */
     const user = yield call(getUser, token)
+    /** @type {Artist[]} */
     const artists = yield call(getUserFollowedArtists, token)
 
     /** @type {Album[]} */

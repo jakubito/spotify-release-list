@@ -1,0 +1,30 @@
+.Filters {
+  padding: 15px 15px 15px 260px;
+  margin-bottom: -10px;
+
+  @include until-widescreen {
+    padding-left: 15px;
+  }
+
+  @include touch {
+    margin-bottom: 0;
+  }
+
+  @include mobile {
+    padding-top: 10px;
+  }
+
+  .filter {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: center;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @include mobile {
+      margin-bottom: 20px;
+    }
+  }
+}

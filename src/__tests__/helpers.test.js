@@ -1,7 +1,6 @@
 import moment from 'moment'
 import {
   sleep,
-  delay,
   defer,
   chunks,
   generateNonce,
@@ -37,26 +36,6 @@ describe('sleep', () => {
     jest.advanceTimersByTime(ms)
     await promise
     expect(mockFn).toHaveBeenCalledTimes(1)
-  })
-})
-
-describe('delay', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-    jest.useFakeTimers()
-    jest.clearAllTimers()
-  })
-
-  it('waits and executes input function', () => {
-    const ms = 100
-    const mockFn = jest.fn()
-    const args = ['a', false, 45]
-
-    delay(mockFn, ms, ...args)
-    expect(mockFn).not.toHaveBeenCalled()
-    jest.advanceTimersByTime(ms)
-    expect(mockFn).toHaveBeenCalledTimes(1)
-    expect(mockFn).toHaveBeenLastCalledWith(...args)
   })
 })
 

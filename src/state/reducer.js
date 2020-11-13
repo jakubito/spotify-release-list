@@ -28,6 +28,9 @@ import {
   CREATE_PLAYLIST_CANCEL,
   RESET_PLAYLIST,
   ADD_SEEN_FEATURE,
+  TOGGLE_FILTERS_VISIBLE,
+  SET_FILTERS,
+  RESET_FILTERS,
 } from 'state/actions'
 
 /**
@@ -40,7 +43,13 @@ import {
 function rootReducer(state = initialState, { type, payload }) {
   switch (type) {
     case SYNC_START:
-      return { ...state, syncing: true, syncingProgress: 0 }
+      return {
+        ...state,
+        syncing: true,
+        syncingProgress: 0,
+        filters: initialState.filters,
+        filtersVisible: false,
+      }
     case SYNC_FINISHED:
       return { ...state, ...payload, syncing: false, lastSync: new Date().toISOString() }
     case SYNC_ERROR:
@@ -86,6 +95,12 @@ function rootReducer(state = initialState, { type, payload }) {
       return { ...state, playlistId: initialState.playlistId }
     case ADD_SEEN_FEATURE:
       return { ...state, seenFeatures: [...state.seenFeatures, payload.feature] }
+    case TOGGLE_FILTERS_VISIBLE:
+      return { ...state, filtersVisible: !state.filtersVisible }
+    case SET_FILTERS:
+      return { ...state, filters: { ...state.filters, ...payload.filters } }
+    case RESET_FILTERS:
+      return { ...state, filters: initialState.filters, filtersVisible: false }
     default:
       return state
   }

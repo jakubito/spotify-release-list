@@ -1,5 +1,5 @@
 import React from 'react'
-import { DateRangeField, SelectionField, NameField, DescriptionField, VisibilityField } from '.'
+import { NameField, DescriptionField, VisibilityField } from '.'
 
 /**
  * Render playlist form
@@ -7,8 +7,6 @@ import { DateRangeField, SelectionField, NameField, DescriptionField, Visibility
 function PlaylistForm() {
   return (
     <div className="PlaylistForm">
-      <DateRangeField />
-      <SelectionField />
       <NameField />
       <DescriptionField />
       <VisibilityField />

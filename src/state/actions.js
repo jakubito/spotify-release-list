@@ -27,6 +27,9 @@ export const CREATE_PLAYLIST_ERROR = 'CREATE_PLAYLIST_ERROR'
 export const CREATE_PLAYLIST_CANCEL = 'CREATE_PLAYLIST_CANCEL'
 export const RESET_PLAYLIST = 'RESET_PLAYLIST'
 export const ADD_SEEN_FEATURE = 'ADD_SEEN_FEATURE'
+export const TOGGLE_FILTERS_VISIBLE = 'TOGGLE_FILTERS_VISIBLE'
+export const SET_FILTERS = 'SET_FILTERS'
+export const RESET_FILTERS = 'RESET_FILTERS'
 
 /**
  * Create action object
@@ -143,13 +146,12 @@ export function hideErrorMessage() {
 }
 
 /**
- * @param {string[]} albumIds
  * @param {string} name
  * @param {string} description
  * @param {boolean} isPrivate
  */
-export function setPlaylistForm(albumIds, name, description, isPrivate) {
-  return action(SET_PLAYLIST_FORM, { albumIds, name, description, isPrivate })
+export function setPlaylistForm(name, description, isPrivate) {
+  return action(SET_PLAYLIST_FORM, { name, description, isPrivate })
 }
 
 export function createPlaylist() {
@@ -180,4 +182,17 @@ export function resetPlaylist() {
 /** @param {string} feature */
 export function addSeenFeature(feature) {
   return action(ADD_SEEN_FEATURE, { feature })
+}
+
+export function toggleFiltersVisible() {
+  return action(TOGGLE_FILTERS_VISIBLE)
+}
+
+/** @param {Partial<Filters>} filters */
+export function setFilters(filters) {
+  return action(SET_FILTERS, { filters })
+}
+
+export function resetFilters() {
+  return action(RESET_FILTERS)
 }

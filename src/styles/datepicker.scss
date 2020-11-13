@@ -1,4 +1,6 @@
 .DateRangePicker {
+  flex-shrink: 0;
+
   @include mobile-small {
     width: 100%;
   }
@@ -7,17 +9,29 @@
     overflow: hidden;
     border-radius: 3px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.07);
+    background-color: $color-dark;
   }
 }
 
 .DateRangePickerInput {
   border-radius: 290486px;
   padding: 0;
-  border: 1px solid #ffffff;
+  background-color: $color-dark;
+  border: 1px solid $color-dark;
+  color: $white-ter;
 
   @include mobile-small {
     display: flex;
     align-items: center;
+  }
+
+  &:hover {
+    background-color: $black-ter;
+    border-color: $black-ter;
+  }
+
+  &_arrow_svg {
+    fill: $grey;
   }
 }
 
@@ -26,95 +40,119 @@
 
   &_input {
     font-size: 16px;
-    font-weight: 400;
-    color: #363636;
-    background-color: #ffffff;
-    border-color: #dbdbdb;
+    font-weight: 500;
+    color: $white-ter;
+    background: none;
+    border: none;
     border-radius: 290486px;
     line-height: 1.5;
     border-bottom: none;
     padding: 7px 17px;
 
+    &::placeholder {
+      color: $grey;
+    }
+
     &__focused {
       border-bottom: none;
     }
   }
+
+  &_fangShape {
+    fill: $color-dark;
+  }
+
+  &_fangStroke {
+    stroke: $color-dark;
+  }
+}
+
+.CalendarMonthGrid {
+  background-color: $color-dark;
+}
+
+.CalendarMonth {
+  background-color: $color-dark;
+
+  &_caption strong {
+    color: $grey-lightest;
+  }
 }
 
 .CalendarDay {
-  &__default {
-    text-align: center !important;
-    vertical-align: middle !important;
+  background-color: $grey-darker;
+  color: $grey-lightest;
+  border: none !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+
+  &:hover {
+    background-color: $grey-dark;
+    color: $grey-lightest;
   }
 
   &__selected {
-    background: $color-primary;
-    border: 1px solid $color-primary;
-
-    &:hover {
-      background: $color-primary;
-      border: 1px solid $color-primary;
-    }
+    background-color: $color-primary;
+    color: $white-ter;
 
     &_span {
-      background: rgba(72, 199, 116, 0.7);
-      border: 1px solid rgba(72, 199, 116, 0.8);
+      background-color: rgba(72, 199, 116, 0.5);
 
       &:hover {
-        background: $color-primary;
-        border: 1px solid $color-primary;
+        background-color: rgba(72, 199, 116, 0.7);
       }
+    }
+
+    &:hover {
+      background-color: rgba(72, 199, 116, 0.7);
     }
   }
 
   &__hovered {
     &_span {
-      background: rgba(72, 199, 116, 0.2);
-      border: 1px solid rgba(72, 199, 116, 0.3);
-    }
-  }
-}
+      background-color: rgba(72, 199, 116, 0.3);
 
-.DayPickerKeyboardShortcuts {
-  &_show {
-    &__bottomRight {
       &:hover {
-        &:before {
-          border-right: 33px solid $color-primary-light;
-        }
-      }
-
-      &:before {
-        border-right: 33px solid $color-primary;
+        background-color: rgba(72, 199, 116, 0.5);
       }
     }
   }
 
-  &_panel {
-    color: $color-dark;
+  &__blocked_out_of_range {
+    color: $grey-dark !important;
+    background-color: $black-ter !important;
   }
 }
 
 .DayPicker {
   box-shadow: none;
+  background-color: $color-dark;
+
+  &_weekHeader {
+    color: $grey-light;
+  }
 }
 
-.KeyboardShortcutRow {
-  &_keyContainer {
-    display: inline !important;
+.DayPickerNavigation {
+  &_button {
+    background-color: $grey-darker;
+    border-color: $grey-darker;
+    outline: none;
+
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: $grey-dark;
+      border-color: $grey-dark;
+    }
+
+    &__disabled {
+      background-color: $black-ter !important;
+      border-color: $black-ter !important;
+    }
   }
 
-  &_key {
-    font-family: monospace !important;
-    font-size: 12px !important;
-    text-transform: uppercase !important;
-    background: rgb(242, 242, 242) !important;
-    padding: 2px 6px !important;
-  }
-
-  &_action {
-    display: inline !important;
-    word-break: break-word !important;
-    margin-left: 8px !important;
+  &_svg__horizontal {
+    fill: $white-ter;
   }
 }

@@ -27,9 +27,7 @@ function Actions({ submitTriggered }) {
           reset({})
           dispatch(createPlaylistCancel())
         }}
-      >
-        Cancel
-      </Button>
+      />
     )
   }
 
@@ -43,9 +41,7 @@ function Actions({ submitTriggered }) {
           reset({})
           dispatch(resetPlaylist())
         }}
-      >
-        Start over
-      </Button>
+      />
     )
   }
 
@@ -58,9 +54,7 @@ function Actions({ submitTriggered }) {
       disabled={working || submitTriggered}
       key="submit"
       primary
-    >
-      Create
-    </Button>
+    />
   )
 }
 

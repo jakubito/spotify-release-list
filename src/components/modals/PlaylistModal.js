@@ -2,46 +2,29 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm, FormProvider } from 'react-hook-form'
 import { hidePlaylistModal, createPlaylist, setPlaylistForm } from 'state/actions'
-import { useModal } from 'hooks'
-import { getCreatingPlaylist, getPlaylistId } from 'state/selectors'
+import { getCreatingPlaylist, getPlaylistId, getReleasesCount } from 'state/selectors'
 import { FieldName } from 'enums'
+import { useModal } from 'hooks'
 import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist'
 import Button from 'components/Button'
 
-const {
-  START_DATE,
-  END_DATE,
-  NAME,
-  NAME_CUSTOM,
-  DESCRIPTION,
-  VISIBILITY,
-  RELEASES,
-  SELECTED_RELEASES,
-} = FieldName
+const { NAME, DESCRIPTION, VISIBILITY } = FieldName
 
 /**
  * Render new playlist modal
  */
 function PlaylistModal() {
   const closeModal = useModal(hidePlaylistModal)
+  const releasesCount = useSelector(getReleasesCount)
   const creatingPlaylist = useSelector(getCreatingPlaylist)
   const playlistId = useSelector(getPlaylistId)
+
   const form = useForm()
   const [submitTriggered, setSubmitTriggered] = useState(false)
-  const { register, handleSubmit } = form
+  const { handleSubmit } = form
   const onSubmit = useOnSubmit(setSubmitTriggered)
 
-  useEffect(() => {
-    register({ name: START_DATE }, { required: true })
-    register({ name: END_DATE }, { required: true })
-    register({ name: NAME_CUSTOM })
-    register({ name: RELEASES }, { required: true, validate: (value) => value.length > 0 })
-    register({ name: SELECTED_RELEASES }, { required: true, validate: (value) => value.size > 0 })
-  }, [register])
-
-  useEffect(() => {
-    setSubmitTriggered(creatingPlaylist)
-  }, [creatingPlaylist])
+  useEffect(() => setSubmitTriggered(creatingPlaylist), [creatingPlaylist])
 
   return (
     <FormProvider {...form}>
@@ -49,7 +32,10 @@ function PlaylistModal() {
         <div className="modal-background" onClick={closeModal} />
 
         <div className="modal-content has-background-black-bis has-text-light">
-          <h4 className="title is-4 has-text-light has-text-centered">Export to a new playlist</h4>
+          <h4 className="title is-4 has-text-light has-text-centered">
+            Export <span className="has-text-primary">{releasesCount}</span>{' '}
+            {releasesCount > 1 ? 'releases' : 'release'} to a new playlist
+          </h4>
 
           {creatingPlaylist || playlistId ? <PlaylistInfo /> : <PlaylistForm />}
 
@@ -65,9 +51,7 @@ function PlaylistModal() {
                   icon="fas fa-times"
                   onClick={closeModal}
                   disabled={submitTriggered}
-                >
-                  Close
-                </Button>
+                />
               </div>
             )}
           </div>
@@ -85,14 +69,11 @@ function useOnSubmit(setSubmitTriggered) {
   const onSubmit = async (formData) => {
     setSubmitTriggered(true)
 
-    const albumIds = formData[RELEASES].filter((releaseId) =>
-      formData[SELECTED_RELEASES].has(releaseId)
-    )
     const name = formData[NAME].trim()
     const description = formData[DESCRIPTION].trim()
     const isPrivate = formData[VISIBILITY] === 'private'
 
-    dispatch(setPlaylistForm(albumIds, name, description, isPrivate))
+    dispatch(setPlaylistForm(name, description, isPrivate))
     dispatch(createPlaylist())
   }
 

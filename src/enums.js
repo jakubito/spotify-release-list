@@ -7,14 +7,9 @@ export const Scope = {
 
 /** @enum {string} */
 export const FieldName = {
-  START_DATE: 'startDate',
-  END_DATE: 'endDate',
   NAME: 'name',
-  NAME_CUSTOM: 'nameCustom',
   DESCRIPTION: 'description',
   VISIBILITY: 'visibility',
-  RELEASES: 'releases',
-  SELECTED_RELEASES: 'selectedReleases',
 }
 
 /** @enum {string} */
@@ -28,6 +23,7 @@ export const SpotifyEntity = {
 /** @enum {string} */
 export const MomentFormat = {
   ISO_DATE: 'YYYY-MM-DD',
+  MONTH_NAME: 'MMMM',
 }
 
 /** @enum {string} */

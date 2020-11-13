@@ -21,20 +21,16 @@ function ResetModal() {
 
         <div className="actions has-text-centered">
           <Button
-            title="Go back"
+            title="No, go back"
             icon="fas fa-arrow-left"
             onClick={() => dispatch(showSettingsModal())}
-          >
-            No, go back
-          </Button>
+          />
           <Button
-            title="Delete all data"
+            title="Yes, delete all data"
             icon="far fa-trash-alt"
             onClick={() => dispatch(reset())}
             danger
-          >
-            Yes, delete all data
-          </Button>
+          />
         </div>
       </div>
     </div>
