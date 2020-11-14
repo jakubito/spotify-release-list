@@ -247,21 +247,23 @@ export function buildAlbum(source, artistId) {
     image: getImage(source.images),
     artists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
+    albumGroup: source.album_group,
     artistId,
   }
 }
 
 /**
- * Return albums map indexed by release date
+ * Return albums map indexed by release date by default
  *
  * @param {AlbumGrouped[]} albums
+ * @param {string} [key] - Album property to key by. Defaults to `releaseDate`
  * @returns {ReleasesMap}
  */
-export function buildReleasesMap(albums) {
+export function buildReleasesMap(albums, key = 'releaseDate') {
   return albums.reduce(
     (map, album) => ({
       ...map,
-      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
+      [album[key]]: [...(map[album[key]] || []), album],
     }),
     {}
   )

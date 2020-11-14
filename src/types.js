@@ -52,18 +52,12 @@
  *   name: string
  *   image: string
  *   releaseDate: string
+ *   albumGroup: AlbumGroup
  *   artists: Artist[]
- *   artistId: string
- * }} Album
+ * }} AlbumBase
  *
- * @typedef {{
- *   id: string
- *   name: string
- *   image: string
- *   releaseDate: string
- *   artists: Artist[]
- *   primaryArtists: Artist[]
- * }} AlbumGrouped
+ * @typedef {AlbumBase & { artistId: string }} Album
+ * @typedef {AlbumBase & { primaryArtists: Artist[] }} AlbumGrouped
  *
  * @typedef {{
  *   title: string | ((start: Moment, end: Moment) => string)
@@ -105,6 +99,7 @@
  *   images: SpotifyImage[]
  *   artists: SpotifyArtist[]
  *   release_date: string
+ *   album_group: AlbumGroup
  * }} SpotifyAlbum
  *
  * @typedef {{ width: number, height: number, url: string }} SpotifyImage
