@@ -66,8 +66,8 @@ function DateRangeFilter() {
             numberOfMonths={1}
             firstDayOfWeek={1}
             minimumNights={0}
-            readOnly={matches}
             verticalSpacing={10}
+            readOnly={matches}
             hideKeyboardShortcutsPanel
           />
         )}
