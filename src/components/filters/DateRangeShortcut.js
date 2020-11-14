@@ -23,7 +23,7 @@ function DateRangeShortcut({ title, start, end, setValues }) {
     return null
   }
 
-  return <Button title={buttonTitle} className="DateRangeShortcut" onClick={onClick} darker small />
+  return <Button title={buttonTitle} className="DateRangeShortcut" onClick={onClick} text small />
 }
 
 export default DateRangeShortcut

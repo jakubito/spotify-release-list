@@ -2,19 +2,10 @@ import React from 'react'
 import xor from 'lodash/xor'
 import orderBy from 'lodash/orderBy'
 import { useSelector, useDispatch } from 'react-redux'
-import { AlbumGroup } from 'enums'
+import { AlbumGroup, AlbumGroupLabels } from 'enums'
 import { getSettingsGroups } from 'state/selectors'
 import { setSettings } from 'state/actions'
-import { defer } from 'helpers'
 import HelpText from './HelpText'
-
-/** @type {[group: AlbumGroup, label: string][]} */
-const fields = [
-  [AlbumGroup.ALBUM, 'Albums'],
-  [AlbumGroup.SINGLE, 'Singles'],
-  [AlbumGroup.COMPILATION, 'Compilations'],
-  [AlbumGroup.APPEARS_ON, 'Appearances'],
-]
 
 /**
  * Render album groups selection field
@@ -29,7 +20,7 @@ function AlbumGroupsField() {
     const newValue = xor(groups, [event.target.value])
     const newValueOrdered = orderBy(newValue, (group) => groupValues.indexOf(group))
 
-    defer(dispatch, setSettings({ groups: newValueOrdered }))
+    dispatch(setSettings({ groups: newValueOrdered }))
   }
 
   return (
@@ -38,7 +29,7 @@ function AlbumGroupsField() {
         Request <HelpText>/ less is faster</HelpText>
       </label>
       <div className="control">
-        {fields.map(([group, label]) => (
+        {AlbumGroupLabels.map(([group, label]) => (
           <div className="field" key={group}>
             <input
               type="checkbox"
@@ -46,7 +37,7 @@ function AlbumGroupsField() {
               id={`albumGroups[${group}]`}
               name={`albumGroups[${group}]`}
               value={group}
-              defaultChecked={groups.includes(group)}
+              checked={groups.includes(group)}
               onChange={onChange}
             />
             <label htmlFor={`albumGroups[${group}]`} className="has-text-weight-semibold">

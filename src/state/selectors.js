@@ -100,8 +100,8 @@ export const getModalVisible = createSelector(
  * Check if any filter is applied
  */
 export const getFiltersApplied = createSelector(
-  [getFiltersSearch, getFiltersStartDate, getFiltersEndDate],
-  (...values) => includesTruthy(values)
+  [getFiltersGroups, getFiltersSearch, getFiltersStartDate, getFiltersEndDate],
+  (groups, ...values) => Boolean(groups.length) || includesTruthy(values)
 )
 
 /**
@@ -121,13 +121,6 @@ const getAllAlbumsArray = createSelector(getAlbums, (albums) => Object.values(al
  * Get all releases as a map with release dates as keys
  */
 export const getAllReleasesMap = createSelector(getAllAlbumsArray, buildReleasesMap)
-
-/**
- * Get all releases as a map with album groups as keys
- */
-export const getAllReleasesGroupMap = createSelector(getAllAlbumsArray, (albums) =>
-  buildReleasesMap(albums, 'albumGroup')
-)
 
 /**
  * Get all releases as `[release date, albums]` entries / tuples
@@ -166,6 +159,19 @@ export const getFiltersDates = createSelector(
 )
 
 /**
+ * Get all releases as a map with album groups as keys
+ */
+export const getReleasesGroupMap = createSelector(getAllAlbumsArray, (albums) =>
+  albums.reduce(
+    (map, album) => ({
+      ...map,
+      [album.albumGroup]: [...(map[album.albumGroup] || []), album.id],
+    }),
+    {}
+  )
+)
+
+/**
  * Get current Fuse.js instance
  */
 const getFuseInstance = createSelector(
@@ -179,7 +185,7 @@ const getFuseInstance = createSelector(
 )
 
 /**
- * Filter by text search and return album IDs
+ * Get album IDs filtered by text search
  */
 const getSearchAlbums = createSelector(
   [getFiltersSearch, getFuseInstance],
@@ -187,7 +193,7 @@ const getSearchAlbums = createSelector(
 )
 
 /**
- * Filter by date range and return album IDs
+ * Get album IDs filtered by date range
  */
 const getDateRangeAlbums = createSelector(
   [getFiltersDates, getAllReleasesMap],
@@ -195,10 +201,19 @@ const getDateRangeAlbums = createSelector(
 )
 
 /**
+ * Get album IDs filtered by album groups
+ */
+const getAlbumGroupsAlbums = createSelector(
+  [getFiltersGroups, getReleasesGroupMap],
+  (groups, groupMap) =>
+    groups.length && groups.reduce((ids, group) => [...ids, ...groupMap[group]], [])
+)
+
+/**
  * Intersect all filtered results and return albums as an array
  */
 const getFilteredAlbumsArray = createSelector(
-  [getAlbums, getSearchAlbums, getDateRangeAlbums],
+  [getAlbums, getSearchAlbums, getDateRangeAlbums, getAlbumGroupsAlbums],
   (albums, ...filtered) => intersect(filtered.filter(Array.isArray)).map((id) => albums[id])
 )
 

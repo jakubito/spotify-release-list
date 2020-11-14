@@ -1,17 +1,10 @@
 .Filters {
   padding: 15px 15px 15px 260px;
-  margin-bottom: -10px;
+  margin-bottom: 5px;
+  background-color: $black-bis;
 
   @include until-widescreen {
     padding-left: 15px;
-  }
-
-  @include touch {
-    margin-bottom: 0;
-  }
-
-  @include mobile {
-    padding-top: 10px;
   }
 
   .filter {

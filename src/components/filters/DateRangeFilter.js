@@ -72,7 +72,7 @@ function DateRangeFilter() {
         )}
       </Media>
       <DateRangeShortcuts setValues={setValues} />
-      {filtersDates && <Button title="Reset" className="reset" onClick={reset} text small />}
+      {filtersDates && <Button title="Reset" className="reset" onClick={reset} text />}
     </div>
   )
 }

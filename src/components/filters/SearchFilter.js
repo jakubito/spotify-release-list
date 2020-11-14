@@ -42,7 +42,7 @@ function SearchFilter() {
   return (
     <div className="SearchFilter filter">
       <Input value={value} onChange={onChange} placeholder="Search" ref={inputRef} />
-      {filtersSearch && <Button title="Reset" className="reset" onClick={reset} text small />}
+      {filtersSearch && <Button title="Reset" className="reset" onClick={reset} text />}
     </div>
   )
 }

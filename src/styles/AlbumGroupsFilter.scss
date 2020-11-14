@@ -1,0 +1,30 @@
+.AlbumGroupsFilter {
+  flex-wrap: wrap;
+  margin-top: -15px;
+
+  .group {
+    margin: 15px 15px 0 0;
+    color: $grey;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:focus {
+      color: $grey;
+    }
+
+    &:hover {
+      color: $grey-light;
+    }
+
+    &.active {
+      color: $white-ter;
+      background-color: $grey-darker;
+    }
+  }
+
+  .reset {
+    margin-top: 15px;
+  }
+}

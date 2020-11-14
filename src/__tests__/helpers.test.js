@@ -4,7 +4,6 @@ import {
   defer,
   chunks,
   generateNonce,
-  toggleSetValue,
   getPlaylistNameSuggestion,
   getReleasesBetween,
   getSpotifyUri,
@@ -127,34 +126,6 @@ describe('generateNonce', () => {
     const set = new Set(array)
 
     expect(array.length).toEqual(set.size)
-  })
-})
-
-describe('toggleSetValue', () => {
-  it('removes value', () => {
-    const testSet = new Set([1, 2, 3, 4, 5])
-    const value = 4
-
-    expect(testSet.has(value)).toBe(true)
-    toggleSetValue(testSet, value)
-    expect(testSet.has(value)).toBe(false)
-  })
-
-  it('adds value', () => {
-    const testSet = new Set([1, 2, 3, 4, 5])
-    const value = 123
-
-    expect(testSet.has(value)).toBe(false)
-    toggleSetValue(testSet, value)
-    expect(testSet.has(value)).toBe(true)
-  })
-
-  it('returns the same instance', () => {
-    const testSet = new Set([1, 2, 3, 4, 5])
-    const value = 123
-    const actual = toggleSetValue(testSet, value)
-
-    expect(actual).toBe(testSet)
   })
 })
 

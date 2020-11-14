@@ -34,6 +34,14 @@ export const AlbumGroup = {
   APPEARS_ON: 'appears_on',
 }
 
+/** @type {[group: AlbumGroup, label: string][]} */
+export const AlbumGroupLabels = [
+  [AlbumGroup.ALBUM, 'Albums'],
+  [AlbumGroup.SINGLE, 'Singles'],
+  [AlbumGroup.COMPILATION, 'Compilations'],
+  [AlbumGroup.APPEARS_ON, 'Appearances'],
+]
+
 /** @enum {string} */
 export const Feature = {
   PLAYLIST_CUSTOM_SELECTION: 'playlistCustomSelection',

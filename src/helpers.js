@@ -84,24 +84,6 @@ export function includesTruthy(array) {
 }
 
 /**
- * Toggle value in set
- *
- * @template {Set} S
- * @param {S} set
- * @param {any} value
- * @returns {S}
- */
-export function toggleSetValue(set, value) {
-  if (set.has(value)) {
-    set.delete(value)
-  } else {
-    set.add(value)
-  }
-
-  return set
-}
-
-/**
  * Get dates between `startDate` and `endDate`
  *
  * @param {Moment} startDate
@@ -256,14 +238,13 @@ export function buildAlbum(source, artistId) {
  * Return albums map indexed by release date by default
  *
  * @param {AlbumGrouped[]} albums
- * @param {string} [key] - Album property to key by. Defaults to `releaseDate`
  * @returns {ReleasesMap}
  */
-export function buildReleasesMap(albums, key = 'releaseDate') {
+export function buildReleasesMap(albums) {
   return albums.reduce(
     (map, album) => ({
       ...map,
-      [album[key]]: [...(map[album[key]] || []), album],
+      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
     }),
     {}
   )

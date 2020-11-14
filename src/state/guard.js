@@ -1,5 +1,6 @@
 import {
   ADD_SEEN_FEATURE,
+  SET_SETTINGS,
   SHOW_PLAYLIST_MODAL,
   SHOW_SETTINGS_MODAL,
   SYNC,
@@ -31,6 +32,8 @@ function valid({ type, payload }, state) {
       return !getSyncing(state) && getLastSyncDate(state) && getHasReleases(state)
     case ADD_SEEN_FEATURE:
       return !getSeenFeatures(state).includes(payload.feature)
+    case SET_SETTINGS:
+      return !payload.settings.groups || payload.settings.groups.length > 0
     default:
       return true
   }
