@@ -67,6 +67,7 @@ function DateRangeFilter() {
             firstDayOfWeek={1}
             minimumNights={0}
             readOnly={matches}
+            verticalSpacing={10}
             hideKeyboardShortcutsPanel
           />
         )}

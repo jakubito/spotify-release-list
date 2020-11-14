@@ -179,8 +179,7 @@ const getFuseInstance = createSelector(
   (albums) =>
     new Fuse(albums, {
       keys: ['name', 'primaryArtists.name'],
-      threshold: 0.2,
-      ignoreLocation: true,
+      threshold: 0.1,
     })
 )
 

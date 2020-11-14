@@ -31,7 +31,7 @@ function PlaylistModal() {
       <form className="PlaylistModal modal is-active" onSubmit={handleSubmit(onSubmit)}>
         <div className="modal-background" onClick={closeModal} />
 
-        <div className="modal-content has-background-black-bis has-text-light">
+        <div className="modal-content has-background-black-bis has-text-light fade-in-top">
           <h4 className="title is-4 has-text-light has-text-centered">
             Export <span className="has-text-primary">{releasesCount}</span>{' '}
             {releasesCount > 1 ? 'releases' : 'release'} to a new playlist

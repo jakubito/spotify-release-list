@@ -25,7 +25,7 @@ function Filters() {
   }
 
   return (
-    <div className="Filters">
+    <div className="Filters fade-in-left">
       <SearchFilter />
       <DateRangeFilter />
       <AlbumGroupsFilter />
