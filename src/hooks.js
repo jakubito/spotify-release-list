@@ -33,7 +33,7 @@ export function useModal(hideModalAction) {
  * Feature hook
  *
  * @param {string} feature
- * @returns {[seen: boolean, setSeen: () => void]}
+ * @returns {{ seen: boolean, setSeen: () => void }}
  */
 export function useFeature(feature) {
   const dispatch = useDispatch()
@@ -44,7 +44,7 @@ export function useFeature(feature) {
     dispatch(addSeenFeature(feature))
   }, [])
 
-  return [seen, setSeen]
+  return { seen, setSeen }
 }
 
 /**
