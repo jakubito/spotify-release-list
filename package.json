@@ -6,7 +6,6 @@
   "repository": "github:jakubito/spotify-release-list",
   "license": "ISC",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.1",
     "@reach/router": "^1.2.1",
     "@sentry/browser": "^5.27.1",
     "bulma": "^0.9.1",
