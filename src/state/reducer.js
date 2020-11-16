@@ -120,28 +120,33 @@ function setAlbums(state, payload) {
         return map
       }
 
-      const { artistId, ...albumRest } = album
+      const { group, artistId, ...albumBase } = album
       const matched = map[album.id]
 
       if (!matched) {
         /** @type {AlbumGrouped} */
-        const newAlbum = {
-          ...albumRest,
-          artists: orderBy(albumRest.artists, 'name').filter((artist) => artist.id !== artistId),
-          primaryArtists: [artists[artistId]],
+        map[album.id] = {
+          ...albumBase,
+          groups: [group],
+          artists: [artists[artistId]],
+          otherArtists: orderBy(albumBase.artists, 'name').filter(
+            (artist) => artist.id !== artistId
+          ),
         }
-
-        map[album.id] = newAlbum
 
         return map
       }
 
-      const inPrimary = matched.primaryArtists.find((artist) => artist.id === artistId)
-
-      if (!inPrimary) {
-        matched.artists = matched.artists.filter((artist) => artist.id !== artistId)
-        matched.primaryArtists = orderBy([...matched.primaryArtists, artists[artistId]], 'name')
+      if (matched.artists.find((artist) => artist.id === artistId)) {
+        return map
       }
+
+      if (!matched.groups.includes(group)) {
+        matched.groups.push(group)
+      }
+
+      matched.artists = orderBy([...matched.artists, artists[artistId]], 'name')
+      matched.otherArtists = matched.otherArtists.filter((artist) => artist.id !== artistId)
 
       return map
     },

@@ -229,7 +229,7 @@ export function buildAlbum(source, artistId) {
     image: getImage(source.images),
     artists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
-    albumGroup: source.album_group,
+    group: source.album_group,
     artistId,
   }
 }

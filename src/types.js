@@ -52,12 +52,11 @@
  *   name: string
  *   image: string
  *   releaseDate: string
- *   albumGroup: AlbumGroup
  *   artists: Artist[]
  * }} AlbumBase
  *
- * @typedef {AlbumBase & { artistId: string }} Album
- * @typedef {AlbumBase & { primaryArtists: Artist[] }} AlbumGrouped
+ * @typedef {AlbumBase & { group: AlbumGroup, artistId: string }} Album
+ * @typedef {AlbumBase & { groups: AlbumGroup[], otherArtists: Artist[] }} AlbumGrouped
  *
  * @typedef {{
  *   title: string | ((start: Moment, end: Moment) => string)

@@ -77,11 +77,11 @@ function ArtistLink({ artist, className }) {
 
 /** @param {{ album: AlbumGrouped }} props */
 function AlbumArtists({ album }) {
-  const primary = album.primaryArtists.map((artist) => (
+  const primary = album.artists.map((artist) => (
     <ArtistLink artist={artist} className="has-text-light" key={artist.id} />
   ))
 
-  const other = album.artists.map((artist) => (
+  const other = album.otherArtists.map((artist) => (
     <ArtistLink artist={artist} className="has-text-grey" key={artist.id} />
   ))
 

@@ -165,7 +165,13 @@ export const getReleasesGroupMap = createSelector(getAllAlbumsArray, (albums) =>
   albums.reduce(
     (map, album) => ({
       ...map,
-      [album.albumGroup]: [...(map[album.albumGroup] || []), album.id],
+      ...album.groups.reduce(
+        (albumMap, group) => ({
+          ...albumMap,
+          [group]: [...(map[group] || []), album.id],
+        }),
+        {}
+      ),
     }),
     {}
   )
@@ -178,7 +184,7 @@ const getFuseInstance = createSelector(
   getAllAlbumsArray,
   (albums) =>
     new Fuse(albums, {
-      keys: ['name', 'primaryArtists.name'],
+      keys: ['name', 'artists.name'],
       threshold: 0.1,
     })
 )
