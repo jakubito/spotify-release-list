@@ -17,8 +17,8 @@ export const SHOW_PLAYLIST_MODAL = 'SHOW_PLAYLIST_MODAL'
 export const HIDE_PLAYLIST_MODAL = 'HIDE_PLAYLIST_MODAL'
 export const SET_TOKEN = 'SET_TOKEN'
 export const SET_NONCE = 'SET_NONCE'
-export const SHOW_ERROR_MESSAGE = 'SHOW_ERROR_MESSAGE'
-export const HIDE_ERROR_MESSAGE = 'HIDE_ERROR_MESSAGE'
+export const SHOW_MESSAGE = 'SHOW_MESSAGE'
+export const HIDE_MESSAGE = 'HIDE_MESSAGE'
 export const SET_PLAYLIST_FORM = 'SET_PLAYLIST_FORM'
 export const CREATE_PLAYLIST = 'CREATE_PLAYLIST'
 export const CREATE_PLAYLIST_START = 'CREATE_PLAYLIST_START'
@@ -136,13 +136,21 @@ export function setNonce(nonce) {
   return action(SET_NONCE, { nonce })
 }
 
-/** @param {string} [message] */
-export function showErrorMessage(message = 'Oops! Something went wrong.') {
-  return action(SHOW_ERROR_MESSAGE, { message })
+/**
+ * @param {string} text
+ * @param {'normal' | 'error'} [type]
+ */
+export function showMessage(text, type = 'normal') {
+  return action(SHOW_MESSAGE, { text, type })
 }
 
-export function hideErrorMessage() {
-  return action(HIDE_ERROR_MESSAGE)
+/** @param {string} [text] */
+export function showErrorMessage(text = 'Oops! Something went wrong.') {
+  return showMessage(text, 'error')
+}
+
+export function hideMessage() {
+  return action(HIDE_MESSAGE)
 }
 
 /**

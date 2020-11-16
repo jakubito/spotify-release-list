@@ -6,7 +6,7 @@ import SettingsModalContainer from 'components/modals/SettingsModalContainer'
 import ResetModalContainer from 'components/modals/ResetModalContainer'
 import PlaylistModalContainer from 'components/modals/PlaylistModalContainer'
 import BackToTop from 'components/BackToTop'
-import Error from 'components/Error'
+import Message from 'components/Message'
 
 /**
  * Main app component
@@ -20,10 +20,10 @@ function App(props) {
       <Filters />
       <Content />
       <BackToTop />
+      <Message />
       <SettingsModalContainer />
       <ResetModalContainer />
       <PlaylistModalContainer />
-      <Error />
     </div>
   )
 }

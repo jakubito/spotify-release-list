@@ -29,7 +29,7 @@ export const initialState = {
   tokenScope: null,
   user: null,
   nonce: null,
-  errorMessage: null,
+  message: null,
   settingsModalVisible: false,
   resetModalVisible: false,
   playlistModalVisible: false,

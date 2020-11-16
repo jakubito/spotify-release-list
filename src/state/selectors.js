@@ -50,7 +50,7 @@ export const getPlaylistModalVisible = (state) => state.playlistModalVisible
 export const getFiltersVisible = (state) => state.filtersVisible
 
 /** @param {State} state */
-export const getErrorMessage = (state) => state.errorMessage
+export const getMessage = (state) => state.message
 
 /** @param {State} state */
 export const getPlaylistForm = (state) => state.playlistForm

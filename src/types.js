@@ -15,7 +15,7 @@
  *   tokenScope?: string
  *   user?: User
  *   nonce?: string
- *   errorMessage?: string
+ *   message?: Message
  *   settingsModalVisible: boolean
  *   resetModalVisible: boolean
  *   playlistModalVisible: boolean
@@ -30,6 +30,11 @@
  *   description?: string
  *   isPrivate?: boolean
  * }} PlaylistForm
+ *
+ * @typedef {{
+ *   text: string
+ *   type: 'normal' | 'error'
+ * }} Message
  *
  * @typedef {{
  *   groups: AlbumGroup[]

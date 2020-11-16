@@ -19,8 +19,8 @@ import {
   HIDE_PLAYLIST_MODAL,
   SET_TOKEN,
   SET_NONCE,
-  SHOW_ERROR_MESSAGE,
-  HIDE_ERROR_MESSAGE,
+  SHOW_MESSAGE,
+  HIDE_MESSAGE,
   SET_PLAYLIST_FORM,
   CREATE_PLAYLIST_START,
   CREATE_PLAYLIST_FINISHED,
@@ -78,10 +78,10 @@ function rootReducer(state = initialState, { type, payload }) {
       return { ...hideModals(state), playlistId: initialState.playlistId }
     case RESET:
       return { ...initialState, settings: state.settings, seenFeatures: state.seenFeatures }
-    case SHOW_ERROR_MESSAGE:
-      return { ...state, errorMessage: payload.message }
-    case HIDE_ERROR_MESSAGE:
-      return { ...state, errorMessage: null }
+    case SHOW_MESSAGE:
+      return { ...state, message: { ...payload } }
+    case HIDE_MESSAGE:
+      return { ...state, message: null }
     case SET_PLAYLIST_FORM:
       return { ...state, playlistForm: { ...payload } }
     case CREATE_PLAYLIST_START:
