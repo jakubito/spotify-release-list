@@ -15,9 +15,5 @@
     &:last-child {
       margin-bottom: 0;
     }
-
-    @include mobile {
-      margin-bottom: 20px;
-    }
   }
 }

@@ -2,6 +2,10 @@
   flex-wrap: wrap;
   margin-top: -15px;
 
+  @include mobile {
+    margin-top: -10px;
+  }
+
   .group {
     margin: 15px 15px 0 0;
     color: $grey;
@@ -22,9 +26,17 @@
       color: $white-ter;
       background-color: $grey-darker;
     }
+
+    @include mobile {
+      margin: 10px 10px 0 0;
+    }
   }
 
   .reset {
     margin-top: 15px;
+
+    @include mobile {
+      margin-top: 10px;
+    }
   }
 }
