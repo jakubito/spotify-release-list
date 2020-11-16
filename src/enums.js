@@ -6,13 +6,6 @@ export const Scope = {
 }
 
 /** @enum {string} */
-export const FieldName = {
-  NAME: 'name',
-  DESCRIPTION: 'description',
-  VISIBILITY: 'visibility',
-}
-
-/** @enum {string} */
 export const SpotifyEntity = {
   ALBUM: 'album',
   ARTIST: 'artist',
@@ -41,12 +34,6 @@ export const AlbumGroupLabels = [
   [AlbumGroup.COMPILATION, 'Compilations'],
   [AlbumGroup.APPEARS_ON, 'Appearances'],
 ]
-
-/** @enum {string} */
-export const Feature = {
-  PLAYLIST_CUSTOM_SELECTION: 'playlistCustomSelection',
-  THEMES: 'themes',
-}
 
 /** @enum {string} */
 export const Theme = {

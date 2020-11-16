@@ -2,12 +2,9 @@ import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
-import { FieldName } from 'enums'
 import { getPlaylistNameSuggestion } from 'helpers'
 import { getFiltersDates } from 'state/selectors'
 import Input from 'components/Input'
-
-const { NAME } = FieldName
 
 /**
  * Render playlist name form field
@@ -24,25 +21,25 @@ function NameField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light" htmlFor={NAME}>
-        Name
+      <label className="label has-text-light" htmlFor="name">
+        Playlist name
       </label>
       <div className="control">
         <Input
-          id={NAME}
-          name={NAME}
+          id="name"
+          name="name"
           defaultValue={getPlaylistNameSuggestion(startDate, endDate)}
-          className={classNames({ 'is-danger': errors[NAME] })}
+          className={classNames({ 'is-danger': errors.name })}
           ref={(element) => {
             register(element, { required: true, maxLength: 100 })
             inputRef.current = element
           }}
         />
       </div>
-      {errors[NAME] && (
+      {errors.name && (
         <p className="help is-danger">
-          {errors[NAME].type === 'required' && 'Name is required.'}
-          {errors[NAME].type === 'maxLength' && "Name can't exceed 100 characters."}
+          {errors.name.type === 'required' && 'Name is required.'}
+          {errors.name.type === 'maxLength' && "Name can't exceed 100 characters."}
         </p>
       )}
     </div>

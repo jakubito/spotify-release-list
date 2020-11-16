@@ -55,6 +55,8 @@
     }
 
     .last-update {
+      user-select: none;
+
       @include mobile {
         order: -1;
         flex: 0 0 100%;

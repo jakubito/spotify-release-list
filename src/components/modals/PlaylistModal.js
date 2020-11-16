@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm, FormProvider } from 'react-hook-form'
+import { useModal } from 'hooks'
 import { hidePlaylistModal, createPlaylist, setPlaylistForm } from 'state/actions'
 import { getCreatingPlaylist, getPlaylistId, getReleasesCount } from 'state/selectors'
-import { FieldName } from 'enums'
-import { useModal } from 'hooks'
-import { PlaylistForm, PlaylistInfo, Actions } from 'components/playlist'
-import Button from 'components/Button'
-
-const { NAME, DESCRIPTION, VISIBILITY } = FieldName
+import { PlaylistForm, PlaylistInfo, PlaylistLoading } from 'components/playlist'
 
 /**
  * Render new playlist modal
@@ -33,28 +29,21 @@ function PlaylistModal() {
 
         <div className="modal-content has-background-black-bis has-text-light fade-in-top">
           <h4 className="title is-4 has-text-light has-text-centered">
-            Export <span className="has-text-primary">{releasesCount}</span>{' '}
-            {releasesCount > 1 ? 'releases' : 'release'} to a new playlist
+            Exporting <span className="has-text-primary">{releasesCount}</span>{' '}
+            {releasesCount > 1 ? 'releases' : 'release'}
           </h4>
 
-          {creatingPlaylist || playlistId ? <PlaylistInfo /> : <PlaylistForm />}
+          {(() => {
+            if (creatingPlaylist) {
+              return <PlaylistLoading />
+            }
 
-          <div className="actions columns is-gapless">
-            <div className="column">
-              <Actions submitTriggered={submitTriggered} />
-            </div>
+            if (playlistId) {
+              return <PlaylistInfo closeModal={closeModal} />
+            }
 
-            {!creatingPlaylist && (
-              <div className="column has-text-right">
-                <Button
-                  title="Close"
-                  icon="fas fa-times"
-                  onClick={closeModal}
-                  disabled={submitTriggered}
-                />
-              </div>
-            )}
-          </div>
+            return <PlaylistForm submitTriggered={submitTriggered} closeModal={closeModal} />
+          })()}
         </div>
       </form>
     </FormProvider>
@@ -66,12 +55,13 @@ function PlaylistModal() {
  */
 function useOnSubmit(setSubmitTriggered) {
   const dispatch = useDispatch()
+  /** @param {{ name: string, description: string, visibility: 'private' | 'public' }} formData */
   const onSubmit = async (formData) => {
     setSubmitTriggered(true)
 
-    const name = formData[NAME].trim()
-    const description = formData[DESCRIPTION].trim()
-    const isPrivate = formData[VISIBILITY] === 'private'
+    const name = formData.name.trim()
+    const description = formData.description.trim()
+    const isPrivate = formData.visibility === 'private'
 
     dispatch(setPlaylistForm(name, description, isPrivate))
     dispatch(createPlaylist())

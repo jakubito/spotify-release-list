@@ -81,7 +81,6 @@
  * Enums
  *
  * @typedef {string} Scope
- * @typedef {string} FieldName
  * @typedef {string} SpotifyEntity
  * @typedef {string} MomentFormat
  * @typedef {string} AlbumGroup
