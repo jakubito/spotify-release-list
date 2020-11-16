@@ -1,0 +1,241 @@
+{
+  "albums": {
+    "6mxmL9C2Y2BKMlCP2kj1sb": {
+      "id": "6mxmL9C2Y2BKMlCP2kj1sb",
+      "name": "Rust",
+      "image": "https://i.scdn.co/image/ab67616d00001e02d39fc182cf28760c16171711",
+      "artists": [{ "id": "0YC192cP3KPCRWx8zr8MfZ", "name": "Hans Zimmer" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": [{ "id": "5i0L6675x4W9WULHPA2Ks8", "name": "David Fleming" }]
+    },
+    "78ueU6gK8spqEZwfMH1pcx": {
+      "id": "78ueU6gK8spqEZwfMH1pcx",
+      "name": "Overnight Express (Break Remix)",
+      "image": "https://i.scdn.co/image/ab67616d00001e0292d71513ea51d1c26b108644",
+      "artists": [
+        { "id": "7FtCGMC0pcHPlrZWmYe9XM", "name": "Break" },
+        { "id": "1YLeUsNujSB7Fp1tnCWZi2", "name": "SP:MC" },
+        { "id": "2im0IjdcMRFwGxc5R4Jj82", "name": "Workforce" }
+      ],
+      "releaseDate": "2020-11-11",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "7waQF7DoqxTMOMwO82nM53": {
+      "id": "7waQF7DoqxTMOMwO82nM53",
+      "name": "Discovery Vol 1",
+      "image": "https://i.scdn.co/image/ab67616d00001e021a8f48a526919033da7e72e6",
+      "artists": [{ "id": "1fAFVmxFjwB872XsEUomIK", "name": "Cyantific" }],
+      "releaseDate": "2020-11-12",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "5GQm35tkCTK25fQmTou7Nu": {
+      "id": "5GQm35tkCTK25fQmTou7Nu",
+      "name": "Bridged By A Lightwave",
+      "image": "https://i.scdn.co/image/ab67616d00001e0210c8acd10091286abda2808c",
+      "artists": [{ "id": "2CIMQHirSU0MQqyYHq0eOx", "name": "deadmau5" }],
+      "releaseDate": "2020-11-10",
+      "groups": ["single"],
+      "otherArtists": [{ "id": "4zxvC7CRGvggq9EWXOpwAo", "name": "Kiesza" }]
+    },
+    "6w4x6iX5LsT6Dzu496aWAT": {
+      "id": "6w4x6iX5LsT6Dzu496aWAT",
+      "name": "Power",
+      "image": "https://i.scdn.co/image/ab67616d00001e02a130855fae252bb2323d8cc0",
+      "artists": [{ "id": "2IP71LH7CbwddhsEXBI0fy", "name": "1991" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": [{ "id": "5YMqwPmb7ViNXM63g1MUH5", "name": "BullySongs" }]
+    },
+    "3ufWEh4939oMxXCud9x4zE": {
+      "id": "3ufWEh4939oMxXCud9x4zE",
+      "name": "Something Behind Me",
+      "image": "https://i.scdn.co/image/ab67616d00001e02b26b94606b5fc6df80413e24",
+      "artists": [{ "id": "2SYqJ3uDLLXZNyZdLKBy4M", "name": "Goldie" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": [
+        { "id": "1eyorkwMy8ypw2tA5SzIXy", "name": "James Davidson" },
+        { "id": "6ScAPpYnDsH3Cu3TKmhUJr", "name": "Osquello" }
+      ]
+    },
+    "7bWpcinaQam9t06Rg5OnAG": {
+      "id": "7bWpcinaQam9t06Rg5OnAG",
+      "name": "Find Me (Jonasu Remix)",
+      "image": "https://i.scdn.co/image/ab67616d00001e02c78d966830de0e1f3b67a785",
+      "artists": [{ "id": "2WX2uTcsvV5OnS0inACecP", "name": "Birdy" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": [
+        { "id": "7u4ayw4QFEsolPxZgnPAMT", "name": "Jonasu" },
+        { "id": "01pKrlgPJhm5dB4lneYAqS", "name": "Sigma" }
+      ]
+    },
+    "0fAmAiHdUwfrUVia8F4ewT": {
+      "id": "0fAmAiHdUwfrUVia8F4ewT",
+      "name": "Sambandh",
+      "image": "https://i.scdn.co/image/ab67616d00001e02b2c576e333d07e6471c9122a",
+      "artists": [{ "id": "2gG1LfmQPkHZNptgVpYlpr", "name": "El Huervo" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["album"],
+      "otherArtists": [{ "id": "4Fhqv6ZVNCIAXYY9n4jmGB", "name": "Ratvader" }]
+    },
+    "0qZ6LUWpJC4lrQrEDoUeHH": {
+      "id": "0qZ6LUWpJC4lrQrEDoUeHH",
+      "name": "Angel's Flight",
+      "image": "https://i.scdn.co/image/ab67616d00001e0229d470f65e965447e00dba0a",
+      "artists": [{ "id": "2rcnAZ6DvORQ365X3zVYpr", "name": "Biosphere" }],
+      "releaseDate": "2020-11-11",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "1lg90yDEGtCceipwjSCrYg": {
+      "id": "1lg90yDEGtCceipwjSCrYg",
+      "name": "The Clock and the Dial",
+      "image": "https://i.scdn.co/image/ab67616d00001e026647b2ccfea054fab0929440",
+      "artists": [{ "id": "2rcnAZ6DvORQ365X3zVYpr", "name": "Biosphere" }],
+      "releaseDate": "2020-11-11",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "2eUFpoCraVx4tBiF8LKJHZ": {
+      "id": "2eUFpoCraVx4tBiF8LKJHZ",
+      "name": "Forever (Armageddon Turk Remix)",
+      "image": "https://i.scdn.co/image/ab67616d00001e02be3f879c64838ba2051c77de",
+      "artists": [{ "id": "3OsRAKCvk37zwYcnzRf5XF", "name": "Moby" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": [{ "id": "3Gycw1NhdzkMYeu61oOKEL", "name": "Armageddon Turk" }]
+    },
+    "7jRIcAio25WodDk7VYgyY7": {
+      "id": "7jRIcAio25WodDk7VYgyY7",
+      "name": "Teacup",
+      "image": "https://i.scdn.co/image/ab67616d00001e029d153d7be7b877de5d843d1b",
+      "artists": [{ "id": "3VXCvo9Sr0hbZ4mk6VOKBs", "name": "Ivy Lab" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "7kGevcdNsxF9Yy7074n45F": {
+      "id": "7kGevcdNsxF9Yy7074n45F",
+      "name": "Amiga",
+      "image": "https://i.scdn.co/image/ab67616d00001e02eb4fa3cafd5051b76575d4a0",
+      "artists": [{ "id": "4HSQ4ALTUXgWlSrhfc4LNA", "name": "Muffler" }],
+      "releaseDate": "2020-11-16",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "2L6egHkQ2xak27gAkNJlm2": {
+      "id": "2L6egHkQ2xak27gAkNJlm2",
+      "name": "All the Ladies",
+      "image": "https://i.scdn.co/image/ab67616d00001e02f2b9bed79ad937256dc5cfb9",
+      "artists": [{ "id": "4Y7tXHSEejGu1vQ9bwDdXW", "name": "Fatboy Slim" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": [
+        { "id": "5tYqFEuFELxnJZgGmmsfSh", "name": "Catz 'n Dogz" },
+        { "id": "4W991QdgKWX4TO864ypInA", "name": "Eats Everything" }
+      ]
+    },
+    "61Q8fil8hlD3sh65V7zA6t": {
+      "id": "61Q8fil8hlD3sh65V7zA6t",
+      "name": "Fuji",
+      "image": "https://i.scdn.co/image/ab67616d00001e028d43c7e87fb56380990b8f62",
+      "artists": [{ "id": "5Y7rFm0tiJTVDzGLMzz0W1", "name": "IMANU" }],
+      "releaseDate": "2020-11-14",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "3uvlS9qFCbN6e1r9xKEIg5": {
+      "id": "3uvlS9qFCbN6e1r9xKEIg5",
+      "name": "Now or Never",
+      "image": "https://i.scdn.co/image/ab67616d00001e0271178c84d7d05eb80a92b60e",
+      "artists": [{ "id": "5xdizdgbQQvGAgAolGhpXr", "name": "Friction" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": [
+        { "id": "2XRjIwgD0UiJXtx7Xzfy7w", "name": "Charlotte Haining" },
+        { "id": "682SntJ7VKoFfssPfDAmDZ", "name": "Flava D" }
+      ]
+    },
+    "7goYYULyN4S66rM7hEu22A": {
+      "id": "7goYYULyN4S66rM7hEu22A",
+      "name": "Abrasion EP",
+      "image": "https://i.scdn.co/image/ab67616d00001e022523c90dcc5aa66c14fe1ef6",
+      "artists": [{ "id": "5ucX3eT8wlEQGRVwUyeqBj", "name": "Buunshin" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "6KLdZzsb6MZ9pNxH4D6SZy": {
+      "id": "6KLdZzsb6MZ9pNxH4D6SZy",
+      "name": "Humanity - Chapter II",
+      "image": "https://i.scdn.co/image/ab67616d00001e029ae76cb9b0937a1d0c07c71f",
+      "artists": [{ "id": "6BF0bXbsdujMSMeFZBGcBq", "name": "Thomas Bergersen" }],
+      "releaseDate": "2020-11-11",
+      "groups": ["album"],
+      "otherArtists": []
+    },
+    "570VFTtA06pYm2mx42RKPb": {
+      "id": "570VFTtA06pYm2mx42RKPb",
+      "name": "Tangerine Sour",
+      "image": "https://i.scdn.co/image/ab67616d00001e02a14b4dde1ae663b3f9b44d87",
+      "artists": [{ "id": "6HCnsY0Rxi3cg53xreoAIm", "name": "Emancipator" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": [{ "id": "06tYi7DxoKe8PfYCeHGGFK", "name": "9 Theory" }]
+    },
+    "6SVAHUGTdZTCeLYTog2mfQ": {
+      "id": "6SVAHUGTdZTCeLYTog2mfQ",
+      "name": "Lucid Dreams",
+      "image": "https://i.scdn.co/image/ab67616d00001e029adcd95f3d09c398d930872b",
+      "artists": [{ "id": "6OwnHoDYszPivlUgbApZbR", "name": "Satl" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": []
+    },
+    "2OanfhP0HFLP2A922RdIEn": {
+      "id": "2OanfhP0HFLP2A922RdIEn",
+      "name": "Don't Walk Away",
+      "image": "https://i.scdn.co/image/ab67616d00001e021ca43c591180faf91997ee0c",
+      "artists": [{ "id": "7LzWa2AUty3RU0znyhG70N", "name": "Mohican Sun" }],
+      "releaseDate": "2020-11-13",
+      "groups": ["single"],
+      "otherArtists": []
+    }
+  },
+  "syncing": false,
+  "syncingProgress": 0,
+  "lastSync": "2020-11-16T05:34:48.290Z",
+  "previousSyncMaxDate": "2020-11-27",
+  "creatingPlaylist": false,
+  "playlistId": null,
+  "playlistForm": { "name": null, "description": null, "isPrivate": null },
+  "token": "testToken",
+  "tokenExpires": "2020-11-16T06:28:15.150Z",
+  "tokenScope": "user-follow-read playlist-modify-public",
+  "user": {
+    "id": "11124298134",
+    "name": "Jakub Dobes",
+    "image": "testImageUrl"
+  },
+  "nonce": "XeKBxguFsoYJiihrVHPG",
+  "message": null,
+  "settingsModalVisible": false,
+  "resetModalVisible": false,
+  "playlistModalVisible": false,
+  "filtersVisible": false,
+  "settings": {
+    "groups": ["album", "single"],
+    "days": 7,
+    "market": "",
+    "theme": "theme-compact",
+    "uriLinks": false,
+    "covers": true
+  },
+  "filters": { "groups": [], "search": "", "startDate": null, "endDate": null },
+  "seenFeatures": [],
+  "_persist": { "version": 2, "rehydrated": true }
+}

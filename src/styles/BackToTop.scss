@@ -3,11 +3,6 @@
   z-index: 100;
   right: 15px;
   bottom: 15px;
-  display: none;
   padding-left: 1em !important;
   padding-right: 1em !important;
-
-  &.visible {
-    display: block;
-  }
 }

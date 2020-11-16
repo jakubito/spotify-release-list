@@ -1,0 +1,23 @@
+.Filters {
+  padding: 15px 15px 15px 260px;
+  margin-bottom: 5px;
+  background-color: $black-bis;
+
+  @include until-widescreen {
+    padding-left: 15px;
+  }
+
+  .filter {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: center;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @include mobile {
+      margin-bottom: 20px;
+    }
+  }
+}

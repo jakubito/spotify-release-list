@@ -1,31 +1,32 @@
 {
   "name": "spotify-release-list",
   "author": "Jakub Dobes <dobes.jakub@gmail.com>",
-  "version": "1.6.6",
+  "version": "1.7.0",
   "private": true,
   "repository": "github:jakubito/spotify-release-list",
   "license": "ISC",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.1",
     "@reach/router": "^1.2.1",
-    "@sentry/browser": "^5.26.0",
+    "@sentry/browser": "^5.27.4",
     "bulma": "^0.9.1",
     "bulma-checkradio": "^1.1.1",
     "classnames": "^2.2.6",
-    "js-base64": "^3.5.2",
+    "fast_array_intersect": "^1.1.0",
+    "fuse.js": "^6.4.3",
+    "js-base64": "^3.6.0",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "query-string": "^6.13.6",
-    "react": "^16.14.0",
+    "query-string": "^6.13.7",
+    "react": "^17.0.1",
     "react-dates": "^21.8.0",
-    "react-dom": "^16.14.0",
-    "react-hook-form": "^6.9.4",
-    "react-hotkeys-hook": "^2.3.1",
-    "react-ios-pwa-prompt": "^1.8.0",
+    "react-dom": "^17.0.1",
+    "react-hook-form": "^6.11.2",
+    "react-hotkeys-hook": "^2.4.0",
+    "react-ios-pwa-prompt": "^1.8.4",
     "react-media": "^1.10.0",
-    "react-redux": "^7.2.1",
-    "react-scripts": "^3.4.3",
+    "react-redux": "^7.2.2",
+    "react-scripts": "^4.0.0",
     "react-waypoint": "^9.0.2",
     "redux": "^4.0.4",
     "redux-persist": "^6.0.0",
@@ -33,15 +34,21 @@
     "reselect": "^4.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.7",
+    "@types/react": "^16.9.56",
+    "@types/react-dom": "^16.9.9",
     "node-sass": "^4.14.1",
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "source-map-explorer": "^2.5.0"
   },
   "scripts": {
     "start": "REACT_APP_VERSION=$npm_package_version BROWSER=none react-scripts start",
     "build": "REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettify": "prettier --write 'src/**/*.{js,scss}'"
+    "prettify": "prettier --write 'src/**/*.{js,scss}'",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "browserslist": {
     "production": [

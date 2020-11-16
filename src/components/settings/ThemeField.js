@@ -1,51 +1,49 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getSettingsTheme } from 'selectors'
-import { setSettings } from 'actions'
+import { getSettingsTheme } from 'state/selectors'
+import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import { Theme } from 'enums'
 
-const themes = Object.values(Theme)
+const { COMPACT, SINGLE_COLUMN } = Theme
 
+/**
+ * Render theme selection field
+ */
 function ThemeField() {
   const theme = useSelector(getSettingsTheme)
   const dispatch = useDispatch()
-  const firstRender = useRef(true)
 
   useEffect(() => {
-    if (firstRender.current) {
-      // Theme already applied before first render, skip effect
-      firstRender.current = false
+    const { classList } = document.documentElement
 
-      return
-    }
-
-    document.documentElement.classList.remove(...themes)
+    classList.remove(...Object.values(Theme))
 
     if (theme) {
-      document.documentElement.classList.add(...theme.split(' '))
+      classList.add(...theme.split(' '))
     }
   }, [theme])
 
   return (
     <div className="field">
-      <label className="label has-text-light">Theme</label>
+      <label className="label has-text-light" htmlFor="theme">
+        Theme
+      </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
           <select
+            id="theme"
             defaultValue={theme}
             onChange={(event) => defer(dispatch, setSettings({ theme: event.target.value }))}
           >
             <option value="">Default</option>
-            <option value={Theme.COMPACT}>Compact</option>
-            <option value={Theme.SINGLE_COLUMN}>Single Column</option>
-            <option value={`${Theme.SINGLE_COLUMN} ${Theme.COMPACT}`}>
-              Single Column - Compact
-            </option>
+            <option value={COMPACT}>Compact</option>
+            <option value={SINGLE_COLUMN}>Single Column</option>
+            <option value={[SINGLE_COLUMN, COMPACT].join(' ')}>Single Column - Compact</option>
           </select>
         </div>
         <span className="icon is-left">
-          <i className="fas fa-palette"></i>
+          <i className="fas fa-palette" />
         </span>
       </div>
     </div>

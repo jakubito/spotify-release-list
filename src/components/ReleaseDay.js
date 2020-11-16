@@ -1,10 +1,14 @@
 import React, { memo } from 'react'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
-import { getPreviousSyncMaxDate } from 'selectors'
+import { getPreviousSyncMaxDate } from 'state/selectors'
 import Album from './Album'
 
+/**
+ * Render single release day
+ *
+ * @param {{ date: string, albums: AlbumGrouped[] }} props
+ */
 function ReleaseDay({ date, albums }) {
   const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate)
 
@@ -21,11 +25,6 @@ function ReleaseDay({ date, albums }) {
       </div>
     </div>
   )
-}
-
-ReleaseDay.propTypes = {
-  date: PropTypes.string.isRequired,
-  albums: PropTypes.array.isRequired,
 }
 
 export default memo(ReleaseDay)

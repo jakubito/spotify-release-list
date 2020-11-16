@@ -1,44 +1,20 @@
-import { useEffect, useCallback, useMemo } from 'react'
+import { useEffect, useCallback, useRef, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { addSeenFeature, sync, setSyncing, setNonce } from 'actions'
-import { getSeenFeatures, getWorking, getToken, getTokenExpires, getTokenScope } from 'selectors'
-import { isValidSyncToken, startSyncAuthFlow } from 'auth'
-import { generateNonce } from 'helpers'
-import { persistor } from 'store'
+import { addSeenFeature } from 'state/actions'
+import { getSeenFeatures } from 'state/selectors'
 
-export function useSync() {
-  const dispatch = useDispatch()
-  const working = useSelector(getWorking)
-  const token = useSelector(getToken)
-  const tokenExpires = useSelector(getTokenExpires)
-  const tokenScope = useSelector(getTokenScope)
-
-  const syncTrigger = useCallback(async () => {
-    if (working) {
-      return
-    }
-
-    if (isValidSyncToken(token, tokenExpires, tokenScope)) {
-      dispatch(sync())
-    } else {
-      const nonce = generateNonce()
-
-      dispatch(setSyncing(true))
-      dispatch(setNonce(nonce))
-
-      await persistor.flush()
-
-      startSyncAuthFlow(nonce)
-    }
-  }, [working, token, tokenExpires, tokenScope])
-
-  return syncTrigger
-}
-
+/**
+ * Modal hook
+ *
+ * @param {ActionCreator} hideModalAction
+ * @returns {() => void} Close modal handler
+ */
 export function useModal(hideModalAction) {
   const dispatch = useDispatch()
-  const closeModal = useCallback(() => dispatch(hideModalAction()), [])
+  const closeModal = useCallback(() => {
+    dispatch(hideModalAction())
+  }, [])
 
   useHotkeys('esc', closeModal)
 
@@ -53,16 +29,33 @@ export function useModal(hideModalAction) {
   return closeModal
 }
 
+/**
+ * Feature hook
+ *
+ * @param {string} feature
+ * @returns {{ seen: boolean, setSeen: () => void }}
+ */
 export function useFeature(feature) {
   const dispatch = useDispatch()
   const seenFeatures = useSelector(getSeenFeatures)
 
-  const seen = useMemo(() => seenFeatures.includes(feature), [seenFeatures])
+  const seen = seenFeatures.includes(feature)
   const setSeen = useCallback(() => {
-    if (!seen) {
-      dispatch(addSeenFeature(feature))
-    }
-  }, [seen])
+    dispatch(addSeenFeature(feature))
+  }, [])
 
-  return [seen, setSeen]
+  return { seen, setSeen }
+}
+
+/**
+ * Hook that returns different key for each value change
+ *
+ * @param {any} value
+ * @returns {number}
+ */
+export function useRefChangeKey(value) {
+  const keyRef = useRef(0)
+  const key = useMemo(() => (keyRef.current = 1 - keyRef.current), [value])
+
+  return key
 }

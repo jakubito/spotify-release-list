@@ -1,20 +1,18 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Redirect } from '@reach/router'
 import PWAPrompt from 'react-ios-pwa-prompt'
 import * as Sentry from '@sentry/browser'
-import '@fortawesome/fontawesome-free/js/all'
 import 'react-dates/initialize'
 import * as serviceWorker from 'serviceWorker'
-import { store, hydrate } from 'store'
-import { getSettingsTheme } from 'selectors'
+import { store, hydrate } from 'state'
+import { getSettingsTheme } from 'state/selectors'
 import Auth from 'components/Auth'
 import App from 'components/App'
 import 'styles/index.scss'
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
-
 serviceWorker.register()
 
 function applyTheme() {
@@ -26,7 +24,7 @@ function applyTheme() {
 }
 
 function renderApp() {
-  ReactDOM.render(
+  render(
     <>
       <Provider store={store}>
         <Router>

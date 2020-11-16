@@ -1,8 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getPlaylistModalVisible } from 'selectors'
+import { getPlaylistModalVisible } from 'state/selectors'
 import PlaylistModal from './PlaylistModal'
 
+/**
+ * New playlist modal container
+ */
 function PlaylistModalContainer() {
   const visible = useSelector(getPlaylistModalVisible)
 

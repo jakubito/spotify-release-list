@@ -1,0 +1,48 @@
+.DateRangeFilter {
+  @include mobile {
+    flex-wrap: wrap;
+  }
+
+  &.focused {
+    .DateRangePickerInput {
+      background-color: $black-ter;
+      border-color: $black-ter;
+      box-shadow: 0 0 0 0.125em $black-bis;
+    }
+  }
+
+  .DateRangePickerInput {
+    margin-right: 10px;
+
+    @include mobile {
+      margin-right: 5px;
+    }
+
+    @include mobile-small {
+      margin-right: 0;
+    }
+  }
+
+  .DateRangeShortcuts {
+    @include mobile {
+      order: 2;
+    }
+  }
+
+  .DateRangeShortcut {
+    margin: 5px;
+    color: $grey-light;
+
+    @include mobile {
+      margin: 10px 10px 0 0;
+    }
+  }
+
+  .reset {
+    margin-left: 5px;
+
+    @include mobile-small {
+      margin-left: 0;
+    }
+  }
+}

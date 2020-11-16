@@ -1,9 +1,12 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getSettingsCovers } from 'selectors'
-import { setSettings } from 'actions'
+import { getSettingsCovers } from 'state/selectors'
+import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 
+/**
+ * Render album covers toggle field
+ */
 function CoversField() {
   const covers = useSelector(getSettingsCovers)
   const dispatch = useDispatch()

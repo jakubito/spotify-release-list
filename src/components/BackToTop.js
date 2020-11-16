@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import throttle from 'lodash/throttle'
-import classNames from 'classnames'
+import Button from 'components/Button'
 
-function windowScrollToTop() {
-  window.scrollTo(0, 0)
-}
+const SCROLL_THRESHOLD = 200
 
-function useBackToTop() {
+/**
+ * Render back to top button
+ */
+function BackToTop() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     const listener = throttle(() => {
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-
-      setVisible(scrollTop > 200)
+      setVisible(document.documentElement.scrollTop > SCROLL_THRESHOLD)
     }, 200)
 
     window.addEventListener('scroll', listener)
@@ -23,22 +22,18 @@ function useBackToTop() {
     }
   }, [])
 
-  return visible
-}
-
-function BackToTop() {
-  const visible = useBackToTop()
+  if (!visible) {
+    return null
+  }
 
   return (
-    <button
-      onClick={windowScrollToTop}
-      className={classNames('BackToTop button is-medium is-dark is-rounded', { visible })}
-      title="Back to top"
-    >
-      <span className="icon">
-        <i className="fas fa-arrow-up"></i>
-      </span>
-    </button>
+    <Button
+      titleOnly="Back to top"
+      icon="fas fa-arrow-up"
+      onClick={() => window.scrollTo(0, 0)}
+      className="BackToTop fade-in-bottom"
+      medium
+    />
   )
 }
 

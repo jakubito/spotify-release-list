@@ -1,25 +1,28 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getSettingsDays } from 'selectors'
-import { setSettings } from 'actions'
+import { getSettingsDays } from 'state/selectors'
+import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import HelpText from './HelpText'
 
+/**
+ * Render time period field
+ */
 function TimePeriodField() {
   const days = useSelector(getSettingsDays)
   const dispatch = useDispatch()
 
+  /** @type {React.ChangeEventHandler<HTMLSelectElement>} */
+  const onChange = (event) => defer(dispatch, setSettings({ days: Number(event.target.value) }))
+
   return (
     <div className="field">
-      <label className="label has-text-light">
+      <label className="label has-text-light" htmlFor="timePeriod">
         Time period <HelpText>/ affects storage usage</HelpText>
       </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
-          <select
-            defaultValue={days.toString()}
-            onChange={(event) => defer(dispatch, setSettings({ days: Number(event.target.value) }))}
-          >
+          <select id="timePeriod" defaultValue={days.toString()} onChange={onChange}>
             <option value="7">Past week</option>
             <option value="30">Past month</option>
             <option value="90">Past 3 months</option>
@@ -28,7 +31,7 @@ function TimePeriodField() {
           </select>
         </div>
         <span className="icon is-left">
-          <i className="fas fa-history"></i>
+          <i className="fas fa-history" />
         </span>
       </div>
     </div>

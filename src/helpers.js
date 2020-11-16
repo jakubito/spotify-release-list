@@ -1,20 +1,38 @@
 import orderBy from 'lodash/orderBy'
-import { Moment, MomentFormat } from 'enums'
+import { MomentFormat } from 'enums'
 
+const { ISO_DATE } = MomentFormat
+const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+/**
+ * Promisified setTimeout
+ *
+ * @param {number} ms
+ * @returns {Promise<void>}
+ */
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export function delay(fn, ms, ...args) {
-  setTimeout(() => {
-    fn(...args)
-  }, ms)
-}
-
+/**
+ * Delay function execution until UI is done updating
+ *
+ * @param {function} fn
+ * @param {...any} [args] - Arguments to be passed to function
+ * @returns {void}
+ */
 export function defer(fn, ...args) {
-  requestAnimationFrame(() => delay(fn, 0, ...args))
+  requestAnimationFrame(() => setTimeout(() => fn(...args), 0))
 }
 
+/**
+ * Split array into chunks
+ *
+ * @template T
+ * @param {T[]} inputArray
+ * @param {number} chunkSize
+ * @returns {T[][]}
+ */
 export function chunks(inputArray, chunkSize) {
   const input = [...inputArray]
   const result = []
@@ -26,26 +44,68 @@ export function chunks(inputArray, chunkSize) {
   return result
 }
 
-export function generateNonce() {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-}
-
-export function toggleSetValue(set, value) {
-  if (set.has(value)) {
-    set.delete(value)
-  } else {
-    set.add(value)
-  }
-
-  return set
+/**
+ * Pick random character from input string
+ *
+ * @param {string} input
+ * @returns {string}
+ */
+function pickRandom(input) {
+  return input[Math.floor(Math.random() * input.length)]
 }
 
 /**
- * Get playlist name suggestion.
+ * Generate random nonce
+ *
+ * @returns {string}
+ */
+export function generateNonce() {
+  return Array.from(Array(20), () => pickRandom(ALPHA_NUMERIC)).join('')
+}
+
+/**
+ * Check if value is string
+ *
+ * @param {any} value
+ * @returns {boolean}
+ */
+export function isString(value) {
+  return typeof value === 'string'
+}
+
+/**
+ * Check if array includes truthy value
+ *
+ * @param {any[]} array
+ * @returns {boolean}
+ */
+export function includesTruthy(array) {
+  return array.some((value) => value)
+}
+
+/**
+ * Get dates between `startDate` and `endDate`
  *
  * @param {Moment} startDate
  * @param {Moment} endDate
- * @returns {string}
+ * @yields {string}
+ */
+export function* dateRange(startDate, endDate) {
+  const current = startDate.clone()
+
+  while (current.isSameOrBefore(endDate)) {
+    yield current.format(ISO_DATE)
+
+    current.add(1, 'day')
+  }
+}
+
+/**
+ * Get playlist name suggestion
+ *
+ * @param {Moment} [startDate]
+ * @param {Moment} [endDate]
+ * @returns {string|null}
  */
 export function getPlaylistNameSuggestion(startDate, endDate) {
   if (!startDate || !endDate) {
@@ -63,46 +123,58 @@ export function getPlaylistNameSuggestion(startDate, endDate) {
 }
 
 /**
- * Get release IDs released between startDate and endDate.
+ * Get release IDs released between startDate and endDate
  *
- * @param {Object} releasesMap Releases map from redux store
- * @param {Moment} startDate
- * @param {Moment} endDate
- * @returns {(Array|null)}
+ * @param {ReleasesMap} [releasesMap] - Releases map from redux store
+ * @param {Moment} [startDate]
+ * @param {Moment} [endDate]
+ * @returns {string[]|null}
  */
-export function getReleasesByDate(releasesMap, startDate, endDate) {
+export function getReleasesBetween(releasesMap, startDate, endDate) {
   if (!releasesMap || !startDate || !endDate) {
     return null
   }
 
-  const filteredReleases = []
-  const current = endDate.clone()
+  const releases = []
 
-  while (current.isSameOrAfter(startDate)) {
-    const currentFormatted = current.format(MomentFormat.ISO_DATE)
-
-    if (releasesMap[currentFormatted]) {
-      const currentReleases = orderBy(releasesMap[currentFormatted], 'name')
-      const currentReleasesIds = currentReleases.map(({ id }) => id)
-
-      filteredReleases.push(...currentReleasesIds)
+  for (const date of dateRange(startDate, endDate)) {
+    if (releasesMap[date]) {
+      releases.push(...releasesMap[date].map(({ id }) => id))
     }
-
-    current.subtract(1, Moment.DAY)
   }
 
-  return filteredReleases
+  return releases
 }
 
+/**
+ * Create Spotify URI
+ *
+ * @param {string} id
+ * @param {string} entity
+ * @returns {string}
+ */
 export function getSpotifyUri(id, entity) {
   return `spotify:${entity}:${id}`
 }
 
+/**
+ * Create Spotify URL
+ *
+ * @param {string} id
+ * @param {string} entity
+ * @returns {string}
+ */
 export function getSpotifyUrl(id, entity) {
   return `https://open.spotify.com/${entity}/${id}`
 }
 
-function getImage(images) {
+/**
+ * Pick image from array of images and return its URL
+ *
+ * @param {SpotifyImage[]} [images]
+ * @returns {string|null}
+ */
+export function getImage(images) {
   if (!images || !images.length) {
     return null
   }
@@ -116,6 +188,12 @@ function getImage(images) {
   return images[0].url
 }
 
+/**
+ * Create user object
+ *
+ * @param {SpotifyUser} source
+ * @returns {User}
+ */
 export function buildUser(source) {
   return {
     id: source.id,
@@ -124,6 +202,12 @@ export function buildUser(source) {
   }
 }
 
+/**
+ * Create artist object
+ *
+ * @param {SpotifyArtist} source
+ * @returns {Artist}
+ */
 export function buildArtist(source) {
   return {
     id: source.id,
@@ -131,6 +215,13 @@ export function buildArtist(source) {
   }
 }
 
+/**
+ * Create album object
+ *
+ * @param {SpotifyAlbum} source
+ * @param {string} artistId
+ * @returns {Album}
+ */
 export function buildAlbum(source, artistId) {
   return {
     id: source.id,
@@ -138,6 +229,39 @@ export function buildAlbum(source, artistId) {
     image: getImage(source.images),
     artists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
+    group: source.album_group,
     artistId,
   }
+}
+
+/**
+ * Return albums map indexed by release date by default
+ *
+ * @param {AlbumGrouped[]} albums
+ * @returns {ReleasesMap}
+ */
+export function buildReleasesMap(albums) {
+  return albums.reduce(
+    (map, album) => ({
+      ...map,
+      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
+    }),
+    {}
+  )
+}
+
+/**
+ * Return release entries sorted by day and albums being sorted by name
+ *
+ * @param {ReleasesMap} releasesMap
+ * @returns {ReleasesEntries}
+ */
+export function buildReleasesEntries(releasesMap) {
+  const entriesSortedByDay = orderBy(Object.entries(releasesMap), ([day]) => day, 'desc')
+  const entries = entriesSortedByDay.map(
+    /** @returns {[string, AlbumGrouped[]]} */
+    ([day, albums]) => [day, orderBy(albums, 'name')]
+  )
+
+  return entries
 }

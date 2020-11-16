@@ -1,4 +1,5 @@
 .SyncButton {
+  flex-shrink: 0;
   overflow: hidden;
   border: none;
   padding-left: calc(1em + 0.25em + 1px) !important;
@@ -15,7 +16,7 @@
     left: 0;
     height: 100%;
     width: 100%;
-    transition: transform 500ms ease;
+    transition: transform 500ms ease-out;
     background-color: rgba(0, 0, 0, 0.5);
   }
 

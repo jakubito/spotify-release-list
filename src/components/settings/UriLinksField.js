@@ -1,14 +1,18 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getSettingsUriLinks } from 'selectors'
-import { setSettings } from 'actions'
+import { getSettingsUriLinks } from 'state/selectors'
+import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import HelpText from './HelpText'
 
+/**
+ * Render URI / URL links field
+ */
 function UriLinksField() {
   const uriLinks = useSelector(getSettingsUriLinks)
   const dispatch = useDispatch()
 
+  /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChange = (event) => {
     const newUriLinks = Boolean(Number(event.target.value))
 

@@ -1,66 +1,26 @@
 import findLastIndex from 'lodash/findLastIndex'
 import { buildUser, buildArtist, buildAlbum, sleep } from 'helpers'
 
-function apiUrl(endpoint) {
-  return `https://api.spotify.com/v1/${endpoint}`
-}
-
-function get(endpoint, token) {
-  return callApi(endpoint, token, 'GET')
-}
-
-function post(endpoint, token, body) {
-  return callApi(
-    endpoint,
-    token,
-    'POST',
-    {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    JSON.stringify(body)
-  )
-}
-
-async function callApi(endpoint, token, method, headers = {}, body) {
-  const response = await fetch(endpoint, {
-    method,
-    body,
-    headers: {
-      ...headers,
-      Authorization: `Bearer ${token}`,
-    },
-  })
-
-  if (response.ok) {
-    return response.json()
+class FetchError extends Error {
+  /**
+   * @param {number} status
+   * @param {string} statusText
+   * @param {string} [message]
+   */
+  constructor(status, statusText, message) {
+    super(message)
+    this.name = 'FetchError'
+    this.status = status
+    this.statusText = statusText
   }
-
-  // Handle 429 Too many requests
-  if (response.status === 429) {
-    const waitMs = Number(response.headers.get('Retry-After')) * 1000
-
-    await sleep(waitMs)
-
-    return callApi(endpoint, token, method, headers, body)
-  }
-
-  if (response.status >= 400 && response.status < 500) {
-    const json = await response.json()
-
-    throw new Error(`
-      Fetch 4XX Response
-      Status: ${response.status} ${response.statusText}
-      Message: ${json.error.message}
-    `)
-  }
-
-  throw new Error(`
-    Fetch Error
-    Status: ${response.status} ${response.statusText}
-  `)
 }
 
+/**
+ * Return current user
+ *
+ * @param {string} token
+ * @returns {Promise<User>}
+ */
 export async function getUser(token) {
   const userResponse = await get(apiUrl('me'), token)
   const user = buildUser(userResponse)
@@ -68,12 +28,15 @@ export async function getUser(token) {
   return user
 }
 
+/**
+ * Return current user's followed artists
+ *
+ * @param {string} token
+ * @returns {Promise<Artist[]>}
+ */
 export async function getUserFollowedArtists(token) {
   const artists = []
-  const params = new URLSearchParams({
-    limit: 50,
-    type: 'artist',
-  })
+  const params = new URLSearchParams({ limit: String(50), type: 'artist' })
 
   let next = apiUrl(`me/following?${params}`)
 
@@ -88,13 +51,23 @@ export async function getUserFollowedArtists(token) {
   return artists
 }
 
+/**
+ * Return artist's albums
+ *
+ * @param {string} token
+ * @param {string} artistId
+ * @param {AlbumGroup[]} groups
+ * @param {Market} market
+ * @param {string} minDate
+ * @returns {Promise<Album[]>}
+ */
 export async function getArtistAlbums(token, artistId, groups, market, minDate) {
   if (groups.length === 0) {
     return []
   }
 
   const params = new URLSearchParams({
-    limit: 50,
+    limit: String(50),
     include_groups: groups.join(','),
     ...(market && { market }),
   })
@@ -132,6 +105,14 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
   return albums.concat(restAlbums)
 }
 
+/**
+ * Return albums track IDs
+ *
+ * @param {string} token
+ * @param {string[]} albumIds
+ * @param {Market} [market]
+ * @returns {Promise<string[]>}
+ */
 export async function getAlbumsTrackIds(token, albumIds, market) {
   const trackIds = []
   const params = new URLSearchParams({
@@ -163,6 +144,16 @@ export async function getAlbumsTrackIds(token, albumIds, market) {
   return trackIds
 }
 
+/**
+ * Create new playlist
+ *
+ * @param {string} token
+ * @param {string} userId
+ * @param {string} name
+ * @param {string} description
+ * @param {boolean} isPrivate
+ * @returns {Promise<SpotifyPlaylist>}
+ */
 export function createPlaylist(token, userId, name, description, isPrivate) {
   return post(apiUrl(`users/${userId}/playlists`), token, {
     name,
@@ -171,6 +162,90 @@ export function createPlaylist(token, userId, name, description, isPrivate) {
   })
 }
 
+/**
+ * Add tracks to existing playlist
+ *
+ * @param {string} token
+ * @param {string} playlistId
+ * @param {string[]} trackUris
+ * @returns {Promise<SpotifyPlaylistSnapshot>}
+ */
 export function addTracksToPlaylist(token, playlistId, trackUris) {
   return post(apiUrl(`playlists/${playlistId}/tracks`), token, { uris: trackUris })
+}
+
+/**
+ * Create full API url
+ *
+ * @param {string} endpoint
+ * @returns {string}
+ */
+function apiUrl(endpoint) {
+  return `https://api.spotify.com/v1/${endpoint}`
+}
+
+/**
+ * Fire GET request
+ *
+ * @param {string} endpoint
+ * @param {string} token
+ * @returns {Promise<any>}
+ */
+function get(endpoint, token) {
+  return request(endpoint, token, 'GET')
+}
+
+/**
+ * Fire POST request
+ *
+ * @param {string} endpoint
+ * @param {string} token
+ * @param {{ [prop: string]: any }} body
+ * @returns {Promise<any>}
+ */
+function post(endpoint, token, body) {
+  return request(
+    endpoint,
+    token,
+    'POST',
+    { Accept: 'application/json', 'Content-Type': 'application/json' },
+    JSON.stringify(body)
+  )
+}
+
+/**
+ * Spotify API request wrapper
+ *
+ * @param {string} endpoint
+ * @param {string} token
+ * @param {string} method
+ * @param {{ [prop: string]: any }} [headers]
+ * @param {string} [body]
+ * @returns {Promise<any>}
+ */
+async function request(endpoint, token, method, headers = {}, body) {
+  const authHeader = { Authorization: `Bearer ${token}` }
+  const response = await fetch(endpoint, { method, body, headers: { ...headers, ...authHeader } })
+
+  if (response.ok) {
+    return response.json()
+  }
+
+  // Handle 429 Too many requests
+  if (response.status === 429) {
+    const retryAfter = Number(response.headers.get('Retry-After'))
+
+    // Add 1 extra second because Retry-After is not accurate
+    await sleep((retryAfter + 1) * 1000)
+
+    return request(endpoint, token, method, headers, body)
+  }
+
+  if (response.status >= 400 && response.status < 500) {
+    const json = await response.json()
+
+    throw new FetchError(response.status, response.statusText, json.error.message)
+  }
+
+  throw new FetchError(response.status, response.statusText)
 }
