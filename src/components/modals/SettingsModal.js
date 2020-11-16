@@ -1,8 +1,9 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import moment from 'moment'
 import { hideSettingsModal, showResetModal } from 'state/actions'
 import { useModal } from 'hooks'
-import { getUser } from 'state/selectors'
+import { getLastSyncDate, getUser } from 'state/selectors'
 import Button from 'components/Button'
 import {
   AlbumGroupsField,
@@ -19,6 +20,7 @@ import {
  */
 function SettingsModal() {
   const dispatch = useDispatch()
+  const lastSyncDate = useSelector(getLastSyncDate)
   const user = useSelector(getUser)
   const closeModal = useModal(hideSettingsModal)
 
@@ -65,8 +67,19 @@ function SettingsModal() {
         </div>
 
         {user && (
-          <div className="reset has-text-grey-light">
-            Logged in as {user.name}
+          <div className="reset has-text-grey">
+            <div className="is-hidden-tablet">
+              <span className="icon is-medium">
+                <i className="fas fa-clock"></i>
+              </span>
+              Updated {moment(lastSyncDate).fromNow()}
+            </div>
+            <div>
+              <span className="icon is-medium">
+                <i className="fas fa-user-circle"></i>
+              </span>
+              Logged in as {user.name}
+            </div>
             <Button
               title="Delete all data"
               icon="far fa-trash-alt"

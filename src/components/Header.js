@@ -80,7 +80,12 @@ function Header() {
                   text
                 />
               )}
-              <div className="last-update has-text-grey">Updated {lastSync}</div>
+              <div className="last-update has-text-grey">
+                <span className="icon">
+                  <i className="fas fa-clock"></i>
+                </span>{' '}
+                Updated {lastSync}
+              </div>
             </>
           )}
         </div>
@@ -89,7 +94,7 @@ function Header() {
         {lastSyncDate && hasReleases && !syncing && (
           <Button
             title="Export to a new playlist [E]"
-            icon="fas fa-arrow-up"
+            icon="fas fa-upload"
             onClick={openPlaylistModal}
           >
             <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
