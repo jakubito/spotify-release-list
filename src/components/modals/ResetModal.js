@@ -27,7 +27,7 @@ function ResetModal() {
           />
           <Button
             title="Yes, delete all data"
-            icon="far fa-trash"
+            icon="fas fa-trash"
             onClick={() => dispatch(reset())}
             danger
           />

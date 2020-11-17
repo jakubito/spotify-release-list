@@ -76,7 +76,7 @@ function SettingsModal() {
             </div>
             <Button
               title="Delete all data"
-              icon="far fa-trash"
+              icon="fas fa-trash"
               onClick={() => dispatch(showResetModal())}
               small
             />
