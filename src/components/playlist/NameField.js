@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'

@@ -1,4 +1,3 @@
-import React from 'react'
 import xor from 'lodash/xor'
 import orderBy from 'lodash/orderBy'
 import { useSelector, useDispatch } from 'react-redux'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { getWorking } from 'state/selectors'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { getSpotifyUri, getSpotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
