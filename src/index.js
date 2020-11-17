@@ -5,7 +5,7 @@ import { Router, Redirect } from '@reach/router'
 import PWAPrompt from 'react-ios-pwa-prompt'
 import * as Sentry from '@sentry/browser'
 import 'react-dates/initialize'
-import * as serviceWorker from 'serviceWorker'
+import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { store, hydrate } from 'state'
 import { getSettingsTheme } from 'state/selectors'
 import Auth from 'components/Auth'
@@ -13,7 +13,7 @@ import App from 'components/App'
 import 'styles/index.scss'
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
-serviceWorker.register()
+serviceWorkerRegistration.register()
 
 function applyTheme() {
   const theme = getSettingsTheme(store.getState())

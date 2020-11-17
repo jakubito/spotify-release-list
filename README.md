@@ -2,23 +2,27 @@
 
 Display list of Spotify releases from artists you follow.
 
-https://spotifyreleaselist.netlify.app/
+https://spotifyreleaselist.netlify.app
 
-![screenshot.jpg](https://raw.githubusercontent.com/jakubito/spotify-release-list-web/master/public/screenshot.jpg)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/5b14f602-d76e-47e0-8c3e-6af38e9d49f6/deploy-status)](https://app.netlify.com/sites/spotifyreleaselist/deploys)
+
+![screenshot.jpg](https://raw.githubusercontent.com/jakubito/spotify-release-list-web/master/public/screenshot.jpg?v=1)
 
 ## Features
 
 - Display releases day by day - you won't miss a thing!
-- Create playlists from releases
-- Installable progressive web application (PWA) with fullscreen support
-- All application data stored locally
-- Completely free to use
+- Filter by text search, date range and/or group type
+- Export to playlists
+- Installable progressive web application (PWA) with fullscreen and offline support
+- All application data stored locally on your device
+- Completely free to use with no ads and no tracking
 
 ## Keyboard shortcuts
 
-<kbd>R</kbd> Refresh list  
+<kbd>R</kbd> Refresh  
 <kbd>S</kbd> Show settings  
-<kbd>N</kbd> New playlist  
+<kbd>F</kbd> Toggle filters pane  
+<kbd>E</kbd> Export  
 <kbd>ESC</kbd> Close active modal
 
 ## Privacy Policy

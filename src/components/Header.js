@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
-import moment from 'moment'
 import classNames from 'classnames'
 import { defer } from 'helpers'
 import { useFeature } from 'hooks'
@@ -21,6 +20,7 @@ import {
 } from 'state/actions'
 import SyncButton from 'components/SyncButton'
 import Button from 'components/Button'
+import LastSync from 'components/LastSync'
 
 /**
  * Render header
@@ -32,7 +32,6 @@ function Header() {
   const hasReleases = useSelector(getHasReleases)
   const filtersVisible = useSelector(getFiltersVisible)
   const filtersApplied = useSelector(getFiltersApplied)
-  const lastSync = useLastSync(lastSyncDate)
   const { seen: filtersSeen } = useFeature('filters')
 
   const toggleFilters = () => defer(dispatch, toggleFiltersVisible())
@@ -80,12 +79,7 @@ function Header() {
                   text
                 />
               )}
-              <div className="last-update has-text-grey">
-                <span className="icon">
-                  <i className="fas fa-clock"></i>
-                </span>{' '}
-                Updated {lastSync}
-              </div>
+              <LastSync className="is-hidden-mobile" />
             </>
           )}
         </div>
@@ -111,32 +105,6 @@ function Header() {
       </div>
     </nav>
   )
-}
-
-/**
- * Auto update last sync information every minute and when focused
- *
- * @param {Date} lastSyncDate
- */
-export function useLastSync(lastSyncDate) {
-  const [lastSync, setLastSync] = useState(moment(lastSyncDate).fromNow())
-
-  useEffect(() => {
-    const updateLastSync = () => {
-      setLastSync(moment(lastSyncDate).fromNow())
-    }
-
-    const intervalId = setInterval(updateLastSync, 60 * 1000)
-    window.addEventListener('focus', updateLastSync)
-    updateLastSync()
-
-    return () => {
-      clearInterval(intervalId)
-      window.removeEventListener('focus', updateLastSync)
-    }
-  }, [lastSyncDate])
-
-  return lastSync
 }
 
 export default Header

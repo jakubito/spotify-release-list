@@ -51,14 +51,6 @@
         }
       }
     }
-
-    .last-update {
-      user-select: none;
-
-      @include mobile {
-        display: none;
-      }
-    }
   }
 
   .right {
