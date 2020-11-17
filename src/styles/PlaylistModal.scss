@@ -41,11 +41,11 @@
             margin-top: 0;
           }
         }
+      }
 
-        .button {
-          @include mobile {
-            width: 100%;
-          }
+      .button {
+        @include mobile {
+          width: 100%;
         }
       }
     }
