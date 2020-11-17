@@ -60,7 +60,7 @@ export function validateAuthRequest(nonce) {
  * @returns {boolean}
  */
 export function isValidSyncToken(token, tokenExpires, tokenScope) {
-  return isValidToken(token, tokenExpires) && tokenScope && tokenScope.includes(USER_FOLLOW_READ)
+  return isValidToken(token, tokenExpires) && Boolean(tokenScope?.includes(USER_FOLLOW_READ))
 }
 
 /**
@@ -75,8 +75,7 @@ export function isValidSyncToken(token, tokenExpires, tokenScope) {
 export function isValidPlaylistToken(token, tokenExpires, tokenScope, isPrivate) {
   return (
     isValidToken(token, tokenExpires) &&
-    tokenScope &&
-    tokenScope.includes(isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC)
+    Boolean(tokenScope?.includes(isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC))
   )
 }
 
@@ -88,7 +87,7 @@ export function isValidPlaylistToken(token, tokenExpires, tokenScope, isPrivate)
  * @returns {boolean}
  */
 function isValidToken(token, tokenExpires) {
-  return token && tokenExpires && moment().isBefore(tokenExpires)
+  return Boolean(token && tokenExpires && moment().isBefore(tokenExpires))
 }
 
 /**
