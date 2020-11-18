@@ -13,7 +13,7 @@ import {
   buildArtist,
   buildAlbum,
 } from 'helpers'
-import { getAllReleasesMap } from 'state/selectors'
+import { getOriginalReleasesMap } from 'state/selectors'
 import mockState from './fixtures/state.json'
 
 describe('sleep', () => {
@@ -159,7 +159,7 @@ describe('getReleasesBetween', () => {
   it('returns releases between two different dates', () => {
     const start = moment('2020-11-10')
     const end = moment('2020-11-11')
-    const actual = getReleasesBetween(getAllReleasesMap(mockState), start, end)
+    const actual = getReleasesBetween(getOriginalReleasesMap(mockState), start, end)
     const expected = [
       '5GQm35tkCTK25fQmTou7Nu',
       '78ueU6gK8spqEZwfMH1pcx',
@@ -174,7 +174,7 @@ describe('getReleasesBetween', () => {
   it('returns releases for single day', () => {
     const start = moment('2020-11-14')
     const end = moment('2020-11-14')
-    const actual = getReleasesBetween(getAllReleasesMap(mockState), start, end)
+    const actual = getReleasesBetween(getOriginalReleasesMap(mockState), start, end)
     const expected = ['61Q8fil8hlD3sh65V7zA6t']
 
     expect(actual).toEqual(expected)
@@ -183,7 +183,7 @@ describe('getReleasesBetween', () => {
   it('returns empty array if start date > end date', () => {
     const start = moment('2020-11-14')
     const end = moment('2020-11-12')
-    const actual = getReleasesBetween(getAllReleasesMap(mockState), start, end)
+    const actual = getReleasesBetween(getOriginalReleasesMap(mockState), start, end)
 
     expect(actual).toEqual([])
   })
@@ -191,14 +191,14 @@ describe('getReleasesBetween', () => {
   it('returns empty array for non-existing dates', () => {
     const start = moment('2020-05-01')
     const end = moment('2020-05-06')
-    const actual = getReleasesBetween(getAllReleasesMap(mockState), start, end)
+    const actual = getReleasesBetween(getOriginalReleasesMap(mockState), start, end)
 
     expect(actual).toEqual([])
   })
 
   it('returns null', () => {
     const date = moment('2020-05-01')
-    const map = getAllReleasesMap(mockState)
+    const map = getOriginalReleasesMap(mockState)
 
     expect(getReleasesBetween()).toBeNull()
     expect(getReleasesBetween(null, date, date)).toBeNull()

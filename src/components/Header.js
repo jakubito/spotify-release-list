@@ -10,6 +10,7 @@ import {
   getSyncing,
   getFiltersVisible,
   getFiltersApplied,
+  getHasOriginalReleases,
 } from 'state/selectors'
 import {
   showSettingsModal,
@@ -29,6 +30,7 @@ function Header() {
   const syncing = useSelector(getSyncing)
   const lastSyncDate = useSelector(getLastSyncDate)
   const hasReleases = useSelector(getHasReleases)
+  const hasOriginalReleases = useSelector(getHasOriginalReleases)
   const filtersVisible = useSelector(getFiltersVisible)
   const filtersApplied = useSelector(getFiltersApplied)
   const { seen: filtersSeen } = useFeature('filters')
@@ -52,25 +54,27 @@ function Header() {
           <SyncButton title="Refresh" icon="fas fa-sync-alt" />
           {!syncing && (
             <>
-              <Button
-                title="Toggle Filters [F]"
-                icon={classNames('fas', {
-                  'fa-search': !filtersVisible,
-                  'fa-minus': filtersVisible,
-                })}
-                onClick={toggleFilters}
-                className="has-badge"
-                dark={filtersVisible}
-              >
-                <div
-                  className={classNames('badge is-primary has-text-weight-semibold', {
-                    'is-hidden': filtersSeen,
+              {hasOriginalReleases && (
+                <Button
+                  title="Toggle Filters [F]"
+                  icon={classNames('fas', {
+                    'fa-search': !filtersVisible,
+                    'fa-minus': filtersVisible,
                   })}
+                  onClick={toggleFilters}
+                  className="has-badge"
+                  dark={filtersVisible}
                 >
-                  NEW
-                </div>
-                Filter
-              </Button>
+                  <div
+                    className={classNames('badge is-primary has-text-weight-semibold', {
+                      'is-hidden': filtersSeen,
+                    })}
+                  >
+                    NEW
+                  </div>
+                  Filter
+                </Button>
+              )}
               {filtersApplied && (
                 <Button
                   title="Reset filters"
