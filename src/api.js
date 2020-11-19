@@ -1,4 +1,4 @@
-import findLastIndex from 'lodash/findLastIndex'
+import last from 'lodash/last'
 import { buildUser, buildArtist, buildAlbum, sleep } from 'helpers'
 
 /**
@@ -50,9 +50,9 @@ export async function getUserFollowedArtists(token) {
 
   while (next) {
     const response = await get(next, token)
-    const newArtists = response.artists.items.map(buildArtist)
+    const nextArtists = response.artists.items.map(buildArtist)
 
-    artists.push(...newArtists)
+    artists.push(...nextArtists)
     next = response.artists.next
   }
 
@@ -70,47 +70,33 @@ export async function getUserFollowedArtists(token) {
  * @returns {Promise<Album[]>}
  */
 export async function getArtistAlbums(token, artistId, groups, market, minDate) {
-  if (groups.length === 0) {
-    return []
-  }
-
+  const albums = []
   const params = new URLSearchParams({
     limit: String(50),
     include_groups: groups.join(','),
     market: market || DEFAULT_MARKET,
   })
 
-  const url = apiUrl(`artists/${artistId}/albums?${params}`)
-  const response = await get(url, token)
-  const albums = []
-  const groupCounts = new Map(groups.map((group) => [group, 0]))
+  let next = apiUrl(`artists/${artistId}/albums?${params}`)
 
-  for (const album of response.items) {
-    const albumGroup = album.album_group
+  while (next) {
+    const response = await get(next, token)
+    const nextAlbums = response.items.map((album) => buildAlbum(album, artistId))
 
-    albums.push(buildAlbum(album, artistId))
-    groupCounts.set(albumGroup, groupCounts.get(albumGroup) + 1)
+    albums.push(...nextAlbums)
+    next = last(albums).releaseDate > minDate ? response.next : null
   }
 
-  if (!response.next) {
-    return albums
+  const lastGroup = last(albums).group
+  const restGroups = groups.slice(groups.indexOf(lastGroup) + 1)
+
+  if (restGroups.length > 0) {
+    const restAlbums = await getArtistAlbums(token, artistId, restGroups, market, minDate)
+
+    albums.push(...restAlbums)
   }
 
-  const groupCountsValues = Array.from(groupCounts.values())
-  const lastGroupIndex = findLastIndex(groupCountsValues)
-  const [lastGroup, ...groupsRest] = groups.slice(lastGroupIndex)
-  const lastAlbum = albums[albums.length - 1]
-  const refetchLastGroup = lastGroupIndex > 0 && lastAlbum.releaseDate > minDate
-
-  const restAlbums = await getArtistAlbums(
-    token,
-    artistId,
-    refetchLastGroup ? [lastGroup, ...groupsRest] : groupsRest,
-    market,
-    minDate
-  )
-
-  return albums.concat(restAlbums)
+  return albums
 }
 
 /**
@@ -140,9 +126,9 @@ export async function getAlbumsTrackIds(token, albumIds, market) {
 
     while (next) {
       const response = await get(next, token)
-      const newAlbumTrackIds = response.items.map((track) => track.id)
+      const nextAlbumTrackIds = response.items.map((track) => track.id)
 
-      albumTrackIds.push(...newAlbumTrackIds)
+      albumTrackIds.push(...nextAlbumTrackIds)
       next = response.next
     }
 

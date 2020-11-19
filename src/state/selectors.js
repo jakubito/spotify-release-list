@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
+import last from 'lodash/last'
 import { buildReleasesEntries, buildReleasesMap, includesTruthy, getReleasesBetween } from 'helpers'
 
 /** @param {State} state */
@@ -138,7 +139,7 @@ export const getHasOriginalReleases = createSelector(getOriginalReleasesEntries,
  * Get earliest date in current releases collection
  */
 export const getReleasesMinDate = createSelector(getOriginalReleasesEntries, (entries) =>
-  entries.length ? entries[entries.length - 1][0] : null
+  entries.length ? last(entries)[0] : null
 )
 
 /**
