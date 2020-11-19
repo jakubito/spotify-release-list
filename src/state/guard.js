@@ -7,6 +7,7 @@ import {
   TOGGLE_FILTERS_VISIBLE,
 } from 'state/actions'
 import {
+  getHasOriginalReleases,
   getHasReleases,
   getLastSyncDate,
   getModalVisible,
@@ -24,7 +25,6 @@ import {
 function valid({ type, payload }, state) {
   switch (type) {
     case SYNC:
-    case TOGGLE_FILTERS_VISIBLE:
       return !getModalVisible(state)
     case SHOW_SETTINGS_MODAL:
       return !getSyncing(state)
@@ -34,6 +34,13 @@ function valid({ type, payload }, state) {
       return !getSeenFeatures(state).includes(payload.feature)
     case SET_SETTINGS:
       return !payload.settings.groups || payload.settings.groups.length > 0
+    case TOGGLE_FILTERS_VISIBLE:
+      return (
+        !getModalVisible(state) &&
+        !getSyncing(state) &&
+        getLastSyncDate(state) &&
+        getHasOriginalReleases(state)
+      )
     default:
       return true
   }
