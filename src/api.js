@@ -1,6 +1,14 @@
 import findLastIndex from 'lodash/findLastIndex'
 import { buildUser, buildArtist, buildAlbum, sleep } from 'helpers'
 
+/**
+ * Default to account market
+ */
+const DEFAULT_MARKET = 'from_token'
+
+/**
+ * Represents an error encountered during data fetching
+ */
 class FetchError extends Error {
   /**
    * @param {number} status
@@ -69,7 +77,7 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
   const params = new URLSearchParams({
     limit: String(50),
     include_groups: groups.join(','),
-    ...(market && { market }),
+    market: market || DEFAULT_MARKET,
   })
 
   const url = apiUrl(`artists/${artistId}/albums?${params}`)
@@ -117,7 +125,7 @@ export async function getAlbumsTrackIds(token, albumIds, market) {
   const trackIds = []
   const params = new URLSearchParams({
     ids: albumIds.join(','),
-    ...(market && { market }),
+    market: market || DEFAULT_MARKET,
   })
 
   const response = await get(apiUrl(`albums?${params}`), token)
