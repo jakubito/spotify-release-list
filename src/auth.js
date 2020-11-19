@@ -17,19 +17,21 @@ export class AuthError extends Error {
 /**
  * Validate incoming auth request and return parsed data
  *
+ * @param {string} locationSearch
+ * @param {string} locationHash
  * @param {string} nonce
  * @returns {{ action: string, scope: string, token: string, tokenExpires: string }}
  */
-export function validateAuthRequest(nonce) {
+export function validateAuthRequest(locationSearch, locationHash, nonce) {
   /** @type {{ error?: string }} */
-  const search = queryString.parse(window.location.search)
+  const search = queryString.parse(locationSearch)
 
   if (search.error) {
     throw new AuthError('Access denied')
   }
 
   /** @type {{ access_token?: string, expires_in?: string, state?: string }} */
-  const hash = queryString.parse(window.location.hash)
+  const hash = queryString.parse(locationHash)
 
   if (!hash.access_token || !hash.expires_in || !hash.state) {
     throw new AuthError('Invalid request')

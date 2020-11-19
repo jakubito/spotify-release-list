@@ -4,7 +4,7 @@ import {
   defer,
   chunks,
   generateNonce,
-  getPlaylistNameSuggestion,
+  getPlaylistSuggestion,
   getReleasesBetween,
   getSpotifyUri,
   getSpotifyUrl,
@@ -129,11 +129,11 @@ describe('generateNonce', () => {
   })
 })
 
-describe('getPlaylistNameSuggestion', () => {
+describe('getPlaylistSuggestion', () => {
   it('works with different days', () => {
     const start = moment('2020-01-15')
     const end = moment('2020-02-08')
-    const actual = getPlaylistNameSuggestion(start, end)
+    const actual = getPlaylistSuggestion(start, end)
 
     expect(actual).toEqual('Jan 15 - Feb 8 Releases')
   })
@@ -141,17 +141,9 @@ describe('getPlaylistNameSuggestion', () => {
   it('works with single day', () => {
     const start = moment('2020-01-15')
     const end = moment('2020-01-15')
-    const actual = getPlaylistNameSuggestion(start, end)
+    const actual = getPlaylistSuggestion(start, end)
 
     expect(actual).toEqual('Jan 15 Releases')
-  })
-
-  it('returns null', () => {
-    const date = moment('2020-01-15')
-
-    expect(getPlaylistNameSuggestion()).toBeNull()
-    expect(getPlaylistNameSuggestion(date, null)).toBeNull()
-    expect(getPlaylistNameSuggestion(null, date)).toBeNull()
   })
 })
 
@@ -194,16 +186,6 @@ describe('getReleasesBetween', () => {
     const actual = getReleasesBetween(getOriginalReleasesMap(mockState), start, end)
 
     expect(actual).toEqual([])
-  })
-
-  it('returns null', () => {
-    const date = moment('2020-05-01')
-    const map = getOriginalReleasesMap(mockState)
-
-    expect(getReleasesBetween()).toBeNull()
-    expect(getReleasesBetween(null, date, date)).toBeNull()
-    expect(getReleasesBetween(map, null, date)).toBeNull()
-    expect(getReleasesBetween(map, date, null)).toBeNull()
   })
 })
 

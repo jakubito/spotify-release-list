@@ -103,38 +103,30 @@ export function* dateRange(startDate, endDate) {
 /**
  * Get playlist name suggestion
  *
- * @param {Moment} [startDate]
- * @param {Moment} [endDate]
+ * @param {Moment} startDate
+ * @param {Moment} endDate
  * @returns {string|null}
  */
-export function getPlaylistNameSuggestion(startDate, endDate) {
-  if (!startDate || !endDate) {
-    return null
+export function getPlaylistSuggestion(startDate, endDate) {
+  const start = startDate.format('MMM D')
+  const end = endDate.format('MMM D')
+
+  if (startDate.isSame(endDate, 'day')) {
+    return `${start} Releases`
   }
 
-  const startDateFormatted = startDate.format('MMM D')
-  const endDateFormatted = endDate.format('MMM D')
-
-  if (startDateFormatted === endDateFormatted) {
-    return `${startDateFormatted} Releases`
-  }
-
-  return `${startDateFormatted} - ${endDateFormatted} Releases`
+  return `${start} - ${end} Releases`
 }
 
 /**
  * Get release IDs released between startDate and endDate
  *
- * @param {ReleasesMap} [releasesMap] - Releases map from redux store
- * @param {Moment} [startDate]
- * @param {Moment} [endDate]
- * @returns {string[]|null}
+ * @param {ReleasesMap} releasesMap
+ * @param {Moment} startDate
+ * @param {Moment} endDate
+ * @returns {string[]}
  */
 export function getReleasesBetween(releasesMap, startDate, endDate) {
-  if (!releasesMap || !startDate || !endDate) {
-    return null
-  }
-
   const releases = []
 
   for (const date of dateRange(startDate, endDate)) {
@@ -175,17 +167,13 @@ export function getSpotifyUrl(id, entity) {
  * @returns {string|null}
  */
 export function getImage(images) {
-  if (!images || !images.length) {
+  if (!images?.length) {
     return null
   }
 
-  for (const image of images) {
-    if (image.width === 300) {
-      return image.url
-    }
-  }
+  const image = images.find(({ width }) => width === 300)
 
-  return images[0].url
+  return image ? image.url : images[0].url
 }
 
 /**
