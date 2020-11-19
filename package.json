@@ -21,7 +21,7 @@
     "react": "^17.0.1",
     "react-dates": "^21.8.0",
     "react-dom": "^17.0.1",
-    "react-hook-form": "^6.11.2",
+    "react-hook-form": "^6.11.3",
     "react-hotkeys-hook": "^2.4.0",
     "react-ios-pwa-prompt": "^1.8.4",
     "react-media": "^1.10.0",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.7",
+    "@types/node": "^14.14.8",
     "@types/react": "^16.9.56",
     "@types/react-dom": "^16.9.9",
     "node-sass": "^4.14.1",
