@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
+import last from 'lodash/last'
 import { buildReleasesEntries, buildReleasesMap, includesTruthy, getReleasesBetween } from 'helpers'
 
 /** @param {State} state */
@@ -115,29 +116,36 @@ export const getLastSyncDate = createSelector(
 /**
  * Get all albums / releases as an array
  */
-const getAllAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums))
+const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums))
 
 /**
  * Get all releases as a map with release dates as keys
  */
-export const getAllReleasesMap = createSelector(getAllAlbumsArray, buildReleasesMap)
+export const getOriginalReleasesMap = createSelector(getAlbumsArray, buildReleasesMap)
 
 /**
  * Get all releases as `[release date, albums]` entries / tuples
  */
-const getAllReleasesEntries = createSelector(getAllReleasesMap, buildReleasesEntries)
+const getOriginalReleasesEntries = createSelector(getOriginalReleasesMap, buildReleasesEntries)
+
+/**
+ * Check if there are any releases
+ */
+export const getHasOriginalReleases = createSelector(getOriginalReleasesEntries, (entries) =>
+  Boolean(entries.length)
+)
 
 /**
  * Get earliest date in current releases collection
  */
-export const getReleasesMinDate = createSelector(getAllReleasesEntries, (entries) =>
-  entries.length ? entries[entries.length - 1][0] : null
+export const getReleasesMinDate = createSelector(getOriginalReleasesEntries, (entries) =>
+  entries.length ? last(entries)[0] : null
 )
 
 /**
  * Get latest date in current releases collection
  */
-export const getReleasesMaxDate = createSelector(getAllReleasesEntries, (entries) =>
+export const getReleasesMaxDate = createSelector(getOriginalReleasesEntries, (entries) =>
   entries.length ? entries[0][0] : null
 )
 
@@ -161,7 +169,7 @@ export const getFiltersDates = createSelector(
 /**
  * Get all releases as a map with album groups as keys
  */
-export const getReleasesGroupMap = createSelector(getAllAlbumsArray, (albums) =>
+export const getReleasesGroupMap = createSelector(getAlbumsArray, (albums) =>
   albums.reduce(
     (map, album) => ({
       ...map,
@@ -181,7 +189,7 @@ export const getReleasesGroupMap = createSelector(getAllAlbumsArray, (albums) =>
  * Get current Fuse.js instance
  */
 const getFuseInstance = createSelector(
-  getAllAlbumsArray,
+  getAlbumsArray,
   (albums) =>
     new Fuse(albums, {
       keys: ['name', 'artists.name'],
@@ -201,7 +209,7 @@ const getSearchAlbums = createSelector(
  * Get album IDs filtered by date range
  */
 const getDateRangeAlbums = createSelector(
-  [getFiltersDates, getAllReleasesMap],
+  [getFiltersDates, getOriginalReleasesMap],
   (dates, releasesMap) => dates && getReleasesBetween(releasesMap, dates.startDate, dates.endDate)
 )
 
@@ -236,7 +244,7 @@ const getFilteredReleasesEntries = createSelector(getFilteredReleasesMap, buildR
  * Final releases selector that returns either filtered or all releases
  */
 export const getReleasesEntries = createSelector(
-  [getFiltersApplied, getFilteredReleasesEntries, getAllReleasesEntries],
+  [getFiltersApplied, getFilteredReleasesEntries, getOriginalReleasesEntries],
   (filtersApplied, filtered, all) => (filtersApplied ? filtered : all)
 )
 
@@ -244,11 +252,11 @@ export const getReleasesEntries = createSelector(
  * Get final releases count
  */
 export const getReleasesCount = createSelector(
-  [getFiltersApplied, getFilteredAlbumsArray, getAllAlbumsArray],
+  [getFiltersApplied, getFilteredAlbumsArray, getAlbumsArray],
   (filtersApplied, filtered, all) => (filtersApplied ? filtered.length : all.length)
 )
 
 /**
- * Check if there are any releases
+ * Check if there are any releases (original / filtered)
  */
 export const getHasReleases = createSelector(getReleasesCount, (count) => Boolean(count))

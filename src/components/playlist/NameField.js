@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
-import { getPlaylistNameSuggestion } from 'helpers'
+import { getPlaylistSuggestion } from 'helpers'
 import { getFiltersDates } from 'state/selectors'
 import Input from 'components/Input'
 
@@ -10,7 +10,7 @@ import Input from 'components/Input'
  * Render playlist name form field
  */
 function NameField() {
-  const { startDate, endDate } = useSelector(getFiltersDates) || {}
+  const filtersDates = useSelector(getFiltersDates)
   const { register, errors } = useFormContext()
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const inputRef = useRef()
@@ -28,7 +28,9 @@ function NameField() {
         <Input
           id="name"
           name="name"
-          defaultValue={getPlaylistNameSuggestion(startDate, endDate)}
+          defaultValue={
+            filtersDates && getPlaylistSuggestion(filtersDates.startDate, filtersDates.endDate)
+          }
           className={classNames({ 'is-danger': errors.name })}
           ref={(element) => {
             register(element, { required: true, maxLength: 100 })

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { defer } from 'helpers'

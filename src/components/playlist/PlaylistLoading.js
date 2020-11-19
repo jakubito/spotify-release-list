@@ -1,4 +1,3 @@
-import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useFormContext } from 'react-hook-form'
 import { createPlaylistCancel } from 'state/actions'

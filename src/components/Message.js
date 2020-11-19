@@ -1,4 +1,3 @@
-import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import { getMessage } from 'state/selectors'

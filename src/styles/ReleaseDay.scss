@@ -6,14 +6,14 @@
 
     &:first-child {
       .column.date {
-        margin-top: 0 !important;
+        margin-top: 15px !important;
       }
     }
 
     @include theme(compact) {
       &:first-child {
         .column.date {
-          margin-top: 0 !important;
+          margin-top: 10px !important;
         }
       }
     }
@@ -31,7 +31,7 @@
       }
 
       @include theme(compact) {
-        margin-top: 20px !important;
+        margin-top: 15px !important;
         font-size: 1.2rem !important;
       }
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Redirect } from '@reach/router'
 import * as Sentry from '@sentry/browser'
@@ -14,9 +13,10 @@ import { AuthError, validateAuthRequest } from 'auth'
 function Auth(props) {
   const dispatch = useDispatch()
   const nonce = useSelector(getNonce)
+  const { search, hash } = window.location
 
   try {
-    const { action, token, tokenExpires, scope } = validateAuthRequest(nonce)
+    const { action, token, tokenExpires, scope } = validateAuthRequest(search, hash, nonce)
 
     dispatch(setToken(token, tokenExpires, scope))
     dispatch({ type: action })

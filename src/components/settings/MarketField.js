@@ -1,10 +1,8 @@
-import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Market } from 'enums'
 import { getSettingsMarket } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
-import HelpText from './HelpText'
 
 /**
  * Render market selection field
@@ -16,7 +14,7 @@ function MarketField() {
   return (
     <div className="field">
       <label className="label has-text-light" htmlFor="market">
-        Market country <HelpText>/ prevent duplicates</HelpText>
+        Market
       </label>
       <div className="control has-icons-left">
         <div className="select is-rounded">
@@ -25,7 +23,7 @@ function MarketField() {
             defaultValue={market}
             onChange={(event) => defer(dispatch, setSettings({ market: event.target.value }))}
           >
-            <option value="">All markets</option>
+            <option value="">Use account country (default)</option>
             {Object.entries(Market).map(([code, name]) => (
               <option value={code} key={code}>
                 {name}

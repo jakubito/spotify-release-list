@@ -1,5 +1,3 @@
-import React from 'react'
-
 /**
  * Render field help text
  *
