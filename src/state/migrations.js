@@ -1,5 +1,6 @@
 import { AlbumGroup } from 'enums'
 import { initialState } from 'state'
+import { getFiltersVisible, getHasOriginalReleases } from 'state/selectors'
 
 /** @type {{ [version: number]: (state: PersistedState) => PersistedState }} */
 const migrations = {
@@ -11,8 +12,16 @@ const migrations = {
 
     return { ...state, settings: { ...state.settings, groups: groupsSorted } }
   },
-  1: (state) => ({ ...state, ...initialState, settings: state.settings }),
+  1: (state) => resetDataWithMessage(state),
   2: (state) => resetDataWithMessage(state),
+  3: (state) => {
+    // Fix persisted buggy state causing black screen
+    if (getFiltersVisible(state) && !getHasOriginalReleases(state)) {
+      return { ...state, filtersVisible: false }
+    }
+
+    return state
+  },
 }
 
 /**
