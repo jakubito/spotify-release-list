@@ -241,11 +241,11 @@ const getFilteredReleasesMap = createSelector(getFilteredAlbumsArray, buildRelea
 const getFilteredReleasesEntries = createSelector(getFilteredReleasesMap, buildReleasesEntries)
 
 /**
- * Final releases selector that returns either filtered or all releases
+ * Final releases selector that returns either filtered or original releases
  */
 export const getReleasesEntries = createSelector(
   [getFiltersApplied, getFilteredReleasesEntries, getOriginalReleasesEntries],
-  (filtersApplied, filtered, all) => (filtersApplied ? filtered : all)
+  (filtersApplied, filtered, original) => (filtersApplied ? filtered : original)
 )
 
 /**
@@ -253,7 +253,7 @@ export const getReleasesEntries = createSelector(
  */
 export const getReleasesCount = createSelector(
   [getFiltersApplied, getFilteredAlbumsArray, getAlbumsArray],
-  (filtersApplied, filtered, all) => (filtersApplied ? filtered.length : all.length)
+  (filtersApplied, filtered, original) => (filtersApplied ? filtered.length : original.length)
 )
 
 /**
