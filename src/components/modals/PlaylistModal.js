@@ -50,12 +50,16 @@ function PlaylistModal() {
   )
 }
 
-/**
- * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitTriggered
- */
+/** @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitTriggered */
 function useOnSubmit(setSubmitTriggered) {
   const dispatch = useDispatch()
-  /** @param {{ name: string, description: string, visibility: 'private' | 'public' }} formData */
+  /**
+   * @type {import('react-hook-form').SubmitHandler<{
+   *   name: string
+   *   description: string
+   *   visibility: 'private' | 'public'
+   * }>}
+   */
   const onSubmit = async (formData) => {
     setSubmitTriggered(true)
 

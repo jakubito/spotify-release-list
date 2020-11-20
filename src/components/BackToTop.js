@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import throttle from 'lodash/throttle'
 import Button from 'components/Button'
 
+/**
+ * Vertical scroll threshold in pixels
+ */
 const SCROLL_THRESHOLD = 200
 
 /**

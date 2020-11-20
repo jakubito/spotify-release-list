@@ -10,26 +10,27 @@ function Credits() {
       <Link href="https://github.com/jakubito" title="My Github">
         Jakub Dobes
       </Link>
-      <Bullet />
+      <Separator />
       <Link href="https://github.com/jakubito/spotify-release-list" title="Source code on Github">
         Github
       </Link>
-      <Bullet />
+      <Separator />
       <Link
         href="https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md"
         title="Privacy Policy"
       >
         Privacy Policy
       </Link>
-      <Bullet />
+      <Separator />
       <Link href="https://paypal.me/jakubito" title="Contribute via PayPal">
         Donate
       </Link>
-      <Bullet />v{process.env.REACT_APP_VERSION}
+      <Separator />v{process.env.REACT_APP_VERSION}
     </div>
   )
 }
 
+/** @param {{ children: React.ReactNode } & AnyProps} props */
 function Link({ children, ...props }) {
   return (
     <a className="has-text-grey-light" target="_blank" rel="noopener noreferrer" {...props}>
@@ -38,7 +39,7 @@ function Link({ children, ...props }) {
   )
 }
 
-function Bullet() {
+function Separator() {
   return <> - </>
 }
 
