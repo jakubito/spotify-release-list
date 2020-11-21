@@ -100,13 +100,14 @@
 
       img {
         border-radius: 3px;
+        filter: brightness(0.92);
       }
     }
   }
 
   .content {
     a {
-      color: $color-primary;
+      color: $color-primary-slightly-darker;
       text-decoration: none;
 
       &:hover {
