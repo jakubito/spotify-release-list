@@ -178,10 +178,10 @@ export const getReleasesGroupMap = createSelector(getAlbumsArray, (albums) =>
           ...albumMap,
           [group]: [...(map[group] || []), album.id],
         }),
-        {}
+        /** @type {ReleasesGroupMap} */ ({})
       ),
     }),
-    {}
+    /** @type {ReleasesGroupMap} */ ({})
   )
 )
 
@@ -219,7 +219,8 @@ const getDateRangeAlbums = createSelector(
 const getAlbumGroupsAlbums = createSelector(
   [getFiltersGroups, getReleasesGroupMap],
   (groups, groupMap) =>
-    groups.length && groups.reduce((ids, group) => [...ids, ...groupMap[group]], [])
+    groups.length &&
+    groups.reduce((ids, group) => [...ids, ...groupMap[group]], /** @type {string[]} */ ([]))
 )
 
 /**

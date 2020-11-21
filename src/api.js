@@ -30,6 +30,7 @@ class FetchError extends Error {
  * @returns {Promise<User>}
  */
 export async function getUser(token) {
+  /** @type {SpotifyUser} */
   const userResponse = await get(apiUrl('me'), token)
   const user = buildUser(userResponse)
 
@@ -43,12 +44,14 @@ export async function getUser(token) {
  * @returns {Promise<Artist[]>}
  */
 export async function getUserFollowedArtists(token) {
+  /** @type {Artist[]} */
   const artists = []
   const params = new URLSearchParams({ limit: String(50), type: 'artist' })
 
   let next = apiUrl(`me/following?${params}`)
 
   while (next) {
+    /** @type {{ artists: Paged<SpotifyArtist> }} */
     const response = await get(next, token)
     const nextArtists = response.artists.items.map(buildArtist)
 
@@ -70,6 +73,7 @@ export async function getUserFollowedArtists(token) {
  * @returns {Promise<Album[]>}
  */
 export async function getArtistAlbums(token, artistId, groups, market, minDate) {
+  /** @type {Album[]} */
   const albums = []
   const params = new URLSearchParams({
     limit: String(50),
@@ -80,6 +84,7 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
   let next = apiUrl(`artists/${artistId}/albums?${params}`)
 
   while (next) {
+    /** @type {Paged<SpotifyAlbum>} */
     const response = await get(next, token)
     const nextAlbums = response.items.map((album) => buildAlbum(album, artistId))
 
@@ -108,23 +113,22 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
  * @returns {Promise<string[]>}
  */
 export async function getAlbumsTrackIds(token, albumIds, market) {
+  /** @type {string[]} */
   const trackIds = []
   const params = new URLSearchParams({
     ids: albumIds.join(','),
     market: market || DEFAULT_MARKET,
   })
 
+  /** @type {{ albums: Array<{ tracks: Paged<SpotifyTrack> }> }} */
   const response = await get(apiUrl(`albums?${params}`), token)
 
   for (const album of response.albums) {
-    if (!album) {
-      continue
-    }
-
     const albumTrackIds = album.tracks.items.map((track) => track.id)
     let next = album.tracks.next
 
     while (next) {
+      /** @type {Paged<SpotifyTrack>} */
       const response = await get(next, token)
       const nextAlbumTrackIds = response.items.map((track) => track.id)
 

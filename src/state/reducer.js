@@ -112,46 +112,44 @@ function rootReducer(state = initialState, { type, payload }) {
  * @returns {State}
  */
 function setAlbums(state, payload) {
-  const artists = payload.artists.reduce((map, artist) => ({ ...map, [artist.id]: artist }), {})
-  const albums = payload.albums.reduce(
-    /** @param {typeof state.albums} map */
-    (map, album) => {
-      if (album.releaseDate < payload.minDate) {
-        return map
+  const artists = payload.artists.reduce(
+    (map, artist) => ({ ...map, [artist.id]: artist }),
+    /** @type {{ [id: string]: Artist }} */ ({})
+  )
+
+  const albums = payload.albums.reduce((map, album) => {
+    if (album.releaseDate < payload.minDate) {
+      return map
+    }
+
+    const { group, artistId, ...albumBase } = album
+    const matched = map[album.id]
+
+    if (!matched) {
+      /** @type {AlbumGrouped} */
+      map[album.id] = {
+        ...albumBase,
+        groups: [group],
+        artists: [artists[artistId]],
+        otherArtists: orderBy(albumBase.artists, 'name').filter((artist) => artist.id !== artistId),
       }
-
-      const { group, artistId, ...albumBase } = album
-      const matched = map[album.id]
-
-      if (!matched) {
-        /** @type {AlbumGrouped} */
-        map[album.id] = {
-          ...albumBase,
-          groups: [group],
-          artists: [artists[artistId]],
-          otherArtists: orderBy(albumBase.artists, 'name').filter(
-            (artist) => artist.id !== artistId
-          ),
-        }
-
-        return map
-      }
-
-      if (matched.artists.find((artist) => artist.id === artistId)) {
-        return map
-      }
-
-      if (!matched.groups.includes(group)) {
-        matched.groups.push(group)
-      }
-
-      matched.artists = orderBy([...matched.artists, artists[artistId]], 'name')
-      matched.otherArtists = matched.otherArtists.filter((artist) => artist.id !== artistId)
 
       return map
-    },
-    {}
-  )
+    }
+
+    if (matched.artists.find((artist) => artist.id === artistId)) {
+      return map
+    }
+
+    if (!matched.groups.includes(group)) {
+      matched.groups.push(group)
+    }
+
+    matched.artists = orderBy([...matched.artists, artists[artistId]], 'name')
+    matched.otherArtists = matched.otherArtists.filter((artist) => artist.id !== artistId)
+
+    return map
+  }, /** @type {AlbumsMap} */ ({}))
 
   return { ...state, albums }
 }

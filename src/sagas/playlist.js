@@ -54,14 +54,14 @@ function* createPlaylistMainSaga() {
 
     const albumIds = releases.reduce(
       (ids, [, albums]) => [...ids, ...albums.map((album) => album.id)],
-      []
+      /** @type {string[]} */ ([])
     )
 
     const trackIdsCalls = chunks(albumIds, 20).map((albumIdsChunk) =>
       call(getAlbumsTrackIds, token, albumIdsChunk, market)
     )
 
-    /** @type {string[][]} */
+    /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
     const trackIds = yield all(trackIdsCalls)
     const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK))
     /** @type {SpotifyPlaylist} */

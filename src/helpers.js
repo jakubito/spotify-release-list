@@ -35,6 +35,7 @@ export function defer(fn, ...args) {
  */
 export function chunks(inputArray, chunkSize) {
   const input = [...inputArray]
+  /** @type {T[][]} */
   const result = []
 
   while (input.length > 0) {
@@ -127,6 +128,7 @@ export function getPlaylistSuggestion(startDate, endDate) {
  * @returns {string[]}
  */
 export function getReleasesBetween(releasesMap, startDate, endDate) {
+  /** @type {string[]} */
   const releases = []
 
   for (const date of dateRange(startDate, endDate)) {
@@ -234,7 +236,7 @@ export function buildReleasesMap(albums) {
       ...map,
       [album.releaseDate]: [...(map[album.releaseDate] || []), album],
     }),
-    {}
+    /** @type {ReleasesMap} */ ({})
   )
 }
 

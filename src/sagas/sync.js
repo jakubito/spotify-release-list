@@ -47,9 +47,9 @@ function* syncMainSaga() {
     /** @type {ReturnType<typeof getReleasesMaxDate>} */
     const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
-    /** @type {User} */
+    /** @type {Await<ReturnType<typeof getUser>>} */
     const user = yield call(getUser, token)
-    /** @type {Artist[]} */
+    /** @type {Await<ReturnType<typeof getUserFollowedArtists>>} */
     const artists = yield call(getUserFollowedArtists, token)
 
     /** @type {Album[]} */
