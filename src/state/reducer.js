@@ -137,10 +137,6 @@ function setAlbums(state, payload) {
       return map
     }
 
-    if (matched.artists.find((artist) => artist.id === artistId)) {
-      return map
-    }
-
     if (!matched.groups.includes(group)) {
       matched.groups.push(group)
     }
