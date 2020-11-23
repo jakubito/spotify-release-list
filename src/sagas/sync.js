@@ -16,8 +16,15 @@ import {
   showErrorMessage,
 } from 'state/actions'
 
+/**
+ * Limit maximum number of concurrent requests
+ */
 const REQUEST_WORKERS = 6
-const PROGRESS_ANIMATION_MS = 550
+
+/**
+ * Loading animation duration in miliseconds
+ */
+const LOADING_ANIMATION_MS = 550
 
 /**
  * Synchronization wrapper saga
@@ -40,9 +47,9 @@ function* syncMainSaga() {
     /** @type {ReturnType<typeof getReleasesMaxDate>} */
     const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
-    /** @type {User} */
+    /** @type {Await<ReturnType<typeof getUser>>} */
     const user = yield call(getUser, token)
-    /** @type {Artist[]} */
+    /** @type {Await<ReturnType<typeof getUserFollowedArtists>>} */
     const artists = yield call(getUserFollowedArtists, token)
 
     /** @type {Album[]} */
@@ -60,7 +67,7 @@ function* syncMainSaga() {
       tasks.push(yield fork(requestWorker, requestChannel, responseChannel))
     }
 
-    tasks.push(yield fork(progressWorker, progress, setSyncingProgress, PROGRESS_ANIMATION_MS))
+    tasks.push(yield fork(progressWorker, progress, setSyncingProgress, LOADING_ANIMATION_MS))
 
     for (const artist of artists) {
       yield put(requestChannel, [getArtistAlbums, token, artist.id, groups, market, minDate])
@@ -77,7 +84,7 @@ function* syncMainSaga() {
     }
 
     yield cancel(tasks)
-    yield delay(PROGRESS_ANIMATION_MS)
+    yield delay(LOADING_ANIMATION_MS)
 
     yield put(setUser(user))
     yield put(setAlbums(albums, artists, minDate))

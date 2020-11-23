@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { getSettingsUriLinks } from 'state/selectors'
 
 /**
- * Render link that reacts to URI / URL setting changes
+ * Render URI/URL link
  *
  * @param {{
  *   title: string
@@ -10,7 +10,7 @@ import { getSettingsUriLinks } from 'state/selectors'
  *   url: string
  *   className?: string
  *   children: React.ReactNode
- * } & AnyProps} props
+ * }} props
  */
 function Link({ title, uri, url, className, children }) {
   const uriLinks = useSelector(getSettingsUriLinks)

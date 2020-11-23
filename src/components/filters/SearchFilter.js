@@ -41,7 +41,12 @@ function SearchFilter() {
 
   return (
     <div className="SearchFilter filter">
-      <Input value={value} onChange={onChange} placeholder="Search" ref={inputRef} />
+      <Input
+        value={value}
+        onChange={onChange}
+        placeholder="Search artists and releases"
+        ref={inputRef}
+      />
       {filtersSearch && <Button title="Reset" className="reset" onClick={reset} text />}
     </div>
   )

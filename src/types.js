@@ -2,7 +2,7 @@
  * Custom types
  *
  * @typedef {{
- *   albums: { [id: string]: AlbumGrouped }
+ *   albums: AlbumsMap
  *   syncing: boolean
  *   syncingProgress: number
  *   lastSync?: string
@@ -71,14 +71,23 @@
  *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
+ * @typedef {{ [id: string]: AlbumGrouped }} AlbumsMap
  * @typedef {{ [date: string]: AlbumGrouped[] }} ReleasesMap
  * @typedef {[date: string, albums: AlbumGrouped[]][]} ReleasesEntries
+ * @typedef {{ [group: string]: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
  * @typedef {{ [prop: string]: any }} AnyProps
  * @typedef {{ type: string, payload: any }} Action
  * @typedef {(...args: any[]) => Action} ActionCreator
  * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
+ */
+
+/**
+ * @template T
+ * @typedef {T extends {
+ *   then(onfulfilled?: (value: infer U) => unknown): unknown;
+ * } ? U : T} Await<T>
  */
 
 /**
@@ -109,7 +118,13 @@
  * @typedef {{ id: string, display_name: string, images: SpotifyImage[] }} SpotifyUser
  * @typedef {{ id: string, name: string }} SpotifyArtist
  * @typedef {{ id: string, name: string }} SpotifyPlaylist
+ * @typedef {{ id: string }} SpotifyTrack
  * @typedef {{ snapshot_id: string }} SpotifyPlaylistSnapshot
+ */
+
+/**
+ * @template T
+ * @typedef {{ items: T[], next: string | null }} Paged<T>
  */
 
 /**
