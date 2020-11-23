@@ -89,7 +89,12 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
     const nextAlbums = response.items.map((album) => buildAlbum(album, artistId))
 
     albums.push(...nextAlbums)
-    next = last(albums).releaseDate > minDate ? response.next : null
+
+    if (!response.next) {
+      return albums
+    }
+
+    next = last(albums).releaseDate < minDate ? null : response.next
   }
 
   const lastGroup = last(albums).group
