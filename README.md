@@ -1,8 +1,8 @@
 # Spotify Release List
 
-Display list of Spotify releases from artists you follow.
+Display list of Spotify releases from artists you follow
 
-https://spotifyreleaselist.netlify.app
+**<https://spotifyreleaselist.netlify.app>**
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5b14f602-d76e-47e0-8c3e-6af38e9d49f6/deploy-status)](https://app.netlify.com/sites/spotifyreleaselist/deploys)
 
