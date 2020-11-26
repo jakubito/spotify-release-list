@@ -1,7 +1,7 @@
 import xor from 'lodash/xor'
 import orderBy from 'lodash/orderBy'
 import { useSelector, useDispatch } from 'react-redux'
-import { AlbumGroup, AlbumGroupLabels } from 'enums'
+import { AlbumGroupIndex, AlbumGroupLabels } from 'enums'
 import { getSettingsGroups } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import HelpText from './HelpText'
@@ -15,9 +15,8 @@ function AlbumGroupsField() {
 
   /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChange = (event) => {
-    const groupValues = Object.values(AlbumGroup)
     const newValue = xor(groups, [event.target.value])
-    const newValueOrdered = orderBy(newValue, (group) => groupValues.indexOf(group))
+    const newValueOrdered = orderBy(newValue, (group) => AlbumGroupIndex[group])
 
     dispatch(setSettings({ groups: newValueOrdered }))
   }

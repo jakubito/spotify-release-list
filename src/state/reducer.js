@@ -1,4 +1,5 @@
 import orderBy from 'lodash/orderBy'
+import { AlbumGroupIndex } from 'enums'
 import { initialState } from 'state'
 import {
   SYNC_START,
@@ -138,7 +139,7 @@ function setAlbums(state, payload) {
     }
 
     if (!matched.groups.includes(group)) {
-      matched.groups.push(group)
+      matched.groups = orderBy([...matched.groups, group], (group) => AlbumGroupIndex[group])
     }
 
     matched.artists = orderBy([...matched.artists, artists[artistId]], 'name')

@@ -27,6 +27,14 @@ export const AlbumGroup = {
   APPEARS_ON: 'appears_on',
 }
 
+/** @type {{ [group: string]: number }} */
+export const AlbumGroupIndex = {
+  [AlbumGroup.ALBUM]: 0,
+  [AlbumGroup.SINGLE]: 1,
+  [AlbumGroup.COMPILATION]: 2,
+  [AlbumGroup.APPEARS_ON]: 3,
+}
+
 /** @type {[group: AlbumGroup, label: string][]} */
 export const AlbumGroupLabels = [
   [AlbumGroup.ALBUM, 'Albums'],
