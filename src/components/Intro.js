@@ -1,4 +1,4 @@
-import SyncButton from './SyncButton'
+import SyncButton from 'components/SyncButton'
 
 /**
  * Render intro content for new users
