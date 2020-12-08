@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { getSettingsCovers } from 'state/selectors'
-import { getSpotifyUri, getSpotifyUrl } from 'helpers'
+import { spotifyUri, spotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import Link from './Link'
 
@@ -21,8 +21,8 @@ function Album({ album }) {
         <div className="content">
           <Link
             title={name}
-            uri={getSpotifyUri(id, ALBUM)}
-            url={getSpotifyUrl(id, ALBUM)}
+            uri={spotifyUri(id, ALBUM)}
+            url={spotifyUrl(id, ALBUM)}
             className="title is-size-5"
           >
             {name}
@@ -46,8 +46,8 @@ function AlbumCover({ album }) {
   return (
     <Link
       title={name}
-      uri={getSpotifyUri(id, ALBUM)}
-      url={getSpotifyUrl(id, ALBUM)}
+      uri={spotifyUri(id, ALBUM)}
+      url={spotifyUrl(id, ALBUM)}
       className="media-left"
     >
       <figure className="image">
@@ -64,8 +64,8 @@ function ArtistLink({ artist, className }) {
   return (
     <Link
       title={name}
-      uri={getSpotifyUri(id, ARTIST)}
-      url={getSpotifyUrl(id, ARTIST)}
+      uri={spotifyUri(id, ARTIST)}
+      url={spotifyUrl(id, ARTIST)}
       className={className}
       key={id}
     >

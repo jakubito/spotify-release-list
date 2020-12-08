@@ -4,10 +4,10 @@ import {
   defer,
   chunks,
   generateNonce,
-  getPlaylistSuggestion,
+  playlistName,
   getReleasesBetween,
-  getSpotifyUri,
-  getSpotifyUrl,
+  spotifyUri,
+  spotifyUrl,
   getImage,
   buildUser,
   buildArtist,
@@ -129,11 +129,11 @@ describe('generateNonce', () => {
   })
 })
 
-describe('getPlaylistSuggestion', () => {
+describe('playlistName', () => {
   it('works with different days', () => {
     const start = moment('2020-01-15')
     const end = moment('2020-02-08')
-    const actual = getPlaylistSuggestion(start, end)
+    const actual = playlistName(start, end)
 
     expect(actual).toEqual('Jan 15 - Feb 8 Releases')
   })
@@ -141,7 +141,7 @@ describe('getPlaylistSuggestion', () => {
   it('works with single day', () => {
     const start = moment('2020-01-15')
     const end = moment('2020-01-15')
-    const actual = getPlaylistSuggestion(start, end)
+    const actual = playlistName(start, end)
 
     expect(actual).toEqual('Jan 15 Releases')
   })
@@ -189,18 +189,18 @@ describe('getReleasesBetween', () => {
   })
 })
 
-describe('getSpotifyUri', () => {
+describe('spotifyUri', () => {
   it('returns correct URI', () => {
-    const actual = getSpotifyUri('123', 'track')
+    const actual = spotifyUri('123', 'track')
     const expected = 'spotify:track:123'
 
     expect(actual).toEqual(expected)
   })
 })
 
-describe('getSpotifyUrl', () => {
+describe('spotifyUrl', () => {
   it('returns correct URL', () => {
-    const actual = getSpotifyUrl('123', 'track')
+    const actual = spotifyUrl('123', 'track')
     const expected = 'https://open.spotify.com/track/123'
 
     expect(actual).toEqual(expected)

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { getSpotifyUri, getSpotifyUrl } from 'helpers'
+import { spotifyUri, spotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { getPlaylistForm, getPlaylistId } from 'state/selectors'
 import Link from 'components/Link'
@@ -23,8 +23,8 @@ function PlaylistInfo({ closeModal }) {
         Playlist created
         <Link
           title={name}
-          uri={getSpotifyUri(id, SpotifyEntity.PLAYLIST)}
-          url={getSpotifyUrl(id, SpotifyEntity.PLAYLIST)}
+          uri={spotifyUri(id, SpotifyEntity.PLAYLIST)}
+          url={spotifyUrl(id, SpotifyEntity.PLAYLIST)}
           className="is-size-5"
         >
           {name}

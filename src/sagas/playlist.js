@@ -1,5 +1,5 @@
 import { all, call, put, select } from 'redux-saga/effects'
-import { chunks, getSpotifyUri } from 'helpers'
+import { chunks, spotifyUri } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
 import { isValidPlaylistToken, startPlaylistAuthFlow } from 'auth'
@@ -63,7 +63,7 @@ function* createPlaylistMainSaga() {
 
     /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
     const trackIds = yield all(trackIdsCalls)
-    const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK))
+    const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, SpotifyEntity.TRACK))
     /** @type {SpotifyPlaylist} */
     let firstPlaylist
 

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
-import { getPlaylistSuggestion } from 'helpers'
+import { playlistName } from 'helpers'
 import { getFiltersDates } from 'state/selectors'
 import Input from 'components/Input'
 
@@ -28,9 +28,7 @@ function NameField() {
         <Input
           id="name"
           name="name"
-          defaultValue={
-            filtersDates && getPlaylistSuggestion(filtersDates.startDate, filtersDates.endDate)
-          }
+          defaultValue={filtersDates && playlistName(filtersDates.startDate, filtersDates.endDate)}
           className={classNames({ 'is-danger': errors.name })}
           ref={(element) => {
             register(element, { required: true, maxLength: 100 })
