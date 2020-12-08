@@ -3,7 +3,6 @@ import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
 import { defer } from 'helpers'
-import { useFeature } from 'hooks'
 import {
   getLastSyncDate,
   getHasReleases,
@@ -33,7 +32,6 @@ function Header() {
   const hasOriginalReleases = useSelector(getHasOriginalReleases)
   const filtersVisible = useSelector(getFiltersVisible)
   const filtersApplied = useSelector(getFiltersApplied)
-  const { seen: filtersSeen } = useFeature('filters')
 
   const toggleFilters = () => defer(dispatch, toggleFiltersVisible())
   const openPlaylistModal = () => defer(dispatch, showPlaylistModal())
@@ -62,16 +60,8 @@ function Header() {
                     'fa-minus': filtersVisible,
                   })}
                   onClick={toggleFilters}
-                  className="has-badge"
                   dark={filtersVisible}
                 >
-                  <div
-                    className={classNames('badge is-primary has-text-weight-semibold', {
-                      'is-hidden': filtersSeen,
-                    })}
-                  >
-                    NEW
-                  </div>
                   Filter
                 </Button>
               )}
