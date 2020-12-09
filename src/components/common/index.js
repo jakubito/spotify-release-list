@@ -1,4 +1,5 @@
 export { default as Button } from './Button'
+export { default as Centered } from './Centered'
 export { default as Checkbox } from './Checkbox'
 export { default as Emoji } from './Emoji'
 export { default as Input } from './Input'

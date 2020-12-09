@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import { getPreviousSyncMaxDate } from 'state/selectors'
-import { Album } from 'components'
+import Album from './Album'
 
 /**
  * Render single release day

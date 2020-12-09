@@ -1,7 +1,9 @@
 import { useSelector } from 'react-redux'
 import { getSyncing, getLastSync, getReleasesEntries } from 'state/selectors'
-import { Intro, Loading, Releases } from 'components'
 import { useRefChangeKey } from 'hooks'
+import Intro from './Intro'
+import Loading from './Loading'
+import Releases from './Releases'
 
 /**
  * Render main content
