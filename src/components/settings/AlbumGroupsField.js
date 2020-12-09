@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { AlbumGroupIndex, AlbumGroupLabels } from 'enums'
 import { getSettingsGroups } from 'state/selectors'
 import { setSettings } from 'state/actions'
-import { Checkbox } from 'components'
+import { Checkbox } from 'components/common'
 import HelpText from './HelpText'
 
 /**

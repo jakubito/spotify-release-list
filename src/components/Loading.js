@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { defer } from 'helpers'
 import { syncCancel } from 'state/actions'
-import { Button } from 'components'
+import { Button } from 'components/common'
 
 /**
  * Render loading screen

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { getSettingsCovers } from 'state/selectors'
 import { spotifyUri, spotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'
-import { Link } from 'components'
+import { Link } from 'components/common'
 
 const { ALBUM, ARTIST } = SpotifyEntity
 

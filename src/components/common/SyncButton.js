@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { defer } from 'helpers'
 import { getSyncing, getWorking, getSyncingProgress } from 'state/selectors'
 import { sync } from 'state/actions'
-import { Button } from 'components'
+import { Button } from 'components/common'
 
 /**
  * Render sync button

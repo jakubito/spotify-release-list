@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { getWorking } from 'state/selectors'
-import { Button } from 'components'
+import { Button } from 'components/common'
 import NameField from './NameField'
 import DescriptionField from './DescriptionField'
 import VisibilityField from './VisibilityField'

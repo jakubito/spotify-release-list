@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux'
 import { useFormContext } from 'react-hook-form'
 import { createPlaylistCancel } from 'state/actions'
-import { Button } from 'components'
+import { Button } from 'components/common'
 
 /**
  * Render playlist creation progress bar

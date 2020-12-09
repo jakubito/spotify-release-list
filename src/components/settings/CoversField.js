@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getSettingsCovers } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
-import { Checkbox } from 'components'
+import { Checkbox } from 'components/common'
 
 /**
  * Render album covers toggle field
