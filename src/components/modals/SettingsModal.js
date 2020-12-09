@@ -2,8 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { hideSettingsModal, showResetModal } from 'state/actions'
 import { useModal } from 'hooks'
 import { getUser } from 'state/selectors'
-import Button from 'components/Button'
-import LastSync from 'components/LastSync'
+import { Button, LastSync } from 'components'
 import {
   AlbumGroupsField,
   TimePeriodField,
@@ -25,7 +24,7 @@ function SettingsModal() {
   return (
     <div className="SettingsModal modal is-active">
       <div className="modal-background" onClick={closeModal} />
-      <div className="modal-content has-background-black-bis has-text-light fade-in-top">
+      <div className="modal-content has-background-black-bis has-text-light fade-in">
         <h4 className="title is-4 has-text-light has-text-centered">Settings</h4>
 
         <div className="columns">

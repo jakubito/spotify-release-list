@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux'
 import { reset, hideResetModal, showSettingsModal } from 'state/actions'
 import { useModal } from 'hooks'
-import Button from 'components/Button'
+import { Button } from 'components'
 
 /**
  * Render reset data modal
@@ -13,7 +13,7 @@ function ResetModal() {
   return (
     <div className="ResetModal modal is-active">
       <div className="modal-background" onClick={closeModal} />
-      <div className="modal-content has-background-black-bis has-text-light fade-in-top">
+      <div className="modal-content has-background-black-bis has-text-light fade-in">
         <h4 className="title is-4 has-text-light has-text-centered">
           Are you sure you want to delete all data?
         </h4>

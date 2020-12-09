@@ -102,13 +102,13 @@ export function* dateRange(startDate, endDate) {
 }
 
 /**
- * Get playlist name suggestion
+ * Create playlist name suggestion
  *
  * @param {Moment} startDate
  * @param {Moment} endDate
  * @returns {string|null}
  */
-export function getPlaylistSuggestion(startDate, endDate) {
+export function playlistName(startDate, endDate) {
   const start = startDate.format('MMM D')
   const end = endDate.format('MMM D')
 
@@ -147,7 +147,7 @@ export function getReleasesBetween(releasesMap, startDate, endDate) {
  * @param {string} entity
  * @returns {string}
  */
-export function getSpotifyUri(id, entity) {
+export function spotifyUri(id, entity) {
   return `spotify:${entity}:${id}`
 }
 
@@ -158,7 +158,7 @@ export function getSpotifyUri(id, entity) {
  * @param {string} entity
  * @returns {string}
  */
-export function getSpotifyUrl(id, entity) {
+export function spotifyUrl(id, entity) {
   return `https://open.spotify.com/${entity}/${id}`
 }
 

@@ -6,6 +6,14 @@ import { Scope } from 'enums'
 
 const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
 
+/**
+ * How many minutes to subtract from the actual token expiration time
+ */
+const TOKEN_PADDING_MINUTES = 10
+
+/**
+ * Represents an error encountered during authorization
+ */
 export class AuthError extends Error {
   /** @param {string} [message] */
   constructor(message) {
@@ -47,7 +55,7 @@ export function validateAuthRequest(locationSearch, locationHash, nonce) {
   const { action, scope } = state
   const token = hash.access_token
   const tokenExpires = moment()
-    .add(Number(hash.expires_in) - 60 * 5, 'seconds') // subtract 5 minutes just to be safe
+    .add(Number(hash.expires_in) - 60 * TOKEN_PADDING_MINUTES, 'seconds')
     .toISOString()
 
   return { action, scope, token, tokenExpires }

@@ -1,9 +1,8 @@
 import { all, call, put, select } from 'redux-saga/effects'
-import { chunks, getSpotifyUri } from 'helpers'
+import { chunks, spotifyUri } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
 import { isValidPlaylistToken, startPlaylistAuthFlow } from 'auth'
-import { withValidToken } from 'sagas/helpers'
 import {
   getPlaylistForm,
   getReleasesEntries,
@@ -17,11 +16,12 @@ import {
   createPlaylistError,
   showErrorMessage,
 } from 'state/actions'
+import { withValidToken } from './helpers'
 
 /**
  * Playlist creation wrapper saga
  */
-export function* createPlaylistSaga() {
+function* createPlaylistSaga() {
   /** @type {ReturnType<typeof getPlaylistForm>} */
   const { isPrivate } = yield select(getPlaylistForm)
 
@@ -63,7 +63,7 @@ function* createPlaylistMainSaga() {
 
     /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
     const trackIds = yield all(trackIdsCalls)
-    const trackUris = trackIds.flat().map((trackId) => getSpotifyUri(trackId, SpotifyEntity.TRACK))
+    const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, SpotifyEntity.TRACK))
     /** @type {SpotifyPlaylist} */
     let firstPlaylist
 
@@ -89,3 +89,5 @@ function* createPlaylistMainSaga() {
     throw error
   }
 }
+
+export default createPlaylistSaga

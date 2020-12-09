@@ -4,8 +4,7 @@ import debounce from 'lodash/debounce'
 import { defer } from 'helpers'
 import { setFilters } from 'state/actions'
 import { getFiltersSearch } from 'state/selectors'
-import Input from 'components/Input'
-import Button from 'components/Button'
+import { Input, Button } from 'components'
 
 /**
  * Render full-text search filter

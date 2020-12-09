@@ -106,7 +106,7 @@ export const getFiltersApplied = createSelector(
 )
 
 /**
- * Get last sync as `Date` instance
+ * Get last sync as Date instance
  */
 export const getLastSyncDate = createSelector(
   getLastSync,
@@ -150,7 +150,7 @@ export const getReleasesMaxDate = createSelector(getOriginalReleasesEntries, (en
 )
 
 /**
- * Get earliest and latest dates as `Date` instances
+ * Get earliest and latest dates as Moment instances
  */
 export const getReleasesMinMaxDates = createSelector(
   [getReleasesMinDate, getReleasesMaxDate],
@@ -158,7 +158,7 @@ export const getReleasesMinMaxDates = createSelector(
 )
 
 /**
- * Get date range filter dates as `Date` instances
+ * Get date range filter dates as Moment instances
  */
 export const getFiltersDates = createSelector(
   [getFiltersStartDate, getFiltersEndDate],

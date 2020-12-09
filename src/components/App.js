@@ -1,11 +1,10 @@
-import Header from 'components/Header'
-import Filters from 'components/filters'
-import Content from 'components/Content'
-import SettingsModalContainer from 'components/modals/SettingsModalContainer'
-import ResetModalContainer from 'components/modals/ResetModalContainer'
-import PlaylistModalContainer from 'components/modals/PlaylistModalContainer'
-import BackToTop from 'components/BackToTop'
-import Message from 'components/Message'
+import { Header, Content, BackToTop, Message } from 'components'
+import { Filters } from 'components/filters'
+import {
+  SettingsModalContainer,
+  ResetModalContainer,
+  PlaylistModalContainer,
+} from 'components/modals'
 
 /**
  * Main app component
