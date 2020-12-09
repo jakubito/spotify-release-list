@@ -7,7 +7,7 @@ import { getFiltersDates, getReleasesMinMaxDates } from 'state/selectors'
 import { setFilters } from 'state/actions'
 import { defer } from 'helpers'
 import { MomentFormat } from 'enums'
-import Button from 'components/Button'
+import { Button } from 'components'
 import DateRangeShortcuts from './DateRangeShortcuts'
 
 const { ISO_DATE } = MomentFormat

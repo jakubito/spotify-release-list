@@ -17,9 +17,7 @@ import {
   toggleFiltersVisible,
   resetFilters,
 } from 'state/actions'
-import SyncButton from 'components/SyncButton'
-import Button from 'components/Button'
-import LastSync from 'components/LastSync'
+import { SyncButton, Button, LastSync } from 'components'
 
 /**
  * Render header

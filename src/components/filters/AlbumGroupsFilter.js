@@ -6,7 +6,7 @@ import { defer } from 'helpers'
 import { AlbumGroupLabels } from 'enums'
 import { getFiltersGroups, getReleasesGroupMap } from 'state/selectors'
 import { setFilters } from 'state/actions'
-import Button from 'components/Button'
+import { Button } from 'components'
 
 /**
  * Render album groups filter

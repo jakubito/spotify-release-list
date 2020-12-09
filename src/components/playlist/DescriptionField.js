@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import Input from 'components/Input'
+import { Input } from 'components'
 
 /**
  * Render playlist description form field

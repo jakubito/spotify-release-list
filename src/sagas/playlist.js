@@ -3,7 +3,6 @@ import { chunks, spotifyUri } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
 import { isValidPlaylistToken, startPlaylistAuthFlow } from 'auth'
-import { withValidToken } from 'sagas/helpers'
 import {
   getPlaylistForm,
   getReleasesEntries,
@@ -17,11 +16,12 @@ import {
   createPlaylistError,
   showErrorMessage,
 } from 'state/actions'
+import { withValidToken } from './helpers'
 
 /**
  * Playlist creation wrapper saga
  */
-export function* createPlaylistSaga() {
+function* createPlaylistSaga() {
   /** @type {ReturnType<typeof getPlaylistForm>} */
   const { isPrivate } = yield select(getPlaylistForm)
 
@@ -89,3 +89,5 @@ function* createPlaylistMainSaga() {
     throw error
   }
 }
+
+export default createPlaylistSaga

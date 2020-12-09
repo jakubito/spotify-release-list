@@ -7,8 +7,7 @@ import 'react-dates/initialize'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { store, hydrate } from 'state'
 import { getSettingsTheme } from 'state/selectors'
-import Auth from 'components/Auth'
-import App from 'components/App'
+import { Auth, App } from 'components'
 import 'styles/index.scss'
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })

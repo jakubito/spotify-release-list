@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux'
 import { reset, hideResetModal, showSettingsModal } from 'state/actions'
 import { useModal } from 'hooks'
-import Button from 'components/Button'
+import { Button } from 'components'
 
 /**
  * Render reset data modal

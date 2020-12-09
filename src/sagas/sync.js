@@ -1,11 +1,10 @@
 import moment from 'moment'
 import { channel, buffers } from 'redux-saga'
 import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
-import { progressWorker, requestWorker, withValidToken } from 'sagas/helpers'
-import { getSettings, getToken, getReleasesMaxDate } from 'state/selectors'
 import { MomentFormat } from 'enums'
 import { getUser, getUserFollowedArtists, getArtistAlbums } from 'api'
 import { isValidSyncToken, startSyncAuthFlow } from 'auth'
+import { getSettings, getToken, getReleasesMaxDate } from 'state/selectors'
 import {
   setSyncingProgress,
   setUser,
@@ -15,6 +14,7 @@ import {
   setAlbums,
   showErrorMessage,
 } from 'state/actions'
+import { progressWorker, requestWorker, withValidToken } from './helpers'
 
 /**
  * Limit maximum number of concurrent requests
@@ -29,7 +29,7 @@ const LOADING_ANIMATION_MS = 550
 /**
  * Synchronization wrapper saga
  */
-export function* syncSaga() {
+function* syncSaga() {
   yield call(withValidToken, syncMainSaga, isValidSyncToken, startSyncAuthFlow)
 }
 
@@ -96,3 +96,5 @@ function* syncMainSaga() {
     throw error
   }
 }
+
+export default syncSaga

@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { getWorking } from 'state/selectors'
-import Button from 'components/Button'
-import { NameField, DescriptionField, VisibilityField } from '.'
+import { Button } from 'components'
+import NameField from './NameField'
+import DescriptionField from './DescriptionField'
+import VisibilityField from './VisibilityField'
 
 /**
  * Render playlist form

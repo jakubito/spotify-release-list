@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { min, max } from 'moment'
 import { getReleasesMinMaxDates } from 'state/selectors'
-import Button from 'components/Button'
+import { Button } from 'components'
 
 /**
  * Render date range filter shortcut

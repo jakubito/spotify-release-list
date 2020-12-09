@@ -2,8 +2,7 @@ import { useSelector } from 'react-redux'
 import { spotifyUri, spotifyUrl } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { getPlaylistForm, getPlaylistId } from 'state/selectors'
-import Link from 'components/Link'
-import Button from 'components/Button'
+import { Link, Button } from 'components'
 
 /**
  * Render playlist creation result

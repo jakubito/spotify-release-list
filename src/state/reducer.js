@@ -1,6 +1,5 @@
 import orderBy from 'lodash/orderBy'
-import { AlbumGroupIndex } from 'enums'
-import { initialState } from 'state'
+import { AlbumGroup, AlbumGroupIndex } from 'enums'
 import {
   SYNC_START,
   SYNC_FINISHED,
@@ -33,6 +32,47 @@ import {
   SET_FILTERS,
   RESET_FILTERS,
 } from 'state/actions'
+
+/** @type {State} */
+export const initialState = {
+  albums: {},
+  syncing: false,
+  syncingProgress: 0,
+  lastSync: null,
+  previousSyncMaxDate: null,
+  creatingPlaylist: false,
+  playlistId: null,
+  playlistForm: {
+    name: null,
+    description: null,
+    isPrivate: null,
+  },
+  token: null,
+  tokenExpires: null,
+  tokenScope: null,
+  user: null,
+  nonce: null,
+  message: null,
+  settingsModalVisible: false,
+  resetModalVisible: false,
+  playlistModalVisible: false,
+  filtersVisible: false,
+  settings: {
+    groups: Object.values(AlbumGroup),
+    days: 30,
+    market: '',
+    theme: '',
+    uriLinks: false,
+    covers: true,
+  },
+  filters: {
+    groups: [],
+    search: '',
+    startDate: null,
+    endDate: null,
+  },
+  seenFeatures: [],
+}
 
 /**
  * State root reducer

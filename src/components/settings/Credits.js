@@ -1,4 +1,4 @@
-import Emoji from 'components/Emoji'
+import { Emoji } from 'components'
 
 /**
  * Render all the important links
