@@ -70,6 +70,7 @@ export const initialState = {
     search: '',
     startDate: null,
     endDate: null,
+    variousArtists: true,
   },
   seenFeatures: [],
 }
@@ -88,8 +89,11 @@ function rootReducer(state = initialState, { type, payload }) {
         ...state,
         syncing: true,
         syncingProgress: 0,
-        filters: initialState.filters,
         filtersVisible: false,
+        filters: {
+          ...initialState.filters,
+          variousArtists: state.filters.variousArtists,
+        },
       }
     case SYNC_FINISHED:
       return { ...state, ...payload, syncing: false, lastSync: new Date().toISOString() }
