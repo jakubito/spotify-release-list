@@ -13,7 +13,7 @@ function VariousArtistsFilter() {
 
   return (
     <Checkbox
-      id="covers"
+      id="variousArtistsFilter"
       label="Exclude Various Artists"
       defaultChecked={exclude}
       onChange={(event) =>
