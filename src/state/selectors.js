@@ -84,9 +84,9 @@ export const getFiltersGroups = createSelector(getFilters, (filters) => filters.
 export const getFiltersSearch = createSelector(getFilters, (filters) => filters.search)
 export const getFiltersStartDate = createSelector(getFilters, (filters) => filters.startDate)
 export const getFiltersEndDate = createSelector(getFilters, (filters) => filters.endDate)
-export const getFiltersVariousArtists = createSelector(
+export const getFiltersExcludeVariousArtists = createSelector(
   getFilters,
-  (filters) => filters.variousArtists
+  (filters) => filters.excludeVariousArtists
 )
 
 /**
@@ -109,12 +109,11 @@ export const getModalVisible = createSelector(
  */
 export const getFiltersApplied = createSelector(
   getFiltersGroups,
-  getFiltersVariousArtists,
   getFiltersSearch,
   getFiltersStartDate,
   getFiltersEndDate,
-  (groups, variousArtists, ...rest) =>
-    Boolean(groups.length) || !variousArtists || includesTruthy(rest)
+  getFiltersExcludeVariousArtists,
+  (groups, ...rest) => Boolean(groups.length) || includesTruthy(rest)
 )
 
 /**
@@ -256,8 +255,8 @@ const getAlbumGroupsFiltered = createSelector(
  * Get album IDs based on Various Artists filter
  */
 const getVariousArtistsFiltered = createSelector(
-  [getFiltersVariousArtists, getNonVariousArtistsAlbumIds],
-  (variousArtists, ids) => !variousArtists && ids
+  [getFiltersExcludeVariousArtists, getNonVariousArtistsAlbumIds],
+  (exclude, ids) => exclude && ids
 )
 
 /**

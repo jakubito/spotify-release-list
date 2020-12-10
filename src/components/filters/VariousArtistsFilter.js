@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { defer } from 'helpers'
 import { setFilters } from 'state/actions'
-import { getFiltersVariousArtists } from 'state/selectors'
+import { getFiltersExcludeVariousArtists } from 'state/selectors'
 import { Checkbox } from 'components/common'
 
 /**
@@ -9,14 +9,16 @@ import { Checkbox } from 'components/common'
  */
 function VariousArtistsFilter() {
   const dispatch = useDispatch()
-  const variousArtists = useSelector(getFiltersVariousArtists)
+  const exclude = useSelector(getFiltersExcludeVariousArtists)
 
   return (
     <Checkbox
       id="covers"
-      label="Include Various Artists"
-      defaultChecked={variousArtists}
-      onChange={(event) => defer(dispatch, setFilters({ variousArtists: event.target.checked }))}
+      label="Exclude Various Artists"
+      defaultChecked={exclude}
+      onChange={(event) =>
+        defer(dispatch, setFilters({ excludeVariousArtists: event.target.checked }))
+      }
       dark
     />
   )

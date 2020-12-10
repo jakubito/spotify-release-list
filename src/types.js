@@ -50,7 +50,7 @@
  *   search: string
  *   startDate?: string
  *   endDate?: string
- *   variousArtists: boolean
+ *   excludeVariousArtists: boolean
  * }} Filters
  *
  * @typedef {{

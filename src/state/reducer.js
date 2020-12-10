@@ -70,7 +70,7 @@ export const initialState = {
     search: '',
     startDate: null,
     endDate: null,
-    variousArtists: true,
+    excludeVariousArtists: false,
   },
   seenFeatures: [],
 }
@@ -92,7 +92,7 @@ function rootReducer(state = initialState, { type, payload }) {
         filtersVisible: false,
         filters: {
           ...initialState.filters,
-          variousArtists: state.filters.variousArtists,
+          excludeVariousArtists: state.filters.excludeVariousArtists,
         },
       }
     case SYNC_FINISHED:
