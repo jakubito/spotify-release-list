@@ -135,6 +135,8 @@ body,
   &:hover {
     &.is-dark.has-background-color {
       + label {
+        color: $grey-light;
+
         &::before,
         &:before {
           background-color: $black-ter !important;
@@ -145,6 +147,7 @@ body,
   }
 
   + label {
+    color: $grey;
     user-select: none;
 
     &::after,
@@ -163,6 +166,8 @@ body,
 
     &:checked {
       + label {
+        color: $grey-light;
+
         &::before,
         &:before {
           background-color: $color-dark !important;

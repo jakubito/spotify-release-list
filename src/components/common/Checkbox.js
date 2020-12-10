@@ -32,13 +32,7 @@ function Checkbox({ id, name, className, label, value, checked, defaultChecked, 
         })}
       />
       {label && (
-        <label
-          htmlFor={id}
-          className={classNames('has-text-weight-semibold', {
-            'has-text-light': !dark,
-            'has-text-grey': dark,
-          })}
-        >
+        <label htmlFor={id} className="has-text-weight-semibold">
           {label}
         </label>
       )}
