@@ -81,6 +81,7 @@
  * @typedef {(...args: any[]) => Action} ActionCreator
  * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
+ * @typedef {[value: string, label: string][]} SelectOptions
  */
 
 /**

@@ -2,7 +2,17 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getSettingsDays } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
+import { Select } from 'components/common'
 import HelpText from './HelpText'
+
+/** @type {SelectOptions} */
+const options = [
+  ['7', 'Past week'],
+  ['30', 'Past month'],
+  ['90', 'Past 3 months'],
+  ['180', 'Past 6 months'],
+  ['365', 'Past year'],
+]
 
 /**
  * Render time period field
@@ -19,20 +29,13 @@ function TimePeriodField() {
       <label className="label has-text-light" htmlFor="timePeriod">
         Time period <HelpText>/ affects storage usage</HelpText>
       </label>
-      <div className="control has-icons-left">
-        <div className="select is-rounded">
-          <select id="timePeriod" defaultValue={days.toString()} onChange={onChange}>
-            <option value="7">Past week</option>
-            <option value="30">Past month</option>
-            <option value="90">Past 3 months</option>
-            <option value="180">Past 6 months</option>
-            <option value="365">Past year</option>
-          </select>
-        </div>
-        <span className="icon is-left">
-          <i className="fas fa-history" />
-        </span>
-      </div>
+      <Select
+        id="timePeriod"
+        icon="fas fa-history"
+        defaultValue={days.toString()}
+        onChange={onChange}
+        options={options}
+      />
     </div>
   )
 }
