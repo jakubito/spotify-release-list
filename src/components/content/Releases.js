@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Waypoint } from 'react-waypoint'
-import { Centered } from 'components/common'
+import Centered from './Centered'
 import ReleaseDay from './ReleaseDay'
 
 /**
