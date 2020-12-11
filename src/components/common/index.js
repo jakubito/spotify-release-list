@@ -1,3 +1,4 @@
+export { default as Anchor } from './Anchor'
 export { default as Button } from './Button'
 export { default as Centered } from './Centered'
 export { default as Checkbox } from './Checkbox'

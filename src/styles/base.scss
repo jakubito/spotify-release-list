@@ -147,7 +147,7 @@ body,
   }
 
   + label {
-    color: $grey;
+    color: $white-ter;
     user-select: none;
 
     &::after,
@@ -158,6 +158,8 @@ body,
 
   &.is-dark.has-background-color {
     + label {
+      color: $grey;
+
       &::before,
       &:before {
         background-color: $color-dark !important;
