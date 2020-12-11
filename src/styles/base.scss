@@ -130,3 +130,57 @@ body,
 .button[disabled] {
   opacity: 0.7;
 }
+
+.is-checkradio[type='checkbox'] {
+  &:hover {
+    &.is-dark.has-background-color {
+      + label {
+        color: $grey-light;
+
+        &::before,
+        &:before {
+          background-color: $black-ter !important;
+          border-color: transparent !important;
+        }
+      }
+    }
+  }
+
+  + label {
+    color: $white-ter;
+    user-select: none;
+
+    &::after,
+    &:after {
+      border-width: 0.15rem !important;
+    }
+  }
+
+  &.is-dark.has-background-color {
+    + label {
+      color: $grey;
+
+      &::before,
+      &:before {
+        background-color: $color-dark !important;
+      }
+    }
+
+    &:checked {
+      + label {
+        color: $grey-light;
+
+        &::before,
+        &:before {
+          background-color: $color-dark !important;
+        }
+
+        &::after,
+        &:after {
+          background-color: $color-dark !important;
+          border-color: $white-ter !important;
+        }
+      }
+    }
+  }
+}

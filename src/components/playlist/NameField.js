@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
 import { playlistName } from 'helpers'
 import { getFiltersDates } from 'state/selectors'
-import { Input } from 'components'
+import { Input } from 'components/common'
 
 /**
  * Render playlist name form field

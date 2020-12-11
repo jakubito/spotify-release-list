@@ -5,6 +5,9 @@ import intersect from 'fast_array_intersect'
 import last from 'lodash/last'
 import { buildReleasesEntries, buildReleasesMap, includesTruthy, getReleasesBetween } from 'helpers'
 
+const VARIOUS_ARTISTS = 'Various Artist'
+const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
+
 /** @param {State} state */
 export const getUser = (state) => state.user
 
@@ -81,6 +84,10 @@ export const getFiltersGroups = createSelector(getFilters, (filters) => filters.
 export const getFiltersSearch = createSelector(getFilters, (filters) => filters.search)
 export const getFiltersStartDate = createSelector(getFilters, (filters) => filters.startDate)
 export const getFiltersEndDate = createSelector(getFilters, (filters) => filters.endDate)
+export const getFiltersExcludeVariousArtists = createSelector(
+  getFilters,
+  (filters) => filters.excludeVariousArtists
+)
 
 /**
  * Check if there is any async work being done
@@ -101,8 +108,12 @@ export const getModalVisible = createSelector(
  * Check if any filter is applied
  */
 export const getFiltersApplied = createSelector(
-  [getFiltersGroups, getFiltersSearch, getFiltersStartDate, getFiltersEndDate],
-  (groups, ...values) => Boolean(groups.length) || includesTruthy(values)
+  getFiltersGroups,
+  getFiltersSearch,
+  getFiltersStartDate,
+  getFiltersEndDate,
+  getFiltersExcludeVariousArtists,
+  (groups, ...rest) => Boolean(groups.length) || includesTruthy(rest)
 )
 
 /**
@@ -198,25 +209,42 @@ const getFuseInstance = createSelector(
 )
 
 /**
- * Get album IDs filtered by text search
+ * Get all non-"Various Artists" album IDs
  */
-const getSearchAlbums = createSelector(
+const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
+  albums.reduce((ids, album) => {
+    const variousArtists = [...album.artists, ...album.otherArtists].find(
+      (artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID
+    )
+
+    if (!variousArtists) {
+      ids.push(album.id)
+    }
+
+    return ids
+  }, [])
+)
+
+/**
+ * Get album IDs based on search filter
+ */
+const getSearchFiltered = createSelector(
   [getFiltersSearch, getFuseInstance],
   (searchQuery, fuse) => searchQuery && fuse.search(searchQuery).map((result) => result.item.id)
 )
 
 /**
- * Get album IDs filtered by date range
+ * Get album IDs based on date range filter
  */
-const getDateRangeAlbums = createSelector(
+const getDateRangeFiltered = createSelector(
   [getFiltersDates, getOriginalReleasesMap],
   (dates, releasesMap) => dates && getReleasesBetween(releasesMap, dates.startDate, dates.endDate)
 )
 
 /**
- * Get album IDs filtered by album groups
+ * Get album IDs based on album groups filter
  */
-const getAlbumGroupsAlbums = createSelector(
+const getAlbumGroupsFiltered = createSelector(
   [getFiltersGroups, getReleasesGroupMap],
   (groups, groupMap) =>
     groups.length &&
@@ -224,10 +252,22 @@ const getAlbumGroupsAlbums = createSelector(
 )
 
 /**
+ * Get album IDs based on Various Artists filter
+ */
+const getVariousArtistsFiltered = createSelector(
+  [getFiltersExcludeVariousArtists, getNonVariousArtistsAlbumIds],
+  (exclude, ids) => exclude && ids
+)
+
+/**
  * Intersect all filtered results and return albums as an array
  */
 const getFilteredAlbumsArray = createSelector(
-  [getAlbums, getSearchAlbums, getDateRangeAlbums, getAlbumGroupsAlbums],
+  getAlbums,
+  getSearchFiltered,
+  getDateRangeFiltered,
+  getAlbumGroupsFiltered,
+  getVariousArtistsFiltered,
   (albums, ...filtered) => intersect(filtered.filter(Array.isArray)).map((id) => albums[id])
 )
 

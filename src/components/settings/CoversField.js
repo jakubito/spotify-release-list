@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getSettingsCovers } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
+import { Checkbox } from 'components/common'
 
 /**
  * Render album covers toggle field
@@ -15,17 +16,12 @@ function CoversField() {
       <label className="label has-text-light">Data saver</label>
       <div className="control">
         <div className="field">
-          <input
-            className="is-checkradio has-background-color is-white"
+          <Checkbox
             id="covers"
-            type="checkbox"
-            name="covers"
+            label="Display album covers"
             defaultChecked={covers}
             onChange={(event) => defer(dispatch, setSettings({ covers: event.target.checked }))}
           />
-          <label htmlFor="covers" className="has-text-weight-semibold">
-            Display album covers
-          </label>
         </div>
       </div>
     </div>

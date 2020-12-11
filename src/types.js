@@ -50,6 +50,7 @@
  *   search: string
  *   startDate?: string
  *   endDate?: string
+ *   excludeVariousArtists: boolean
  * }} Filters
  *
  * @typedef {{
@@ -76,7 +77,6 @@
  * @typedef {[date: string, albums: AlbumGrouped[]][]} ReleasesEntries
  * @typedef {{ [group: string]: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
- * @typedef {{ [prop: string]: any }} AnyProps
  * @typedef {{ type: string, payload: any }} Action
  * @typedef {(...args: any[]) => Action} ActionCreator
  * @typedef {{ value: number }} Progress
@@ -93,6 +93,7 @@
 /**
  * Enums
  *
+ * @typedef {string} Address
  * @typedef {string} Scope
  * @typedef {string} SpotifyEntity
  * @typedef {string} MomentFormat

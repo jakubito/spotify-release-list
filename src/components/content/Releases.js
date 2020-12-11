@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Waypoint } from 'react-waypoint'
-import { Centered, ReleaseDay } from 'components'
+import { Centered } from 'components/common'
+import ReleaseDay from './ReleaseDay'
 
 /**
  * Days limit increment

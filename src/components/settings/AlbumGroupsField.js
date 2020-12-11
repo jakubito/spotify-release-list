@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { AlbumGroupIndex, AlbumGroupLabels } from 'enums'
 import { getSettingsGroups } from 'state/selectors'
 import { setSettings } from 'state/actions'
+import { Checkbox } from 'components/common'
 import HelpText from './HelpText'
 
 /**
@@ -29,18 +30,13 @@ function AlbumGroupsField() {
       <div className="control">
         {AlbumGroupLabels.map(([group, label]) => (
           <div className="field" key={group}>
-            <input
-              type="checkbox"
-              className="is-checkradio has-background-color is-white"
-              id={`albumGroups[${group}]`}
-              name={`albumGroups[${group}]`}
+            <Checkbox
+              id={`albumGroups_${group}`}
+              label={label}
               value={group}
               checked={groups.includes(group)}
               onChange={onChange}
             />
-            <label htmlFor={`albumGroups[${group}]`} className="has-text-weight-semibold">
-              {label}
-            </label>
           </div>
         ))}
       </div>

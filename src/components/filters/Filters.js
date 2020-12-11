@@ -5,6 +5,7 @@ import { getFiltersApplied, getFiltersVisible } from 'state/selectors'
 import AlbumGroupsFilter from './AlbumGroupsFilter'
 import DateRangeFilter from './DateRangeFilter'
 import SearchFilter from './SearchFilter'
+import VariousArtistsFilter from './VariousArtistsFilter'
 
 /**
  * Render filters
@@ -29,6 +30,7 @@ function Filters() {
       <SearchFilter />
       <DateRangeFilter />
       <AlbumGroupsFilter />
+      <VariousArtistsFilter />
     </div>
   )
 }

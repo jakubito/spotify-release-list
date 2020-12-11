@@ -1,4 +1,5 @@
-import { Header, Content, BackToTop, Message } from 'components'
+import { Header, BackToTop, Message } from 'components'
+import { Content } from 'components/content'
 import { Filters } from 'components/filters'
 import {
   SettingsModalContainer,

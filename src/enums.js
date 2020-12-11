@@ -1,4 +1,12 @@
 /** @enum {string} */
+export const Address = {
+  GITHUB_PROFILE: 'https://github.com/jakubito',
+  GITHUB: 'https://github.com/jakubito/spotify-release-list',
+  PRIVACY: 'https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md',
+  DONATE: 'https://paypal.me/jakubito',
+}
+
+/** @enum {string} */
 export const Scope = {
   USER_FOLLOW_READ: 'user-follow-read',
   PLAYLIST_MODIFY_PRIVATE: 'playlist-modify-private',
