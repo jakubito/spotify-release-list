@@ -11,7 +11,7 @@ Display list of Spotify releases from artists you follow
 ## Features
 
 - Display releases day by day - you won't miss a thing!
-- Filter by text search, date range and/or group type
+- Filter by text search, date range and group type
 - Export to playlists
 - Installable progressive web application (PWA) with fullscreen and offline support
 - All application data stored locally on your device
@@ -23,7 +23,7 @@ Display list of Spotify releases from artists you follow
 <kbd>S</kbd> Show settings  
 <kbd>F</kbd> Toggle filters pane  
 <kbd>E</kbd> Export  
-<kbd>ESC</kbd> Close active modal
+<kbd>ESC</kbd> Cancel / Close active modal
 
 ## Privacy Policy
 
