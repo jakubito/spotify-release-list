@@ -4,8 +4,17 @@ import { getSettingsTheme } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import { Theme } from 'enums'
+import { Select } from 'components/common'
 
 const { COMPACT, SINGLE_COLUMN } = Theme
+
+/** @type {SelectOptions} */
+const options = [
+  ['', 'Default'],
+  [COMPACT, 'Compact'],
+  [SINGLE_COLUMN, 'Single Column'],
+  [[SINGLE_COLUMN, COMPACT].join(' '), 'Single Column - Compact'],
+]
 
 /**
  * Render theme selection field
@@ -29,23 +38,13 @@ function ThemeField() {
       <label className="label has-text-light" htmlFor="theme">
         Theme
       </label>
-      <div className="control has-icons-left">
-        <div className="select is-rounded">
-          <select
-            id="theme"
-            defaultValue={theme}
-            onChange={(event) => defer(dispatch, setSettings({ theme: event.target.value }))}
-          >
-            <option value="">Default</option>
-            <option value={COMPACT}>Compact</option>
-            <option value={SINGLE_COLUMN}>Single Column</option>
-            <option value={[SINGLE_COLUMN, COMPACT].join(' ')}>Single Column - Compact</option>
-          </select>
-        </div>
-        <span className="icon is-left">
-          <i className="fas fa-palette" />
-        </span>
-      </div>
+      <Select
+        id="theme"
+        icon="fas fa-palette"
+        defaultValue={theme}
+        onChange={(event) => defer(dispatch, setSettings({ theme: event.target.value }))}
+        options={options}
+      />
     </div>
   )
 }

@@ -250,7 +250,7 @@ export function buildReleasesEntries(releasesMap) {
   const entriesSortedByDay = orderBy(Object.entries(releasesMap), ([day]) => day, 'desc')
   const entries = entriesSortedByDay.map(
     /** @returns {[string, AlbumGrouped[]]} */
-    ([day, albums]) => [day, orderBy(albums, 'name')]
+    ([day, albums]) => [day, orderBy(albums, (album) => album.artists[0].name.toLowerCase())]
   )
 
   return entries

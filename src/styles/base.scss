@@ -117,6 +117,8 @@ body,
 .modal-content {
   padding: 30px;
   border-radius: 3px;
+  // Mobile Safari-specific hack that fixes disappearing padding
+  box-shadow: 0px 0px 1px 0px transparent;
 
   .title {
     margin-bottom: 24px;
