@@ -2,26 +2,11 @@
   animation: fade-in 0.4s cubic-bezier(0.15, 1, 0.18, 1);
 }
 
-.fade-in-bottom {
-  animation: fade-in-bottom 0.4s cubic-bezier(0.15, 1, 0.18, 1);
-}
-
 @keyframes fade-in {
   0% {
     opacity: 0;
   }
   100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fade-in-bottom {
-  0% {
-    transform: translateY(15px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
     opacity: 1;
   }
 }
