@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import throttle from 'lodash/throttle'
-import classNames from 'classnames'
 import { Button } from 'components/common'
 
 /**
@@ -26,12 +25,16 @@ function BackToTop() {
     }
   }, [])
 
+  if (!visible) {
+    return null
+  }
+
   return (
     <Button
       titleOnly="Back to top"
       icon="fas fa-arrow-up"
       onClick={() => window.scrollTo(0, 0)}
-      className={classNames('BackToTop', { 'is-sr-only': !visible })}
+      className="BackToTop fade-in-bottom"
       medium
     />
   )
