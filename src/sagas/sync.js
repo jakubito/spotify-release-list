@@ -16,6 +16,8 @@ import {
 } from 'state/actions'
 import { progressWorker, requestWorker, withValidToken } from './helpers'
 
+const { ISO_DATE } = MomentFormat
+
 /**
  * Limit maximum number of concurrent requests
  */
@@ -58,7 +60,7 @@ function* syncMainSaga() {
     const tasks = []
     /** @type {Progress} */
     const progress = { value: 0 }
-    const minDate = moment().subtract(days, 'day').format(MomentFormat.ISO_DATE)
+    const minDate = moment().subtract(days, 'day').format(ISO_DATE)
 
     const requestChannel = yield call(channel, buffers.fixed(artists.length))
     const responseChannel = yield call(channel, buffers.fixed(REQUEST_WORKERS))

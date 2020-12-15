@@ -4,6 +4,8 @@ import { SpotifyEntity } from 'enums'
 import { getPlaylistForm, getPlaylistId } from 'state/selectors'
 import { Link, Button } from 'components/common'
 
+const { PLAYLIST } = SpotifyEntity
+
 /**
  * Render playlist creation result
  *
@@ -22,8 +24,8 @@ function PlaylistInfo({ closeModal }) {
         Playlist created
         <Link
           title={name}
-          uri={spotifyUri(id, SpotifyEntity.PLAYLIST)}
-          url={spotifyUrl(id, SpotifyEntity.PLAYLIST)}
+          uri={spotifyUri(id, PLAYLIST)}
+          url={spotifyUrl(id, PLAYLIST)}
           className="is-size-5"
         >
           {name}

@@ -18,6 +18,8 @@ import {
 } from 'state/actions'
 import { withValidToken } from './helpers'
 
+const { TRACK } = SpotifyEntity
+
 /**
  * Playlist creation wrapper saga
  */
@@ -63,7 +65,7 @@ function* createPlaylistMainSaga() {
 
     /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
     const trackIds = yield all(trackIdsCalls)
-    const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, SpotifyEntity.TRACK))
+    const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
     /** @type {SpotifyPlaylist} */
     let firstPlaylist
 
