@@ -90,6 +90,14 @@ export const getFiltersExcludeVariousArtists = createSelector(
 )
 
 /**
+ * Get all token related data
+ */
+export const getTokenData = createSelector(
+  [getToken, getTokenExpires, getTokenScope],
+  (token, tokenExpires, tokenScope) => ({ token, tokenExpires, tokenScope })
+)
+
+/**
  * Check if there is any async work being done
  */
 export const getWorking = createSelector([getSyncing, getCreatingPlaylist], (...values) =>
