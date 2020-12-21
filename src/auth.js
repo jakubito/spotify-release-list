@@ -9,7 +9,7 @@ const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Sc
 /**
  * How many minutes to subtract from the actual token expiration time
  */
-const TOKEN_PADDING_MINUTES = 10
+const TOKEN_PADDING_MINUTES = 30
 
 /**
  * Represents an error encountered during authorization

@@ -77,7 +77,7 @@ function* createPlaylistMainSaga() {
 
   for (const [part, playlistTrackUrisChunk] of chunks(trackUris, 9500).entries()) {
     const fullName = part > 0 ? `${name} (${part + 1})` : name
-    /** @type {SpotifyPlaylist} */
+    /** @type {Await<ReturnType<typeof createPlaylist>>} */
     const playlist = yield call(createPlaylist, token, user.id, fullName, description, isPrivate)
 
     if (!firstPlaylist) {
