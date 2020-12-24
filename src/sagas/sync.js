@@ -60,7 +60,7 @@ function* syncMainSaga() {
   /** @type {Await<ReturnType<typeof getUserFollowedArtists>>} */
   const artists = yield call(getUserFollowedArtists, token)
 
-  /** @type {Album[]} */
+  /** @type {AlbumRaw[]} */
   const albums = []
   /** @type {Task[]} */
   const tasks = []

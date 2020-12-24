@@ -1,3 +1,4 @@
+import mergeWith from 'lodash/mergeWith'
 import orderBy from 'lodash/orderBy'
 import { MomentFormat } from 'enums'
 
@@ -43,6 +44,20 @@ export function chunks(inputArray, chunkSize) {
   }
 
   return result
+}
+
+/**
+ * Wrapper around lodash `mergeWith` that concatenates array values
+ *
+ * @template {Object} T
+ * @param {T} object
+ * @param {Object} source
+ * @returns {T}
+ */
+export function merge(object, source) {
+  return mergeWith(object, source, (objValue, srcValue) =>
+    Array.isArray(objValue) ? objValue.concat(srcValue) : undefined
+  )
 }
 
 /**
@@ -179,7 +194,7 @@ export function getImage(images) {
 }
 
 /**
- * Create user object
+ * Build User
  *
  * @param {SpotifyUser} source
  * @returns {User}
@@ -193,65 +208,62 @@ export function buildUser(source) {
 }
 
 /**
- * Create artist object
+ * Build Artist
  *
  * @param {SpotifyArtist} source
  * @returns {Artist}
  */
 export function buildArtist(source) {
-  return {
-    id: source.id,
-    name: source.name,
-  }
+  return { id: source.id, name: source.name }
 }
 
 /**
- * Create album object
+ * Build AlbumRaw
  *
  * @param {SpotifyAlbum} source
  * @param {string} artistId
- * @returns {Album}
+ * @returns {AlbumRaw}
  */
-export function buildAlbum(source, artistId) {
+export function buildAlbumRaw(source, artistId) {
   return {
     id: source.id,
     name: source.name,
     image: getImage(source.images),
-    artists: source.artists.map(buildArtist),
+    albumArtists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
-    group: source.album_group,
-    artistId,
+    artistIds: { [source.album_group]: [artistId] },
   }
 }
 
 /**
- * Return albums map indexed by release date by default
+ * Build ReleasesMap
  *
- * @param {AlbumGrouped[]} albums
+ * @param {Album[]} albums
  * @returns {ReleasesMap}
  */
 export function buildReleasesMap(albums) {
   return albums.reduce(
-    (map, album) => ({
-      ...map,
-      [album.releaseDate]: [...(map[album.releaseDate] || []), album],
-    }),
+    (map, album) => merge(map, { [album.releaseDate]: [album] }),
     /** @type {ReleasesMap} */ ({})
   )
 }
 
 /**
- * Return release entries sorted by day and albums being sorted by name
+ * Build ReleasesEntries
  *
  * @param {ReleasesMap} releasesMap
  * @returns {ReleasesEntries}
  */
 export function buildReleasesEntries(releasesMap) {
-  const entriesSortedByDay = orderBy(Object.entries(releasesMap), ([day]) => day, 'desc')
-  const entries = entriesSortedByDay.map(
-    /** @returns {[string, AlbumGrouped[]]} */
-    ([day, albums]) => [day, orderBy(albums, (album) => album.artists[0].name.toLowerCase())]
-  )
+  const entriesOrdered = orderBy(Object.entries(releasesMap), ([day]) => day, 'desc')
+  const entries = entriesOrdered.map(([day, albums]) => {
+    const albumsOrdered = orderBy(albums, [
+      (album) => Object.values(album.artists).flat().shift().name.toLowerCase(),
+      'name',
+    ])
+
+    return /** @type {[string, Album[]]} */ ([day, albumsOrdered])
+  })
 
   return entries
 }

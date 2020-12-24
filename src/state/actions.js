@@ -81,12 +81,12 @@ export function setUser(user) {
 }
 
 /**
- * @param {Album[]} albums
+ * @param {AlbumRaw[]} albumsRaw
  * @param {Artist[]} artists
  * @param {string} minDate
  */
-export function setAlbums(albums, artists, minDate) {
-  return action(SET_ALBUMS, { albums, artists, minDate })
+export function setAlbums(albumsRaw, artists, minDate) {
+  return action(SET_ALBUMS, { albumsRaw, artists, minDate })
 }
 
 export function reset() {

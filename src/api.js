@@ -1,5 +1,5 @@
 import last from 'lodash/last'
-import { buildUser, buildArtist, buildAlbum, sleep } from 'helpers'
+import { buildUser, buildArtist, buildAlbumRaw, sleep } from 'helpers'
 
 /**
  * Default to account market
@@ -70,10 +70,10 @@ export async function getUserFollowedArtists(token) {
  * @param {AlbumGroup[]} groups
  * @param {Market} market
  * @param {string} minDate
- * @returns {Promise<Album[]>}
+ * @returns {Promise<AlbumRaw[]>}
  */
 export async function getArtistAlbums(token, artistId, groups, market, minDate) {
-  /** @type {Album[]} */
+  /** @type {AlbumRaw[]} */
   const albums = []
   const params = new URLSearchParams({
     limit: String(50),
@@ -86,7 +86,7 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
   while (next) {
     /** @type {Paged<SpotifyAlbum>} */
     const response = await get(next, token)
-    const nextAlbums = response.items.map((album) => buildAlbum(album, artistId))
+    const nextAlbums = response.items.map((album) => buildAlbumRaw(album, artistId))
 
     albums.push(...nextAlbums)
 
@@ -97,7 +97,7 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
     next = last(albums).releaseDate < minDate ? null : response.next
   }
 
-  const lastGroup = last(albums).group
+  const [lastGroup] = Object.keys(last(albums).artistIds)
   const restGroups = groups.slice(groups.indexOf(lastGroup) + 1)
 
   if (restGroups.length > 0) {

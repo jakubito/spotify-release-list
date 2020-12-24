@@ -58,11 +58,17 @@
  *   name: string
  *   image: string
  *   releaseDate: string
- *   artists: Artist[]
  * }} AlbumBase
  *
- * @typedef {AlbumBase & { group: AlbumGroup, artistId: string }} Album
- * @typedef {AlbumBase & { groups: AlbumGroup[], otherArtists: Artist[] }} AlbumGrouped
+ * @typedef {AlbumBase & {
+ *   artistIds: { [group: string]: string[] }
+ *   albumArtists: Artist[]
+ * }} AlbumRaw
+ *
+ * @typedef {AlbumBase & {
+ *   artists: { [group: string]: Artist[] }
+ *   otherArtists: Artist[]
+ * }} Album
  *
  * @typedef {{
  *   title: string | ((start: Moment, end: Moment) => string)
@@ -72,9 +78,10 @@
  *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
- * @typedef {{ [id: string]: AlbumGrouped }} AlbumsMap
- * @typedef {{ [date: string]: AlbumGrouped[] }} ReleasesMap
- * @typedef {[date: string, albums: AlbumGrouped[]][]} ReleasesEntries
+ * @typedef {{ [id: string]: Artist }} ArtistsMap
+ * @typedef {{ [id: string]: Album }} AlbumsMap
+ * @typedef {{ [date: string]: Album[] }} ReleasesMap
+ * @typedef {[date: string, albums: Album[]][]} ReleasesEntries
  * @typedef {{ [group: string]: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
  * @typedef {{ type: string, payload: any }} Action

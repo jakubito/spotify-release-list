@@ -1,5 +1,4 @@
-import orderBy from 'lodash/orderBy'
-import { AlbumGroup, AlbumGroupIndex } from 'enums'
+import { AlbumGroup } from 'enums'
 import {
   SYNC_START,
   SYNC_FINISHED,
@@ -32,6 +31,7 @@ import {
   SET_FILTERS,
   RESET_FILTERS,
 } from 'state/actions'
+import { buildAlbumsMap, mergeAlbumsRaw } from './helpers'
 
 /** @type {State} */
 export const initialState = {
@@ -153,44 +153,12 @@ function rootReducer(state = initialState, { type, payload }) {
 
 /**
  * @param {State} state
- * @param {{ albums: Album[], artists: Artist[], minDate: string }} payload
+ * @param {{ albumsRaw: AlbumRaw[], artists: Artist[], minDate: string }} payload
  * @returns {State}
  */
-function setAlbums(state, payload) {
-  const artists = payload.artists.reduce(
-    (map, artist) => ({ ...map, [artist.id]: artist }),
-    /** @type {{ [id: string]: Artist }} */ ({})
-  )
-
-  const albums = payload.albums.reduce((map, album) => {
-    if (album.releaseDate < payload.minDate) {
-      return map
-    }
-
-    const { group, artistId, ...albumBase } = album
-    const matched = map[album.id]
-
-    if (!matched) {
-      /** @type {AlbumGrouped} */
-      map[album.id] = {
-        ...albumBase,
-        groups: [group],
-        artists: [artists[artistId]],
-        otherArtists: orderBy(albumBase.artists, 'name').filter((artist) => artist.id !== artistId),
-      }
-
-      return map
-    }
-
-    if (!matched.groups.includes(group)) {
-      matched.groups = orderBy([...matched.groups, group], (group) => AlbumGroupIndex[group])
-    }
-
-    matched.artists = orderBy([...matched.artists, artists[artistId]], 'name')
-    matched.otherArtists = matched.otherArtists.filter((artist) => artist.id !== artistId)
-
-    return map
-  }, /** @type {AlbumsMap} */ ({}))
+function setAlbums(state, { albumsRaw, artists, minDate }) {
+  const albumsRawMerged = mergeAlbumsRaw(albumsRaw, minDate)
+  const albums = buildAlbumsMap(albumsRawMerged, artists)
 
   return { ...state, albums }
 }

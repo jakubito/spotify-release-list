@@ -22,6 +22,7 @@ const migrations = {
 
     return state
   },
+  4: (state) => resetDataWithMessage(state),
 }
 
 /**

@@ -3,7 +3,14 @@ import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
 import last from 'lodash/last'
-import { buildReleasesEntries, buildReleasesMap, includesTruthy, getReleasesBetween } from 'helpers'
+import { AlbumGroup } from 'enums'
+import {
+  buildReleasesEntries,
+  buildReleasesMap,
+  includesTruthy,
+  getReleasesBetween,
+  merge,
+} from 'helpers'
 
 const VARIOUS_ARTISTS = 'Various Artist'
 const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
@@ -189,19 +196,14 @@ export const getFiltersDates = createSelector(
  * Get all releases as a map with album groups as keys
  */
 export const getReleasesGroupMap = createSelector(getAlbumsArray, (albums) =>
-  albums.reduce(
-    (map, album) => ({
-      ...map,
-      ...album.groups.reduce(
-        (albumMap, group) => ({
-          ...albumMap,
-          [group]: [...(map[group] || []), album.id],
-        }),
-        /** @type {ReleasesGroupMap} */ ({})
-      ),
-    }),
-    /** @type {ReleasesGroupMap} */ ({})
-  )
+  albums.reduce((map, album) => {
+    const albumMap = Object.keys(album.artists).reduce(
+      (albumMap, group) => ({ ...albumMap, [group]: [album.id] }),
+      /** @type {ReleasesGroupMap} */ ({})
+    )
+
+    return merge(map, albumMap)
+  }, /** @type {ReleasesGroupMap} */ ({}))
 )
 
 /**
@@ -211,7 +213,7 @@ const getFuseInstance = createSelector(
   getAlbumsArray,
   (albums) =>
     new Fuse(albums, {
-      keys: ['name', 'artists.name'],
+      keys: ['name', ...Object.values(AlbumGroup).map((group) => `artists.${group}.name`)],
       threshold: 0.1,
     })
 )
@@ -221,7 +223,7 @@ const getFuseInstance = createSelector(
  */
 const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((ids, album) => {
-    const variousArtists = [...album.artists, ...album.otherArtists].find(
+    const variousArtists = [...Object.values(album.artists).flat(), ...album.otherArtists].find(
       (artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID
     )
 
