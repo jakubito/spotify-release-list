@@ -1,5 +1,4 @@
 import mergeWith from 'lodash/mergeWith'
-import orderBy from 'lodash/orderBy'
 import { MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
@@ -233,37 +232,4 @@ export function buildAlbumRaw(source, artistId) {
     releaseDate: source.release_date,
     artistIds: { [source.album_group]: [artistId] },
   }
-}
-
-/**
- * Build ReleasesMap
- *
- * @param {Album[]} albums
- * @returns {ReleasesMap}
- */
-export function buildReleasesMap(albums) {
-  return albums.reduce(
-    (map, album) => merge(map, { [album.releaseDate]: [album] }),
-    /** @type {ReleasesMap} */ ({})
-  )
-}
-
-/**
- * Build ReleasesEntries
- *
- * @param {ReleasesMap} releasesMap
- * @returns {ReleasesEntries}
- */
-export function buildReleasesEntries(releasesMap) {
-  const entriesOrdered = orderBy(Object.entries(releasesMap), ([day]) => day, 'desc')
-  const entries = entriesOrdered.map(([day, albums]) => {
-    const albumsOrdered = orderBy(albums, [
-      (album) => Object.values(album.artists).flat().shift().name.toLowerCase(),
-      'name',
-    ])
-
-    return /** @type {[string, Album[]]} */ ([day, albumsOrdered])
-  })
-
-  return entries
 }

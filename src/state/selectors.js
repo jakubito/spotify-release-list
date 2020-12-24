@@ -4,13 +4,8 @@ import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
 import last from 'lodash/last'
 import { AlbumGroup } from 'enums'
-import {
-  buildReleasesEntries,
-  buildReleasesMap,
-  includesTruthy,
-  getReleasesBetween,
-  merge,
-} from 'helpers'
+import { includesTruthy, getReleasesBetween, merge } from 'helpers'
+import { buildReleasesEntries, buildReleasesMap } from './helpers'
 
 const VARIOUS_ARTISTS = 'Various Artist'
 const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
