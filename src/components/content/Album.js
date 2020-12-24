@@ -9,7 +9,7 @@ const { ALBUM, ARTIST } = SpotifyEntity
 /**
  * Render single album
  *
- * @param {{ album: AlbumGrouped }} props
+ * @param {{ album: Album }} props
  */
 function Album({ album }) {
   const { id, name } = album
@@ -34,7 +34,7 @@ function Album({ album }) {
   )
 }
 
-/** @param {{ album: AlbumGrouped }} props */
+/** @param {{ album: Album }} props */
 function AlbumCover({ album }) {
   const { id, image, name } = album
   const covers = useSelector(getSettingsCovers)
@@ -74,11 +74,13 @@ function ArtistLink({ artist, className }) {
   )
 }
 
-/** @param {{ album: AlbumGrouped }} props */
+/** @param {{ album: Album }} props */
 function AlbumArtists({ album }) {
-  const primary = album.artists.map((artist) => (
-    <ArtistLink artist={artist} className="has-text-grey-lighter" key={artist.id} />
-  ))
+  const primary = Object.values(album.artists)
+    .flat()
+    .map((artist) => (
+      <ArtistLink artist={artist} className="has-text-grey-lighter" key={artist.id} />
+    ))
 
   const other = album.otherArtists.map((artist) => (
     <ArtistLink artist={artist} className="has-text-grey" key={artist.id} />

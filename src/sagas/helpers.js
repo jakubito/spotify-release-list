@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/browser'
 import { call, cancel, delay, fork, put, race, select, take } from 'redux-saga/effects'
 import { generateNonce } from 'helpers'
 import { persistor } from 'state'
-import { getToken, getTokenExpires, getTokenScope } from 'state/selectors'
+import { getTokenData } from 'state/selectors'
 import { setNonce } from 'state/actions'
 
 /**
@@ -37,12 +37,8 @@ export function takeLeadingCancellable(triggerAction, cancelAction, saga, ...arg
  * @param {T} args
  */
 export function* withValidToken(saga, isValidToken, startAuthFlow, ...args) {
-  /** @type {ReturnType<typeof getToken>} */
-  const token = yield select(getToken)
-  /** @type {ReturnType<typeof getTokenExpires>} */
-  const tokenExpires = yield select(getTokenExpires)
-  /** @type {ReturnType<typeof getTokenScope>} */
-  const tokenScope = yield select(getTokenScope)
+  /** @type {ReturnType<typeof getTokenData>} */
+  const { token, tokenExpires, tokenScope } = yield select(getTokenData)
   /** @type {ReturnType<typeof isValidToken>} */
   const valid = yield call(isValidToken, token, tokenExpires, tokenScope, ...args)
 

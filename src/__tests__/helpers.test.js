@@ -11,7 +11,7 @@ import {
   getImage,
   buildUser,
   buildArtist,
-  buildAlbum,
+  buildAlbumRaw,
 } from 'helpers'
 import { getOriginalReleasesMap } from 'state/selectors'
 import mockState from './fixtures/state.json'
@@ -149,25 +149,25 @@ describe('playlistName', () => {
 
 describe('getReleasesBetween', () => {
   it('returns releases between two different dates', () => {
-    const start = moment('2020-11-10')
-    const end = moment('2020-11-11')
+    const start = moment('2020-12-21')
+    const end = moment('2020-12-23')
     const actual = getReleasesBetween(getOriginalReleasesMap(mockState), start, end)
     const expected = [
-      '5GQm35tkCTK25fQmTou7Nu',
-      '78ueU6gK8spqEZwfMH1pcx',
-      '0qZ6LUWpJC4lrQrEDoUeHH',
-      '1lg90yDEGtCceipwjSCrYg',
-      '6KLdZzsb6MZ9pNxH4D6SZy',
+      '6gjkcRBjs91tu1bLOWtrUu',
+      '5ML0ID0YZa7a1Tt9UrJTsV',
+      '11IHuohdssMJA8s84Yhk1p',
+      '23fsap8rIKsbRAl8WqJodr',
+      '09VOQplwXpjOKuDopwBTlA',
     ]
 
     expect(actual).toEqual(expected)
   })
 
   it('returns releases for single day', () => {
-    const start = moment('2020-11-14')
-    const end = moment('2020-11-14')
+    const start = moment('2020-12-24')
+    const end = moment('2020-12-24')
     const actual = getReleasesBetween(getOriginalReleasesMap(mockState), start, end)
-    const expected = ['61Q8fil8hlD3sh65V7zA6t']
+    const expected = ['4q12KARGFFPQfSS8F1V40p', '38Vwhxf7JAO7ErH2h4j9q0']
 
     expect(actual).toEqual(expected)
   })
@@ -236,7 +236,7 @@ describe('getImage', () => {
 })
 
 describe('buildUser', () => {
-  it('creates user object', () => {
+  it('creates User object', () => {
     const spotifyUser = {
       id: 'testId',
       display_name: 'Test User',
@@ -258,7 +258,7 @@ describe('buildUser', () => {
 })
 
 describe('buildArtist', () => {
-  it('creates artist object', () => {
+  it('creates Artist object', () => {
     const spotifyArtist = {
       id: 'testId',
       name: 'Test Artist',
@@ -273,8 +273,8 @@ describe('buildArtist', () => {
   })
 })
 
-describe('buildAlbum', () => {
-  it('creates album object', () => {
+describe('buildAlbumRaw', () => {
+  it('creates AlbumRaw object', () => {
     const spotifyAlbum = {
       id: 'testId',
       name: 'Test Album',
@@ -285,17 +285,18 @@ describe('buildAlbum', () => {
       ],
       artists: [{ id: 'testId', name: 'Test Artist' }],
       release_date: 'testReleaseDate',
-      album_group: 'testAlbumGroup',
+      album_group: 'single',
     }
-    const actual = buildAlbum(spotifyAlbum, 'testArtistId')
+    const actual = buildAlbumRaw(spotifyAlbum, 'testArtistId')
     const expected = {
       id: 'testId',
       name: 'Test Album',
       image: 'imageUrl300',
-      artists: [{ id: 'testId', name: 'Test Artist' }],
+      albumArtists: [{ id: 'testId', name: 'Test Artist' }],
       releaseDate: 'testReleaseDate',
-      artistId: 'testArtistId',
-      group: 'testAlbumGroup',
+      artistIds: {
+        single: ['testArtistId'],
+      },
     }
 
     expect(actual).toEqual(expected)

@@ -7,7 +7,7 @@ import Album from './Album'
 /**
  * Render single release day
  *
- * @param {{ date: string, albums: AlbumGrouped[] }} props
+ * @param {{ date: string, albums: Album[] }} props
  */
 function ReleaseDay({ date, albums }) {
   const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate)
