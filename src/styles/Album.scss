@@ -119,8 +119,8 @@
       margin-top: 4px;
       margin-bottom: 5px;
       line-height: 1.2;
-      color: $color-primary-slightly-darker;
-      text-decoration-color: $color-primary-dark;
+      color: $primary-slightly-darker;
+      text-decoration-color: $primary-dark;
 
       @include theme(compact) {
         font-size: 1rem !important;

@@ -27,7 +27,7 @@
       text-align: right;
 
       .new {
-        color: $color-primary;
+        color: $primary;
       }
 
       @include theme(compact) {

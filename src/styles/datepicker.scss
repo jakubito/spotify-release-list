@@ -9,15 +9,15 @@
     overflow: hidden;
     border-radius: 3px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.07);
-    background-color: $color-dark;
+    background-color: $darkest;
   }
 }
 
 .DateRangePickerInput {
   border-radius: 290486px;
   padding: 0;
-  background-color: $color-dark;
-  border: 1px solid $color-dark;
+  background-color: $darkest;
+  border: 1px solid $darkest;
   color: $white-ter;
 
   @include mobile-small {
@@ -59,20 +59,20 @@
   }
 
   &_fangShape {
-    fill: $color-dark;
+    fill: $darkest;
   }
 
   &_fangStroke {
-    stroke: $color-dark;
+    stroke: $darkest;
   }
 }
 
 .CalendarMonthGrid {
-  background-color: $color-dark;
+  background-color: $darkest;
 }
 
 .CalendarMonth {
-  background-color: $color-dark;
+  background-color: $darkest;
 
   &_caption strong {
     color: $grey-lightest;
@@ -92,7 +92,7 @@
   }
 
   &__selected {
-    background-color: $color-primary;
+    background-color: $primary;
     color: $white-ter;
 
     &_span {
@@ -126,7 +126,7 @@
 
 .DayPicker {
   box-shadow: none;
-  background-color: $color-dark;
+  background-color: $darkest;
 
   &_weekHeader {
     color: $grey-light;

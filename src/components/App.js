@@ -14,7 +14,7 @@ import {
  */
 function App(props) {
   return (
-    <div className="App has-background-black has-text-weight-semibold">
+    <div className="App has-background-black has-text-weight-medium">
       <Header />
       <Filters />
       <Content />

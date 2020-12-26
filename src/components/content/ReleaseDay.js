@@ -13,7 +13,7 @@ function ReleaseDay({ date, albums }) {
   const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate)
 
   return (
-    <div className="ReleaseDay columns is-gapless has-text-grey has-text-weight-semibold">
+    <div className="ReleaseDay columns is-gapless has-text-grey">
       <div className="column is-size-4 date">
         {previousSyncMaxDate && date > previousSyncMaxDate && <span className="new">• </span>}
         {moment(date).format('MMMM D')}
