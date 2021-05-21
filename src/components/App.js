@@ -1,28 +1,16 @@
-import { Header, BackToTop, Message } from 'components'
-import { Content } from 'components/content'
-import { Filters } from 'components/filters'
-import {
-  SettingsModalContainer,
-  ResetModalContainer,
-  PlaylistModalContainer,
-} from 'components/modals'
+import { BackToTop, Message } from 'components/common'
 
 /**
  * Main app component
  *
- * @param {RouteComponentProps} props
+ * @param {{ children: React.ReactNode } & RouteComponentProps} props
  */
-function App(props) {
+function App({ children }) {
   return (
     <div className="App has-background-black has-text-weight-medium">
-      <Header />
-      <Filters />
-      <Content />
+      {children}
       <BackToTop />
       <Message />
-      <SettingsModalContainer />
-      <ResetModalContainer />
-      <PlaylistModalContainer />
     </div>
   )
 }

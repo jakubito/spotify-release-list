@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Waypoint } from 'react-waypoint'
-import Centered from './Centered'
+import Centered from 'components/common/Centered'
 import ReleaseDay from './ReleaseDay'
 
 /**
@@ -13,7 +13,7 @@ const DAYS_INCREMENT = 15
  *
  * @param {{ releases: ReleasesEntries }} props
  */
-function Releases({ releases }) {
+function ReleaseList({ releases }) {
   const [daysLimit, setDaysLimit] = useState(DAYS_INCREMENT)
 
   if (!releases.length) {
@@ -36,4 +36,4 @@ function Releases({ releases }) {
   )
 }
 
-export default Releases
+export default ReleaseList

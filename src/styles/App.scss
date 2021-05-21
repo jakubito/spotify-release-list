@@ -1,6 +1,8 @@
 .App {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+
+  // reach-router's wrapper
+  > div:first-child {
+    height: 100%;
+  }
 }

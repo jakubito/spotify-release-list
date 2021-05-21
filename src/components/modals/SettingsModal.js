@@ -2,8 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { hideSettingsModal, showResetModal } from 'state/actions'
 import { useModal } from 'hooks'
 import { getUser } from 'state/selectors'
-import { LastSync } from 'components'
-import { Button } from 'components/common'
+import { Button, LastSync } from 'components/common'
 import {
   AlbumGroupsField,
   TimePeriodField,

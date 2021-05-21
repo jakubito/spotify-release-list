@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { addSeenFeature } from 'state/actions'
@@ -12,9 +12,9 @@ import { getSeenFeatures } from 'state/selectors'
  */
 export function useModal(hideModalAction) {
   const dispatch = useDispatch()
-  const closeModal = useCallback(() => {
+  const closeModal = () => {
     dispatch(hideModalAction())
-  }, [])
+  }
 
   useHotkeys('esc', closeModal)
 
@@ -40,15 +40,15 @@ export function useFeature(feature) {
   const seenFeatures = useSelector(getSeenFeatures)
 
   const seen = seenFeatures.includes(feature)
-  const setSeen = useCallback(() => {
+  const setSeen = () => {
     dispatch(addSeenFeature(feature))
-  }, [])
+  }
 
   return { seen, setSeen }
 }
 
 /**
- * Hook that returns different key for each value change
+ * Return different key on every value change
  *
  * @param {any} value
  * @returns {number}

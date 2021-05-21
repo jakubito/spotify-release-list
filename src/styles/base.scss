@@ -1,13 +1,18 @@
+:root {
+  color-scheme: dark;
+}
+
 html,
 body,
 #root,
+// reach-router's wrapper
 #root > div:first-child {
   height: 100%;
 }
 
 .is-modal-open {
   position: fixed;
-  overflow: hidden;
+  overflow-y: scroll;
   width: 100%;
 }
 

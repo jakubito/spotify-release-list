@@ -14,36 +14,34 @@ function PlaylistModal() {
   const releasesCount = useSelector(getReleasesCount)
   const creatingPlaylist = useSelector(getCreatingPlaylist)
   const playlistId = useSelector(getPlaylistId)
-
-  const form = useForm()
   const [submitTriggered, setSubmitTriggered] = useState(false)
-  const { handleSubmit } = form
   const onSubmit = useOnSubmit(setSubmitTriggered)
+  const form = useForm()
 
   useEffect(() => setSubmitTriggered(creatingPlaylist), [creatingPlaylist])
 
+  const renderContent = () => {
+    if (creatingPlaylist) {
+      return <PlaylistLoading />
+    }
+
+    if (playlistId) {
+      return <PlaylistInfo closeModal={closeModal} />
+    }
+
+    return <PlaylistForm submitTriggered={submitTriggered} closeModal={closeModal} />
+  }
+
   return (
     <FormProvider {...form}>
-      <form className="PlaylistModal modal is-active" onSubmit={handleSubmit(onSubmit)}>
+      <form className="PlaylistModal modal is-active" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="modal-background" onClick={closeModal} />
-
         <div className="modal-content has-background-black-bis has-text-light fade-in">
           <h4 className="title is-4 has-text-light has-text-centered">
             Exporting <span className="has-text-primary">{releasesCount}</span>{' '}
             {releasesCount > 1 ? 'releases' : 'release'}
           </h4>
-
-          {(() => {
-            if (creatingPlaylist) {
-              return <PlaylistLoading />
-            }
-
-            if (playlistId) {
-              return <PlaylistInfo closeModal={closeModal} />
-            }
-
-            return <PlaylistForm submitTriggered={submitTriggered} closeModal={closeModal} />
-          })()}
+          {renderContent()}
         </div>
       </form>
     </FormProvider>

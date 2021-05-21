@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser'
 import { call, cancel, delay, fork, put, race, select, take } from 'redux-saga/effects'
 import { generateNonce } from 'helpers'
 import { persistor } from 'state'
@@ -89,7 +88,6 @@ export function* requestWorker(requestChannel, responseChannel) {
       yield put(responseChannel, { result })
     } catch (error) {
       console.error(error)
-      Sentry.captureException(error)
 
       yield put(responseChannel, { error })
     }

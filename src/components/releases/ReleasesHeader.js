@@ -17,13 +17,12 @@ import {
   toggleFiltersVisible,
   resetFilters,
 } from 'state/actions'
-import { LastSync } from 'components'
-import { SyncButton, Button } from 'components/common'
+import { SyncButton, Button, LastSync } from 'components/common'
 
 /**
- * Render header
+ * Render main header
  */
-function Header() {
+function ReleasesHeader() {
   const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const lastSyncDate = useSelector(getLastSyncDate)
@@ -99,4 +98,4 @@ function Header() {
   )
 }
 
-export default Header
+export default ReleasesHeader
