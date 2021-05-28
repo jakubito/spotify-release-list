@@ -1,5 +1,5 @@
 import { Address } from 'enums'
-import { Anchor, ButtonAnchor, Emoji } from 'components/common'
+import { Anchor, ButtonAnchor, Emoji, VerticalLayout } from 'components/common'
 
 const { GITHUB_PROFILE, DONATE, GITHUB, PRIVACY, CREDITS, CHANGELOG } = Address
 
@@ -10,7 +10,7 @@ const { GITHUB_PROFILE, DONATE, GITHUB, PRIVACY, CREDITS, CHANGELOG } = Address
  */
 function AboutSettings(props) {
   return (
-    <div className="AboutSettings">
+    <VerticalLayout className="AboutSettings">
       <div className="AboutSettings__item">
         Made with <Emoji value="💛" label="heart" /> by{' '}
         <Anchor href={GITHUB_PROFILE} title="My GitHub profile">
@@ -54,7 +54,7 @@ function AboutSettings(props) {
       <div className="AboutSettings__item has-text-grey-light">
         Version {process.env.REACT_APP_VERSION}
       </div>
-    </div>
+    </VerticalLayout>
   )
 }
 

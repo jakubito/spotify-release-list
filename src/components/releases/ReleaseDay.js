@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import { getPreviousSyncMaxDate, getSettingsCovers, getSettingsUriLinks } from 'state/selectors'
-import { spotifyUri, spotifyUrl } from 'helpers'
+import { spotifyLink } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { Anchor } from 'components/common'
 
@@ -38,7 +38,7 @@ function ReleaseDay({ date, albums }) {
  */
 function renderAlbum({ album, covers, uriLinks }) {
   const { id, name, image } = album
-  const link = uriLinks ? spotifyUri(id, ALBUM) : spotifyUrl(id, ALBUM)
+  const link = spotifyLink(id, ALBUM, uriLinks)
 
   return (
     <article className="Album media" key={id}>
@@ -92,10 +92,9 @@ function renderArtists({ album, uriLinks }) {
  */
 function renderArtist({ artist, uriLinks, className }) {
   const { id, name } = artist
-  const link = uriLinks ? spotifyUri(id, ARTIST) : spotifyUrl(id, ARTIST)
 
   return (
-    <Anchor title={name} href={link} className={className} key={id}>
+    <Anchor title={name} href={spotifyLink(id, ARTIST, uriLinks)} className={className} key={id}>
       {name}
     </Anchor>
   )

@@ -8,6 +8,7 @@ import {
   getReleasesBetween,
   spotifyUri,
   spotifyUrl,
+  spotifyLink,
   getImage,
   buildUser,
   buildArtist,
@@ -201,6 +202,22 @@ describe('spotifyUri', () => {
 describe('spotifyUrl', () => {
   it('returns correct URL', () => {
     const actual = spotifyUrl('123', 'track')
+    const expected = 'https://open.spotify.com/track/123'
+
+    expect(actual).toEqual(expected)
+  })
+})
+
+describe('spotifyLink', () => {
+  it('returns correct URI', () => {
+    const actual = spotifyLink('123', 'track', true)
+    const expected = 'spotify:track:123'
+
+    expect(actual).toEqual(expected)
+  })
+
+  it('returns correct URL', () => {
+    const actual = spotifyLink('123', 'track', false)
     const expected = 'https://open.spotify.com/track/123'
 
     expect(actual).toEqual(expected)

@@ -188,6 +188,18 @@ export function spotifyUrl(id, entity) {
 }
 
 /**
+ * Create Spotify link
+ *
+ * @param {string} id
+ * @param {string} entity
+ * @param {boolean} [uri] - Return URI link if `true`
+ * @returns {string}
+ */
+export function spotifyLink(id, entity, uri = false) {
+  return uri ? spotifyUri(id, entity) : spotifyUrl(id, entity)
+}
+
+/**
  * Pick image from array of images and return its URL
  *
  * @param {SpotifyImage[]} [images]

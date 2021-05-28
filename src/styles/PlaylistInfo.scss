@@ -5,14 +5,15 @@
   align-items: center;
   padding: 20px 0 40px 0;
 
-  a {
-    color: $primary;
-    text-decoration-line: none;
-    text-decoration-color: $primary-dark;
-    margin-top: 10px;
+  @include mobile {
+    padding: 10px 0 20px 0;
+  }
 
-    &:hover {
-      text-decoration-line: underline;
+  &__link {
+    margin-top: 20px;
+
+    @include mobile {
+      width: 100%;
     }
   }
 }
