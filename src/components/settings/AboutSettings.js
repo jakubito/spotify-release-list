@@ -1,7 +1,7 @@
 import { Address } from 'enums'
 import { Anchor, ButtonAnchor, Emoji } from 'components/common'
 
-const { GITHUB_PROFILE, GITHUB, PRIVACY, DONATE } = Address
+const { GITHUB_PROFILE, DONATE, GITHUB, PRIVACY, CREDITS, CHANGELOG } = Address
 
 /**
  * Render about section
@@ -37,6 +37,18 @@ function AboutSettings(props) {
         href={PRIVACY}
         title="Privacy Policy"
         icon="fas fa-user-shield"
+        className="AboutSettings__item"
+      />
+      <ButtonAnchor
+        href={CREDITS}
+        title="Credits"
+        icon="fas fa-fire"
+        className="AboutSettings__item"
+      />
+      <ButtonAnchor
+        href={CHANGELOG}
+        title="Changelog"
+        icon="fas fa-star"
         className="AboutSettings__item"
       />
       <div className="AboutSettings__item has-text-grey-light">

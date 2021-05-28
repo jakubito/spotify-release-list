@@ -40,6 +40,7 @@
     "workbox-strategies": "^6.1.1"
   },
   "devDependencies": {
+    "@opengovsg/credits-generator": "^1.0.6",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.33",
     "@types/react": "^17.0.3",
@@ -54,7 +55,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettify": "prettier --write 'src/**/*.{js,scss}'",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "credits": "credits-generator"
   },
   "browserslist": {
     "production": [

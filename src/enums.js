@@ -3,6 +3,8 @@ export const Address = {
   GITHUB_PROFILE: 'https://github.com/jakubito',
   GITHUB: 'https://github.com/jakubito/spotify-release-list',
   PRIVACY: 'https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md',
+  CREDITS: 'https://github.com/jakubito/spotify-release-list/blob/master/CREDITS.md',
+  CHANGELOG: 'https://github.com/jakubito/spotify-release-list/releases',
   DONATE: 'https://paypal.me/jakubito',
 }
 
