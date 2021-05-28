@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import classNames from 'classnames'
 import xor from 'lodash/xor'
-import { defer } from 'helpers'
+import { deferred } from 'helpers'
 import { AlbumGroupLabels } from 'enums'
 import { getFiltersGroups, getReleasesGroupMap } from 'state/selectors'
 import { setFilters } from 'state/actions'
@@ -17,7 +17,7 @@ function AlbumGroupsFilter() {
   const filtersGroups = useSelector(getFiltersGroups)
   const [values, setValues] = useState(filtersGroups)
 
-  useEffect(() => defer(dispatch, setFilters({ groups: values })), [values])
+  useEffect(deferred(dispatch, setFilters({ groups: values })), [values])
 
   if (Object.keys(releasesGroupMap).length === 1) {
     return null

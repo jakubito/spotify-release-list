@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { defer } from 'helpers'
+import { deferred } from 'helpers'
 import { syncCancel } from 'state/actions'
 import { Button } from 'components/common'
 
@@ -9,7 +9,7 @@ import { Button } from 'components/common'
  */
 function Loading() {
   const dispatch = useDispatch()
-  const cancelSyncTrigger = () => defer(dispatch, syncCancel())
+  const cancelSyncTrigger = deferred(dispatch, syncCancel())
 
   useHotkeys('esc', cancelSyncTrigger)
 

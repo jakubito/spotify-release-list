@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
-import { defer } from 'helpers'
+import { deferred } from 'helpers'
 import {
   getLastSyncDate,
   getHasReleases,
@@ -11,13 +11,8 @@ import {
   getFiltersApplied,
   getHasOriginalReleases,
 } from 'state/selectors'
-import {
-  showSettingsModal,
-  showPlaylistModal,
-  toggleFiltersVisible,
-  resetFilters,
-} from 'state/actions'
-import { SyncButton, Button, LastSync } from 'components/common'
+import { showPlaylistModal, toggleFiltersVisible, resetFilters } from 'state/actions'
+import { Header, SyncButton, Button, ButtonLink, LastSync } from 'components/common'
 
 /**
  * Render main header
@@ -31,20 +26,14 @@ function ReleasesHeader() {
   const filtersVisible = useSelector(getFiltersVisible)
   const filtersApplied = useSelector(getFiltersApplied)
 
-  const toggleFilters = () => defer(dispatch, toggleFiltersVisible())
-  const openPlaylistModal = () => defer(dispatch, showPlaylistModal())
-  const openSettingsModal = () => defer(dispatch, showSettingsModal())
+  const toggleFilters = deferred(dispatch, toggleFiltersVisible())
+  const openPlaylistModal = deferred(dispatch, showPlaylistModal())
 
   useHotkeys('f', toggleFilters)
   useHotkeys('e', openPlaylistModal)
-  useHotkeys('s', openSettingsModal)
 
   return (
-    <nav className="Header">
-      <div className="title is-4 has-text-light">
-        Spotify <Media query={{ maxWidth: 375 }}>{(matches) => matches && <br />}</Media>
-        Release List
-      </div>
+    <Header>
       {lastSyncDate && (
         <div className="left">
           <SyncButton title="Refresh" icon="fas fa-sync-alt" />
@@ -64,11 +53,7 @@ function ReleasesHeader() {
                 </Button>
               )}
               {filtersApplied && (
-                <Button
-                  title="Reset filters"
-                  onClick={() => defer(dispatch, resetFilters())}
-                  text
-                />
+                <Button title="Reset filters" onClick={deferred(dispatch, resetFilters())} text />
               )}
               <LastSync className="is-hidden-mobile" />
             </>
@@ -77,24 +62,15 @@ function ReleasesHeader() {
       )}
       <div className="right">
         {lastSyncDate && hasReleases && !syncing && (
-          <Button
-            title="Export to a new playlist [E]"
-            icon="fas fa-upload"
-            onClick={openPlaylistModal}
-          >
+          <Button title="Export to playlist [E]" icon="fas fa-upload" onClick={openPlaylistModal}>
             <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
           </Button>
         )}
-        <Button
-          title="Settings [S]"
-          icon="fas fa-cog"
-          onClick={openSettingsModal}
-          disabled={syncing}
-        >
+        <ButtonLink to="/settings" title="Settings [S]" icon="fas fa-cog" disabled={syncing}>
           <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Settings</span>}</Media>
-        </Button>
+        </ButtonLink>
       </div>
-    </nav>
+    </Header>
   )
 }
 

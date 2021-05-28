@@ -26,6 +26,17 @@ export function defer(fn, ...args) {
 }
 
 /**
+ * Callback wrapper for `defer()`
+ *
+ * @param {function} fn
+ * @param {...any} [args] - Arguments to be passed to function
+ * @returns {() => void}
+ */
+export function deferred(fn, ...args) {
+  return () => defer(fn, ...args)
+}
+
+/**
  * Split array into chunks
  *
  * @template T

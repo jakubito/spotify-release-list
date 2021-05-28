@@ -1,19 +1,18 @@
 import classNames from 'classnames'
 import { isString } from 'helpers'
+import { Anchor } from '.'
 
 /**
- * Render button
+ * Render button anchor
  *
- * @param {ButtonProps} props
+ * @param {Omit<ButtonProps, 'type' | 'onClick' | 'disabled'> & { href: string }} props
  */
-function Button({
-  type = 'button',
+function ButtonAnchor({
+  href,
   title,
   titleOnly,
-  onClick,
   children,
   icon,
-  disabled,
   className,
   small,
   medium,
@@ -27,11 +26,9 @@ function Button({
   const content = children || title
 
   return (
-    <button
-      type={type}
+    <Anchor
+      href={href}
       title={title || titleOnly}
-      onClick={onClick}
-      disabled={disabled}
       className={classNames(className, 'button', 'is-rounded', 'has-text-weight-semibold', {
         'is-small': small,
         'is-medium': medium,
@@ -48,8 +45,8 @@ function Button({
         </span>
       )}
       {isString(content) ? <span>{content}</span> : content}
-    </button>
+    </Anchor>
   )
 }
 
-export default Button
+export default ButtonAnchor

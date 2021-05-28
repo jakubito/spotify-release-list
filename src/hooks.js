@@ -7,16 +7,10 @@ import { getSeenFeatures } from 'state/selectors'
 /**
  * Modal hook
  *
- * @param {ActionCreator} hideModalAction
- * @returns {() => void} Close modal handler
+ * @param {() => void} closeModal
  */
-export function useModal(hideModalAction) {
-  const dispatch = useDispatch()
-  const closeModal = () => {
-    dispatch(hideModalAction())
-  }
-
-  useHotkeys('esc', closeModal)
+export function useModal(closeModal) {
+  useHotkeys('esc', closeModal, { enableOnTags: ['INPUT'] })
 
   useEffect(() => {
     document.documentElement.classList.add('is-modal-open')
@@ -25,8 +19,6 @@ export function useModal(hideModalAction) {
       document.documentElement.classList.remove('is-modal-open')
     }
   }, [])
-
-  return closeModal
 }
 
 /**

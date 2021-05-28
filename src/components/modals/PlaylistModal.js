@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm, FormProvider } from 'react-hook-form'
 import { useModal } from 'hooks'
-import { hidePlaylistModal, createPlaylist, setPlaylistForm } from 'state/actions'
+import { createPlaylist, setPlaylistForm } from 'state/actions'
 import { getCreatingPlaylist, getPlaylistId, getReleasesCount } from 'state/selectors'
 import { PlaylistForm, PlaylistInfo, PlaylistLoading } from 'components/playlist'
 
 /**
  * Render new playlist modal
+ *
+ * @param {{ closeModal: () => void }} props
  */
-function PlaylistModal() {
-  const closeModal = useModal(hidePlaylistModal)
+function PlaylistModal({ closeModal }) {
   const releasesCount = useSelector(getReleasesCount)
   const creatingPlaylist = useSelector(getCreatingPlaylist)
   const playlistId = useSelector(getPlaylistId)
@@ -18,6 +19,7 @@ function PlaylistModal() {
   const onSubmit = useOnSubmit(setSubmitTriggered)
   const form = useForm()
 
+  useModal(closeModal)
   useEffect(() => setSubmitTriggered(creatingPlaylist), [creatingPlaylist])
 
   const renderContent = () => {

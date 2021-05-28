@@ -1,10 +1,12 @@
+import classNames from 'classnames'
+
 /**
  * Render children vertically
  *
- * @param {{ children: React.ReactNode }} props
+ * @param {{ className?: string, children: React.ReactNode }} props
  */
-function VerticalLayout({ children }) {
-  return <div className="VerticalLayout">{children}</div>
+function VerticalLayout({ className, children }) {
+  return <div className={classNames('VerticalLayout', className)}>{children}</div>
 }
 
 export default VerticalLayout

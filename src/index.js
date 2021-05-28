@@ -9,7 +9,7 @@ import { store, hydrate } from 'state'
 import { getSettingsTheme } from 'state/selectors'
 import { Auth, App } from 'components'
 import { Releases } from 'components/releases'
-import { Settings } from 'components/settings'
+import { Settings, GeneralSettings, AppearanceSettings, AboutSettings } from 'components/settings'
 import 'styles/index.scss'
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
@@ -29,7 +29,12 @@ function renderApp() {
       <Router>
         <App path="/">
           <Releases path="/" />
-          <Settings path="settings" />
+          <Settings path="settings">
+            <GeneralSettings path="/" />
+            <AppearanceSettings path="appearance" />
+            <AboutSettings path="about" />
+            <Redirect from="*" to="/" noThrow />
+          </Settings>
           <Redirect from="*" to="/" noThrow />
         </App>
         <Auth path="auth" />

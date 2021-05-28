@@ -1,10 +1,12 @@
+import classNames from 'classnames'
+
 /**
  * Render content
  *
- * @param {{ children: React.ReactNode }} props
+ * @param {{ className?: string, children: React.ReactNode }} props
  */
-function Content({ children }) {
-  return <div className="Content">{children}</div>
+function Content({ className, children }) {
+  return <div className={classNames('Content', className)}>{children}</div>
 }
 
 export default Content

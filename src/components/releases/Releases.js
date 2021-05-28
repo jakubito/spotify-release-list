@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { navigate } from '@reach/router'
 import { getSyncing, getLastSync, getReleasesEntries } from 'state/selectors'
 import { useRefChangeKey } from 'hooks'
+import { deferred } from 'helpers'
 import { VerticalLayout, Content } from 'components/common'
 import { Filters } from 'components/filters'
-import {
-  SettingsModalContainer,
-  ResetModalContainer,
-  PlaylistModalContainer,
-} from 'components/modals'
+import { PlaylistModalContainer } from 'components/modals'
 import ReleasesHeader from './ReleasesHeader'
 import Intro from './Intro'
 import Loading from './Loading'
@@ -23,6 +22,8 @@ function Releases(props) {
   const syncing = useSelector(getSyncing)
   const releases = useSelector(getReleasesEntries)
   const releasesKey = useRefChangeKey(releases)
+
+  useHotkeys('s', deferred(navigate, '/settings'), { enabled: !syncing })
 
   const renderContent = () => {
     if (!lastSync) {
@@ -41,8 +42,6 @@ function Releases(props) {
       <ReleasesHeader />
       <Filters />
       <Content>{renderContent()}</Content>
-      <SettingsModalContainer />
-      <ResetModalContainer />
       <PlaylistModalContainer />
     </VerticalLayout>
   )

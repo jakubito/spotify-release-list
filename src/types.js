@@ -16,8 +16,6 @@
  *   user?: User
  *   nonce?: string
  *   message?: Message
- *   settingsModalVisible: boolean
- *   resetModalVisible: boolean
  *   playlistModalVisible: boolean
  *   filtersVisible: boolean
  *   settings: Settings
@@ -75,6 +73,24 @@
  *   start: Moment
  *   end: Moment
  * }} DateRangeShortcut
+ *
+ * @typedef {{
+ *   type?: 'submit' | 'reset' | 'button'
+ *   title?: string
+ *   titleOnly?: string
+ *   onClick?: React.MouseEventHandler<HTMLButtonElement>
+ *   children?: React.ReactNode
+ *   icon?: string
+ *   disabled?: boolean
+ *   className?: string
+ *   small?: boolean
+ *   medium?: boolean
+ *   dark?: boolean
+ *   darker?: boolean
+ *   primary?: boolean
+ *   danger?: boolean
+ *   text?: boolean
+ * }} ButtonProps
  *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist

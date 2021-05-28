@@ -1,0 +1,64 @@
+.Settings {
+  align-items: center;
+
+  &__content {
+    width: 100%;
+    max-width: $tablet;
+  }
+
+  &__layout {
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  &__children {
+    padding: 20px;
+    background-color: $black-bis;
+
+    @include tablet {
+      width: 100%;
+      margin-left: 20px;
+      border-radius: 3px;
+    }
+
+    @include mobile {
+      margin-top: 15px;
+      margin-left: -15px;
+      margin-right: -15px;
+    }
+  }
+
+  &__field {
+    margin-bottom: 30px !important;
+
+    &:last-child {
+      margin-bottom: 0 !important;
+    }
+
+    .control {
+      @include tablet {
+        display: flex;
+      }
+
+      .field {
+        @include tablet {
+          margin-bottom: 0;
+          margin-right: 8px;
+        }
+      }
+    }
+
+    .select {
+      @include mobile {
+        width: 100%;
+      }
+
+      select {
+        @include mobile {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

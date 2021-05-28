@@ -15,7 +15,7 @@ function Anchor({ title, href, className, children }) {
     <a
       title={title}
       href={href}
-      className={classNames('Anchor', 'has-text-grey-light', className)}
+      className={classNames('Anchor', className)}
       target="_blank"
       rel="noopener noreferrer"
     >

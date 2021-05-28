@@ -44,12 +44,6 @@ export const getAlbums = (state) => state.albums
 export const getSettings = (state) => state.settings
 
 /** @param {State} state */
-export const getSettingsModalVisible = (state) => state.settingsModalVisible
-
-/** @param {State} state */
-export const getResetModalVisible = (state) => state.resetModalVisible
-
-/** @param {State} state */
 export const getPlaylistModalVisible = (state) => state.playlistModalVisible
 
 /** @param {State} state */
@@ -109,9 +103,8 @@ export const getWorking = createSelector([getSyncing, getCreatingPlaylist], (...
 /**
  * Check if any modal is visible
  */
-export const getModalVisible = createSelector(
-  [getSettingsModalVisible, getResetModalVisible, getPlaylistModalVisible],
-  (...values) => includesTruthy(values)
+export const getModalVisible = createSelector([getPlaylistModalVisible], (...values) =>
+  includesTruthy(values)
 )
 
 /**
@@ -218,9 +211,10 @@ const getFuseInstance = createSelector(
  */
 const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((ids, album) => {
-    const variousArtists = [...Object.values(album.artists).flat(), ...album.otherArtists].find(
-      (artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID
-    )
+    const variousArtists = Object.values(album.artists)
+      .flat()
+      .concat(album.otherArtists)
+      .find((artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID)
 
     if (!variousArtists) {
       ids.push(album.id)

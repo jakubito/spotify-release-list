@@ -1,7 +1,13 @@
 .Anchor {
+  color: $grey-light;
   text-decoration-line: underline;
 
   &:hover {
+    text-decoration: none;
+    color: $grey-light;
+  }
+
+  &.button {
     text-decoration: none;
   }
 }

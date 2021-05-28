@@ -25,9 +25,9 @@ function TimePeriodField() {
   const onChange = (event) => defer(dispatch, setSettings({ days: Number(event.target.value) }))
 
   return (
-    <div className="field">
+    <div className="TimePeriodField Settings__field field">
       <label className="label has-text-light" htmlFor="timePeriod">
-        Time period <HelpText>/ affects storage usage</HelpText>
+        Time period <HelpText>/ affects local storage usage</HelpText>
       </label>
       <Select
         id="timePeriod"

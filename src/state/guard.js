@@ -2,7 +2,6 @@ import {
   ADD_SEEN_FEATURE,
   SET_SETTINGS,
   SHOW_PLAYLIST_MODAL,
-  SHOW_SETTINGS_MODAL,
   SYNC,
   TOGGLE_FILTERS_VISIBLE,
 } from 'state/actions'
@@ -26,8 +25,6 @@ function valid({ type, payload }, state) {
   switch (type) {
     case SYNC:
       return !getModalVisible(state)
-    case SHOW_SETTINGS_MODAL:
-      return !getSyncing(state)
     case SHOW_PLAYLIST_MODAL:
       return !getSyncing(state) && getLastSyncDate(state) && getHasReleases(state)
     case ADD_SEEN_FEATURE:

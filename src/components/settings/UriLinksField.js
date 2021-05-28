@@ -19,7 +19,7 @@ function UriLinksField() {
   }
 
   return (
-    <div className="field">
+    <div className="UriLinksField Settings__field field">
       <label className="label has-text-light">
         Open links in <HelpText>/ URL or URI</HelpText>
       </label>

@@ -4,6 +4,7 @@ import { getSettingsMarket } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import { Select } from 'components/common'
+import HelpText from './HelpText'
 
 /** @type {SelectOptions} */
 const options = [['', 'Use account country (default)'], ...Object.entries(Market)]
@@ -16,9 +17,9 @@ function MarketField() {
   const dispatch = useDispatch()
 
   return (
-    <div className="field">
+    <div className="MarketField Settings__field field">
       <label className="label has-text-light" htmlFor="market">
-        Market
+        Market <HelpText>/ recommended to leave on default</HelpText>
       </label>
       <Select
         id="market"

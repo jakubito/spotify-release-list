@@ -8,6 +8,8 @@ body,
 // reach-router's wrapper
 #root > div:first-child {
   height: 100%;
+  background-color: $black;
+  color: $white-ter;
 }
 
 .is-modal-open {
@@ -48,6 +50,7 @@ body,
 
 .button.is-primary {
   background-color: $primary !important;
+  color: $black !important;
 
   &:hover {
     background-color: $primary-light !important;
@@ -65,6 +68,7 @@ body,
   border: none !important;
   box-shadow: none !important;
   background: none !important;
+  text-decoration: none;
 
   &:focus {
     color: $white-bis;
@@ -72,11 +76,18 @@ body,
 
   &:hover {
     color: $grey-lighter;
-    text-decoration: none;
+
+    span:not(.icon) {
+      text-decoration: none;
+    }
   }
 
   &:active {
     color: $grey-light;
+  }
+
+  span:not(.icon) {
+    text-decoration: underline;
   }
 }
 
