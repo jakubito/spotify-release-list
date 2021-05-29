@@ -4,7 +4,7 @@ import { navigate } from '@reach/router'
 import { getSyncing, getLastSync, getReleasesEntries } from 'state/selectors'
 import { useRefChangeKey } from 'hooks'
 import { deferred } from 'helpers'
-import { VerticalLayout, Content } from 'components/common'
+import { VerticalLayout, Content, Centered } from 'components/common'
 import { Filters } from 'components/filters'
 import { PlaylistModalContainer } from 'components/modals'
 import ReleasesHeader from './ReleasesHeader'
@@ -32,6 +32,10 @@ function Releases(props) {
 
     if (syncing) {
       return <Loading />
+    }
+
+    if (!releases.length) {
+      return <Centered>No albums to display</Centered>
     }
 
     return <ReleaseList releases={releases} key={releasesKey} />
