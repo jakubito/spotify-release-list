@@ -16,7 +16,7 @@ function GeneralSettings(props) {
   const lastSync = useSelector(getLastSync)
 
   return (
-    <>
+    <div className="fade-in">
       <AlbumGroupsField />
       <TimePeriodField />
       <MarketField />
@@ -27,7 +27,7 @@ function GeneralSettings(props) {
           <DataReset />
         </>
       )}
-    </>
+    </div>
   )
 }
 

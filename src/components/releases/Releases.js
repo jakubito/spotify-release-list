@@ -21,24 +21,32 @@ function Releases(props) {
   const lastSync = useSelector(getLastSync)
   const syncing = useSelector(getSyncing)
   const releases = useSelector(getReleasesEntries)
-  const releasesKey = useRefChangeKey(releases)
+  const key = useRefChangeKey(releases)
 
   useHotkeys('s', deferred(navigate, '/settings'), { enabled: !syncing })
 
   const renderContent = () => {
     if (!lastSync) {
-      return <Intro />
+      return (
+        <Centered>
+          <Intro />
+        </Centered>
+      )
     }
 
     if (syncing) {
-      return <Loading />
+      return (
+        <Centered>
+          <Loading />
+        </Centered>
+      )
     }
 
     if (!releases.length) {
       return <Centered>No albums to display</Centered>
     }
 
-    return <ReleaseList releases={releases} key={releasesKey} />
+    return <ReleaseList releases={releases} key={key} />
   }
 
   return (

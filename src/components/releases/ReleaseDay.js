@@ -1,7 +1,12 @@
 import { memo } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
-import { getPreviousSyncMaxDate, getSettingsCovers, getSettingsUriLinks } from 'state/selectors'
+import {
+  getPreviousSyncMaxDate,
+  getSettingsCovers,
+  getSettingsGroupColors,
+  getSettingsUriLinks,
+} from 'state/selectors'
 import { spotifyLink } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { Anchor } from 'components/common'
@@ -15,17 +20,22 @@ const { ALBUM, ARTIST } = SpotifyEntity
  */
 function ReleaseDay({ date, albums }) {
   const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate)
+  const groupColors = useSelector(getSettingsGroupColors)
   const covers = useSelector(getSettingsCovers)
   const uriLinks = useSelector(getSettingsUriLinks)
 
   return (
     <div className="ReleaseDay columns is-gapless">
-      <div className="column is-size-4 date">
-        {previousSyncMaxDate && date > previousSyncMaxDate && <span className="new">• </span>}
+      <div className="ReleaseDay__date column">
+        {previousSyncMaxDate && date > previousSyncMaxDate && (
+          <span className="ReleaseDay__bullet icon">
+            <i className="fas fa-circle" />
+          </span>
+        )}
         {moment(date).format('MMMM D')}
       </div>
-      <div className="column albums">
-        {albums.map((album) => renderAlbum({ album, covers, uriLinks }))}
+      <div className="ReleaseDay__albums column">
+        {albums.map((album) => renderAlbum({ album, groupColors, covers, uriLinks }))}
       </div>
     </div>
   )
@@ -34,28 +44,32 @@ function ReleaseDay({ date, albums }) {
 /**
  * Render individual album
  *
- * @param {{ album: Album, covers: boolean, uriLinks: boolean }} props
+ * @param {{
+ *   album: Album
+ *   groupColors: GroupColorScheme
+ *   covers: boolean
+ *   uriLinks: boolean
+ * }} props
  */
-function renderAlbum({ album, covers, uriLinks }) {
-  const { id, name, image } = album
+function renderAlbum({ album, groupColors, covers, uriLinks }) {
+  const { id, name, image, artists } = album
   const link = spotifyLink(id, ALBUM, uriLinks)
+  const mainGroup = Object.keys(artists).shift()
 
   return (
     <article className="Album media" key={id}>
       {covers && (
-        <Anchor title={name} href={link} className="media-left">
-          <figure className="image">
-            <img src={image} alt={name} />
+        <Anchor title={name} href={link} className="Album__cover media-left">
+          <figure className="Album__figure">
+            <img src={image} alt={name} className="Album__image" />
           </figure>
         </Anchor>
       )}
-      <div className="media-content has-text-light">
-        <div className="content">
-          <Anchor title={name} href={link} className="title is-size-5">
-            {name}
-          </Anchor>
-          {renderArtists({ album, uriLinks })}
-        </div>
+      <div className="media-content">
+        <Anchor title={name} href={link} color={groupColors[mainGroup]} className="Album__title">
+          {name}
+        </Anchor>
+        {renderArtists({ album, uriLinks })}
       </div>
     </article>
   )
@@ -69,13 +83,13 @@ function renderAlbum({ album, covers, uriLinks }) {
 function renderArtists({ album, uriLinks }) {
   const primary = Object.values(album.artists)
     .flat()
-    .map((artist) => renderArtist({ artist, uriLinks, className: 'has-text-grey-lighter' }))
+    .map((artist) => renderArtist({ artist, uriLinks, className: 'Album__artist' }))
   const other = album.otherArtists.map((artist) =>
-    renderArtist({ artist, uriLinks, className: 'has-text-grey' })
+    renderArtist({ artist, uriLinks, className: 'Album__artist Album__artist--other' })
   )
 
   return (
-    <div className="artists has-text-grey">
+    <div className="Album__artists">
       {primary.concat(other).reduce((artists, artist) => (
         <>
           {artists}, {artist}

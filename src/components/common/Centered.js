@@ -5,7 +5,7 @@
  */
 function Centered({ children }) {
   return (
-    <div className="center has-text-light has-text-weight-semibold">
+    <div className="Centered has-text-light has-text-weight-semibold">
       <div className="is-size-5 has-text-centered">{children}</div>
     </div>
   )

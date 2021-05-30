@@ -1,11 +1,14 @@
+const GITHUB = 'https://github.com/jakubito/spotify-release-list'
+
 /** @enum {string} */
 export const Address = {
+  GITHUB,
   GITHUB_PROFILE: 'https://github.com/jakubito',
-  GITHUB: 'https://github.com/jakubito/spotify-release-list',
-  PRIVACY: 'https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md',
-  CREDITS: 'https://github.com/jakubito/spotify-release-list/blob/master/CREDITS.md',
-  CHANGELOG: 'https://github.com/jakubito/spotify-release-list/releases',
+  PRIVACY: `${GITHUB}/blob/master/PRIVACY.md`,
+  CREDITS: `${GITHUB}/blob/master/CREDITS.md`,
+  CHANGELOG: `${GITHUB}/releases`,
   DONATE: 'https://paypal.me/jakubito',
+  EMAIL: 'mailto:dobes.jakub@gmail.com',
 }
 
 /** @enum {string} */
@@ -37,21 +40,45 @@ export const AlbumGroup = {
   APPEARS_ON: 'appears_on',
 }
 
+const { ALBUM, SINGLE, COMPILATION, APPEARS_ON } = AlbumGroup
+
 /** @type {{ [group: string]: number }} */
 export const AlbumGroupIndex = {
-  [AlbumGroup.ALBUM]: 0,
-  [AlbumGroup.SINGLE]: 1,
-  [AlbumGroup.COMPILATION]: 2,
-  [AlbumGroup.APPEARS_ON]: 3,
+  [ALBUM]: 0,
+  [SINGLE]: 1,
+  [COMPILATION]: 2,
+  [APPEARS_ON]: 3,
 }
 
 /** @type {[group: AlbumGroup, label: string][]} */
 export const AlbumGroupLabels = [
-  [AlbumGroup.ALBUM, 'Albums'],
-  [AlbumGroup.SINGLE, 'Singles'],
-  [AlbumGroup.COMPILATION, 'Compilations'],
-  [AlbumGroup.APPEARS_ON, 'Appearances'],
+  [ALBUM, 'Albums'],
+  [SINGLE, 'Singles'],
+  [COMPILATION, 'Compilations'],
+  [APPEARS_ON, 'Appearances'],
 ]
+
+/** @enum {GroupColorScheme} */
+export const GroupColorSchemes = {
+  DEFAULT: {
+    [ALBUM]: '#e33c67',
+    [SINGLE]: '#9d77b6',
+    [COMPILATION]: '#dcad4f',
+    [APPEARS_ON]: '#19a34a',
+  },
+  ORIGINAL: {
+    [ALBUM]: '#19a34a',
+    [SINGLE]: '#19a34a',
+    [COMPILATION]: '#19a34a',
+    [APPEARS_ON]: '#19a34a',
+  },
+  WHITE: {
+    [ALBUM]: '#ffffff',
+    [SINGLE]: '#ffffff',
+    [COMPILATION]: '#ffffff',
+    [APPEARS_ON]: '#ffffff',
+  },
+}
 
 /** @enum {string} */
 export const Theme = {
@@ -100,7 +127,7 @@ export const Market = {
   HR: 'Croatia',
   CW: 'Curaçao',
   CY: 'Cyprus',
-  CZ: 'Czech Republic',
+  CZ: 'Czechia',
   CI: "Côte d'Ivoire",
   DK: 'Denmark',
   DJ: 'Djibouti',

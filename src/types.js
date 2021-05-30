@@ -20,7 +20,7 @@
  *   filtersVisible: boolean
  *   settings: Settings
  *   filters: Filters
- *   seenFeatures: Feature[]
+ *   seenFeatures: string[]
  * }} State
  *
  * @typedef {{
@@ -36,6 +36,7 @@
  *
  * @typedef {{
  *   groups: AlbumGroup[]
+ *   groupColors: GroupColorScheme
  *   days: number
  *   market: Market
  *   theme: string
@@ -105,6 +106,7 @@
  * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
+ * @typedef {{ [group: string]: string }} GroupColorScheme
  */
 
 /**
@@ -117,14 +119,13 @@
 /**
  * Enums
  *
- * @typedef {string} Address
- * @typedef {string} Scope
- * @typedef {string} SpotifyEntity
- * @typedef {string} MomentFormat
- * @typedef {string} AlbumGroup
- * @typedef {string} Feature
- * @typedef {string} Theme
- * @typedef {string} Market
+ * @typedef {import('./enums').Address} Address
+ * @typedef {import('./enums').Scope} Scope
+ * @typedef {import('./enums').SpotifyEntity} SpotifyEntity
+ * @typedef {import('./enums').MomentFormat} MomentFormat
+ * @typedef {import('./enums').AlbumGroup} AlbumGroup
+ * @typedef {import('./enums').Theme} Theme
+ * @typedef {import('./enums').Market} Market
  */
 
 /**

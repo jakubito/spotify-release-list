@@ -1,0 +1,19 @@
+.Centered {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 0 15px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @include mobile {
+    > div,
+    > p {
+      width: 100%;
+    }
+  }
+}

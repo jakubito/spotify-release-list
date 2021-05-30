@@ -28,7 +28,7 @@ function ReleaseList({ releases }) {
  * @returns {{ cursor: number, slice: ReleasesEntries, next: () => void | null }}
  */
 function usePaginate(releases, pageSize) {
-  const calculateCursor = (currentCursor = 0) => {
+  const nextCursor = (currentCursor = 0) => {
     let newCursor = currentCursor
     let pageCount = 0
 
@@ -44,9 +44,9 @@ function usePaginate(releases, pageSize) {
     return newCursor
   }
 
-  const [cursor, setCursor] = useState(calculateCursor)
+  const [cursor, setCursor] = useState(nextCursor)
   const slice = releases.slice(0, cursor)
-  const next = cursor < releases.length ? () => setCursor(calculateCursor) : null
+  const next = cursor < releases.length ? () => setCursor(nextCursor) : null
 
   return { cursor, slice, next }
 }

@@ -1,4 +1,4 @@
-import { AlbumGroup } from 'enums'
+import { AlbumGroup, GroupColorSchemes } from 'enums'
 import {
   SYNC_START,
   SYNC_FINISHED,
@@ -53,6 +53,7 @@ export const initialState = {
   filtersVisible: false,
   settings: {
     groups: Object.values(AlbumGroup),
+    groupColors: GroupColorSchemes.DEFAULT,
     days: 30,
     market: '',
     theme: '',

@@ -14,7 +14,7 @@ function Loading() {
   useHotkeys('esc', cancelSyncTrigger)
 
   return (
-    <div className="Loading center">
+    <div className="Loading">
       <div className="has-text-centered has-text-light has-text-weight-semibold is-size-5">
         Loading, please wait...
       </div>

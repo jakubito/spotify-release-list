@@ -1,4 +1,5 @@
 import CoversField from './CoversField'
+import GroupColorsField from './GroupColorsField'
 import ThemeField from './ThemeField'
 
 /**
@@ -8,10 +9,11 @@ import ThemeField from './ThemeField'
  */
 function AppearanceSettings(props) {
   return (
-    <>
+    <div className="fade-in">
       <ThemeField />
       <CoversField />
-    </>
+      <GroupColorsField />
+    </div>
   )
 }
 

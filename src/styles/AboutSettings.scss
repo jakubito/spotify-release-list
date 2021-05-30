@@ -2,15 +2,30 @@
   align-items: center;
 
   &__item {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     text-align: center;
 
     &:last-child {
       margin-bottom: 0;
     }
+  }
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__button {
+    margin: 7px;
 
     @include mobile {
       width: 100%;
+      margin: 0 0 15px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 }

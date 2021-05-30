@@ -1,24 +1,35 @@
 import { Address } from 'enums'
-import { Anchor, SyncButton } from 'components/common'
+import { ButtonAnchor, SyncButton } from 'components/common'
 
 const { GITHUB, PRIVACY } = Address
 
 /**
- * Render intro content for new users
+ * Render initial intro screen
  */
 function Intro() {
   return (
-    <div className="center has-background-black has-text-weight-semibold">
-      <p className="has-text-light is-size-5 has-text-centered intro">
+    <div className="Intro has-background-black has-text-weight-semibold">
+      <p className="Intro__description has-text-light is-size-5 has-text-centered">
         Display releases from artists you follow
       </p>
       <SyncButton title="Log in with Spotify" icon="fab fa-spotify" medium />
-      <div className="links has-text-centered has-text-grey">
-        <Anchor href={GITHUB} title="GitHub repository">
+      <div className="Intro__buttons has-text-centered has-text-grey">
+        <ButtonAnchor
+          href={GITHUB}
+          title="GitHub repository"
+          icon="fab fa-github"
+          className="Intro__button"
+          text
+        >
           GitHub
-        </Anchor>
-        {' - '}
-        <Anchor href={PRIVACY} title="Privacy Policy" />
+        </ButtonAnchor>
+        <ButtonAnchor
+          href={PRIVACY}
+          title="Privacy Policy"
+          icon="fas fa-user-shield"
+          className="Intro__button"
+          text
+        />
       </div>
     </div>
   )

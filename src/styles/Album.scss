@@ -80,65 +80,76 @@
     }
   }
 
-  .media-left {
+  &__cover {
     margin: 0 15px 0 0 !important;
 
     @include theme(compact) {
       margin-right: 10px !important;
     }
+  }
 
-    figure {
-      border-radius: 3px;
-      height: 60px;
-      width: 60px;
-      background-color: #121212;
+  &__figure {
+    border-radius: 3px;
+    height: 60px;
+    width: 60px;
+    background-color: #121212;
 
-      @include theme(compact) {
-        height: 40px;
-        width: 40px;
-      }
-
-      img {
-        border-radius: 3px;
-        filter: brightness(0.92);
-      }
+    @include theme(compact) {
+      height: 40px;
+      width: 40px;
     }
   }
 
-  .content {
-    a {
-      text-decoration: none;
+  &__image {
+    border-radius: 3px;
+    filter: brightness(0.92);
+  }
 
-      &:hover {
-        text-decoration-line: underline;
-      }
+  &__title {
+    display: block;
+    font-size: 1.25rem;
+    margin-top: 4px;
+    margin-bottom: 5px;
+    line-height: 1.2;
+    color: $primary-slightly-darker;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration-line: underline;
     }
 
-    .title {
-      display: block;
-      margin-top: 4px;
-      margin-bottom: 5px;
-      line-height: 1.2;
-      color: $primary-slightly-darker;
-      text-decoration-color: $primary-dark;
-
-      @include theme(compact) {
-        font-size: 1rem !important;
-        margin-top: 1px;
-        margin-bottom: 4px;
-      }
-
-      @include theme(single-column) {
-        width: fit-content;
-      }
+    @include theme(compact) {
+      font-size: 1rem;
+      margin-top: 1px;
+      margin-bottom: 4px;
     }
 
-    .artists {
-      line-height: 1.3;
+    @include theme(single-column) {
+      width: fit-content;
+    }
+  }
 
-      @include theme(compact) {
-        font-size: 0.8rem;
-      }
+  &__artists {
+    color: $grey;
+    line-height: 1.3;
+
+    @include theme(compact) {
+      font-size: 0.8rem;
+    }
+  }
+
+  &__artist {
+    color: $grey-lighter !important;
+    text-decoration-color: $grey !important;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration-line: underline;
+    }
+
+    &--other {
+      color: $grey !important;
+      text-decoration-color: $grey-darker !important;
     }
   }
 }
