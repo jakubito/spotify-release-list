@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BackToTop, Message } from 'components/common'
 
 /**
@@ -5,7 +6,9 @@ import { BackToTop, Message } from 'components/common'
  *
  * @param {RouteComponentProps & { children: React.ReactNode }} props
  */
-function App({ children }) {
+function App({ location, children }) {
+  useEffect(() => window.scrollTo(0, 0), [location])
+
   return (
     <div className="App">
       {children}
