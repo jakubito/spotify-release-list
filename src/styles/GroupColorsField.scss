@@ -1,0 +1,41 @@
+.GroupColorsField {
+  &__row {
+    display: flex;
+    align-items: center;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @include tablet {
+      margin-bottom: 10px;
+    }
+
+    @include mobile {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+  }
+
+  &__label {
+    width: 200px;
+    background: $black !important;
+    font-weight: 500 !important;
+    justify-content: flex-start;
+    flex-grow: 1;
+
+    @include tablet {
+      margin-right: 10px;
+    }
+
+    @include mobile {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+
+  &__input {
+    width: 200px;
+  }
+}

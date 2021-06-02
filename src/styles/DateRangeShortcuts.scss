@@ -1,0 +1,13 @@
+.DateRangeShortcuts {
+  @include mobile {
+    order: 2;
+  }
+
+  &__button {
+    margin: 5px;
+
+    @include mobile {
+      margin: 3px;
+    }
+  }
+}

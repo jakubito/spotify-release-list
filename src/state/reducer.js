@@ -109,8 +109,6 @@ function rootReducer(state = initialState, { type, payload }) {
       return { ...state, playlistModalVisible: true }
     case HIDE_PLAYLIST_MODAL:
       return { ...state, playlistModalVisible: false, playlistId: initialState.playlistId }
-    case RESET:
-      return { ...initialState, settings: state.settings, seenFeatures: state.seenFeatures }
     case SHOW_MESSAGE:
       return { ...state, message: { ...payload } }
     case HIDE_MESSAGE:
@@ -134,6 +132,8 @@ function rootReducer(state = initialState, { type, payload }) {
       return { ...state, filters: { ...state.filters, ...payload.filters } }
     case RESET_FILTERS:
       return { ...state, filters: initialState.filters, filtersVisible: false }
+    case RESET:
+      return initialState
     default:
       return state
   }

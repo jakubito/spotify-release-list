@@ -91,6 +91,7 @@
  *   primary?: boolean
  *   danger?: boolean
  *   text?: boolean
+ *   style?: React.CSSProperties
  * }} ButtonProps
  *
  * @typedef {{ id: string, name: string, image: string }} User

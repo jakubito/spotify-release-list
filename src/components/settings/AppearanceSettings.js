@@ -11,8 +11,8 @@ function AppearanceSettings(props) {
   return (
     <div className="fade-in">
       <ThemeField />
-      <CoversField />
       <GroupColorsField />
+      <CoversField />
     </div>
   )
 }

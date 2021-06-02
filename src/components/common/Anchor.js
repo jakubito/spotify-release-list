@@ -15,7 +15,7 @@ import { colord } from 'colord'
 function Anchor({ title, href, className, color, children }) {
   const style = color && {
     color,
-    textDecorationColor: colord(color).darken(0.2).desaturate(0.2).toHex(),
+    textDecorationColor: colord(color).darken(0.15).desaturate(0.25).toHex(),
   }
 
   return (

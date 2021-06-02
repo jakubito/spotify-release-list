@@ -1,5 +1,7 @@
 import mergeWith from 'lodash/mergeWith'
-import { MomentFormat } from 'enums'
+import random from 'lodash/random'
+import { colord } from 'colord'
+import { AlbumGroup, MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
 const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -255,4 +257,28 @@ export function buildAlbumRaw(source, artistId) {
     releaseDate: source.release_date,
     artistIds: { [source.album_group]: [artistId] },
   }
+}
+
+/**
+ * Generate random color scheme
+ *
+ * @param {{ rotation: () => number, saturation: () => number, lightness: () => number }} options
+ * @returns {GroupColorScheme}
+ */
+export function randomColorScheme({ rotation, saturation, lightness }) {
+  let hue = random(0, 359)
+
+  const scheme = Object.values(AlbumGroup).reduce((scheme, group) => {
+    hue += rotation()
+
+    if (hue >= 360) {
+      hue -= 360
+    }
+
+    const color = colord({ h: hue, s: saturation(), l: lightness() })
+
+    return { ...scheme, [group]: color.toHex() }
+  }, /** @type {GroupColorScheme} */ ({}))
+
+  return scheme
 }

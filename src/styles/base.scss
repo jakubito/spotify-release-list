@@ -86,6 +86,22 @@ body,
     color: $grey-light;
   }
 
+  &.is-dark {
+    color: $grey-light;
+
+    &:focus {
+      color: $white-bis;
+    }
+
+    &:hover {
+      color: $grey-lighter;
+    }
+
+    &:active {
+      color: $grey-light;
+    }
+  }
+
   span:not(.icon) {
     text-decoration: underline;
   }

@@ -22,6 +22,7 @@ function Button({
   primary,
   danger,
   text,
+  style,
 }) {
   const noStyle = !dark && !darker && !primary && !danger && !text
   const content = children || title
@@ -32,6 +33,7 @@ function Button({
       title={title || titleOnly}
       onClick={onClick}
       disabled={disabled}
+      style={style}
       className={classNames(className, 'button', 'is-rounded', 'has-text-weight-semibold', {
         'is-small': small,
         'is-medium': medium,

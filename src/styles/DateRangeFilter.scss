@@ -23,21 +23,6 @@
     }
   }
 
-  .DateRangeShortcuts {
-    @include mobile {
-      order: 2;
-    }
-  }
-
-  .DateRangeShortcut {
-    margin: 5px;
-    color: $grey-light;
-
-    @include mobile {
-      margin: 3px;
-    }
-  }
-
   .reset {
     margin-left: 5px;
 

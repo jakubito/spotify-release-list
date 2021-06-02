@@ -5,6 +5,7 @@ import { buildUser, buildArtist, buildAlbumRaw, sleep } from 'helpers'
  * Default to account market
  */
 const DEFAULT_MARKET = 'from_token'
+const HTTP_TOO_MANY_REQUESTS = 429
 
 /**
  * Represents an error encountered during data fetching
@@ -63,7 +64,7 @@ export async function getUserFollowedArtists(token) {
 }
 
 /**
- * Return artist's albums
+ * Return an artist's albums
  *
  * @param {string} token
  * @param {string} artistId
@@ -110,7 +111,7 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
 }
 
 /**
- * Return albums track IDs
+ * Return an album's track IDs
  *
  * @param {string} token
  * @param {string[]} albumIds
@@ -148,7 +149,7 @@ export async function getAlbumsTrackIds(token, albumIds, market) {
 }
 
 /**
- * Create new playlist
+ * Create a new playlist
  *
  * @param {string} token
  * @param {string} userId
@@ -166,7 +167,7 @@ export function createPlaylist(token, userId, name, description, isPrivate) {
 }
 
 /**
- * Add tracks to existing playlist
+ * Add tracks to an existing playlist
  *
  * @param {string} token
  * @param {string} playlistId
@@ -211,7 +212,7 @@ function post(endpoint, token, body) {
     endpoint,
     token,
     'POST',
-    { Accept: 'application/json', 'Content-Type': 'application/json' },
+    { 'content-type': 'application/json' },
     JSON.stringify(body)
   )
 }
@@ -227,18 +228,19 @@ function post(endpoint, token, body) {
  * @returns {Promise<any>}
  */
 async function request(endpoint, token, method, headers = {}, body) {
-  const authHeader = { Authorization: `Bearer ${token}` }
-  const response = await fetch(endpoint, { method, body, headers: { ...headers, ...authHeader } })
+  const defaultHeaders = { authorization: `Bearer ${token}`, accept: 'application/json' }
+  const response = await fetch(endpoint, {
+    method,
+    body,
+    headers: { ...defaultHeaders, ...headers },
+  })
 
   if (response.ok) {
     return response.json()
   }
 
-  // Handle 429 Too many requests
-  if (response.status === 429) {
+  if (response.status === HTTP_TOO_MANY_REQUESTS) {
     const retryAfter = Number(response.headers.get('Retry-After'))
-
-    // Add 1 extra second because Retry-After is not accurate
     await sleep((retryAfter + 1) * 1000)
 
     return request(endpoint, token, method, headers, body)

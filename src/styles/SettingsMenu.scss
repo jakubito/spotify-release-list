@@ -23,8 +23,16 @@
       margin-right: 12px;
     }
 
+    &:active {
+      color: $grey-dark !important;
+    }
+
     &--active {
       color: $white-bis !important;
+
+      &:active {
+        color: $white-bis !important;
+      }
 
       span {
         text-decoration: none !important;

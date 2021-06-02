@@ -1,8 +1,13 @@
 .AboutSettings {
-  align-items: center;
+  align-items: flex-start;
+  color: $grey-light;
+
+  @include mobile {
+    align-items: center;
+  }
 
   &__item {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-align: center;
 
     &:last-child {
@@ -13,11 +18,15 @@
   &__buttons {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+
+    @include tablet {
+      margin-bottom: 15px;
+    }
   }
 
   &__button {
-    margin: 7px;
+    margin-right: 15px;
+    margin-bottom: 15px;
 
     @include mobile {
       width: 100%;

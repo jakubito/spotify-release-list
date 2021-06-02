@@ -61,8 +61,8 @@ export const AlbumGroupLabels = [
 /** @enum {GroupColorScheme} */
 export const GroupColorSchemes = {
   DEFAULT: {
-    [ALBUM]: '#e33c67',
-    [SINGLE]: '#9d77b6',
+    [ALBUM]: '#e04c71',
+    [SINGLE]: '#a779c5',
     [COMPILATION]: '#dcad4f',
     [APPEARS_ON]: '#19a34a',
   },
@@ -73,10 +73,10 @@ export const GroupColorSchemes = {
     [APPEARS_ON]: '#19a34a',
   },
   WHITE: {
-    [ALBUM]: '#ffffff',
-    [SINGLE]: '#ffffff',
-    [COMPILATION]: '#ffffff',
-    [APPEARS_ON]: '#ffffff',
+    [ALBUM]: '#f5f5f5',
+    [SINGLE]: '#f5f5f5',
+    [COMPILATION]: '#f5f5f5',
+    [APPEARS_ON]: '#f5f5f5',
   },
 }
 

@@ -59,7 +59,7 @@ function AboutSettings(props) {
           className="AboutSettings__button"
         />
       </div>
-      <div className="AboutSettings__item has-text-grey-light">
+      <div className="AboutSettings__item">
         <span className="icon">
           <i className="fas fa-code-branch" />
         </span>{' '}
