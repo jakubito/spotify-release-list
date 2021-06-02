@@ -10,8 +10,8 @@ import ThemeField from './ThemeField'
 function AppearanceSettings(props) {
   return (
     <div className="fade-in">
-      <ThemeField />
       <GroupColorsField />
+      <ThemeField />
       <CoversField />
     </div>
   )

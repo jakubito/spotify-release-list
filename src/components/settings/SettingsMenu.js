@@ -3,7 +3,7 @@ import { ButtonLink } from 'components/common'
 /** @type {{ title: string, to: string, icon: string }[]} */
 const links = [
   { title: 'General', to: '/settings', icon: 'fas fa-cog' },
-  { title: 'Appearance', to: '/settings/appearance', icon: 'fas fa-palette' },
+  { title: 'Appearance', to: '/settings/appearance', icon: 'fas fa-tint' },
   { title: 'About', to: '/settings/about', icon: 'fas fa-at' },
 ]
 

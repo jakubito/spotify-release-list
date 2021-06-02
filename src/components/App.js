@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { BackToTop, Message } from 'components/common'
 
 /**
@@ -7,6 +7,8 @@ import { BackToTop, Message } from 'components/common'
  * @param {RouteComponentProps & { children: React.ReactNode }} props
  */
 function App({ location, children }) {
+  // @reach/router focus scroll workaround
+  useLayoutEffect(() => window.scrollTo(0, 0), [location])
   useEffect(() => window.scrollTo(0, 0), [location])
 
   return (

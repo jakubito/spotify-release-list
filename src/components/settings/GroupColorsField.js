@@ -32,7 +32,6 @@ function GroupColorsField() {
   return (
     <div className="GroupColorsField Settings__field field">
       <label className="label has-text-light">Color scheme</label>
-      <GroupColorsShortcuts />
       {AlbumGroupLabels.map(([group, label]) => (
         <div className="GroupColorsField__row" ref={(ref) => saveRef(group, ref)} key={group}>
           <Button
@@ -50,6 +49,7 @@ function GroupColorsField() {
           />
         </div>
       ))}
+      <GroupColorsShortcuts />
     </div>
   )
 }
