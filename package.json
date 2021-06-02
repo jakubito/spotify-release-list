@@ -52,8 +52,8 @@
     "source-map-explorer": "^2.5.2"
   },
   "scripts": {
-    "start": "REACT_APP_VERSION=$npm_package_version BROWSER=none react-scripts start",
-    "build": "REACT_APP_VERSION=$npm_package_version react-scripts build",
+    "start": "REACT_APP_GIT_SHA=`git rev-parse --short HEAD` REACT_APP_VERSION=$npm_package_version BROWSER=none react-scripts start",
+    "build": "REACT_APP_GIT_SHA=`git rev-parse --short HEAD` REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettify": "prettier --write 'src/**/*.{js,scss}'",
