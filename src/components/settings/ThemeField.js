@@ -34,9 +34,9 @@ function ThemeField() {
   }, [theme])
 
   return (
-    <div className="field">
+    <div className="ThemeField Settings__field field">
       <label className="label has-text-light" htmlFor="theme">
-        Theme
+        Layout
       </label>
       <Select
         id="theme"

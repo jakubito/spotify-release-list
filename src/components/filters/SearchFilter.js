@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import debounce from 'lodash/debounce'
-import { defer } from 'helpers'
+import { defer, deferred } from 'helpers'
 import { setFilters } from 'state/actions'
 import { getFiltersSearch } from 'state/selectors'
 import { Input, Button } from 'components/common'
@@ -36,7 +36,10 @@ function SearchFilter() {
     defer(dispatch, setFilters({ search: '' }))
   }
 
-  useEffect(() => defer(() => inputRef.current?.focus()), [])
+  useEffect(
+    deferred(() => inputRef.current?.focus()),
+    []
+  )
 
   return (
     <div className="SearchFilter filter">

@@ -11,9 +11,11 @@ import { Input } from 'components/common'
  */
 function NameField() {
   const filtersDates = useSelector(getFiltersDates)
-  const { register, errors } = useFormContext()
+  const { register, formState } = useFormContext()
+  const { errors } = formState
   /** @type {React.MutableRefObject<HTMLInputElement>} */
   const inputRef = useRef()
+  const nameField = register('name', { required: true, maxLength: 100 })
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -27,11 +29,11 @@ function NameField() {
       <div className="control">
         <Input
           id="name"
-          name="name"
           defaultValue={filtersDates && playlistName(filtersDates.startDate, filtersDates.endDate)}
           className={classNames({ 'is-danger': errors.name })}
+          {...nameField}
           ref={(element) => {
-            register(element, { required: true, maxLength: 100 })
+            nameField.ref(element)
             inputRef.current = element
           }}
         />

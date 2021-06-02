@@ -1,0 +1,18 @@
+.SettingsHeader {
+  width: 100%;
+
+  @include tablet {
+    justify-content: center;
+  }
+
+  .title {
+    @include tablet {
+      flex: none;
+      margin: 0;
+    }
+
+    @include mobile {
+      margin-right: 20px;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+.AboutSettings {
+  align-items: flex-start;
+  color: $grey-light;
+
+  @include mobile {
+    align-items: center;
+  }
+
+  &__item {
+    margin-bottom: 30px;
+    text-align: center;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+
+    @include tablet {
+      margin-bottom: 15px;
+    }
+  }
+
+  &__button {
+    margin-right: 15px;
+    margin-bottom: 15px;
+
+    @include mobile {
+      width: 100%;
+      margin: 0 0 15px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

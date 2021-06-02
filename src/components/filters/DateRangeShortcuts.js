@@ -1,6 +1,8 @@
-import moment from 'moment'
+import { useSelector } from 'react-redux'
+import moment, { min, max } from 'moment'
 import { MomentFormat } from 'enums'
-import DateRangeShortcut from './DateRangeShortcut'
+import { getReleasesMinMaxDates } from 'state/selectors'
+import { Button } from 'components/common'
 
 const { MONTH_NAME } = MomentFormat
 
@@ -48,15 +50,22 @@ const shortcuts = [
  * @param {{ setValues: React.Dispatch<React.SetStateAction<StartEndDates>> }} props
  */
 function DateRangeShortcuts({ setValues }) {
+  const { minDate, maxDate } = useSelector(getReleasesMinMaxDates)
+  const validShortcuts = shortcuts.filter(
+    ({ start, end }) => start.isBefore(maxDate) && end.isAfter(minDate)
+  )
+
   return (
     <div className="DateRangeShortcuts">
-      {shortcuts.map(({ title, start, end }, index) => (
-        <DateRangeShortcut
-          title={title}
-          start={start}
-          end={end}
-          setValues={setValues}
+      {validShortcuts.map(({ title, start, end }, index) => (
+        <Button
+          className="DateRangeShortcuts__button"
+          title={title instanceof Function ? title(start, end) : title}
+          onClick={() => setValues({ startDate: max(start, minDate), endDate: min(end, maxDate) })}
           key={index}
+          text
+          dark
+          small
         />
       ))}
     </div>

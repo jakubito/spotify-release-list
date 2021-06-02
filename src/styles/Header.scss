@@ -9,10 +9,13 @@
   }
 
   .title {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     margin-bottom: 0 !important;
     margin-right: 20px;
     user-select: none;
-    text-align: right;
     flex: 0 0 225px;
 
     @include touch {

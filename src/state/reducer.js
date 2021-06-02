@@ -1,4 +1,4 @@
-import { AlbumGroup } from 'enums'
+import { AlbumGroup, GroupColorSchemes } from 'enums'
 import {
   SYNC_START,
   SYNC_FINISHED,
@@ -10,10 +10,6 @@ import {
   SET_ALBUMS,
   RESET,
   SET_SETTINGS,
-  SHOW_SETTINGS_MODAL,
-  HIDE_SETTINGS_MODAL,
-  SHOW_RESET_MODAL,
-  HIDE_RESET_MODAL,
   SHOW_PLAYLIST_MODAL,
   HIDE_PLAYLIST_MODAL,
   SET_TOKEN,
@@ -53,12 +49,11 @@ export const initialState = {
   user: null,
   nonce: null,
   message: null,
-  settingsModalVisible: false,
-  resetModalVisible: false,
   playlistModalVisible: false,
   filtersVisible: false,
   settings: {
     groups: Object.values(AlbumGroup),
+    groupColors: GroupColorSchemes.DEFAULT,
     days: 30,
     market: '',
     theme: '',
@@ -110,19 +105,10 @@ function rootReducer(state = initialState, { type, payload }) {
       return setAlbums(state, payload)
     case SET_SETTINGS:
       return { ...state, settings: { ...state.settings, ...payload.settings } }
-    case SHOW_SETTINGS_MODAL:
-      return { ...hideModals(state), settingsModalVisible: true }
-    case SHOW_RESET_MODAL:
-      return { ...hideModals(state), resetModalVisible: true }
     case SHOW_PLAYLIST_MODAL:
-      return { ...hideModals(state), playlistModalVisible: true }
-    case HIDE_SETTINGS_MODAL:
-    case HIDE_RESET_MODAL:
-      return hideModals(state)
+      return { ...state, playlistModalVisible: true }
     case HIDE_PLAYLIST_MODAL:
-      return { ...hideModals(state), playlistId: initialState.playlistId }
-    case RESET:
-      return { ...initialState, settings: state.settings, seenFeatures: state.seenFeatures }
+      return { ...state, playlistModalVisible: false, playlistId: initialState.playlistId }
     case SHOW_MESSAGE:
       return { ...state, message: { ...payload } }
     case HIDE_MESSAGE:
@@ -146,6 +132,8 @@ function rootReducer(state = initialState, { type, payload }) {
       return { ...state, filters: { ...state.filters, ...payload.filters } }
     case RESET_FILTERS:
       return { ...state, filters: initialState.filters, filtersVisible: false }
+    case RESET:
+      return initialState
     default:
       return state
   }
@@ -161,19 +149,6 @@ function setAlbums(state, { albumsRaw, artists, minDate }) {
   const albums = buildAlbumsMap(albumsRawMerged, artists)
 
   return { ...state, albums }
-}
-
-/**
- * @param {State} state
- * @returns {State}
- */
-function hideModals(state) {
-  return {
-    ...state,
-    settingsModalVisible: false,
-    resetModalVisible: false,
-    playlistModalVisible: false,
-  }
 }
 
 export default rootReducer

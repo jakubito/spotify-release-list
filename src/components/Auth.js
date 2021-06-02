@@ -10,10 +10,10 @@ import { AuthError, validateAuthRequest } from 'auth'
  *
  * @param {RouteComponentProps} props
  */
-function Auth(props) {
+function Auth({ location }) {
   const dispatch = useDispatch()
   const nonce = useSelector(getNonce)
-  const { search, hash } = window.location
+  const { search, hash } = location
 
   try {
     const { action, token, tokenExpires, scope } = validateAuthRequest(search, hash, nonce)

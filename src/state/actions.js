@@ -9,10 +9,6 @@ export const SET_USER = 'SET_USER'
 export const SET_ALBUMS = 'SET_ALBUMS'
 export const RESET = 'RESET'
 export const SET_SETTINGS = 'SET_SETTINGS'
-export const SHOW_SETTINGS_MODAL = 'SHOW_SETTINGS_MODAL'
-export const HIDE_SETTINGS_MODAL = 'HIDE_SETTINGS_MODAL'
-export const SHOW_RESET_MODAL = 'SHOW_RESET_MODAL'
-export const HIDE_RESET_MODAL = 'HIDE_RESET_MODAL'
 export const SHOW_PLAYLIST_MODAL = 'SHOW_PLAYLIST_MODAL'
 export const HIDE_PLAYLIST_MODAL = 'HIDE_PLAYLIST_MODAL'
 export const SET_TOKEN = 'SET_TOKEN'
@@ -96,22 +92,6 @@ export function reset() {
 /** @param {Partial<Settings>} settings */
 export function setSettings(settings) {
   return action(SET_SETTINGS, { settings })
-}
-
-export function showSettingsModal() {
-  return action(SHOW_SETTINGS_MODAL)
-}
-
-export function hideSettingsModal() {
-  return action(HIDE_SETTINGS_MODAL)
-}
-
-export function showResetModal() {
-  return action(SHOW_RESET_MODAL)
-}
-
-export function hideResetModal() {
-  return action(HIDE_RESET_MODAL)
 }
 
 export function showPlaylistModal() {

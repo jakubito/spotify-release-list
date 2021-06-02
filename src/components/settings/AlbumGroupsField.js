@@ -23,9 +23,9 @@ function AlbumGroupsField() {
   }
 
   return (
-    <div className="field">
+    <div className="AlbumGroupsField Settings__field field">
       <label className="label has-text-light">
-        Request <HelpText>/ less is faster</HelpText>
+        Releases to fetch <HelpText>/ less is faster</HelpText>
       </label>
       <div className="control">
         {AlbumGroupLabels.map(([group, label]) => (

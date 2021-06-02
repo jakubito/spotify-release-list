@@ -1,6 +1,2 @@
 export { default as App } from './App'
 export { default as Auth } from './Auth'
-export { default as BackToTop } from './BackToTop'
-export { default as Header } from './Header'
-export { default as LastSync } from './LastSync'
-export { default as Message } from './Message'

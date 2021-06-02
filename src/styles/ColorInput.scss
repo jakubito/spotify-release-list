@@ -1,0 +1,20 @@
+.ColorInput {
+  $root: &;
+
+  &__content {
+    padding: 0;
+    background-color: transparent;
+  }
+
+  &__input {
+    &:focus {
+      ~ #{$root}__icon {
+        color: $grey-light !important;
+      }
+    }
+  }
+
+  &__icon {
+    color: $grey !important;
+  }
+}

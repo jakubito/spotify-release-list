@@ -2,48 +2,48 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm, FormProvider } from 'react-hook-form'
 import { useModal } from 'hooks'
-import { hidePlaylistModal, createPlaylist, setPlaylistForm } from 'state/actions'
+import { createPlaylist, setPlaylistForm } from 'state/actions'
 import { getCreatingPlaylist, getPlaylistId, getReleasesCount } from 'state/selectors'
 import { PlaylistForm, PlaylistInfo, PlaylistLoading } from 'components/playlist'
 
 /**
  * Render new playlist modal
+ *
+ * @param {{ closeModal: () => void }} props
  */
-function PlaylistModal() {
-  const closeModal = useModal(hidePlaylistModal)
+function PlaylistModal({ closeModal }) {
   const releasesCount = useSelector(getReleasesCount)
   const creatingPlaylist = useSelector(getCreatingPlaylist)
   const playlistId = useSelector(getPlaylistId)
-
-  const form = useForm()
   const [submitTriggered, setSubmitTriggered] = useState(false)
-  const { handleSubmit } = form
   const onSubmit = useOnSubmit(setSubmitTriggered)
+  const form = useForm()
 
+  useModal(closeModal)
   useEffect(() => setSubmitTriggered(creatingPlaylist), [creatingPlaylist])
+
+  const renderContent = () => {
+    if (creatingPlaylist) {
+      return <PlaylistLoading />
+    }
+
+    if (playlistId) {
+      return <PlaylistInfo closeModal={closeModal} />
+    }
+
+    return <PlaylistForm submitTriggered={submitTriggered} closeModal={closeModal} />
+  }
 
   return (
     <FormProvider {...form}>
-      <form className="PlaylistModal modal is-active" onSubmit={handleSubmit(onSubmit)}>
+      <form className="PlaylistModal modal is-active" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="modal-background" onClick={closeModal} />
-
         <div className="modal-content has-background-black-bis has-text-light fade-in">
           <h4 className="title is-4 has-text-light has-text-centered">
             Exporting <span className="has-text-primary">{releasesCount}</span>{' '}
             {releasesCount > 1 ? 'releases' : 'release'}
           </h4>
-
-          {(() => {
-            if (creatingPlaylist) {
-              return <PlaylistLoading />
-            }
-
-            if (playlistId) {
-              return <PlaylistInfo closeModal={closeModal} />
-            }
-
-            return <PlaylistForm submitTriggered={submitTriggered} closeModal={closeModal} />
-          })()}
+          {renderContent()}
         </div>
       </form>
     </FormProvider>

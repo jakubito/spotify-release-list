@@ -16,13 +16,11 @@
  *   user?: User
  *   nonce?: string
  *   message?: Message
- *   settingsModalVisible: boolean
- *   resetModalVisible: boolean
  *   playlistModalVisible: boolean
  *   filtersVisible: boolean
  *   settings: Settings
  *   filters: Filters
- *   seenFeatures: Feature[]
+ *   seenFeatures: string[]
  * }} State
  *
  * @typedef {{
@@ -38,6 +36,7 @@
  *
  * @typedef {{
  *   groups: AlbumGroup[]
+ *   groupColors: GroupColorScheme
  *   days: number
  *   market: Market
  *   theme: string
@@ -76,6 +75,25 @@
  *   end: Moment
  * }} DateRangeShortcut
  *
+ * @typedef {{
+ *   type?: 'submit' | 'reset' | 'button'
+ *   title?: string
+ *   titleOnly?: string
+ *   onClick?: React.MouseEventHandler<HTMLButtonElement>
+ *   children?: React.ReactNode
+ *   icon?: string
+ *   disabled?: boolean
+ *   className?: string
+ *   small?: boolean
+ *   medium?: boolean
+ *   dark?: boolean
+ *   darker?: boolean
+ *   primary?: boolean
+ *   danger?: boolean
+ *   text?: boolean
+ *   style?: React.CSSProperties
+ * }} ButtonProps
+ *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
  * @typedef {{ [id: string]: Artist }} ArtistsMap
@@ -89,6 +107,7 @@
  * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
+ * @typedef {{ [group: string]: string }} GroupColorScheme
  */
 
 /**
@@ -101,14 +120,13 @@
 /**
  * Enums
  *
- * @typedef {string} Address
- * @typedef {string} Scope
- * @typedef {string} SpotifyEntity
- * @typedef {string} MomentFormat
- * @typedef {string} AlbumGroup
- * @typedef {string} Feature
- * @typedef {string} Theme
- * @typedef {string} Market
+ * @typedef {import('./enums').Address} Address
+ * @typedef {import('./enums').Scope} Scope
+ * @typedef {import('./enums').SpotifyEntity} SpotifyEntity
+ * @typedef {import('./enums').MomentFormat} MomentFormat
+ * @typedef {import('./enums').AlbumGroup} AlbumGroup
+ * @typedef {import('./enums').Theme} Theme
+ * @typedef {import('./enums').Market} Market
  */
 
 /**

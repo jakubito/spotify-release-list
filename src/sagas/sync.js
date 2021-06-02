@@ -24,7 +24,7 @@ const { ISO_DATE } = MomentFormat
 const REQUEST_WORKERS = 6
 
 /**
- * Loading animation duration in miliseconds
+ * Loading bar animation duration in miliseconds
  */
 const LOADING_ANIMATION_MS = 550
 

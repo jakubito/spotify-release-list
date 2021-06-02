@@ -1,16 +1,20 @@
+@import './variables';
+
 @import '~bulma/bulma';
 @import '~bulma-checkradio/dist/css/bulma-checkradio';
 @import '~react-dates/lib/css/_datepicker';
 
-@import './variables';
 @import './mixins';
 @import './base';
 @import './animations';
 @import './datepicker';
 
+@import './Anchor';
 @import './Album';
 @import './App';
 @import './Content';
+@import './Centered';
+@import './Intro';
 @import './Header';
 @import './ReleaseDay';
 @import './ResetModal';
@@ -23,8 +27,19 @@
 @import './Loading';
 @import './Filters';
 @import './DateRangeFilter';
+@import './DateRangeShortcuts';
 @import './SearchFilter';
 @import './AlbumGroupsFilter';
 @import './PlaylistLoading';
 @import './LastSync';
-@import './Anchor';
+@import './VerticalLayout';
+@import './HorizontalLayout';
+@import './Settings';
+@import './SettingsMenu';
+@import './SettingsHeader';
+@import './DataInfo';
+@import './DataReset';
+@import './AboutSettings';
+@import './ColorInput';
+@import './GroupColorsField';
+@import './GroupColorsShortcuts';

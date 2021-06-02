@@ -8,6 +8,8 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { store, hydrate } from 'state'
 import { getSettingsTheme } from 'state/selectors'
 import { Auth, App } from 'components'
+import { Releases } from 'components/releases'
+import { Settings, GeneralSettings, AppearanceSettings, AboutSettings } from 'components/settings'
 import 'styles/index.scss'
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
@@ -23,16 +25,22 @@ function applyTheme() {
 
 function renderApp() {
   render(
-    <>
-      <Provider store={store}>
-        <Router>
-          <Auth path="auth" />
-          <App path="/" />
-          <Redirect from="/*" to="/" default noThrow />
-        </Router>
-      </Provider>
+    <Provider store={store}>
+      <Router>
+        <App path="/">
+          <Releases path="/" />
+          <Settings path="settings">
+            <GeneralSettings path="/" />
+            <AppearanceSettings path="appearance" />
+            <AboutSettings path="about" />
+            <Redirect from="*" to="/" noThrow />
+          </Settings>
+          <Redirect from="*" to="/" noThrow />
+        </App>
+        <Auth path="auth" />
+      </Router>
       <PWAPrompt />
-    </>,
+    </Provider>,
     document.getElementById('root')
   )
 }

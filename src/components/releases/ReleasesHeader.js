@@ -2,7 +2,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
-import { defer } from 'helpers'
+import { deferred } from 'helpers'
+import { useFeature } from 'hooks'
 import {
   getLastSyncDate,
   getHasReleases,
@@ -11,19 +12,13 @@ import {
   getFiltersApplied,
   getHasOriginalReleases,
 } from 'state/selectors'
-import {
-  showSettingsModal,
-  showPlaylistModal,
-  toggleFiltersVisible,
-  resetFilters,
-} from 'state/actions'
-import { LastSync } from 'components'
-import { SyncButton, Button } from 'components/common'
+import { showPlaylistModal, toggleFiltersVisible, resetFilters } from 'state/actions'
+import { Header, SyncButton, Button, ButtonLink, LastSync } from 'components/common'
 
 /**
- * Render header
+ * Render main header
  */
-function Header() {
+function ReleasesHeader() {
   const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const lastSyncDate = useSelector(getLastSyncDate)
@@ -31,21 +26,16 @@ function Header() {
   const hasOriginalReleases = useSelector(getHasOriginalReleases)
   const filtersVisible = useSelector(getFiltersVisible)
   const filtersApplied = useSelector(getFiltersApplied)
+  const { seen: settingsSeen } = useFeature('new-settings-1.8.0')
 
-  const toggleFilters = () => defer(dispatch, toggleFiltersVisible())
-  const openPlaylistModal = () => defer(dispatch, showPlaylistModal())
-  const openSettingsModal = () => defer(dispatch, showSettingsModal())
+  const toggleFilters = deferred(dispatch, toggleFiltersVisible())
+  const openPlaylistModal = deferred(dispatch, showPlaylistModal())
 
   useHotkeys('f', toggleFilters)
   useHotkeys('e', openPlaylistModal)
-  useHotkeys('s', openSettingsModal)
 
   return (
-    <nav className="Header">
-      <div className="title is-4 has-text-light">
-        Spotify <Media query={{ maxWidth: 375 }}>{(matches) => matches && <br />}</Media>
-        Release List
-      </div>
+    <Header>
       {lastSyncDate && (
         <div className="left">
           <SyncButton title="Refresh" icon="fas fa-sync-alt" />
@@ -65,11 +55,7 @@ function Header() {
                 </Button>
               )}
               {filtersApplied && (
-                <Button
-                  title="Reset filters"
-                  onClick={() => defer(dispatch, resetFilters())}
-                  text
-                />
+                <Button title="Reset filters" onClick={deferred(dispatch, resetFilters())} text />
               )}
               <LastSync className="is-hidden-mobile" />
             </>
@@ -78,25 +64,29 @@ function Header() {
       )}
       <div className="right">
         {lastSyncDate && hasReleases && !syncing && (
-          <Button
-            title="Export to a new playlist [E]"
-            icon="fas fa-upload"
-            onClick={openPlaylistModal}
-          >
+          <Button title="Export to playlist [E]" icon="fas fa-upload" onClick={openPlaylistModal}>
             <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
           </Button>
         )}
-        <Button
+        <ButtonLink
+          to="/settings"
           title="Settings [S]"
           icon="fas fa-cog"
-          onClick={openSettingsModal}
           disabled={syncing}
+          className="has-badge"
         >
+          <div
+            className={classNames('badge is-primary has-text-weight-semibold', {
+              'is-hidden': settingsSeen,
+            })}
+          >
+            NEW
+          </div>
           <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Settings</span>}</Media>
-        </Button>
+        </ButtonLink>
       </div>
-    </nav>
+    </Header>
   )
 }
 
-export default Header
+export default ReleasesHeader

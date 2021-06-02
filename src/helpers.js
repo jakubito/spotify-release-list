@@ -1,5 +1,7 @@
 import mergeWith from 'lodash/mergeWith'
-import { MomentFormat } from 'enums'
+import random from 'lodash/random'
+import { colord } from 'colord'
+import { AlbumGroup, MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
 const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -23,6 +25,17 @@ export function sleep(ms) {
  */
 export function defer(fn, ...args) {
   requestAnimationFrame(() => setTimeout(() => fn(...args), 0))
+}
+
+/**
+ * Callback wrapper for `defer()`
+ *
+ * @param {function} fn
+ * @param {...any} [args] - Arguments to be passed to function
+ * @returns {() => void}
+ */
+export function deferred(fn, ...args) {
+  return () => defer(fn, ...args)
 }
 
 /**
@@ -177,6 +190,18 @@ export function spotifyUrl(id, entity) {
 }
 
 /**
+ * Create Spotify link
+ *
+ * @param {string} id
+ * @param {string} entity
+ * @param {boolean} [uri] - Return URI link if `true`
+ * @returns {string}
+ */
+export function spotifyLink(id, entity, uri = false) {
+  return uri ? spotifyUri(id, entity) : spotifyUrl(id, entity)
+}
+
+/**
  * Pick image from array of images and return its URL
  *
  * @param {SpotifyImage[]} [images]
@@ -232,4 +257,28 @@ export function buildAlbumRaw(source, artistId) {
     releaseDate: source.release_date,
     artistIds: { [source.album_group]: [artistId] },
   }
+}
+
+/**
+ * Generate random color scheme
+ *
+ * @param {{ rotation: () => number, saturation: () => number, lightness: () => number }} options
+ * @returns {GroupColorScheme}
+ */
+export function randomColorScheme({ rotation, saturation, lightness }) {
+  let hue = random(0, 359)
+
+  const scheme = Object.values(AlbumGroup).reduce((scheme, group) => {
+    hue += rotation()
+
+    if (hue >= 360) {
+      hue -= 360
+    }
+
+    const color = colord({ h: hue, s: saturation(), l: lightness() })
+
+    return { ...scheme, [group]: color.toHex() }
+  }, /** @type {GroupColorScheme} */ ({}))
+
+  return scheme
 }

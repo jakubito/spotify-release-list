@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-import classNames from 'classnames'
 import { getWorking } from 'state/selectors'
 import { Button } from 'components/common'
 import NameField from './NameField'
@@ -28,7 +27,6 @@ function PlaylistForm({ submitTriggered, closeModal }) {
             type="submit"
             title="Create"
             icon="fas fa-asterisk"
-            className={classNames({ 'is-loading': submitTriggered })}
             disabled={working || submitTriggered}
             key="submit"
             primary

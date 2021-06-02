@@ -15,10 +15,9 @@ function VisibilityField() {
             className="is-checkradio has-background-color is-white"
             id="visibilityPrivate"
             type="radio"
-            name="visibility"
             value="private"
-            ref={register}
             defaultChecked
+            {...register('visibility')}
           />
           <label htmlFor="visibilityPrivate">Private</label>
         </div>
@@ -27,9 +26,8 @@ function VisibilityField() {
             className="is-checkradio has-background-color is-white"
             id="visibilityPublic"
             type="radio"
-            name="visibility"
             value="public"
-            ref={register}
+            {...register('visibility')}
           />
           <label htmlFor="visibilityPublic">Public</label>
         </div>

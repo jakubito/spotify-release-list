@@ -5,7 +5,8 @@ import { Input } from 'components/common'
  * Render playlist description form field
  */
 function DescriptionField() {
-  const { register, errors } = useFormContext()
+  const { register, formState } = useFormContext()
+  const { errors } = formState
 
   return (
     <div className="field">
@@ -15,9 +16,8 @@ function DescriptionField() {
       <div className="control">
         <Input
           id="description"
-          name="description"
           placeholder="Optional"
-          ref={register({ maxLength: 100 })}
+          {...register('description', { maxLength: 100 })}
         />
       </div>
       {errors.description && (

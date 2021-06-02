@@ -1,23 +1,26 @@
+:root {
+  color-scheme: dark;
+}
+
 html,
 body,
 #root,
+// reach-router's wrapper
 #root > div:first-child {
   height: 100%;
+  background-color: $black;
+  color: $white-ter;
 }
 
 .is-modal-open {
   position: fixed;
-  overflow: hidden;
+  overflow-y: scroll;
   width: 100%;
 }
 
-.has-text-primary {
-  color: $color-primary !important;
-}
-
 .input.is-dark {
-  background-color: $color-dark;
-  border-color: $color-dark;
+  background-color: $darkest;
+  border-color: $darkest;
   color: $white-ter;
 
   &:hover,
@@ -42,18 +45,19 @@ body,
 }
 
 .button.is-darker {
-  background-color: $color-dark;
+  background-color: $darkest;
 }
 
 .button.is-primary {
-  background-color: $color-primary !important;
+  background-color: $primary !important;
+  color: $black !important;
 
   &:hover {
-    background-color: $color-primary-light !important;
+    background-color: $primary-light !important;
   }
 
   &:active {
-    background-color: $color-primary-slightly-darker !important;
+    background-color: $primary-slightly-darker !important;
   }
 }
 
@@ -64,6 +68,7 @@ body,
   border: none !important;
   box-shadow: none !important;
   background: none !important;
+  text-decoration: none;
 
   &:focus {
     color: $white-bis;
@@ -71,16 +76,41 @@ body,
 
   &:hover {
     color: $grey-lighter;
-    text-decoration: none;
+
+    span:not(.icon) {
+      text-decoration: none;
+    }
   }
 
   &:active {
     color: $grey-light;
   }
+
+  &.is-dark {
+    color: $grey-light;
+
+    &:focus {
+      color: $white-bis;
+    }
+
+    &:hover {
+      color: $grey-lighter;
+    }
+
+    &:active {
+      color: $grey-light;
+    }
+  }
+
+  span:not(.icon) {
+    text-decoration: underline;
+  }
 }
 
-.button.has-badge .icon:nth-child(2) {
-  margin-left: calc(-0.5em - 1px) !important;
+@include mobile {
+  .button.has-badge .icon:nth-child(1) {
+    margin-right: calc(-0.5em - 1px) !important;
+  }
 }
 
 .badge {
@@ -92,7 +122,7 @@ body,
   margin: 0;
   font-size: 10px;
   border-radius: 8px;
-  color: $color-dark;
+  color: $darkest;
 
   &.badge-inline {
     display: inline-block;
@@ -103,7 +133,7 @@ body,
   }
 
   &.is-primary {
-    background-color: $color-primary;
+    background-color: $primary;
   }
 }
 
@@ -119,6 +149,10 @@ body,
   border-radius: 3px;
   // Mobile Safari-specific hack that fixes disappearing padding
   box-shadow: 0px 0px 1px 0px transparent;
+
+  @include mobile {
+    padding: 20px 15px;
+  }
 
   .title {
     margin-bottom: 24px;
@@ -164,7 +198,7 @@ body,
 
       &::before,
       &:before {
-        background-color: $color-dark !important;
+        background-color: $darkest !important;
       }
     }
 
@@ -174,12 +208,12 @@ body,
 
         &::before,
         &:before {
-          background-color: $color-dark !important;
+          background-color: $darkest !important;
         }
 
         &::after,
         &:after {
-          background-color: $color-dark !important;
+          background-color: $darkest !important;
           border-color: $white-ter !important;
         }
       }

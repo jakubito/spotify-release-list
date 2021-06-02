@@ -13,6 +13,7 @@ import classNames from 'classnames'
  *   defaultValue?: string
  *   placeholder?: string
  *   onChange?: React.ChangeEventHandler<HTMLInputElement>
+ *   onBlur?: React.FocusEventHandler<HTMLInputElement>
  * }} props
  * @param {React.Ref<HTMLInputElement>} ref
  */

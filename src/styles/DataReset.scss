@@ -1,0 +1,7 @@
+.DataReset {
+  &__button {
+    @include mobile {
+      width: 100%;
+    }
+  }
+}

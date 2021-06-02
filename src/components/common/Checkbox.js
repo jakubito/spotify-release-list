@@ -31,11 +31,7 @@ function Checkbox({ id, name, className, label, value, checked, defaultChecked, 
           'is-dark': dark,
         })}
       />
-      {label && (
-        <label htmlFor={id} className="has-text-weight-semibold">
-          {label}
-        </label>
-      )}
+      {label && <label htmlFor={id}>{label}</label>}
     </>
   )
 }

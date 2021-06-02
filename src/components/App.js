@@ -1,28 +1,21 @@
-import { Header, BackToTop, Message } from 'components'
-import { Content } from 'components/content'
-import { Filters } from 'components/filters'
-import {
-  SettingsModalContainer,
-  ResetModalContainer,
-  PlaylistModalContainer,
-} from 'components/modals'
+import { useEffect, useLayoutEffect } from 'react'
+import { BackToTop, Message } from 'components/common'
 
 /**
  * Main app component
  *
- * @param {RouteComponentProps} props
+ * @param {RouteComponentProps & { children: React.ReactNode }} props
  */
-function App(props) {
+function App({ location, children }) {
+  // @reach/router focus scroll workaround
+  useLayoutEffect(() => window.scrollTo(0, 0), [location])
+  useEffect(() => window.scrollTo(0, 0), [location])
+
   return (
-    <div className="App has-background-black has-text-weight-semibold">
-      <Header />
-      <Filters />
-      <Content />
+    <div className="App">
+      {children}
       <BackToTop />
       <Message />
-      <SettingsModalContainer />
-      <ResetModalContainer />
-      <PlaylistModalContainer />
     </div>
   )
 }

@@ -1,54 +1,56 @@
 .ReleaseDay {
-  margin: 0 !important;
+  margin-bottom: 0 !important;
+  align-items: flex-start;
 
   @include touch {
     flex-direction: column;
 
     &:first-child {
-      .column.date {
-        margin-top: 15px !important;
-      }
-    }
+      margin-top: -10px;
 
-    @include theme(compact) {
-      &:first-child {
-        .column.date {
-          margin-top: 10px !important;
-        }
+      @include theme(compact) {
+        margin-top: -5px;
       }
     }
   }
 
-  .column {
-    &.date {
-      flex: 0 0 225px;
-      line-height: 30px;
-      margin: 25px 0 0 0 !important;
-      text-align: right;
+  &__date {
+    flex: 0 0 225px;
+    margin-top: 25px !important;
+    color: $grey;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 1.5rem;
 
-      .new {
-        color: $color-primary;
-      }
-
-      @include theme(compact) {
-        margin-top: 15px !important;
-        font-size: 1.2rem !important;
-      }
-
-      @include desktop-only {
-        flex: 0 0 170px;
-      }
-
-      @include touch {
-        flex: none;
-        text-align: left;
-      }
+    @include theme(compact) {
+      margin-top: 16px !important;
+      font-size: 1.25rem;
     }
 
-    &.albums {
-      display: flex;
-      flex-wrap: wrap;
-      flex-basis: auto;
+    @include desktop-only {
+      flex: 0 0 170px;
     }
+
+    @include touch {
+      flex: none;
+    }
+
+    @include mobile {
+      justify-content: center;
+    }
+  }
+
+  &__bullet {
+    color: $blue;
+    font-size: 8px;
+    margin-right: 2px;
+  }
+
+  &__albums {
+    display: flex;
+    flex-wrap: wrap;
+    flex-basis: auto;
+    width: 100%;
   }
 }

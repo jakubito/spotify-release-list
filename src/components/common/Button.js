@@ -4,23 +4,7 @@ import { isString } from 'helpers'
 /**
  * Render button
  *
- * @param {{
- *   type?: 'submit' | 'reset' | 'button'
- *   title?: string
- *   titleOnly?: string
- *   onClick?: React.MouseEventHandler<HTMLButtonElement>
- *   children?: React.ReactNode
- *   icon?: string
- *   disabled?: boolean
- *   className?: string
- *   small?: boolean
- *   medium?: boolean
- *   dark?: boolean
- *   darker?: boolean
- *   primary?: boolean
- *   danger?: boolean
- *   text?: boolean
- * }} props
+ * @param {ButtonProps} props
  */
 function Button({
   type = 'button',
@@ -38,6 +22,7 @@ function Button({
   primary,
   danger,
   text,
+  style,
 }) {
   const noStyle = !dark && !darker && !primary && !danger && !text
   const content = children || title
@@ -48,6 +33,7 @@ function Button({
       title={title || titleOnly}
       onClick={onClick}
       disabled={disabled}
+      style={style}
       className={classNames(className, 'button', 'is-rounded', 'has-text-weight-semibold', {
         'is-small': small,
         'is-medium': medium,

@@ -3,6 +3,7 @@ import { getSettingsCovers } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import { Checkbox } from 'components/common'
+import HelpText from './HelpText'
 
 /**
  * Render album covers toggle field
@@ -12,8 +13,10 @@ function CoversField() {
   const dispatch = useDispatch()
 
   return (
-    <div className="field">
-      <label className="label has-text-light">Data saver</label>
+    <div className="CoversField Settings__field field">
+      <label className="label has-text-light">
+        Album covers <HelpText>/ turn off to use less data</HelpText>
+      </label>
       <div className="control">
         <div className="field">
           <Checkbox
