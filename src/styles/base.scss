@@ -107,8 +107,10 @@ body,
   }
 }
 
-.button.has-badge .icon:nth-child(2) {
-  margin-left: calc(-0.5em - 1px) !important;
+@include mobile {
+  .button.has-badge .icon:nth-child(1) {
+    margin-right: calc(-0.5em - 1px) !important;
+  }
 }
 
 .badge {
