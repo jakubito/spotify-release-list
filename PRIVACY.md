@@ -31,6 +31,8 @@ All scopes are asked for progressively (only when they are needed). You can use 
 
 Your existing playlist data is never touched. Feel free to check the code.
 
+If you want to remove previously authorized access, you can do it anytime in your [Spotify profile](https://spotify.com/account/apps).
+
 [Official authorization scopes documentation](https://developer.spotify.com/documentation/general/guides/scopes)
 
 ## Data Storage
