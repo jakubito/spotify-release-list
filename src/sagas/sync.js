@@ -1,21 +1,24 @@
 import moment from 'moment'
 import { channel, buffers } from 'redux-saga'
 import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
-import { MomentFormat } from 'enums'
+import { MomentFormat, Scope } from 'enums'
 import { getUser, getUserFollowedArtists, getArtistAlbums } from 'api'
-import { isValidSyncToken, startSyncAuthFlow } from 'auth'
-import { getSettings, getToken, getReleasesMaxDate } from 'state/selectors'
+import { AuthError } from 'auth'
+import { getAuthData, getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
   setSyncingProgress,
   setUser,
+  sync,
   syncStart,
   syncFinished,
   syncError,
   setAlbums,
   showErrorMessage,
 } from 'state/actions'
-import { progressWorker, requestWorker, withValidToken } from './helpers'
+import { authorized } from './auth'
+import { progressWorker, requestWorker } from './helpers'
 
+const { USER_FOLLOW_READ } = Scope
 const { ISO_DATE } = MomentFormat
 
 /**
@@ -31,14 +34,12 @@ const LOADING_ANIMATION_MS = 550
 /**
  * Synchronization wrapper saga
  */
-function* syncSaga() {
+export function* syncSaga() {
   try {
-    yield call(withValidToken, syncMainSaga, isValidSyncToken, startSyncAuthFlow)
+    yield call(authorized, syncMainSaga, sync(), [USER_FOLLOW_READ])
   } catch (error) {
-    yield put(showErrorMessage())
+    yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
     yield put(syncError())
-
-    throw error
   }
 }
 
@@ -48,8 +49,8 @@ function* syncSaga() {
 function* syncMainSaga() {
   yield put(syncStart())
 
-  /** @type {ReturnType<typeof getToken>} */
-  const token = yield select(getToken)
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield select(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
   const { groups, market, days } = yield select(getSettings)
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
@@ -98,5 +99,3 @@ function* syncMainSaga() {
   yield put(setAlbums(albums, artists, minDate))
   yield put(syncFinished(previousSyncMaxDate))
 }
-
-export default syncSaga

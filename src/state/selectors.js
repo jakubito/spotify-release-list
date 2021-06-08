@@ -3,12 +3,20 @@ import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
 import last from 'lodash/last'
+import isEqual from 'lodash/isEqual'
 import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge } from 'helpers'
 import { buildReleasesEntries, buildReleasesMap } from './helpers'
+import { initialState } from './reducer'
 
 const VARIOUS_ARTISTS = 'Various Artist'
 const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
+
+/** @param {State} state */
+export const getAuthorizing = (state) => state.authorizing
+
+/** @param {State} state */
+export const getAuthData = (state) => state.authData
 
 /** @param {State} state */
 export const getUser = (state) => state.user
@@ -24,18 +32,6 @@ export const getLastSync = (state) => state.lastSync
 
 /** @param {State} state */
 export const getPreviousSyncMaxDate = (state) => state.previousSyncMaxDate
-
-/** @param {State} state */
-export const getToken = (state) => state.token
-
-/** @param {State} state */
-export const getTokenExpires = (state) => state.tokenExpires
-
-/** @param {State} state */
-export const getTokenScope = (state) => state.tokenScope
-
-/** @param {State} state */
-export const getNonce = (state) => state.nonce
 
 /** @param {State} state */
 export const getAlbums = (state) => state.albums
@@ -67,7 +63,7 @@ export const getSeenFeatures = (state) => state.seenFeatures
 /** @param {State} state */
 export const getFilters = (state) => state.filters
 
-// Specific settings selectors
+// Individual settings selectors
 export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups)
 export const getSettingsGroupColors = createSelector(
   getSettings,
@@ -79,7 +75,7 @@ export const getSettingsTheme = createSelector(getSettings, (settings) => settin
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)
 
-// Specific filters selectors
+// Individual filters selectors
 export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)
 export const getFiltersSearch = createSelector(getFilters, (filters) => filters.search)
 export const getFiltersStartDate = createSelector(getFilters, (filters) => filters.startDate)
@@ -90,18 +86,29 @@ export const getFiltersExcludeVariousArtists = createSelector(
 )
 
 /**
- * Get all token related data
+ * Get relevant app data.
+ *
+ * @param {State} state
  */
-export const getTokenData = createSelector(
-  [getToken, getTokenExpires, getTokenScope],
-  (token, tokenExpires, tokenScope) => ({ token, tokenExpires, tokenScope })
+const getAppData = createSelector([getAuthData, getLastSync, getSettings], (...values) => values)
+
+/**
+ * Check if any relevant app data exist. This is used to determine visibility
+ * of the "Delete app data" button.
+ *
+ * @param {State} state
+ */
+export const getHasAppData = createSelector(
+  getAppData,
+  (appData) => !isEqual(appData, getAppData(initialState))
 )
 
 /**
  * Check if there is any async work being done
  */
-export const getWorking = createSelector([getSyncing, getCreatingPlaylist], (...values) =>
-  includesTruthy(values)
+export const getWorking = createSelector(
+  [getSyncing, getCreatingPlaylist, getAuthorizing],
+  (...values) => includesTruthy(values)
 )
 
 /**

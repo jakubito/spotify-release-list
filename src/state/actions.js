@@ -1,9 +1,13 @@
+export const AUTHORIZE = 'AUTHORIZE'
+export const AUTHORIZE_START = 'AUTHORIZE_START'
+export const AUTHORIZE_FINISHED = 'AUTHORIZE_FINISH'
+export const AUTHORIZE_ERROR = 'AUTHORIZE_ERROR'
+export const SET_AUTH_DATA = 'SET_AUTH_DATA'
 export const SYNC = 'SYNC'
 export const SYNC_START = 'SYNC_START'
 export const SYNC_FINISHED = 'SYNC_FINISHED'
 export const SYNC_ERROR = 'SYNC_ERROR'
 export const SYNC_CANCEL = 'SYNC_CANCEL'
-export const SET_SYNCING = 'SET_SYNCING'
 export const SET_SYNCING_PROGRESS = 'SET_SYNCING_PROGRESS'
 export const SET_USER = 'SET_USER'
 export const SET_ALBUMS = 'SET_ALBUMS'
@@ -11,8 +15,6 @@ export const RESET = 'RESET'
 export const SET_SETTINGS = 'SET_SETTINGS'
 export const SHOW_PLAYLIST_MODAL = 'SHOW_PLAYLIST_MODAL'
 export const HIDE_PLAYLIST_MODAL = 'HIDE_PLAYLIST_MODAL'
-export const SET_TOKEN = 'SET_TOKEN'
-export const SET_NONCE = 'SET_NONCE'
 export const SHOW_MESSAGE = 'SHOW_MESSAGE'
 export const HIDE_MESSAGE = 'HIDE_MESSAGE'
 export const SET_PLAYLIST_FORM = 'SET_PLAYLIST_FORM'
@@ -40,6 +42,28 @@ function action(type, payload) {
   return { type, payload }
 }
 
+/** @param {string} locationSearch */
+export function authorize(locationSearch) {
+  return action(AUTHORIZE, { locationSearch })
+}
+
+export function authorizeStart() {
+  return action(AUTHORIZE_START)
+}
+
+export function authorizeFinished() {
+  return action(AUTHORIZE_FINISHED)
+}
+
+export function authorizeError() {
+  return action(AUTHORIZE_ERROR)
+}
+
+/** @param {Partial<AuthData>} authData */
+export function setAuthData(authData) {
+  return action(SET_AUTH_DATA, { authData })
+}
+
 export function sync() {
   return action(SYNC)
 }
@@ -59,11 +83,6 @@ export function syncError() {
 
 export function syncCancel() {
   return action(SYNC_CANCEL)
-}
-
-/** @param {boolean} syncing */
-export function setSyncing(syncing) {
-  return action(SET_SYNCING, { syncing })
 }
 
 /** @param {boolean} syncingProgress */
@@ -100,20 +119,6 @@ export function showPlaylistModal() {
 
 export function hidePlaylistModal() {
   return action(HIDE_PLAYLIST_MODAL)
-}
-
-/**
- * @param {string} token
- * @param {string} tokenExpires
- * @param {string} tokenScope
- */
-export function setToken(token, tokenExpires, tokenScope) {
-  return action(SET_TOKEN, { token, tokenExpires, tokenScope })
-}
-
-/** @param {string} nonce */
-export function setNonce(nonce) {
-  return action(SET_NONCE, { nonce })
 }
 
 /**

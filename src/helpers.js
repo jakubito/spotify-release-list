@@ -4,7 +4,6 @@ import { colord } from 'colord'
 import { AlbumGroup, MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
-const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 /**
  * Promisified setTimeout
@@ -70,25 +69,6 @@ export function merge(object, source) {
   return mergeWith(object, source, (objValue, srcValue) =>
     Array.isArray(objValue) ? objValue.concat(srcValue) : undefined
   )
-}
-
-/**
- * Pick random character from input string
- *
- * @param {string} input
- * @returns {string}
- */
-function pickRandom(input) {
-  return input[Math.floor(Math.random() * input.length)]
-}
-
-/**
- * Generate random nonce
- *
- * @returns {string}
- */
-export function generateNonce() {
-  return Array.from(Array(20), () => pickRandom(ALPHA_NUMERIC)).join('')
 }
 
 /**

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { getLastSync } from 'state/selectors'
+import { getHasAppData, getLastSync } from 'state/selectors'
 import AlbumGroupsField from './AlbumGroupsField'
 import MarketField from './MarketField'
 import TimePeriodField from './TimePeriodField'
@@ -14,6 +14,7 @@ import DataReset from './DataReset'
  */
 function GeneralSettings(props) {
   const lastSync = useSelector(getLastSync)
+  const hasAppData = useSelector(getHasAppData)
 
   return (
     <div className="fade-in">
@@ -21,12 +22,8 @@ function GeneralSettings(props) {
       <TimePeriodField />
       <MarketField />
       <UriLinksField />
-      {lastSync && (
-        <>
-          <DataInfo />
-          <DataReset />
-        </>
-      )}
+      {lastSync && <DataInfo />}
+      {hasAppData && <DataReset />}
     </div>
   )
 }

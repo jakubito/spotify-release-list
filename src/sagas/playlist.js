@@ -1,45 +1,40 @@
 import { all, call, put, select } from 'redux-saga/effects'
 import { chunks, spotifyUri } from 'helpers'
-import { SpotifyEntity } from 'enums'
+import { Scope, SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
-import { isValidPlaylistToken, startPlaylistAuthFlow } from 'auth'
+import { AuthError } from 'auth'
 import {
+  getAuthData,
   getPlaylistForm,
   getReleasesEntries,
   getSettings,
-  getToken,
   getUser,
 } from 'state/selectors'
 import {
+  createPlaylist as createPlaylistAction,
   createPlaylistStart,
   createPlaylistFinished,
   createPlaylistError,
   showErrorMessage,
 } from 'state/actions'
-import { withValidToken } from './helpers'
+import { authorized } from './auth'
 
+const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
 const { TRACK } = SpotifyEntity
 
 /**
  * Playlist creation wrapper saga
  */
-function* createPlaylistSaga() {
+export function* createPlaylistSaga() {
   try {
     /** @type {ReturnType<typeof getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
+    const scopes = [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC]
 
-    yield call(
-      withValidToken,
-      createPlaylistMainSaga,
-      isValidPlaylistToken,
-      startPlaylistAuthFlow,
-      isPrivate
-    )
+    yield call(authorized, createPlaylistMainSaga, createPlaylistAction(), scopes)
   } catch (error) {
-    yield put(showErrorMessage())
+    yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
     yield put(createPlaylistError())
-
-    throw error
   }
 }
 
@@ -49,8 +44,8 @@ function* createPlaylistSaga() {
 function* createPlaylistMainSaga() {
   yield put(createPlaylistStart())
 
-  /** @type {ReturnType<typeof getToken>} */
-  const token = yield select(getToken)
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield select(getAuthData)
   /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
   /** @type {ReturnType<typeof getPlaylistForm>} */
@@ -91,5 +86,3 @@ function* createPlaylistMainSaga() {
 
   yield put(createPlaylistFinished(firstPlaylist.id))
 }
-
-export default createPlaylistSaga

@@ -1,10 +1,13 @@
 import { AlbumGroup, GroupColorSchemes } from 'enums'
 import {
+  AUTHORIZE_START,
+  AUTHORIZE_FINISHED,
+  AUTHORIZE_ERROR,
+  SET_AUTH_DATA,
   SYNC_START,
   SYNC_FINISHED,
   SYNC_ERROR,
   SYNC_CANCEL,
-  SET_SYNCING,
   SET_SYNCING_PROGRESS,
   SET_USER,
   SET_ALBUMS,
@@ -12,8 +15,6 @@ import {
   SET_SETTINGS,
   SHOW_PLAYLIST_MODAL,
   HIDE_PLAYLIST_MODAL,
-  SET_TOKEN,
-  SET_NONCE,
   SHOW_MESSAGE,
   HIDE_MESSAGE,
   SET_PLAYLIST_FORM,
@@ -31,6 +32,15 @@ import { buildAlbumsMap, mergeAlbumsRaw } from './helpers'
 
 /** @type {State} */
 export const initialState = {
+  authorizing: false,
+  authData: {
+    nonce: null,
+    codeVerifier: null,
+    token: null,
+    tokenScope: null,
+    tokenExpires: null,
+    refreshToken: null,
+  },
   albums: {},
   syncing: false,
   syncingProgress: 0,
@@ -43,11 +53,7 @@ export const initialState = {
     description: null,
     isPrivate: null,
   },
-  token: null,
-  tokenExpires: null,
-  tokenScope: null,
   user: null,
-  nonce: null,
   message: null,
   playlistModalVisible: false,
   filtersVisible: false,
@@ -79,6 +85,14 @@ export const initialState = {
  */
 function rootReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case AUTHORIZE_START:
+      return { ...state, authorizing: true }
+    case AUTHORIZE_FINISHED:
+      return { ...state, authorizing: false }
+    case AUTHORIZE_ERROR:
+      return { ...state, authorizing: false, authData: initialState.authData }
+    case SET_AUTH_DATA:
+      return { ...state, authData: { ...state.authData, ...payload.authData } }
     case SYNC_START:
       return {
         ...state,
@@ -95,11 +109,8 @@ function rootReducer(state = initialState, { type, payload }) {
     case SYNC_ERROR:
     case SYNC_CANCEL:
       return { ...state, syncing: false }
-    case SET_SYNCING:
     case SET_SYNCING_PROGRESS:
     case SET_USER:
-    case SET_TOKEN:
-    case SET_NONCE:
       return { ...state, ...payload }
     case SET_ALBUMS:
       return setAlbums(state, payload)

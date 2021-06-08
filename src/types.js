@@ -2,6 +2,8 @@
  * Custom types
  *
  * @typedef {{
+ *   authorizing: boolean
+ *   authData: AuthData
  *   albums: AlbumsMap
  *   syncing: boolean
  *   syncingProgress: number
@@ -10,11 +12,7 @@
  *   creatingPlaylist: boolean
  *   playlistId?: string
  *   playlistForm: PlaylistForm
- *   token?: string
- *   tokenExpires?: string
- *   tokenScope?: string
  *   user?: User
- *   nonce?: string
  *   message?: Message
  *   playlistModalVisible: boolean
  *   filtersVisible: boolean
@@ -22,6 +20,15 @@
  *   filters: Filters
  *   seenFeatures: string[]
  * }} State
+ *
+ * @typedef {{
+ *   nonce?: string
+ *   codeVerifier?: string
+ *   token?: string
+ *   tokenScope?: string
+ *   tokenExpires?: string
+ *   refreshToken?: string
+ * }} AuthData
  *
  * @typedef {{
  *   name?: string
@@ -94,6 +101,13 @@
  *   style?: React.CSSProperties
  * }} ButtonProps
  *
+ * @typedef {{
+ *   token: string
+ *   tokenScope: string
+ *   tokenExpires: string
+ *   refreshToken: string
+ * }} TokenApiResult
+ *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
  * @typedef {{ [id: string]: Artist }} ArtistsMap
@@ -147,6 +161,13 @@
  * @typedef {{ id: string, name: string }} SpotifyPlaylist
  * @typedef {{ id: string }} SpotifyTrack
  * @typedef {{ snapshot_id: string }} SpotifyPlaylistSnapshot
+ *
+ * @typedef {{
+ *   access_token: string
+ *   scope: string
+ *   expires_in: number
+ *   refresh_token: string
+ * }} TokenApiResponse
  */
 
 /**

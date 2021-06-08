@@ -1,8 +1,4 @@
-import { call, cancel, delay, fork, put, race, select, take } from 'redux-saga/effects'
-import { generateNonce } from 'helpers'
-import { persistor } from 'state'
-import { getTokenData } from 'state/selectors'
-import { setNonce } from 'state/actions'
+import { call, cancel, delay, fork, put, race, take } from 'redux-saga/effects'
 
 /**
  * Behaves the same way as redux-saga's `takeLeading` but also can be cancelled
@@ -27,44 +23,17 @@ export function takeLeadingCancellable(triggerAction, cancelAction, saga, ...arg
 }
 
 /**
- * Validates token before running a saga and triggers authentication if needed
- *
- * @template {any[]} T
- * @param {Fn} saga
- * @param {(token: string, tokenExpires: string, tokenScope: string, ...args: T) => boolean } isValidToken
- * @param {(nonce: string, ...args: T) => void} startAuthFlow
- * @param {T} args
- */
-export function* withValidToken(saga, isValidToken, startAuthFlow, ...args) {
-  /** @type {ReturnType<typeof getTokenData>} */
-  const { token, tokenExpires, tokenScope } = yield select(getTokenData)
-  /** @type {ReturnType<typeof isValidToken>} */
-  const valid = yield call(isValidToken, token, tokenExpires, tokenScope, ...args)
-
-  if (valid) {
-    yield call(saga)
-  } else {
-    /** @type {ReturnType<typeof generateNonce>} */
-    const nonce = yield call(generateNonce)
-
-    yield put(setNonce(nonce))
-    yield call(persistor.flush)
-    yield call(startAuthFlow, nonce, ...args)
-  }
-}
-
-/**
  * Saga that updates progress after each animation window
  *
  * @param {Progress} progress
  * @param {ActionCreator} setProgressAction
- * @param {number} animationDuration
+ * @param {number} updateInterval - How often to dispatch progress value (milliseconds)
  */
-export function* progressWorker(progress, setProgressAction, animationDuration) {
+export function* progressWorker(progress, setProgressAction, updateInterval) {
   try {
     while (true) {
       yield put(setProgressAction(progress.value))
-      yield delay(animationDuration)
+      yield delay(updateInterval)
     }
   } finally {
     yield put(setProgressAction(progress.value))
@@ -84,11 +53,9 @@ export function* requestWorker(requestChannel, responseChannel) {
 
     try {
       const result = yield call(...request)
-
       yield put(responseChannel, { result })
     } catch (error) {
       console.error(error)
-
       yield put(responseChannel, { error })
     }
   }

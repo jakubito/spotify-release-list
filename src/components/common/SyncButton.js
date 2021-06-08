@@ -16,10 +16,10 @@ function SyncButton({ title, icon, medium }) {
   const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const working = useSelector(getWorking)
-  const [triggered, setTriggered] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
   const onClick = () => {
-    setTriggered(true)
+    setDisabled(true)
     defer(dispatch, sync())
   }
 
@@ -27,13 +27,13 @@ function SyncButton({ title, icon, medium }) {
     dispatch(sync())
   })
 
-  useEffect(() => setTriggered(syncing), [syncing])
+  useEffect(() => setDisabled(working), [working])
 
   return (
     <Button
       title={`${title} [R]`}
       className={classNames('SyncButton', { 'is-syncing': syncing })}
-      disabled={triggered || working}
+      disabled={disabled}
       onClick={onClick}
       icon={icon}
       medium={medium}

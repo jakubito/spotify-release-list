@@ -11,6 +11,7 @@ import {
   getFiltersVisible,
   getFiltersApplied,
   getHasOriginalReleases,
+  getWorking,
 } from 'state/selectors'
 import { showPlaylistModal, toggleFiltersVisible, resetFilters } from 'state/actions'
 import { Header, SyncButton, Button, ButtonLink, LastSync } from 'components/common'
@@ -21,6 +22,7 @@ import { Header, SyncButton, Button, ButtonLink, LastSync } from 'components/com
 function ReleasesHeader() {
   const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
+  const working = useSelector(getWorking)
   const lastSyncDate = useSelector(getLastSyncDate)
   const hasReleases = useSelector(getHasReleases)
   const hasOriginalReleases = useSelector(getHasOriginalReleases)
@@ -49,6 +51,7 @@ function ReleasesHeader() {
                     'fa-minus': filtersVisible,
                   })}
                   onClick={toggleFilters}
+                  disabled={working}
                   dark={filtersVisible}
                 >
                   Filter
@@ -64,7 +67,12 @@ function ReleasesHeader() {
       )}
       <div className="right">
         {lastSyncDate && hasReleases && !syncing && (
-          <Button title="Export to playlist [E]" icon="fas fa-upload" onClick={openPlaylistModal}>
+          <Button
+            title="Export to playlist [E]"
+            icon="fas fa-upload"
+            onClick={openPlaylistModal}
+            disabled={working}
+          >
             <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
           </Button>
         )}
@@ -72,7 +80,7 @@ function ReleasesHeader() {
           to="/settings"
           title="Settings [S]"
           icon="fas fa-cog"
-          disabled={syncing}
+          disabled={working}
           className="has-badge"
         >
           <div

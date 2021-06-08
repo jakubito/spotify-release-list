@@ -1,9 +1,9 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { Redirect } from '@reach/router'
-import * as Sentry from '@sentry/browser'
-import { getNonce } from 'state/selectors'
-import { setToken, showErrorMessage } from 'state/actions'
-import { AuthError, validateAuthRequest } from 'auth'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { navigate } from '@reach/router'
+import { authorize } from 'state/actions'
+import { getCreatingPlaylist, getMessage, getSyncing } from 'state/selectors'
+import { includesTruthy } from 'helpers'
 
 /**
  * Authorization component that handles all OAuth redirects
@@ -12,20 +12,23 @@ import { AuthError, validateAuthRequest } from 'auth'
  */
 function Auth({ location }) {
   const dispatch = useDispatch()
-  const nonce = useSelector(getNonce)
-  const { search, hash } = location
+  const shouldRedirect = includesTruthy([
+    useSelector(getSyncing),
+    useSelector(getCreatingPlaylist),
+    useSelector(getMessage),
+  ])
 
-  try {
-    const { action, token, tokenExpires, scope } = validateAuthRequest(search, hash, nonce)
+  useEffect(() => {
+    dispatch(authorize(location.search))
+  }, [])
 
-    dispatch(setToken(token, tokenExpires, scope))
-    dispatch({ type: action })
-  } catch (error) {
-    dispatch(showErrorMessage(error instanceof AuthError ? error.message : undefined))
-    Sentry.captureException(error)
-  }
+  useEffect(() => {
+    if (shouldRedirect) {
+      navigate('/', { replace: true })
+    }
+  }, [shouldRedirect])
 
-  return <Redirect to="/" noThrow />
+  return null
 }
 
 export default Auth
