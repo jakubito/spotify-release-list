@@ -11,27 +11,31 @@ import {
   getUser,
 } from 'state/selectors'
 import {
-  createPlaylist as createPlaylistAction,
   createPlaylistStart,
   createPlaylistFinished,
   createPlaylistError,
   showErrorMessage,
 } from 'state/actions'
-import { authorized } from './auth'
+import { authorize } from './auth'
+import { withTitle } from './helpers'
 
 const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
 const { TRACK } = SpotifyEntity
 
 /**
- * Playlist creation wrapper saga
+ * Playlist creation saga
+ *
+ * @param {ReturnType<import('state/actions').createPlaylist>} action
  */
-export function* createPlaylistSaga() {
+export function* createPlaylistSaga(action) {
   try {
-    /** @type {ReturnType<typeof getPlaylistForm>} */
+    /** @type {ReturnType<getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
     const scopes = [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC]
+    const titled = yield call(withTitle, 'Creating playlist...', createPlaylistMainSaga)
+    const authorized = yield call(authorize, action, scopes, titled)
 
-    yield call(authorized, createPlaylistMainSaga, createPlaylistAction(), scopes)
+    yield call(authorized)
   } catch (error) {
     yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
     yield put(createPlaylistError())
@@ -44,15 +48,15 @@ export function* createPlaylistSaga() {
 function* createPlaylistMainSaga() {
   yield put(createPlaylistStart())
 
-  /** @type {ReturnType<typeof getAuthData>} */
+  /** @type {ReturnType<getAuthData>} */
   const { token } = yield select(getAuthData)
-  /** @type {ReturnType<typeof getUser>} */
+  /** @type {ReturnType<getUser>} */
   const user = yield select(getUser)
-  /** @type {ReturnType<typeof getPlaylistForm>} */
+  /** @type {ReturnType<getPlaylistForm>} */
   const { name, description, isPrivate } = yield select(getPlaylistForm)
-  /** @type {ReturnType<typeof getSettings>} */
+  /** @type {ReturnType<getSettings>} */
   const { market } = yield select(getSettings)
-  /** @type {ReturnType<typeof getReleasesEntries>} */
+  /** @type {ReturnType<getReleasesEntries>} */
   const releases = yield select(getReleasesEntries)
 
   const albumIds = releases.reduce(
@@ -64,7 +68,7 @@ function* createPlaylistMainSaga() {
     call(getAlbumsTrackIds, token, albumIdsChunk, market)
   )
 
-  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
+  /** @type {Await<ReturnType<getAlbumsTrackIds>>[]} */
   const trackIds = yield all(trackIdsCalls)
   const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
   /** @type {SpotifyPlaylist} */
@@ -72,7 +76,7 @@ function* createPlaylistMainSaga() {
 
   for (const [part, playlistTrackUrisChunk] of chunks(trackUris, 9500).entries()) {
     const fullName = part > 0 ? `${name} (${part + 1})` : name
-    /** @type {Await<ReturnType<typeof createPlaylist>>} */
+    /** @type {Await<ReturnType<createPlaylist>>} */
     const playlist = yield call(createPlaylist, token, user.id, fullName, description, isPrivate)
 
     if (!firstPlaylist) {

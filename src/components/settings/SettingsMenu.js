@@ -4,6 +4,7 @@ import { ButtonLink } from 'components/common'
 const links = [
   { title: 'General', to: '/settings', icon: 'fas fa-cog' },
   { title: 'Appearance', to: '/settings/appearance', icon: 'fas fa-tint' },
+  { title: 'Automation', to: '/settings/automation', icon: 'fas fa-sync-alt' },
   { title: 'About', to: '/settings/about', icon: 'fas fa-at' },
 ]
 

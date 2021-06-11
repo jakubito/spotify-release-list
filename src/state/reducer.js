@@ -45,6 +45,7 @@ export const initialState = {
   syncing: false,
   syncingProgress: 0,
   lastSync: null,
+  lastAutoSync: null,
   previousSyncMaxDate: null,
   creatingPlaylist: false,
   playlistId: null,
@@ -65,6 +66,10 @@ export const initialState = {
     theme: '',
     uriLinks: false,
     covers: true,
+    autoSync: {
+      enabled: false,
+      time: '08:00',
+    },
   },
   filters: {
     groups: [],
@@ -105,7 +110,12 @@ function rootReducer(state = initialState, { type, payload }) {
         },
       }
     case SYNC_FINISHED:
-      return { ...state, ...payload, syncing: false, lastSync: new Date().toISOString() }
+      return {
+        ...state,
+        syncing: false,
+        previousSyncMaxDate: payload.previousSyncMaxDate,
+        [payload.auto ? 'lastAutoSync' : 'lastSync']: new Date().toISOString(),
+      }
     case SYNC_ERROR:
     case SYNC_CANCEL:
       return { ...state, syncing: false }

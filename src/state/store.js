@@ -22,6 +22,7 @@ const persistConfig = {
     'authData',
     'albums',
     'lastSync',
+    'lastAutoSync',
     'previousSyncMaxDate',
     'playlistForm',
     'user',

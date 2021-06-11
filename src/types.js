@@ -8,6 +8,7 @@
  *   syncing: boolean
  *   syncingProgress: number
  *   lastSync?: string
+ *   lastAutoSync?: string
  *   previousSyncMaxDate?: string
  *   creatingPlaylist: boolean
  *   playlistId?: string
@@ -49,6 +50,7 @@
  *   theme: string
  *   uriLinks: boolean
  *   covers: boolean
+ *   autoSync: AutoSyncSettings
  * }} Settings
  *
  * @typedef {{
@@ -108,6 +110,11 @@
  *   refreshToken: string
  * }} TokenApiResult
  *
+ * @typedef {{
+ *   enabled: boolean
+ *   time: string
+ * }} AutoSyncSettings
+ *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
  * @typedef {{ [id: string]: Artist }} ArtistsMap
@@ -126,9 +133,7 @@
 
 /**
  * @template T
- * @typedef {T extends {
- *   then(onfulfilled?: (value: infer U) => unknown): unknown;
- * } ? U : T} Await<T>
+ * @typedef {T extends PromiseLike<infer U> ? Await<U> : T} Await<T>
  */
 
 /**

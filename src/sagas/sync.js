@@ -8,15 +8,14 @@ import { getAuthData, getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
   setSyncingProgress,
   setUser,
-  sync,
   syncStart,
   syncFinished,
   syncError,
   setAlbums,
   showErrorMessage,
 } from 'state/actions'
-import { authorized } from './auth'
-import { progressWorker, requestWorker } from './helpers'
+import { authorize } from './auth'
+import { withTitle, progressWorker, requestWorker } from './helpers'
 
 const { USER_FOLLOW_READ } = Scope
 const { ISO_DATE } = MomentFormat
@@ -27,16 +26,21 @@ const { ISO_DATE } = MomentFormat
 const REQUEST_WORKERS = 6
 
 /**
- * Loading bar animation duration in miliseconds
+ * Loading bar animation duration in milliseconds
  */
 const LOADING_ANIMATION_MS = 550
 
 /**
- * Synchronization wrapper saga
+ * Synchronization saga
+ *
+ * @param {ReturnType<import('state/actions').sync>} action
  */
-export function* syncSaga() {
+export function* syncSaga(action) {
   try {
-    yield call(authorized, syncMainSaga, sync(), [USER_FOLLOW_READ])
+    const titled = yield call(withTitle, 'Loading...', syncMainSaga, action)
+    const authorized = yield call(authorize, action, [USER_FOLLOW_READ], titled)
+
+    yield call(authorized)
   } catch (error) {
     yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
     yield put(syncError())
@@ -45,20 +49,22 @@ export function* syncSaga() {
 
 /**
  * Main synchronization saga
+ *
+ * @param {ReturnType<import('state/actions').sync>} action
  */
-function* syncMainSaga() {
+function* syncMainSaga(action) {
   yield put(syncStart())
 
-  /** @type {ReturnType<typeof getAuthData>} */
+  /** @type {ReturnType<getAuthData>} */
   const { token } = yield select(getAuthData)
-  /** @type {ReturnType<typeof getSettings>} */
+  /** @type {ReturnType<getSettings>} */
   const { groups, market, days } = yield select(getSettings)
-  /** @type {ReturnType<typeof getReleasesMaxDate>} */
+  /** @type {ReturnType<getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
-  /** @type {Await<ReturnType<typeof getUser>>} */
+  /** @type {Await<ReturnType<getUser>>} */
   const user = yield call(getUser, token)
-  /** @type {Await<ReturnType<typeof getUserFollowedArtists>>} */
+  /** @type {Await<ReturnType<getUserFollowedArtists>>} */
   const artists = yield call(getUserFollowedArtists, token)
 
   /** @type {AlbumRaw[]} */
@@ -97,5 +103,5 @@ function* syncMainSaga() {
 
   yield put(setUser(user))
   yield put(setAlbums(albums, artists, minDate))
-  yield put(syncFinished(previousSyncMaxDate))
+  yield put(syncFinished(previousSyncMaxDate, action.payload.auto))
 }

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { getHasAppData, getLastSync } from 'state/selectors'
+import { getHasAppData, getUser } from 'state/selectors'
 import AlbumGroupsField from './AlbumGroupsField'
 import MarketField from './MarketField'
 import TimePeriodField from './TimePeriodField'
@@ -13,7 +13,7 @@ import DataReset from './DataReset'
  * @param {RouteComponentProps} props
  */
 function GeneralSettings(props) {
-  const lastSync = useSelector(getLastSync)
+  const user = useSelector(getUser)
   const hasAppData = useSelector(getHasAppData)
 
   return (
@@ -22,7 +22,7 @@ function GeneralSettings(props) {
       <TimePeriodField />
       <MarketField />
       <UriLinksField />
-      {lastSync && <DataInfo />}
+      {user && <DataInfo />}
       {hasAppData && <DataReset />}
     </div>
   )

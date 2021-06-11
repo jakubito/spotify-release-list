@@ -23,7 +23,27 @@ export function takeLeadingCancellable(triggerAction, cancelAction, saga, ...arg
 }
 
 /**
- * Saga that updates progress after each animation window
+ * Replace document title for the duration of saga
+ *
+ * @param {string} title
+ * @param {Fn} saga
+ * @param {...any} args
+ */
+export function withTitle(title, saga, ...args) {
+  return function* () {
+    const originalTitle = document.title
+
+    try {
+      document.title = title
+      yield call(saga, ...args)
+    } finally {
+      document.title = originalTitle
+    }
+  }
+}
+
+/**
+ * Worker saga that dispatches progress value to the store at specific interval
  *
  * @param {Progress} progress
  * @param {ActionCreator} setProgressAction
@@ -41,7 +61,7 @@ export function* progressWorker(progress, setProgressAction, updateInterval) {
 }
 
 /**
- * Saga that takes http requests from `requestChannel` and sends responses to `responseChannel`
+ * Worker saga that fulfills requests stored in the queue until manually stopped
  *
  * @param {Channel} requestChannel
  * @param {Channel} responseChannel

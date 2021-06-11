@@ -64,17 +64,21 @@ export function setAuthData(authData) {
   return action(SET_AUTH_DATA, { authData })
 }
 
-export function sync() {
-  return action(SYNC)
+/** @param {boolean} [auto] */
+export function sync(auto = false) {
+  return action(SYNC, { auto })
 }
 
 export function syncStart() {
   return action(SYNC_START)
 }
 
-/** @param {string} previousSyncMaxDate */
-export function syncFinished(previousSyncMaxDate) {
-  return action(SYNC_FINISHED, { previousSyncMaxDate })
+/**
+ * @param {string} previousSyncMaxDate
+ * @param {boolean} [auto]
+ */
+export function syncFinished(previousSyncMaxDate, auto = false) {
+  return action(SYNC_FINISHED, { previousSyncMaxDate, auto })
 }
 
 export function syncError() {

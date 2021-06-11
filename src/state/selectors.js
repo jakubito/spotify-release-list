@@ -31,6 +31,9 @@ export const getSyncingProgress = (state) => state.syncingProgress
 export const getLastSync = (state) => state.lastSync
 
 /** @param {State} state */
+export const getLastAutoSync = (state) => state.lastAutoSync
+
+/** @param {State} state */
 export const getPreviousSyncMaxDate = (state) => state.previousSyncMaxDate
 
 /** @param {State} state */
@@ -74,6 +77,7 @@ export const getSettingsMarket = createSelector(getSettings, (settings) => setti
 export const getSettingsTheme = createSelector(getSettings, (settings) => settings.theme)
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)
+export const getSettingsAutoSync = createSelector(getSettings, (settings) => settings.autoSync)
 
 // Individual filters selectors
 export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)
@@ -134,8 +138,16 @@ export const getFiltersApplied = createSelector(
  * Get last sync as Date instance
  */
 export const getLastSyncDate = createSelector(
-  getLastSync,
-  (lastSync) => lastSync && new Date(lastSync)
+  [getLastSync, getLastAutoSync],
+  (lastSync, lastAutoSync) => {
+    if (lastSync || lastAutoSync) {
+      const newer = (lastSync || '') > (lastAutoSync || '') ? lastSync : lastAutoSync
+
+      return new Date(newer)
+    }
+
+    return null
+  }
 )
 
 /**
@@ -225,7 +237,7 @@ const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
     const variousArtists = Object.values(album.artists)
       .flat()
       .concat(album.otherArtists)
-      .find((artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID)
+      .some((artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID)
 
     if (!variousArtists) {
       ids.push(album.id)

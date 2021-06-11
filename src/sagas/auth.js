@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser'
 import { call, put, select } from 'redux-saga/effects'
 import {
   AuthError,
@@ -21,32 +22,31 @@ import {
 /**
  * Authorization wrapper saga
  *
- * @param {ReturnType<typeof import('state/actions').authorize>} authorizeAction
+ * @param {ReturnType<import('state/actions').authorize>} action
  */
-export function* authorizeSaga({ payload }) {
+export function* authorizeSaga(action) {
   try {
-    yield call(authorizeMainSaga, payload.locationSearch)
+    yield call(authorizeMainSaga, action)
   } catch (error) {
     yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
     yield put(authorizeError())
+    Sentry.captureException(error)
   }
 }
 
 /**
  * Main authorization saga
  *
- * @param {string} locationSearch
+ * @param {ReturnType<import('state/actions').authorize>} action
  */
-function* authorizeMainSaga(locationSearch) {
+function* authorizeMainSaga({ payload }) {
   yield put(authorizeStart())
 
-  /** @type {ReturnType<typeof getAuthData>} */
-  const { nonce } = yield select(getAuthData)
-  /** @type {ReturnType<typeof validateAuthRequest>} */
-  const { code, action } = yield call(validateAuthRequest, locationSearch, nonce)
-  /** @type {ReturnType<typeof getAuthData>} */
-  const { codeVerifier } = yield select(getAuthData)
-  /** @type {Await<ReturnType<typeof exchangeCode>>} */
+  /** @type {ReturnType<getAuthData>} */
+  const { nonce, codeVerifier } = yield select(getAuthData)
+  /** @type {ReturnType<validateAuthRequest>} */
+  const { code, action } = yield call(validateAuthRequest, payload.locationSearch, nonce)
+  /** @type {Await<ReturnType<exchangeCode>>} */
   const tokenResult = yield call(exchangeCode, code, codeVerifier)
 
   yield put(setAuthData(tokenResult))
@@ -57,26 +57,31 @@ function* authorizeMainSaga(locationSearch) {
 /**
  * Ensure valid authorized state before running saga
  *
- * @param {Fn} saga
  * @param {Action} action
  * @param {string[]} scopes
+ * @param {Fn} saga
+ * @param {...any} args
  */
-export function* authorized(saga, action, scopes) {
-  try {
-    yield put(authorizeStart())
+export function authorize(action, scopes, saga, ...args) {
+  return function* () {
+    try {
+      yield put(authorizeStart())
 
-    /** @type {ReturnType<typeof getAuthData>} */
-    const { tokenScope, refreshToken } = yield select(getAuthData)
-    const validScope = scopes.every((scope) => tokenScope?.includes(scope))
+      /** @type {ReturnType<getAuthData>} */
+      const { tokenScope, refreshToken } = yield select(getAuthData)
+      const validScope = scopes.every((scope) => tokenScope?.includes(scope))
 
-    if (refreshToken && validScope) {
-      yield call(refreshSaga, saga)
-    } else {
-      yield call(newAuthSaga, action, scopes.join(' '))
+      if (refreshToken && validScope) {
+        yield call(refreshTokenAndRun, saga, ...args)
+      } else {
+        yield call(triggerNewAuthFlow, action, scopes.join(' '))
+      }
+    } catch (error) {
+      yield put(authorizeError())
+      Sentry.captureException(error)
+
+      throw error
     }
-  } catch (error) {
-    yield put(authorizeError())
-    throw error
   }
 }
 
@@ -84,30 +89,31 @@ export function* authorized(saga, action, scopes) {
  * Refresh token and call saga
  *
  * @param {Fn} saga
+ * @param {...any} args
  */
-function* refreshSaga(saga) {
-  /** @type {ReturnType<typeof getAuthData>} */
+function* refreshTokenAndRun(saga, ...args) {
+  /** @type {ReturnType<getAuthData>} */
   const { refreshToken } = yield select(getAuthData)
-  /** @type {Await<ReturnType<typeof getRefreshedToken>>} */
+  /** @type {Await<ReturnType<getRefreshedToken>>} */
   const tokenResult = yield call(getRefreshedToken, refreshToken)
 
   yield put(setAuthData(tokenResult))
   yield put(authorizeFinished())
-  yield call(saga)
+  yield call(saga, ...args)
 }
 
 /**
- * Start new authorization flow
+ * Trigger new authorization flow
  *
  * @param {Action} action
  * @param {string} scope
  */
-function* newAuthSaga(action, scope) {
-  /** @type {ReturnType<typeof generateCodeVerifier>} */
+function* triggerNewAuthFlow(action, scope) {
+  /** @type {ReturnType<generateCodeVerifier>} */
   const nonce = yield call(generateCodeVerifier, 20)
-  /** @type {ReturnType<typeof generateCodeVerifier>} */
+  /** @type {ReturnType<generateCodeVerifier>} */
   const codeVerifier = yield call(generateCodeVerifier)
-  /** @type {Await<ReturnType<typeof createCodeChallenge>>} */
+  /** @type {Await<ReturnType<createCodeChallenge>>} */
   const codeChallenge = yield call(createCodeChallenge, codeVerifier)
 
   yield put(setAuthData({ nonce, codeVerifier }))
