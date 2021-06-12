@@ -66,10 +66,8 @@ export const initialState = {
     theme: '',
     uriLinks: false,
     covers: true,
-    autoSync: {
-      enabled: false,
-      time: '08:00',
-    },
+    autoSync: false,
+    autoSyncTime: '08:00',
   },
   filters: {
     groups: [],

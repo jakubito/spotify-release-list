@@ -28,12 +28,12 @@ const REQUEST_WORKERS = 6
 /**
  * Loading bar animation duration in milliseconds
  */
-const LOADING_ANIMATION_MS = 550
+const LOADING_ANIMATION = 550
 
 /**
  * Synchronization saga
  *
- * @param {ReturnType<import('state/actions').sync>} action
+ * @param {SyncAction} action
  */
 export function* syncSaga(action) {
   try {
@@ -50,7 +50,7 @@ export function* syncSaga(action) {
 /**
  * Main synchronization saga
  *
- * @param {ReturnType<import('state/actions').sync>} action
+ * @param {SyncAction} action
  */
 function* syncMainSaga(action) {
   yield put(syncStart())
@@ -75,20 +75,23 @@ function* syncMainSaga(action) {
   const progress = { value: 0 }
   const minDate = moment().subtract(days, 'day').format(ISO_DATE)
 
+  /** @type {RequestChannel} */
   const requestChannel = yield call(channel, buffers.fixed(artists.length))
+  /** @type {ResponseChannel<Await<ReturnType<getArtistAlbums>>>} */
   const responseChannel = yield call(channel, buffers.fixed(REQUEST_WORKERS))
 
   for (let i = 0; i < REQUEST_WORKERS; i += 1) {
     tasks.push(yield fork(requestWorker, requestChannel, responseChannel))
   }
 
-  tasks.push(yield fork(progressWorker, progress, setSyncingProgress, LOADING_ANIMATION_MS))
+  tasks.push(yield fork(progressWorker, progress, setSyncingProgress, LOADING_ANIMATION))
 
   for (const artist of artists) {
     yield put(requestChannel, [getArtistAlbums, token, artist.id, groups, market, minDate])
   }
 
   for (let fetched = 0; fetched < artists.length; fetched += 1) {
+    /** @type {ResponseChannelMessage<Await<ReturnType<getArtistAlbums>>>} */
     const response = yield take(responseChannel)
 
     if (response.result) {
@@ -99,7 +102,7 @@ function* syncMainSaga(action) {
   }
 
   yield cancel(tasks)
-  yield delay(LOADING_ANIMATION_MS)
+  yield delay(LOADING_ANIMATION)
 
   yield put(setUser(user))
   yield put(setAlbums(albums, artists, minDate))

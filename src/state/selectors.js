@@ -77,7 +77,6 @@ export const getSettingsMarket = createSelector(getSettings, (settings) => setti
 export const getSettingsTheme = createSelector(getSettings, (settings) => settings.theme)
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)
-export const getSettingsAutoSync = createSelector(getSettings, (settings) => settings.autoSync)
 
 // Individual filters selectors
 export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)

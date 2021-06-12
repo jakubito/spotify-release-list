@@ -19,7 +19,7 @@ function MarketField() {
   return (
     <div className="MarketField Settings__field field">
       <label className="label has-text-light" htmlFor="market">
-        Market <HelpText>/ recommended to leave on default</HelpText>
+        Market <HelpText>(recommended to leave on default)</HelpText>
       </label>
       <Select
         id="market"

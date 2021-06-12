@@ -1,4 +1,5 @@
-import { call, cancel, delay, fork, put, race, take } from 'redux-saga/effects'
+import { eventChannel } from 'redux-saga'
+import { call, delay, fork, put, race, take } from 'redux-saga/effects'
 
 /**
  * Behaves the same way as redux-saga's `takeLeading` but also can be cancelled
@@ -12,12 +13,7 @@ export function takeLeadingCancellable(triggerAction, cancelAction, saga, ...arg
   return fork(function* () {
     while (true) {
       const action = yield take(triggerAction)
-      const task = yield fork(saga, ...args.concat(action))
-      const [cancelled] = yield race([take(cancelAction), call(task.toPromise)])
-
-      if (cancelled) {
-        yield cancel(task)
-      }
+      yield race([call(saga, ...args.concat(action)), take(cancelAction)])
     }
   })
 }
@@ -63,12 +59,12 @@ export function* progressWorker(progress, setProgressAction, updateInterval) {
 /**
  * Worker saga that fulfills requests stored in the queue until manually stopped
  *
- * @param {Channel} requestChannel
- * @param {Channel} responseChannel
+ * @param {RequestChannel} requestChannel
+ * @param {ResponseChannel<any>} responseChannel
  */
 export function* requestWorker(requestChannel, responseChannel) {
   while (true) {
-    /** @type {[Fn, ...any[]]} */
+    /** @type {RequestChannelMessage} */
     const request = yield take(requestChannel)
 
     try {
@@ -79,4 +75,21 @@ export function* requestWorker(requestChannel, responseChannel) {
       yield put(responseChannel, { error })
     }
   }
+}
+
+/**
+ * Window event listener transformed into channel
+ *
+ * @template {keyof WindowEventMap} T
+ * @param {T} event
+ * @returns {EventChannel<WindowEventMap[T]>}
+ */
+export function windowEventChannel(event) {
+  return eventChannel((emitter) => {
+    window.addEventListener(event, emitter)
+
+    return () => {
+      window.removeEventListener(event, emitter)
+    }
+  })
 }

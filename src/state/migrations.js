@@ -12,8 +12,8 @@ const migrations = {
 
     return { ...state, settings: { ...state.settings, groups: groupsSorted } }
   },
-  1: (state) => resetDataWithMessage(state),
-  2: (state) => resetDataWithMessage(state),
+  1: resetDataWithMessage,
+  2: resetDataWithMessage,
   3: (state) => {
     // Fix persisted buggy state causing black screen
     if (getFiltersVisible(state) && !getHasOriginalReleases(state)) {
@@ -22,7 +22,7 @@ const migrations = {
 
     return state
   },
-  4: (state) => resetDataWithMessage(state),
+  4: resetDataWithMessage,
 }
 
 /**

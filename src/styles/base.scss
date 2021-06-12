@@ -33,6 +33,10 @@ body,
   &::placeholder {
     color: $grey;
   }
+
+  &:disabled {
+    background-color: $grey-darker;
+  }
 }
 
 .input.is-danger {

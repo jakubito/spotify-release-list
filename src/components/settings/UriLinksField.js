@@ -21,7 +21,7 @@ function UriLinksField() {
   return (
     <div className="UriLinksField Settings__field field">
       <label className="label has-text-light">
-        Open links in <HelpText>/ URL or URI</HelpText>
+        Open links in <HelpText>(URL / URI)</HelpText>
       </label>
       <div className="control">
         <div className="field">

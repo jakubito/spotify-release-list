@@ -1,3 +1,4 @@
+export const HYDRATE = 'persist/REHYDRATE'
 export const AUTHORIZE = 'AUTHORIZE'
 export const AUTHORIZE_START = 'AUTHORIZE_START'
 export const AUTHORIZE_FINISHED = 'AUTHORIZE_FINISH'
@@ -28,6 +29,8 @@ export const ADD_SEEN_FEATURE = 'ADD_SEEN_FEATURE'
 export const TOGGLE_FILTERS_VISIBLE = 'TOGGLE_FILTERS_VISIBLE'
 export const SET_FILTERS = 'SET_FILTERS'
 export const RESET_FILTERS = 'RESET_FILTERS'
+export const AUTO_SYNC_START = 'AUTO_SYNC_START'
+export const AUTO_SYNC_STOP = 'AUTO_SYNC_STOP'
 
 /**
  * Create action object
@@ -192,4 +195,12 @@ export function setFilters(filters) {
 
 export function resetFilters() {
   return action(RESET_FILTERS)
+}
+
+export function autoSyncStart() {
+  return action(AUTO_SYNC_START)
+}
+
+export function autoSyncStop() {
+  return action(AUTO_SYNC_STOP)
 }

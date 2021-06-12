@@ -1,5 +1,6 @@
-import { fork, takeLeading } from 'redux-saga/effects'
+import { fork, take, takeLeading } from 'redux-saga/effects'
 import {
+  HYDRATE,
   AUTHORIZE,
   SYNC,
   SYNC_CANCEL,
@@ -10,16 +11,17 @@ import { takeLeadingCancellable } from './helpers'
 import { authorizeSaga } from './auth'
 import { syncSaga } from './sync'
 import { createPlaylistSaga } from './playlist'
-import { backgroundSyncSaga } from './automation'
+import { autoSyncSaga } from './automation'
 
 /**
  * Root saga
  */
 export function* rootSaga() {
+  yield take(HYDRATE)
   yield takeLeading(AUTHORIZE, authorizeSaga)
   yield takeLeadingCancellable(SYNC, SYNC_CANCEL, syncSaga)
   yield takeLeadingCancellable(CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL, createPlaylistSaga)
-  yield fork(backgroundSyncSaga)
+  yield fork(autoSyncSaga)
 }
 
 export default rootSaga

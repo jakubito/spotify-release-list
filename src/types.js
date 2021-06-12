@@ -50,7 +50,8 @@
  *   theme: string
  *   uriLinks: boolean
  *   covers: boolean
- *   autoSync: AutoSyncSettings
+ *   autoSync: boolean
+ *   autoSyncTime: string
  * }} Settings
  *
  * @typedef {{
@@ -110,11 +111,6 @@
  *   refreshToken: string
  * }} TokenApiResult
  *
- * @typedef {{
- *   enabled: boolean
- *   time: string
- * }} AutoSyncSettings
- *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
  * @typedef {{ [id: string]: Artist }} ArtistsMap
@@ -129,6 +125,19 @@
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
  * @typedef {{ [group: string]: string }} GroupColorScheme
+ * @typedef {(to: string) => Promise<void>} Navigate
+ * @typedef {[Fn, ...any[]]} RequestChannelMessage
+ * @typedef {Channel<RequestChannelMessage>} RequestChannel
+ */
+
+/**
+ * @template T
+ * @typedef {{ result?: T, error?: import('api').FetchError }} ResponseChannelMessage<T>
+ */
+
+/**
+ * @template T
+ * @typedef {Channel<ResponseChannelMessage<T>>} ResponseChannel<T>
  */
 
 /**
@@ -146,6 +155,17 @@
  * @typedef {import('./enums').AlbumGroup} AlbumGroup
  * @typedef {import('./enums').Theme} Theme
  * @typedef {import('./enums').Market} Market
+ */
+
+/**
+ * Actions
+ *
+ * @typedef {ReturnType<import('state/actions').authorize>} AuthorizeAction
+ * @typedef {ReturnType<import('state/actions').setSettings>} SetSettingsAction
+ * @typedef {ReturnType<import('state/actions').setUser>} SetUserAction
+ * @typedef {ReturnType<import('state/actions').reset>} ResetAction
+ * @typedef {ReturnType<import('state/actions').sync>} SyncAction
+ * @typedef {ReturnType<import('state/actions').createPlaylist>} CreatePlaylistAction
  */
 
 /**
@@ -185,7 +205,16 @@
  *
  * @typedef {import('@reach/router').RouteComponentProps} RouteComponentProps
  * @typedef {import('redux-persist').PersistedState & State} PersistedState
- * @typedef {import('redux-saga').Channel} Channel
  * @typedef {import('redux-saga').Task} Task
  * @typedef {moment.Moment} Moment
+ */
+
+/**
+ * @template T
+ * @typedef {import('redux-saga').Channel<T>} Channel<T>
+ */
+
+/**
+ * @template T
+ * @typedef {import('redux-saga').EventChannel<T>} EventChannel<T>
  */

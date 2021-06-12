@@ -27,7 +27,7 @@ function TimePeriodField() {
   return (
     <div className="TimePeriodField Settings__field field">
       <label className="label has-text-light" htmlFor="timePeriod">
-        Time period <HelpText>/ affects local storage usage</HelpText>
+        Time period <HelpText>(affects local storage usage)</HelpText>
       </label>
       <Select
         id="timePeriod"

@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/browser'
-import { call, put, select } from 'redux-saga/effects'
+import { call, fork, put, select, take } from 'redux-saga/effects'
+import { navigate } from '@reach/router'
 import {
   AuthError,
   createCodeChallenge,
@@ -17,15 +18,19 @@ import {
   authorizeError,
   setAuthData,
   showErrorMessage,
+  SYNC_START,
+  CREATE_PLAYLIST_START,
+  AUTHORIZE_ERROR,
 } from 'state/actions'
 
 /**
  * Authorization wrapper saga
  *
- * @param {ReturnType<import('state/actions').authorize>} action
+ * @param {AuthorizeAction} action
  */
 export function* authorizeSaga(action) {
   try {
+    yield fork(redirectWhenReady)
     yield call(authorizeMainSaga, action)
   } catch (error) {
     yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
@@ -35,9 +40,17 @@ export function* authorizeSaga(action) {
 }
 
 /**
+ * Redirect to root after action has started or authorization error is encountered
+ */
+function* redirectWhenReady() {
+  yield take([SYNC_START, CREATE_PLAYLIST_START, AUTHORIZE_ERROR])
+  yield call(/** @type {Navigate} */ (navigate), '/')
+}
+
+/**
  * Main authorization saga
  *
- * @param {ReturnType<import('state/actions').authorize>} action
+ * @param {AuthorizeAction} authorizeAction
  */
 function* authorizeMainSaga({ payload }) {
   yield put(authorizeStart())

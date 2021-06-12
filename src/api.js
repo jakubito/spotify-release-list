@@ -11,7 +11,7 @@ const HTTP_TOO_MANY_REQUESTS = 429
 /**
  * Represents an error encountered during data fetching
  */
-class FetchError extends Error {
+export class FetchError extends Error {
   /**
    * @param {number} status
    * @param {string} statusText

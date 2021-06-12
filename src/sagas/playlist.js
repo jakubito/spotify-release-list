@@ -25,7 +25,7 @@ const { TRACK } = SpotifyEntity
 /**
  * Playlist creation saga
  *
- * @param {ReturnType<import('state/actions').createPlaylist>} action
+ * @param {CreatePlaylistAction} action
  */
 export function* createPlaylistSaga(action) {
   try {

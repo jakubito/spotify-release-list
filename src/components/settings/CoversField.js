@@ -14,8 +14,8 @@ function CoversField() {
 
   return (
     <div className="CoversField Settings__field field">
-      <label className="label has-text-light">
-        Album covers <HelpText>/ turn off to use less data</HelpText>
+      <label className="label has-text-light" htmlFor="covers">
+        Album covers <HelpText>(turn off to use less data)</HelpText>
       </label>
       <div className="control">
         <div className="field">
