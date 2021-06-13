@@ -14,10 +14,10 @@ import {
   RESET,
 } from 'state/actions'
 import { getLastAutoSync, getLastSync, getSettings, getUser } from 'state/selectors'
-import { windowEventChannel } from './helpers'
+import { takeLeadingCancellable, windowEventChannel } from './helpers'
 
 /**
- * Background sync worker polling interval
+ * Background auto sync worker polling interval
  */
 const POLLING_INTERVAL = 59 * 1000
 
@@ -25,21 +25,11 @@ const POLLING_INTERVAL = 59 * 1000
  * Main auto sync saga
  */
 export function* autoSyncSaga() {
-  yield fork(autoSyncSwitch)
+  yield takeLeadingCancellable(AUTO_SYNC_START, AUTO_SYNC_STOP, autoSyncManager)
   yield takeEvery(SET_SETTINGS, settingController)
   yield takeEvery(SET_USER, userController)
   yield takeEvery(RESET, resetController)
   yield fork(initialStart)
-}
-
-/**
- * Main service switch
- */
-function* autoSyncSwitch() {
-  while (true) {
-    yield take(AUTO_SYNC_START)
-    yield race([call(autoSyncManager), take(AUTO_SYNC_STOP)])
-  }
 }
 
 /**
@@ -88,6 +78,20 @@ function* autoSyncWorker() {
 }
 
 /**
+ * Start service on initial load
+ */
+function* initialStart() {
+  /** @type {ReturnType<getUser>} */
+  const user = yield select(getUser)
+  /** @type {ReturnType<getSettings>} */
+  const { autoSync } = yield select(getSettings)
+
+  if (user && autoSync) {
+    yield put(autoSyncStart())
+  }
+}
+
+/**
  * Oversee autoSync setting changes
  *
  * @param {SetSettingsAction} action
@@ -124,18 +128,4 @@ function* userController() {
  */
 function* resetController() {
   yield put(autoSyncStop())
-}
-
-/**
- * Start service on initial load
- */
-function* initialStart() {
-  /** @type {ReturnType<getUser>} */
-  const user = yield select(getUser)
-  /** @type {ReturnType<getSettings>} */
-  const { autoSync } = yield select(getSettings)
-
-  if (user && autoSync) {
-    yield put(autoSyncStart())
-  }
 }

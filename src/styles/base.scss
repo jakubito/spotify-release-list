@@ -171,6 +171,21 @@ body,
   opacity: 0.7;
 }
 
+.message {
+  &.is-dark {
+    background: $grey-darker;
+
+    .message-body {
+      color: $white-bis;
+      border-color: $grey-dark;
+    }
+  }
+
+  .message-body {
+    padding: 15px;
+  }
+}
+
 .is-checkradio[type='checkbox'] {
   &:hover {
     &.is-dark.has-background-color {

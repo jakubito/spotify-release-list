@@ -14,7 +14,7 @@ function AutoSyncField() {
   return (
     <div className="AutoSyncField Settings__field field">
       <label className="label has-text-light" htmlFor="autoSync">
-        Background refresh
+        Auto refresh
       </label>
       <div className="control">
         <div className="field">

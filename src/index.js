@@ -20,6 +20,7 @@ import 'styles/index.scss'
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
 serviceWorkerRegistration.register()
+hydrate.then(applyTheme).then(renderApp)
 
 function applyTheme() {
   const theme = getSettingsTheme(store.getState())
@@ -51,5 +52,3 @@ function renderApp() {
     document.getElementById('root')
   )
 }
-
-hydrate.then(applyTheme).then(renderApp)
