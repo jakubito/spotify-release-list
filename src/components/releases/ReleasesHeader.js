@@ -3,7 +3,6 @@ import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
 import { deferred } from 'helpers'
-import { useFeature } from 'hooks'
 import {
   getLastSyncDate,
   getHasReleases,
@@ -28,7 +27,6 @@ function ReleasesHeader() {
   const hasOriginalReleases = useSelector(getHasOriginalReleases)
   const filtersVisible = useSelector(getFiltersVisible)
   const filtersApplied = useSelector(getFiltersApplied)
-  const { seen: settingsSeen } = useFeature('new-settings-1.8.0')
 
   const toggleFilters = deferred(dispatch, toggleFiltersVisible())
   const openPlaylistModal = deferred(dispatch, showPlaylistModal())
@@ -76,20 +74,7 @@ function ReleasesHeader() {
             <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
           </Button>
         )}
-        <ButtonLink
-          to="/settings"
-          title="Settings [S]"
-          icon="fas fa-cog"
-          disabled={working}
-          className="has-badge"
-        >
-          <div
-            className={classNames('badge is-primary has-text-weight-semibold', {
-              'is-hidden': settingsSeen,
-            })}
-          >
-            NEW
-          </div>
+        <ButtonLink to="/settings" title="Settings [S]" icon="fas fa-cog" disabled={working}>
           <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Settings</span>}</Media>
         </ButtonLink>
       </div>
