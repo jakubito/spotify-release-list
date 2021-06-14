@@ -2,8 +2,6 @@ import moment from 'moment'
 import {
   sleep,
   defer,
-  chunks,
-  generateNonce,
   playlistName,
   getReleasesBetween,
   spotifyUri,
@@ -59,74 +57,6 @@ describe('defer', () => {
     jest.runAllTimers()
     expect(mockFn).toHaveBeenCalledTimes(1)
     expect(mockFn).toHaveBeenLastCalledWith(...args)
-  })
-})
-
-describe('chunks', () => {
-  it('returns equally sized chunks', () => {
-    const testArray = [1, 2, 3, 4, 5, 6]
-    const actual = chunks(testArray, 2)
-    const expected = [
-      [1, 2],
-      [3, 4],
-      [5, 6],
-    ]
-
-    expect(actual).toEqual(expected)
-  })
-
-  it('returns variable sized chunks', () => {
-    const testArray = [1, 2, 3, 4, 5]
-    const actual = chunks(testArray, 2)
-    const expected = [[1, 2], [3, 4], [5]]
-
-    expect(actual).toEqual(expected)
-  })
-
-  it('returns single sized chunks', () => {
-    const testArray = [1, 2, 3, 4, 5]
-    const actual = chunks(testArray, 1)
-    const expected = [[1], [2], [3], [4], [5]]
-
-    expect(actual).toEqual(expected)
-  })
-
-  it('returns single chunk', () => {
-    const testArray = [1, 2, 3, 4, 5]
-    const actual = chunks(testArray, 7)
-    const expected = [[1, 2, 3, 4, 5]]
-
-    expect(actual).toEqual(expected)
-  })
-
-  it('returns empty array', () => {
-    const actual = chunks([], 2)
-
-    expect(actual).toEqual([])
-  })
-
-  it("doesn't modify source array", () => {
-    const testArray = [1, 2, 3, 4, 5]
-    const testArrayCopy = [...testArray]
-
-    chunks(testArray, 2)
-    expect(testArray).toEqual(testArrayCopy)
-  })
-})
-
-describe('generateNonce', () => {
-  it('returns non-empty string', () => {
-    const actual = generateNonce()
-
-    expect(typeof actual).toEqual('string')
-    expect(actual.length).toEqual(20)
-  })
-
-  it('returns random string', () => {
-    const array = Array.from(Array(20), () => generateNonce())
-    const set = new Set(array)
-
-    expect(array.length).toEqual(set.size)
   })
 })
 

@@ -39,15 +39,15 @@ export function mergeAlbumsRaw(albumsRaw, minDate) {
  * @returns {AlbumsMap}
  */
 export function buildAlbumsMap(albumsRaw, artists) {
-  const artistsMap = artists.reduce(
-    (map, artist) => ({ ...map, [artist.id]: artist }),
-    /** @type {ArtistsMap} */ ({})
-  )
+  const artistsMap = artists.reduce((map, artist) => {
+    map[artist.id] = artist
+    return map
+  }, /** @type {ArtistsMap} */ ({}))
 
-  const albumsMap = albumsRaw.reduce(
-    (map, albumRaw) => ({ ...map, [albumRaw.id]: buildAlbum(albumRaw, artistsMap) }),
-    /** @type {AlbumsMap} */ ({})
-  )
+  const albumsMap = albumsRaw.reduce((map, albumRaw) => {
+    map[albumRaw.id] = buildAlbum(albumRaw, artistsMap)
+    return map
+  }, /** @type {AlbumsMap} */ ({}))
 
   return albumsMap
 }

@@ -200,10 +200,10 @@ export const getFiltersDates = createSelector(
  */
 export const getReleasesGroupMap = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((map, album) => {
-    const albumMap = Object.keys(album.artists).reduce(
-      (albumMap, group) => ({ ...albumMap, [group]: [album.id] }),
-      /** @type {ReleasesGroupMap} */ ({})
-    )
+    const albumMap = Object.keys(album.artists).reduce((albumMap, group) => {
+      albumMap[group] = [album.id]
+      return albumMap
+    }, /** @type {ReleasesGroupMap} */ ({}))
 
     return merge(map, albumMap)
   }, /** @type {ReleasesGroupMap} */ ({}))
@@ -262,7 +262,7 @@ const getAlbumGroupsFiltered = createSelector(
   [getFiltersGroups, getReleasesGroupMap],
   (groups, groupMap) =>
     groups.length &&
-    groups.reduce((ids, group) => [...ids, ...groupMap[group]], /** @type {string[]} */ ([]))
+    groups.reduce((ids, group) => ids.concat(groupMap[group]), /** @type {string[]} */ ([]))
 )
 
 /**

@@ -39,26 +39,6 @@ export function deferred(fn, ...args) {
 }
 
 /**
- * Split array into chunks
- *
- * @template T
- * @param {T[]} inputArray
- * @param {number} chunkSize
- * @returns {T[][]}
- */
-export function chunks(inputArray, chunkSize) {
-  const input = [...inputArray]
-  /** @type {T[][]} */
-  const result = []
-
-  while (input.length > 0) {
-    result.push(input.splice(0, chunkSize))
-  }
-
-  return result
-}
-
-/**
  * Wrapper around lodash `mergeWith` that concatenates array values
  *
  * @template {Object} T
@@ -256,9 +236,9 @@ export function randomColorScheme({ rotation, saturation, lightness }) {
       hue -= 360
     }
 
-    const color = colord({ h: hue, s: saturation(), l: lightness() })
+    scheme[group] = colord({ h: hue, s: saturation(), l: lightness() }).toHex()
 
-    return { ...scheme, [group]: color.toHex() }
+    return scheme
   }, /** @type {GroupColorScheme} */ ({}))
 
   return scheme
