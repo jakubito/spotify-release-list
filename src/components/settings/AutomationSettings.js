@@ -12,9 +12,9 @@ function AutomationSettings(props) {
     <div className="fade-in">
       <article className="message is-dark">
         <div className="message-body">
-          Please note that for the auto refresh feature to be working correctly, the app has to be
-          running in the background. Therefore, it does not work on mobile devices, only on
-          desktops.
+          Please note that for the auto refresh and notifications to be working correctly, the app
+          has to be running in the background. Therefore, these features don't work on mobile
+          devices, only on desktops.
         </div>
       </article>
       <AutoSyncField />
