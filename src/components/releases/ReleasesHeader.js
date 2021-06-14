@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
-import { deferred } from 'helpers'
+import { deferred, modalsClosed } from 'helpers'
 import {
   getLastSyncDate,
   getHasReleases,
@@ -31,8 +31,11 @@ function ReleasesHeader() {
   const toggleFilters = deferred(dispatch, toggleFiltersVisible())
   const openPlaylistModal = deferred(dispatch, showPlaylistModal())
 
-  useHotkeys('f', toggleFilters)
-  useHotkeys('e', openPlaylistModal)
+  useHotkeys('e', openPlaylistModal, { enabled: !syncing && lastSyncDate && hasReleases })
+  useHotkeys('f', toggleFilters, {
+    enabled: !syncing && lastSyncDate && hasOriginalReleases,
+    filter: modalsClosed,
+  })
 
   return (
     <Header>

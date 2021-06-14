@@ -19,7 +19,9 @@ function AlbumGroupsField() {
     const newValue = xor(groups, [event.target.value])
     const newValueOrdered = orderBy(newValue, (group) => AlbumGroupIndex[group])
 
-    dispatch(setSettings({ groups: newValueOrdered }))
+    if (newValueOrdered.length > 0) {
+      dispatch(setSettings({ groups: newValueOrdered }))
+    }
   }
 
   return (

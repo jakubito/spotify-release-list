@@ -115,13 +115,6 @@ export const getWorking = createSelector(
 )
 
 /**
- * Check if any modal is visible
- */
-export const getModalVisible = createSelector([getPlaylistModalVisible], (...values) =>
-  includesTruthy(values)
-)
-
-/**
  * Check if any filter is applied
  */
 export const getFiltersApplied = createSelector(

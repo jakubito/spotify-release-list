@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
-import { defer } from 'helpers'
+import { defer, modalsClosed } from 'helpers'
 import { getSyncing, getWorking, getSyncingProgress } from 'state/selectors'
 import { sync } from 'state/actions'
 import { Button } from 'components/common'
@@ -18,15 +18,16 @@ function SyncButton({ title, icon, medium }) {
   const working = useSelector(getWorking)
   const [disabled, setDisabled] = useState(false)
 
-  const onClick = () => {
-    setDisabled(true)
-    defer(dispatch, sync())
+  const dispatchSync = () => {
+    dispatch(sync())
   }
 
-  useHotkeys('r', () => {
-    dispatch(sync())
-  })
+  const onClick = () => {
+    setDisabled(true)
+    defer(dispatchSync)
+  }
 
+  useHotkeys('r', dispatchSync, { filter: modalsClosed })
   useEffect(() => setDisabled(working), [working])
 
   return (

@@ -281,3 +281,12 @@ export function createNotification(title, body) {
 
   return notification
 }
+
+/**
+ * Check if all modals are closed
+ *
+ * @returns {boolean}
+ */
+export function modalsClosed() {
+  return !document.documentElement.classList.contains('is-modal-open')
+}

@@ -7,7 +7,6 @@ import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from 'sagas'
 import migrations from './migrations'
 import rootReducer from './reducer'
-import guardMiddleware from './guard'
 
 localForage.config({ name: 'spotify-release-list' })
 
@@ -39,7 +38,7 @@ const sagaMiddleware = createSagaMiddleware({ onError: (error) => Sentry.capture
 /** @type {import('redux').Store<State>} */
 const store = createStore(
   persistReducer(persistConfig, rootReducer),
-  composeEnhancers(applyMiddleware(guardMiddleware, sagaMiddleware))
+  composeEnhancers(applyMiddleware(sagaMiddleware))
 )
 
 /** @type {import('redux-persist').Persistor} */

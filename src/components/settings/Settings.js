@@ -1,6 +1,6 @@
 import { useHotkeys } from 'react-hotkeys-hook'
 import { navigate } from '@reach/router'
-import { deferred } from 'helpers'
+import { deferred, modalsClosed } from 'helpers'
 import { VerticalLayout, HorizontalLayout, Content } from 'components/common'
 import SettingsHeader from './SettingsHeader'
 import SettingsMenu from './SettingsMenu'
@@ -12,7 +12,7 @@ import SettingsMenu from './SettingsMenu'
  */
 function Settings({ children }) {
   useHotkeys('esc, enter', deferred(navigate, '/'), {
-    filter: () => !document.documentElement.classList.contains('is-modal-open'),
+    filter: modalsClosed,
     enableOnTags: ['INPUT', 'SELECT'],
   })
 
