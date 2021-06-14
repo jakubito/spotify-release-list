@@ -52,6 +52,7 @@
  *   covers: boolean
  *   autoSync: boolean
  *   autoSyncTime: string
+ *   notifications: boolean
  * }} Settings
  *
  * @typedef {{

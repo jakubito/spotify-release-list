@@ -4,6 +4,7 @@ import { colord } from 'colord'
 import { AlbumGroup, MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
+const NOTIFICATION_ICON = `${process.env.REACT_APP_URL}/android-chrome-192x192.png`
 
 /**
  * Promisified setTimeout
@@ -261,4 +262,22 @@ export function randomColorScheme({ rotation, saturation, lightness }) {
   }, /** @type {GroupColorScheme} */ ({}))
 
   return scheme
+}
+
+/**
+ * Create new notification
+ *
+ * @param {string} title
+ * @param {string} [body]
+ * @returns {Notification}
+ */
+export function createNotification(title, body) {
+  const notification = new Notification(title, { body, icon: NOTIFICATION_ICON })
+
+  notification.addEventListener('click', () => {
+    window.focus()
+    notification.close()
+  })
+
+  return notification
 }

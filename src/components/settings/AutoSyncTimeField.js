@@ -9,7 +9,7 @@ import HelpText from './HelpText'
  * Render auto sync time field
  */
 function AutoSyncField() {
-  const { autoSync, autoSyncTime } = useSelector(getSettings)
+  const { autoSyncTime } = useSelector(getSettings)
   const dispatch = useDispatch()
 
   return (
@@ -23,7 +23,6 @@ function AutoSyncField() {
             id="autoSyncTime"
             type="time"
             defaultValue={autoSyncTime}
-            disabled={!autoSync}
             onChange={(event) => defer(dispatch, setSettings({ autoSyncTime: event.target.value }))}
           />
         </div>

@@ -68,6 +68,7 @@ export const initialState = {
     covers: true,
     autoSync: false,
     autoSyncTime: '08:00',
+    notifications: true,
   },
   filters: {
     groups: [],

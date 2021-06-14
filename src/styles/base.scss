@@ -35,6 +35,7 @@ body,
   }
 
   &:disabled {
+    color: $grey-light;
     background-color: $grey-darker;
   }
 }
