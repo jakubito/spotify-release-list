@@ -129,6 +129,8 @@
  * @typedef {(to: string) => Promise<void>} Navigate
  * @typedef {[Fn, ...any[]]} RequestChannelMessage
  * @typedef {Channel<RequestChannelMessage>} RequestChannel
+ * @typedef {(data: Settings) => string} SettingsSerializer
+ * @typedef {JTDParser<Settings>} SettingsParser
  */
 
 /**
@@ -218,4 +220,14 @@
 /**
  * @template T
  * @typedef {import('redux-saga').EventChannel<T>} EventChannel<T>
+ */
+
+/**
+ * @template T
+ * @typedef {import('ajv/dist/types').JTDParser<T>} JTDParser<T>
+ */
+
+/**
+ * @template T
+ * @typedef {import('react-hook-form').SubmitHandler<T>} SubmitHandler<T>
  */

@@ -15,6 +15,7 @@ import {
   AppearanceSettings,
   AboutSettings,
   AutomationSettings,
+  BackupSettings,
 } from 'components/settings'
 import 'styles/index.scss'
 
@@ -40,6 +41,7 @@ function renderApp() {
             <GeneralSettings path="/" />
             <AppearanceSettings path="appearance" />
             <AutomationSettings path="automation" />
+            <BackupSettings path="backup" />
             <AboutSettings path="about" />
             <Redirect from="*" to="/" noThrow />
           </Settings>

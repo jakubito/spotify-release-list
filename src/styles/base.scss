@@ -40,6 +40,21 @@ body,
   }
 }
 
+.textarea.is-dark {
+  background-color: $darkest;
+  color: $white-ter;
+
+  &:not(.is-danger) {
+    border-color: $darkest;
+  }
+
+  &:hover,
+  &:focus {
+    box-shadow: 0 0 0 0.125em $black-bis;
+    background-color: $black-ter;
+  }
+}
+
 .input.is-danger {
   border-color: $red;
 

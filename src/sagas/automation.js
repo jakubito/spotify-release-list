@@ -19,7 +19,7 @@ import { takeLeadingCancellable, windowEventChannel } from './helpers'
 /**
  * Background auto sync worker polling interval
  */
-const POLLING_INTERVAL = 59 * 1000
+const POLLING_INTERVAL = 60 * 1000
 
 /**
  * Main auto sync saga

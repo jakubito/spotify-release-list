@@ -54,7 +54,7 @@ function PlaylistModal({ closeModal }) {
 function useOnSubmit(setSubmitTriggered) {
   const dispatch = useDispatch()
   /**
-   * @type {import('react-hook-form').SubmitHandler<{
+   * @type {SubmitHandler<{
    *   name: string
    *   description: string
    *   visibility: 'private' | 'public'
