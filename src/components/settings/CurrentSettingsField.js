@@ -1,5 +1,6 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { sleep } from 'helpers'
 import { getSettings } from 'state/selectors'
 import { Button } from 'components/common'
 
@@ -12,10 +13,13 @@ function CurrentSettingsField({ serialize }) {
   /** @type {React.MutableRefObject<HTMLTextAreaElement>} */
   const textareaRef = useRef()
   const settings = useSelector(getSettings)
+  const [copied, setCopied] = useState(false)
 
   const copy = () => {
     textareaRef.current?.select()
     document.execCommand('copy')
+    setCopied(true)
+    sleep(1200).then(() => setCopied(false))
   }
 
   return (
@@ -31,9 +35,10 @@ function CurrentSettingsField({ serialize }) {
         />
       </div>
       <Button
-        title="Copy to clipboard"
+        title={copied ? 'Copied to clipboard' : 'Copy to clipboard'}
+        icon={copied ? 'fas fa-check-circle' : 'fas fa-copy'}
         className="BackupSettings__button"
-        icon="fas fa-copy"
+        disabled={copied}
         onClick={copy}
       />
     </div>

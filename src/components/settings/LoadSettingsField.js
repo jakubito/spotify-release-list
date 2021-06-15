@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import classNames from 'classnames'
 import capitalize from 'lodash/capitalize'
-import { defer } from 'helpers'
+import { defer, sleep } from 'helpers'
 import { setSettings } from 'state/actions'
 import { Button } from 'components/common'
 import HelpText from './HelpText'
@@ -21,8 +21,9 @@ function LoadSettingsField({ parse }) {
 
   /** @type {SubmitHandler<{ settingsJson: string }>} */
   const onSubmit = (data) => {
-    setLoaded(true)
     defer(dispatch, setSettings(parse(data.settingsJson)))
+    setLoaded(true)
+    sleep(1200).then(() => setLoaded(false))
   }
 
   return (
