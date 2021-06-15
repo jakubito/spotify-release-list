@@ -93,21 +93,21 @@ export function buildReleasesMap(albums) {
 }
 
 /**
- * Build ReleasesEntries
+ * Build Releases
  *
  * @param {ReleasesMap} releasesMap
- * @returns {ReleasesEntries}
+ * @returns {Releases}
  */
-export function buildReleasesEntries(releasesMap) {
-  const entriesOrdered = orderBy(Object.entries(releasesMap), ([day]) => day, 'desc')
-  const entries = entriesOrdered.map(([day, albums]) => {
-    const albumsOrdered = orderBy(albums, [
+export function buildReleases(releasesMap) {
+  const releasesUnordered = Object.entries(releasesMap).map(([date, albums]) => ({ date, albums }))
+  const releasesOrderedByDate = orderBy(releasesUnordered, 'date', 'desc')
+  const releases = releasesOrderedByDate.map((releaseDay) => {
+    releaseDay.albums = orderBy(releaseDay.albums, [
       (album) => Object.values(album.artists).flat().shift().name.toLowerCase(),
       'name',
     ])
-
-    return /** @type {[string, Album[]]} */ ([day, albumsOrdered])
+    return releaseDay
   })
 
-  return entries
+  return releases
 }

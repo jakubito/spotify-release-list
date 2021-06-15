@@ -5,14 +5,14 @@ import ReleaseDay from './ReleaseDay'
 /**
  * Lazily render releases sorted by date
  *
- * @param {{ releases: ReleasesEntries }} props
+ * @param {{ releases: Releases }} props
  */
 function ReleaseList({ releases }) {
   const { cursor, slice, next } = usePaginate(releases, 50)
 
   return (
     <>
-      {slice.map(([date, albums]) => (
+      {slice.map(({ date, albums }) => (
         <ReleaseDay date={date} albums={albums} key={date} />
       ))}
       {next && <Waypoint bottomOffset="-40%" onEnter={next} key={cursor} />}
@@ -23,16 +23,16 @@ function ReleaseList({ releases }) {
 /**
  * Releases pagination hook
  *
- * @param {ReleasesEntries} releases
+ * @param {Releases} releases
  * @param {number} pageSize - Page size threshold
- * @returns {{ cursor: number, slice: ReleasesEntries, next: () => void | null }}
+ * @returns {{ cursor: number, slice: Releases, next: () => void | null }}
  */
 function usePaginate(releases, pageSize) {
   const nextCursor = (currentCursor = 0) => {
     let newCursor = currentCursor
     let pageCount = 0
 
-    for (const [, albums] of releases.slice(currentCursor)) {
+    for (const { albums } of releases.slice(currentCursor)) {
       pageCount += albums.length
       newCursor += 1
 

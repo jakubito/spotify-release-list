@@ -4,13 +4,7 @@ import { spotifyUri } from 'helpers'
 import { Scope, SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
 import { AuthError } from 'auth'
-import {
-  getAuthData,
-  getPlaylistForm,
-  getReleasesEntries,
-  getSettings,
-  getUser,
-} from 'state/selectors'
+import { getAuthData, getPlaylistForm, getReleases, getSettings, getUser } from 'state/selectors'
 import {
   createPlaylistStart,
   createPlaylistFinished,
@@ -57,11 +51,11 @@ function* createPlaylistMainSaga() {
   const { name, description, isPrivate } = yield select(getPlaylistForm)
   /** @type {ReturnType<getSettings>} */
   const { market } = yield select(getSettings)
-  /** @type {ReturnType<getReleasesEntries>} */
-  const releases = yield select(getReleasesEntries)
+  /** @type {ReturnType<getReleases>} */
+  const releases = yield select(getReleases)
 
   const albumIds = releases.reduce(
-    (ids, [, albums]) => ids.concat(albums.map((album) => album.id)),
+    (ids, { albums }) => ids.concat(albums.map((album) => album.id)),
     /** @type {string[]} */ ([])
   )
 

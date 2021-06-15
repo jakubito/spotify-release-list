@@ -117,7 +117,7 @@
  * @typedef {{ [id: string]: Artist }} ArtistsMap
  * @typedef {{ [id: string]: Album }} AlbumsMap
  * @typedef {{ [date: string]: Album[] }} ReleasesMap
- * @typedef {[date: string, albums: Album[]][]} ReleasesEntries
+ * @typedef {{ date: string, albums: Album[] }[]} Releases
  * @typedef {{ [group: string]: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
  * @typedef {{ type: string, payload: any }} Action

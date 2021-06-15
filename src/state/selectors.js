@@ -6,7 +6,7 @@ import last from 'lodash/last'
 import isEqual from 'lodash/isEqual'
 import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge } from 'helpers'
-import { buildReleasesEntries, buildReleasesMap } from './helpers'
+import { buildReleases, buildReleasesMap } from './helpers'
 import { initialState } from './reducer'
 
 const VARIOUS_ARTISTS = 'Various Artist'
@@ -153,29 +153,29 @@ const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(album
 export const getOriginalReleasesMap = createSelector(getAlbumsArray, buildReleasesMap)
 
 /**
- * Get all releases as `[release date, albums]` entries / tuples
+ * Get all releases as ordered array of { date, albums } objects
  */
-const getOriginalReleasesEntries = createSelector(getOriginalReleasesMap, buildReleasesEntries)
+const getOriginalReleases = createSelector(getOriginalReleasesMap, buildReleases)
 
 /**
  * Check if there are any releases
  */
-export const getHasOriginalReleases = createSelector(getOriginalReleasesEntries, (entries) =>
+export const getHasOriginalReleases = createSelector(getOriginalReleases, (entries) =>
   Boolean(entries.length)
 )
 
 /**
  * Get earliest date in current releases collection
  */
-export const getReleasesMinDate = createSelector(getOriginalReleasesEntries, (entries) =>
-  entries.length ? last(entries)[0] : null
+export const getReleasesMinDate = createSelector(getOriginalReleases, (entries) =>
+  entries.length ? last(entries).date : null
 )
 
 /**
  * Get latest date in current releases collection
  */
-export const getReleasesMaxDate = createSelector(getOriginalReleasesEntries, (entries) =>
-  entries.length ? entries[0][0] : null
+export const getReleasesMaxDate = createSelector(getOriginalReleases, (entries) =>
+  entries.length ? entries[0].date : null
 )
 
 /**
@@ -293,13 +293,13 @@ const getFilteredReleasesMap = createSelector(getFilteredAlbumsArray, buildRelea
 /**
  * Get filtered releases as `[release date, albums]` entries / tuples
  */
-const getFilteredReleasesEntries = createSelector(getFilteredReleasesMap, buildReleasesEntries)
+const getFilteredReleases = createSelector(getFilteredReleasesMap, buildReleases)
 
 /**
  * Final releases selector that returns either filtered or original releases
  */
-export const getReleasesEntries = createSelector(
-  [getFiltersApplied, getFilteredReleasesEntries, getOriginalReleasesEntries],
+export const getReleases = createSelector(
+  [getFiltersApplied, getFilteredReleases, getOriginalReleases],
   (filtersApplied, filtered, original) => (filtersApplied ? filtered : original)
 )
 
