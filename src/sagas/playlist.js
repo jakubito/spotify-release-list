@@ -27,7 +27,9 @@ export function* createPlaylistSaga(action) {
     /** @type {ReturnType<getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
     const scopes = [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC]
+    /** @type {ReturnType<withTitle>} */
     const titled = yield call(withTitle, 'Creating playlist...', createPlaylistMainSaga)
+    /** @type {ReturnType<authorize>} */
     const authorized = yield call(authorize, action, scopes, titled)
 
     yield call(authorized)

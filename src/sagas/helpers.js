@@ -1,5 +1,6 @@
 import { eventChannel } from 'redux-saga'
 import { call, delay, fork, put, race, take } from 'redux-saga/effects'
+import moment from 'moment'
 
 /**
  * Behaves the same way as redux-saga's `takeLeading` but also can be cancelled
@@ -35,6 +36,26 @@ export function withTitle(title, saga, ...args) {
     } finally {
       document.title = originalTitle
     }
+  }
+}
+
+/**
+ * Throttle saga execution
+ *
+ * @param {import('moment').DurationInputArg1} amount
+ * @param {import('moment').DurationInputArg2} unit
+ * @param {Fn} saga
+ * @param  {...any} args
+ */
+export function throttle(amount, unit, saga, ...args) {
+  /** @type {Moment} */
+  let lastRun
+
+  return function* () {
+    if (lastRun?.isAfter(moment().subtract(amount, unit))) return
+
+    yield call(saga, ...args)
+    lastRun = moment()
   }
 }
 

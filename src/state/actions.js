@@ -31,6 +31,9 @@ export const SET_FILTERS = 'SET_FILTERS'
 export const RESET_FILTERS = 'RESET_FILTERS'
 export const AUTO_SYNC_START = 'AUTO_SYNC_START'
 export const AUTO_SYNC_STOP = 'AUTO_SYNC_STOP'
+export const UPDATE_READY = 'UPDATE_READY'
+export const DISMISS_UPDATE = 'DISMISS_UPDATE'
+export const TRIGGER_UPDATE = 'TRIGGER_UPDATE'
 
 /**
  * Create action object
@@ -203,4 +206,16 @@ export function autoSyncStart() {
 
 export function autoSyncStop() {
   return action(AUTO_SYNC_STOP)
+}
+
+export function updateReady() {
+  return action(UPDATE_READY)
+}
+
+export function dismissUpdate() {
+  return action(DISMISS_UPDATE)
+}
+
+export function triggerUpdate() {
+  return action(TRIGGER_UPDATE)
 }

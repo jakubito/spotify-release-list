@@ -20,6 +20,7 @@
  *   settings: Settings
  *   filters: Filters
  *   seenFeatures: string[]
+ *   updateReady: boolean
  * }} State
  *
  * @typedef {{

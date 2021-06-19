@@ -66,6 +66,9 @@ export const getSeenFeatures = (state) => state.seenFeatures
 /** @param {State} state */
 export const getFilters = (state) => state.filters
 
+/** @param {State} state */
+export const getUpdateReady = (state) => state.updateReady
+
 // Individual settings selectors
 export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups)
 export const getSettingsGroupColors = createSelector(

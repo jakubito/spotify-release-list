@@ -26,9 +26,9 @@ const POLLING_INTERVAL = 60 * 1000
  */
 export function* autoSyncSaga() {
   yield takeLeadingCancellable(AUTO_SYNC_START, AUTO_SYNC_STOP, autoSyncManager)
-  yield takeEvery(SET_SETTINGS, settingController)
-  yield takeEvery(SET_USER, userController)
-  yield takeEvery(RESET, resetController)
+  yield takeEvery(SET_SETTINGS, settingWatcher)
+  yield takeEvery(SET_USER, userWatcher)
+  yield takeEvery(RESET, resetWatcher)
   yield fork(initialStart)
 }
 
@@ -78,25 +78,11 @@ function* autoSyncWorker() {
 }
 
 /**
- * Start service on initial load
- */
-function* initialStart() {
-  /** @type {ReturnType<getUser>} */
-  const user = yield select(getUser)
-  /** @type {ReturnType<getSettings>} */
-  const { autoSync } = yield select(getSettings)
-
-  if (user && autoSync) {
-    yield put(autoSyncStart())
-  }
-}
-
-/**
  * Oversee autoSync setting changes
  *
  * @param {SetSettingsAction} action
  */
-function* settingController(action) {
+function* settingWatcher(action) {
   /** @type {ReturnType<getUser>} */
   const user = yield select(getUser)
   const { autoSync } = action.payload.settings
@@ -114,7 +100,7 @@ function* settingController(action) {
 /**
  * Oversee user changes
  */
-function* userController() {
+function* userWatcher() {
   /** @type {ReturnType<getSettings>} */
   const { autoSync } = yield select(getSettings)
 
@@ -126,6 +112,20 @@ function* userController() {
 /**
  * Stop service when app is reset
  */
-function* resetController() {
+function* resetWatcher() {
   yield put(autoSyncStop())
+}
+
+/**
+ * Start service on initial load
+ */
+function* initialStart() {
+  /** @type {ReturnType<getUser>} */
+  const user = yield select(getUser)
+  /** @type {ReturnType<getSettings>} */
+  const { autoSync } = yield select(getSettings)
+
+  if (user && autoSync) {
+    yield put(autoSyncStart())
+  }
 }

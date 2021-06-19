@@ -1,0 +1,32 @@
+.UpdateMessage {
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__button {
+    color: $white-bis !important;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 0 8px;
+    text-decoration: underline !important;
+
+    &:focus {
+      color: $white-bis !important;
+    }
+
+    &:hover {
+      text-decoration: none !important;
+    }
+
+    &:active {
+      color: $grey-lighter !important;
+    }
+
+    &.is-loading {
+      color: transparent !important;
+    }
+  }
+}

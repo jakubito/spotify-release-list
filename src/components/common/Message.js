@@ -16,7 +16,7 @@ function Message() {
 
   return (
     <div
-      className={classNames('Message', 'notification', 'has-text-centered', {
+      className={classNames('notification has-text-centered', {
         'is-dark': message.type === 'normal',
         'is-danger': message.type === 'error',
       })}

@@ -37,7 +37,9 @@ const LOADING_ANIMATION = 550
  */
 export function* syncSaga(action) {
   try {
+    /** @type {ReturnType<withTitle>} */
     const titled = yield call(withTitle, 'Loading...', syncMainSaga, action)
+    /** @type {ReturnType<authorize>} */
     const authorized = yield call(authorize, action, [USER_FOLLOW_READ], titled)
 
     yield call(authorized)

@@ -27,6 +27,8 @@ import {
   TOGGLE_FILTERS_VISIBLE,
   SET_FILTERS,
   RESET_FILTERS,
+  UPDATE_READY,
+  DISMISS_UPDATE,
 } from 'state/actions'
 import { buildAlbumsMap, mergeAlbumsRaw } from './helpers'
 
@@ -78,6 +80,7 @@ export const initialState = {
     excludeVariousArtists: false,
   },
   seenFeatures: [],
+  updateReady: false,
 }
 
 /**
@@ -152,6 +155,10 @@ function rootReducer(state = initialState, { type, payload }) {
       return { ...state, filters: { ...state.filters, ...payload.filters } }
     case RESET_FILTERS:
       return { ...state, filters: initialState.filters, filtersVisible: false }
+    case UPDATE_READY:
+      return { ...state, updateReady: true }
+    case DISMISS_UPDATE:
+      return { ...state, updateReady: false }
     case RESET:
       return initialState
     default:

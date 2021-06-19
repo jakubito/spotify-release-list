@@ -375,5 +375,6 @@
     "endDate": null,
     "excludeVariousArtists": false
   },
-  "seenFeatures": []
+  "seenFeatures": [],
+  "updateReady": false
 }
