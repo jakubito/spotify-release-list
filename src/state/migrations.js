@@ -23,6 +23,7 @@ const migrations = {
     return state
   },
   4: resetDataWithMessage,
+  5: resetDataWithMessage,
 }
 
 /**
@@ -37,8 +38,8 @@ function resetDataWithMessage(state) {
     ...initialState,
     settings: state.settings,
     message: {
-      text: 'The app has been updated to the latest version. Please log in again to continue.',
-      type: 'normal',
+      text: 'Please log in again to continue.',
+      type: 'info',
     },
   }
 }

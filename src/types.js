@@ -40,7 +40,7 @@
  *
  * @typedef {{
  *   text: string
- *   type: 'normal' | 'error'
+ *   type: 'normal' | 'info' | 'error'
  * }} Message
  *
  * @typedef {{

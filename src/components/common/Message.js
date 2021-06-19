@@ -18,6 +18,7 @@ function Message() {
     <div
       className={classNames('notification has-text-centered', {
         'is-dark': message.type === 'normal',
+        'is-info': message.type === 'info',
         'is-danger': message.type === 'error',
       })}
     >

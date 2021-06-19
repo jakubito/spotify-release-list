@@ -13,7 +13,7 @@ localForage.config({ name: 'spotify-release-list' })
 /** @type {import('redux-persist').PersistConfig<State>} */
 const persistConfig = {
   key: 'root',
-  version: 4,
+  version: 5,
   storage: localForage,
   stateReconciler: autoMergeLevel2,
   migrate: createMigrate(migrations),
