@@ -23,7 +23,7 @@ function Anchor({ title, href, className, color, children }) {
       title={title}
       href={href}
       className={classNames('Anchor', className)}
-      target="_blank"
+      target={href.startsWith('spotify:') ? undefined : '_blank'}
       rel="noopener noreferrer"
       style={style}
     >
