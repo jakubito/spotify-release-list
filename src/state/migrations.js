@@ -12,8 +12,8 @@ const migrations = {
 
     return { ...state, settings: { ...state.settings, groups: groupsSorted } }
   },
-  1: (state) => resetDataWithMessage(state),
-  2: (state) => resetDataWithMessage(state),
+  1: resetDataWithMessage,
+  2: resetDataWithMessage,
   3: (state) => {
     // Fix persisted buggy state causing black screen
     if (getFiltersVisible(state) && !getHasOriginalReleases(state)) {
@@ -22,7 +22,8 @@ const migrations = {
 
     return state
   },
-  4: (state) => resetDataWithMessage(state),
+  4: resetDataWithMessage,
+  5: resetDataWithMessage,
 }
 
 /**
@@ -37,8 +38,8 @@ function resetDataWithMessage(state) {
     ...initialState,
     settings: state.settings,
     message: {
-      text: 'The app has been updated to the latest version. Please log in again to continue.',
-      type: 'normal',
+      text: 'Please log in again to continue.',
+      type: 'info',
     },
   }
 }

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { navigate } from '@reach/router'
-import { getSyncing, getLastSync, getReleasesEntries } from 'state/selectors'
+import { getSyncing, getUser, getReleases, getWorking } from 'state/selectors'
 import { useRefChangeKey } from 'hooks'
 import { deferred } from 'helpers'
 import { VerticalLayout, Content, Centered } from 'components/common'
@@ -18,15 +18,16 @@ import ReleaseList from './ReleaseList'
  * @param {RouteComponentProps} props
  */
 function Releases(props) {
-  const lastSync = useSelector(getLastSync)
+  const user = useSelector(getUser)
+  const working = useSelector(getWorking)
   const syncing = useSelector(getSyncing)
-  const releases = useSelector(getReleasesEntries)
+  const releases = useSelector(getReleases)
   const key = useRefChangeKey(releases)
 
-  useHotkeys('s', deferred(navigate, '/settings'), { enabled: !syncing })
+  useHotkeys('s', deferred(navigate, '/settings'), { enabled: !working })
 
   const renderContent = () => {
-    if (!lastSync) {
+    if (!user) {
       return (
         <Centered>
           <Intro />

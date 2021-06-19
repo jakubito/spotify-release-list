@@ -1,8 +1,6 @@
-import { call, cancel, delay, fork, put, race, select, take } from 'redux-saga/effects'
-import { generateNonce } from 'helpers'
-import { persistor } from 'state'
-import { getTokenData } from 'state/selectors'
-import { setNonce } from 'state/actions'
+import { eventChannel } from 'redux-saga'
+import { call, delay, fork, put, race, take } from 'redux-saga/effects'
+import moment from 'moment'
 
 /**
  * Behaves the same way as redux-saga's `takeLeading` but also can be cancelled
@@ -16,55 +14,63 @@ export function takeLeadingCancellable(triggerAction, cancelAction, saga, ...arg
   return fork(function* () {
     while (true) {
       const action = yield take(triggerAction)
-      const task = yield fork(saga, ...args.concat(action))
-      const [cancelled] = yield race([take(cancelAction), call(task.toPromise)])
-
-      if (cancelled) {
-        yield cancel(task)
-      }
+      yield race([call(saga, ...args.concat(action)), take(cancelAction)])
     }
   })
 }
 
 /**
- * Validates token before running a saga and triggers authentication if needed
+ * Replace document title for the duration of saga
  *
- * @template {any[]} T
+ * @param {string} title
  * @param {Fn} saga
- * @param {(token: string, tokenExpires: string, tokenScope: string, ...args: T) => boolean } isValidToken
- * @param {(nonce: string, ...args: T) => void} startAuthFlow
- * @param {T} args
+ * @param {...any} args
  */
-export function* withValidToken(saga, isValidToken, startAuthFlow, ...args) {
-  /** @type {ReturnType<typeof getTokenData>} */
-  const { token, tokenExpires, tokenScope } = yield select(getTokenData)
-  /** @type {ReturnType<typeof isValidToken>} */
-  const valid = yield call(isValidToken, token, tokenExpires, tokenScope, ...args)
+export function withTitle(title, saga, ...args) {
+  return function* () {
+    const originalTitle = document.title
 
-  if (valid) {
-    yield call(saga)
-  } else {
-    /** @type {ReturnType<typeof generateNonce>} */
-    const nonce = yield call(generateNonce)
-
-    yield put(setNonce(nonce))
-    yield call(persistor.flush)
-    yield call(startAuthFlow, nonce, ...args)
+    try {
+      document.title = title
+      yield call(saga, ...args)
+    } finally {
+      document.title = originalTitle
+    }
   }
 }
 
 /**
- * Saga that updates progress after each animation window
+ * Throttle saga execution
+ *
+ * @param {import('moment').DurationInputArg1} amount
+ * @param {import('moment').DurationInputArg2} unit
+ * @param {Fn} saga
+ * @param  {...any} args
+ */
+export function throttle(amount, unit, saga, ...args) {
+  /** @type {Moment} */
+  let lastRun
+
+  return function* () {
+    if (lastRun?.isAfter(moment().subtract(amount, unit))) return
+
+    yield call(saga, ...args)
+    lastRun = moment()
+  }
+}
+
+/**
+ * Worker saga that dispatches progress value to the store at specific interval
  *
  * @param {Progress} progress
  * @param {ActionCreator} setProgressAction
- * @param {number} animationDuration
+ * @param {number} updateInterval - How often to dispatch progress value (milliseconds)
  */
-export function* progressWorker(progress, setProgressAction, animationDuration) {
+export function* progressWorker(progress, setProgressAction, updateInterval) {
   try {
     while (true) {
       yield put(setProgressAction(progress.value))
-      yield delay(animationDuration)
+      yield delay(updateInterval)
     }
   } finally {
     yield put(setProgressAction(progress.value))
@@ -72,24 +78,39 @@ export function* progressWorker(progress, setProgressAction, animationDuration) 
 }
 
 /**
- * Saga that takes http requests from `requestChannel` and sends responses to `responseChannel`
+ * Worker saga that fulfills requests stored in the queue until manually stopped
  *
- * @param {Channel} requestChannel
- * @param {Channel} responseChannel
+ * @param {RequestChannel} requestChannel
+ * @param {ResponseChannel<any>} responseChannel
  */
 export function* requestWorker(requestChannel, responseChannel) {
   while (true) {
-    /** @type {[Fn, ...any[]]} */
+    /** @type {RequestChannelMessage} */
     const request = yield take(requestChannel)
 
     try {
       const result = yield call(...request)
-
       yield put(responseChannel, { result })
     } catch (error) {
       console.error(error)
-
       yield put(responseChannel, { error })
     }
   }
+}
+
+/**
+ * Window event listener transformed into channel
+ *
+ * @template {keyof WindowEventMap} T
+ * @param {T} event
+ * @returns {EventChannel<WindowEventMap[T]>}
+ */
+export function windowEventChannel(event) {
+  return eventChannel((emitter) => {
+    window.addEventListener(event, emitter)
+
+    return () => {
+      window.removeEventListener(event, emitter)
+    }
+  })
 }

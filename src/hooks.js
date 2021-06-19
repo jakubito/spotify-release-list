@@ -32,7 +32,11 @@ export function useFeature(feature) {
   const dispatch = useDispatch()
   const seenFeatures = useSelector(getSeenFeatures)
   const seen = seenFeatures.includes(feature)
-  const setSeen = deferred(dispatch, addSeenFeature(feature))
+  const setSeen = deferred(() => {
+    if (!seen) {
+      dispatch(addSeenFeature(feature))
+    }
+  })
 
   return { seen, setSeen }
 }

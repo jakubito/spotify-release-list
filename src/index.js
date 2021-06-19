@@ -7,13 +7,22 @@ import 'react-dates/initialize'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { store, hydrate } from 'state'
 import { getSettingsTheme } from 'state/selectors'
+import { updateReady } from 'state/actions'
 import { Auth, App } from 'components'
 import { Releases } from 'components/releases'
-import { Settings, GeneralSettings, AppearanceSettings, AboutSettings } from 'components/settings'
+import {
+  Settings,
+  GeneralSettings,
+  AppearanceSettings,
+  AboutSettings,
+  AutomationSettings,
+  BackupSettings,
+} from 'components/settings'
 import 'styles/index.scss'
 
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
-serviceWorkerRegistration.register()
+serviceWorkerRegistration.register({ onUpdate: () => store.dispatch(updateReady()) })
+hydrate.then(applyTheme).then(renderApp)
 
 function applyTheme() {
   const theme = getSettingsTheme(store.getState())
@@ -32,6 +41,8 @@ function renderApp() {
           <Settings path="settings">
             <GeneralSettings path="/" />
             <AppearanceSettings path="appearance" />
+            <AutomationSettings path="automation" />
+            <BackupSettings path="backup" />
             <AboutSettings path="about" />
             <Redirect from="*" to="/" noThrow />
           </Settings>
@@ -44,5 +55,3 @@ function renderApp() {
     document.getElementById('root')
   )
 }
-
-hydrate.then(applyTheme).then(renderApp)

@@ -3,12 +3,20 @@ import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
 import last from 'lodash/last'
+import isEqual from 'lodash/isEqual'
 import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge } from 'helpers'
-import { buildReleasesEntries, buildReleasesMap } from './helpers'
+import { buildReleases, buildReleasesMap } from './helpers'
+import { initialState } from './reducer'
 
 const VARIOUS_ARTISTS = 'Various Artist'
 const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
+
+/** @param {State} state */
+export const getAuthorizing = (state) => state.authorizing
+
+/** @param {State} state */
+export const getAuthData = (state) => state.authData
 
 /** @param {State} state */
 export const getUser = (state) => state.user
@@ -23,19 +31,10 @@ export const getSyncingProgress = (state) => state.syncingProgress
 export const getLastSync = (state) => state.lastSync
 
 /** @param {State} state */
+export const getLastAutoSync = (state) => state.lastAutoSync
+
+/** @param {State} state */
 export const getPreviousSyncMaxDate = (state) => state.previousSyncMaxDate
-
-/** @param {State} state */
-export const getToken = (state) => state.token
-
-/** @param {State} state */
-export const getTokenExpires = (state) => state.tokenExpires
-
-/** @param {State} state */
-export const getTokenScope = (state) => state.tokenScope
-
-/** @param {State} state */
-export const getNonce = (state) => state.nonce
 
 /** @param {State} state */
 export const getAlbums = (state) => state.albums
@@ -67,7 +66,10 @@ export const getSeenFeatures = (state) => state.seenFeatures
 /** @param {State} state */
 export const getFilters = (state) => state.filters
 
-// Specific settings selectors
+/** @param {State} state */
+export const getUpdateReady = (state) => state.updateReady
+
+// Individual settings selectors
 export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups)
 export const getSettingsGroupColors = createSelector(
   getSettings,
@@ -79,7 +81,7 @@ export const getSettingsTheme = createSelector(getSettings, (settings) => settin
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)
 
-// Specific filters selectors
+// Individual filters selectors
 export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)
 export const getFiltersSearch = createSelector(getFilters, (filters) => filters.search)
 export const getFiltersStartDate = createSelector(getFilters, (filters) => filters.startDate)
@@ -90,25 +92,29 @@ export const getFiltersExcludeVariousArtists = createSelector(
 )
 
 /**
- * Get all token related data
+ * Get relevant app data.
+ *
+ * @param {State} state
  */
-export const getTokenData = createSelector(
-  [getToken, getTokenExpires, getTokenScope],
-  (token, tokenExpires, tokenScope) => ({ token, tokenExpires, tokenScope })
+const getAppData = createSelector([getAuthData, getLastSync, getSettings], (...values) => values)
+
+/**
+ * Check if any relevant app data exist. This is used to determine visibility
+ * of the "Delete app data" button.
+ *
+ * @param {State} state
+ */
+export const getHasAppData = createSelector(
+  getAppData,
+  (appData) => !isEqual(appData, getAppData(initialState))
 )
 
 /**
  * Check if there is any async work being done
  */
-export const getWorking = createSelector([getSyncing, getCreatingPlaylist], (...values) =>
-  includesTruthy(values)
-)
-
-/**
- * Check if any modal is visible
- */
-export const getModalVisible = createSelector([getPlaylistModalVisible], (...values) =>
-  includesTruthy(values)
+export const getWorking = createSelector(
+  [getSyncing, getCreatingPlaylist, getAuthorizing],
+  (...values) => includesTruthy(values)
 )
 
 /**
@@ -127,8 +133,16 @@ export const getFiltersApplied = createSelector(
  * Get last sync as Date instance
  */
 export const getLastSyncDate = createSelector(
-  getLastSync,
-  (lastSync) => lastSync && new Date(lastSync)
+  [getLastSync, getLastAutoSync],
+  (lastSync, lastAutoSync) => {
+    if (lastSync || lastAutoSync) {
+      const newer = (lastSync || '') > (lastAutoSync || '') ? lastSync : lastAutoSync
+
+      return new Date(newer)
+    }
+
+    return null
+  }
 )
 
 /**
@@ -142,29 +156,29 @@ const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(album
 export const getOriginalReleasesMap = createSelector(getAlbumsArray, buildReleasesMap)
 
 /**
- * Get all releases as `[release date, albums]` entries / tuples
+ * Get all releases as ordered array of { date, albums } objects
  */
-const getOriginalReleasesEntries = createSelector(getOriginalReleasesMap, buildReleasesEntries)
+const getOriginalReleases = createSelector(getOriginalReleasesMap, buildReleases)
 
 /**
  * Check if there are any releases
  */
-export const getHasOriginalReleases = createSelector(getOriginalReleasesEntries, (entries) =>
+export const getHasOriginalReleases = createSelector(getOriginalReleases, (entries) =>
   Boolean(entries.length)
 )
 
 /**
  * Get earliest date in current releases collection
  */
-export const getReleasesMinDate = createSelector(getOriginalReleasesEntries, (entries) =>
-  entries.length ? last(entries)[0] : null
+export const getReleasesMinDate = createSelector(getOriginalReleases, (entries) =>
+  entries.length ? last(entries).date : null
 )
 
 /**
  * Get latest date in current releases collection
  */
-export const getReleasesMaxDate = createSelector(getOriginalReleasesEntries, (entries) =>
-  entries.length ? entries[0][0] : null
+export const getReleasesMaxDate = createSelector(getOriginalReleases, (entries) =>
+  entries.length ? entries[0].date : null
 )
 
 /**
@@ -189,10 +203,10 @@ export const getFiltersDates = createSelector(
  */
 export const getReleasesGroupMap = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((map, album) => {
-    const albumMap = Object.keys(album.artists).reduce(
-      (albumMap, group) => ({ ...albumMap, [group]: [album.id] }),
-      /** @type {ReleasesGroupMap} */ ({})
-    )
+    const albumMap = Object.keys(album.artists).reduce((albumMap, group) => {
+      albumMap[group] = [album.id]
+      return albumMap
+    }, /** @type {ReleasesGroupMap} */ ({}))
 
     return merge(map, albumMap)
   }, /** @type {ReleasesGroupMap} */ ({}))
@@ -218,7 +232,7 @@ const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
     const variousArtists = Object.values(album.artists)
       .flat()
       .concat(album.otherArtists)
-      .find((artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID)
+      .some((artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID)
 
     if (!variousArtists) {
       ids.push(album.id)
@@ -251,7 +265,7 @@ const getAlbumGroupsFiltered = createSelector(
   [getFiltersGroups, getReleasesGroupMap],
   (groups, groupMap) =>
     groups.length &&
-    groups.reduce((ids, group) => [...ids, ...groupMap[group]], /** @type {string[]} */ ([]))
+    groups.reduce((ids, group) => ids.concat(groupMap[group]), /** @type {string[]} */ ([]))
 )
 
 /**
@@ -282,13 +296,13 @@ const getFilteredReleasesMap = createSelector(getFilteredAlbumsArray, buildRelea
 /**
  * Get filtered releases as `[release date, albums]` entries / tuples
  */
-const getFilteredReleasesEntries = createSelector(getFilteredReleasesMap, buildReleasesEntries)
+const getFilteredReleases = createSelector(getFilteredReleasesMap, buildReleases)
 
 /**
  * Final releases selector that returns either filtered or original releases
  */
-export const getReleasesEntries = createSelector(
-  [getFiltersApplied, getFilteredReleasesEntries, getOriginalReleasesEntries],
+export const getReleases = createSelector(
+  [getFiltersApplied, getFilteredReleases, getOriginalReleases],
   (filtersApplied, filtered, original) => (filtersApplied ? filtered : original)
 )
 

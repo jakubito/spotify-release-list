@@ -19,13 +19,15 @@ function AlbumGroupsField() {
     const newValue = xor(groups, [event.target.value])
     const newValueOrdered = orderBy(newValue, (group) => AlbumGroupIndex[group])
 
-    dispatch(setSettings({ groups: newValueOrdered }))
+    if (newValueOrdered.length > 0) {
+      dispatch(setSettings({ groups: newValueOrdered }))
+    }
   }
 
   return (
     <div className="AlbumGroupsField Settings__field field">
       <label className="label has-text-light">
-        Releases to fetch <HelpText>/ less is faster</HelpText>
+        Releases to fetch <HelpText>(less is faster)</HelpText>
       </label>
       <div className="control">
         {AlbumGroupLabels.map(([group, label]) => (

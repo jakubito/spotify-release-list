@@ -1,5 +1,6 @@
+import moment from 'moment'
 import orderBy from 'lodash/orderBy'
-import { AlbumGroupIndex } from 'enums'
+import { AlbumGroupIndex, MomentFormat } from 'enums'
 import { merge } from 'helpers'
 
 /**
@@ -10,8 +11,9 @@ import { merge } from 'helpers'
  * @returns {AlbumRaw[]}
  */
 export function mergeAlbumsRaw(albumsRaw, minDate) {
+  const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
   const albumsRawMap = albumsRaw.reduce((map, album) => {
-    if (album.releaseDate < minDate) {
+    if (album.releaseDate < minDate || album.releaseDate > maxDate) {
       return map
     }
 
@@ -19,12 +21,10 @@ export function mergeAlbumsRaw(albumsRaw, minDate) {
 
     if (!matched) {
       map[album.id] = album
-
       return map
     }
 
     merge(matched.artistIds, album.artistIds)
-
     return map
   }, /** @type {{ [id: string]: AlbumRaw }} */ ({}))
 
@@ -39,15 +39,15 @@ export function mergeAlbumsRaw(albumsRaw, minDate) {
  * @returns {AlbumsMap}
  */
 export function buildAlbumsMap(albumsRaw, artists) {
-  const artistsMap = artists.reduce(
-    (map, artist) => ({ ...map, [artist.id]: artist }),
-    /** @type {ArtistsMap} */ ({})
-  )
+  const artistsMap = artists.reduce((map, artist) => {
+    map[artist.id] = artist
+    return map
+  }, /** @type {ArtistsMap} */ ({}))
 
-  const albumsMap = albumsRaw.reduce(
-    (map, albumRaw) => ({ ...map, [albumRaw.id]: buildAlbum(albumRaw, artistsMap) }),
-    /** @type {AlbumsMap} */ ({})
-  )
+  const albumsMap = albumsRaw.reduce((map, albumRaw) => {
+    map[albumRaw.id] = buildAlbum(albumRaw, artistsMap)
+    return map
+  }, /** @type {AlbumsMap} */ ({}))
 
   return albumsMap
 }
@@ -93,21 +93,21 @@ export function buildReleasesMap(albums) {
 }
 
 /**
- * Build ReleasesEntries
+ * Build Releases
  *
  * @param {ReleasesMap} releasesMap
- * @returns {ReleasesEntries}
+ * @returns {Releases}
  */
-export function buildReleasesEntries(releasesMap) {
-  const entriesOrdered = orderBy(Object.entries(releasesMap), ([day]) => day, 'desc')
-  const entries = entriesOrdered.map(([day, albums]) => {
-    const albumsOrdered = orderBy(albums, [
+export function buildReleases(releasesMap) {
+  const releasesUnordered = Object.entries(releasesMap).map(([date, albums]) => ({ date, albums }))
+  const releasesOrderedByDate = orderBy(releasesUnordered, 'date', 'desc')
+  const releases = releasesOrderedByDate.map((releaseDay) => {
+    releaseDay.albums = orderBy(releaseDay.albums, [
       (album) => Object.values(album.artists).flat().shift().name.toLowerCase(),
       'name',
     ])
-
-    return /** @type {[string, Album[]]} */ ([day, albumsOrdered])
+    return releaseDay
   })
 
-  return entries
+  return releases
 }

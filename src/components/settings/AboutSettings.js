@@ -60,6 +60,9 @@ function AboutSettings(props) {
         />
       </div>
       <div className="AboutSettings__item">
+        Spotify is a trademark of Spotify AB. This app is not affiliated with Spotify.
+      </div>
+      <div className="AboutSettings__item">
         <span className="icon">
           <i className="fas fa-code-branch" />
         </span>{' '}

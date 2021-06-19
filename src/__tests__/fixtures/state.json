@@ -327,6 +327,15 @@
       "otherArtists": []
     }
   },
+  "authorizing": false,
+  "authData": {
+    "nonce": null,
+    "codeVerifier": null,
+    "token": null,
+    "tokenScope": null,
+    "tokenExpires": null,
+    "refreshToken": null
+  },
   "syncing": false,
   "syncingProgress": 0,
   "lastSync": "2020-12-24T10:09:32.229Z",
@@ -334,25 +343,30 @@
   "creatingPlaylist": false,
   "playlistId": null,
   "playlistForm": { "name": null, "description": null, "isPrivate": null },
-  "token": "testToken",
-  "tokenExpires": "2020-12-24T10:38:13.728Z",
-  "tokenScope": "user-follow-read",
   "user": {
     "id": "11124298134",
     "name": "Jakub Dobes",
     "image": "testImageUrl"
   },
-  "nonce": "D435TS0mXgWPywOa67A4",
   "message": null,
   "playlistModalVisible": false,
   "filtersVisible": false,
   "settings": {
     "groups": ["album", "single"],
+    "groupColors": {
+      "album": "#e04c71",
+      "single": "#a779c5",
+      "compilation": "#dcad4f",
+      "appears_on": "#19a34a"
+    },
     "days": 7,
     "market": "",
     "theme": "theme-compact",
     "uriLinks": false,
-    "covers": true
+    "covers": true,
+    "autoSync": false,
+    "autoSyncTime": "08:00",
+    "notifications": true
   },
   "filters": {
     "groups": [],
@@ -361,5 +375,6 @@
     "endDate": null,
     "excludeVariousArtists": false
   },
-  "seenFeatures": []
+  "seenFeatures": [],
+  "updateReady": false
 }

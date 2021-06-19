@@ -2,26 +2,35 @@
  * Custom types
  *
  * @typedef {{
+ *   authorizing: boolean
+ *   authData: AuthData
  *   albums: AlbumsMap
  *   syncing: boolean
  *   syncingProgress: number
  *   lastSync?: string
+ *   lastAutoSync?: string
  *   previousSyncMaxDate?: string
  *   creatingPlaylist: boolean
  *   playlistId?: string
  *   playlistForm: PlaylistForm
- *   token?: string
- *   tokenExpires?: string
- *   tokenScope?: string
  *   user?: User
- *   nonce?: string
  *   message?: Message
  *   playlistModalVisible: boolean
  *   filtersVisible: boolean
  *   settings: Settings
  *   filters: Filters
  *   seenFeatures: string[]
+ *   updateReady: boolean
  * }} State
+ *
+ * @typedef {{
+ *   nonce?: string
+ *   codeVerifier?: string
+ *   token?: string
+ *   tokenScope?: string
+ *   tokenExpires?: string
+ *   refreshToken?: string
+ * }} AuthData
  *
  * @typedef {{
  *   name?: string
@@ -31,7 +40,7 @@
  *
  * @typedef {{
  *   text: string
- *   type: 'normal' | 'error'
+ *   type: 'normal' | 'info' | 'error'
  * }} Message
  *
  * @typedef {{
@@ -42,6 +51,9 @@
  *   theme: string
  *   uriLinks: boolean
  *   covers: boolean
+ *   autoSync: boolean
+ *   autoSyncTime: string
+ *   notifications: boolean
  * }} Settings
  *
  * @typedef {{
@@ -94,12 +106,19 @@
  *   style?: React.CSSProperties
  * }} ButtonProps
  *
+ * @typedef {{
+ *   token: string
+ *   tokenScope: string
+ *   tokenExpires: string
+ *   refreshToken: string
+ * }} TokenApiResult
+ *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
  * @typedef {{ [id: string]: Artist }} ArtistsMap
  * @typedef {{ [id: string]: Album }} AlbumsMap
  * @typedef {{ [date: string]: Album[] }} ReleasesMap
- * @typedef {[date: string, albums: Album[]][]} ReleasesEntries
+ * @typedef {{ date: string, albums: Album[] }[]} Releases
  * @typedef {{ [group: string]: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
  * @typedef {{ type: string, payload: any }} Action
@@ -108,13 +127,26 @@
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
  * @typedef {{ [group: string]: string }} GroupColorScheme
+ * @typedef {(to: string) => Promise<void>} Navigate
+ * @typedef {[Fn, ...any[]]} RequestChannelMessage
+ * @typedef {Channel<RequestChannelMessage>} RequestChannel
+ * @typedef {(data: Settings) => string} SettingsSerializer
+ * @typedef {JTDParser<Settings>} SettingsParser
  */
 
 /**
  * @template T
- * @typedef {T extends {
- *   then(onfulfilled?: (value: infer U) => unknown): unknown;
- * } ? U : T} Await<T>
+ * @typedef {{ result?: T, error?: import('api').FetchError }} ResponseChannelMessage<T>
+ */
+
+/**
+ * @template T
+ * @typedef {Channel<ResponseChannelMessage<T>>} ResponseChannel<T>
+ */
+
+/**
+ * @template T
+ * @typedef {T extends PromiseLike<infer U> ? Await<U> : T} Await<T>
  */
 
 /**
@@ -127,6 +159,17 @@
  * @typedef {import('./enums').AlbumGroup} AlbumGroup
  * @typedef {import('./enums').Theme} Theme
  * @typedef {import('./enums').Market} Market
+ */
+
+/**
+ * Actions
+ *
+ * @typedef {ReturnType<import('state/actions').authorize>} AuthorizeAction
+ * @typedef {ReturnType<import('state/actions').setSettings>} SetSettingsAction
+ * @typedef {ReturnType<import('state/actions').setUser>} SetUserAction
+ * @typedef {ReturnType<import('state/actions').reset>} ResetAction
+ * @typedef {ReturnType<import('state/actions').sync>} SyncAction
+ * @typedef {ReturnType<import('state/actions').createPlaylist>} CreatePlaylistAction
  */
 
 /**
@@ -147,6 +190,13 @@
  * @typedef {{ id: string, name: string }} SpotifyPlaylist
  * @typedef {{ id: string }} SpotifyTrack
  * @typedef {{ snapshot_id: string }} SpotifyPlaylistSnapshot
+ *
+ * @typedef {{
+ *   access_token: string
+ *   scope: string
+ *   expires_in: number
+ *   refresh_token: string
+ * }} TokenApiResponse
  */
 
 /**
@@ -159,7 +209,26 @@
  *
  * @typedef {import('@reach/router').RouteComponentProps} RouteComponentProps
  * @typedef {import('redux-persist').PersistedState & State} PersistedState
- * @typedef {import('redux-saga').Channel} Channel
  * @typedef {import('redux-saga').Task} Task
  * @typedef {moment.Moment} Moment
+ */
+
+/**
+ * @template T
+ * @typedef {import('redux-saga').Channel<T>} Channel<T>
+ */
+
+/**
+ * @template T
+ * @typedef {import('redux-saga').EventChannel<T>} EventChannel<T>
+ */
+
+/**
+ * @template T
+ * @typedef {import('ajv/dist/types').JTDParser<T>} JTDParser<T>
+ */
+
+/**
+ * @template T
+ * @typedef {import('react-hook-form').SubmitHandler<T>} SubmitHandler<T>
  */

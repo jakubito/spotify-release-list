@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect } from 'react'
-import { BackToTop, Message } from 'components/common'
+import { BackToTop, Message, UpdateMessage } from 'components/common'
 
 /**
  * Main app component
@@ -16,6 +16,7 @@ function App({ location, children }) {
       {children}
       <BackToTop />
       <Message />
+      <UpdateMessage />
     </div>
   )
 }

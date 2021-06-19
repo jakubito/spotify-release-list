@@ -1,45 +1,41 @@
 import { all, call, put, select } from 'redux-saga/effects'
-import { chunks, spotifyUri } from 'helpers'
-import { SpotifyEntity } from 'enums'
+import chunk from 'lodash/chunk'
+import { spotifyUri } from 'helpers'
+import { Scope, SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
-import { isValidPlaylistToken, startPlaylistAuthFlow } from 'auth'
-import {
-  getPlaylistForm,
-  getReleasesEntries,
-  getSettings,
-  getToken,
-  getUser,
-} from 'state/selectors'
+import { AuthError } from 'auth'
+import { getAuthData, getPlaylistForm, getReleases, getSettings, getUser } from 'state/selectors'
 import {
   createPlaylistStart,
   createPlaylistFinished,
   createPlaylistError,
   showErrorMessage,
 } from 'state/actions'
-import { withValidToken } from './helpers'
+import { authorize } from './auth'
+import { withTitle } from './helpers'
 
+const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
 const { TRACK } = SpotifyEntity
 
 /**
- * Playlist creation wrapper saga
+ * Playlist creation saga
+ *
+ * @param {CreatePlaylistAction} action
  */
-function* createPlaylistSaga() {
+export function* createPlaylistSaga(action) {
   try {
-    /** @type {ReturnType<typeof getPlaylistForm>} */
+    /** @type {ReturnType<getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
+    const scopes = [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC]
+    /** @type {ReturnType<withTitle>} */
+    const titled = yield call(withTitle, 'Creating playlist...', createPlaylistMainSaga)
+    /** @type {ReturnType<authorize>} */
+    const authorized = yield call(authorize, action, scopes, titled)
 
-    yield call(
-      withValidToken,
-      createPlaylistMainSaga,
-      isValidPlaylistToken,
-      startPlaylistAuthFlow,
-      isPrivate
-    )
+    yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage())
+    yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
     yield put(createPlaylistError())
-
-    throw error
   }
 }
 
@@ -49,47 +45,45 @@ function* createPlaylistSaga() {
 function* createPlaylistMainSaga() {
   yield put(createPlaylistStart())
 
-  /** @type {ReturnType<typeof getToken>} */
-  const token = yield select(getToken)
-  /** @type {ReturnType<typeof getUser>} */
+  /** @type {ReturnType<getAuthData>} */
+  const { token } = yield select(getAuthData)
+  /** @type {ReturnType<getUser>} */
   const user = yield select(getUser)
-  /** @type {ReturnType<typeof getPlaylistForm>} */
+  /** @type {ReturnType<getPlaylistForm>} */
   const { name, description, isPrivate } = yield select(getPlaylistForm)
-  /** @type {ReturnType<typeof getSettings>} */
+  /** @type {ReturnType<getSettings>} */
   const { market } = yield select(getSettings)
-  /** @type {ReturnType<typeof getReleasesEntries>} */
-  const releases = yield select(getReleasesEntries)
+  /** @type {ReturnType<getReleases>} */
+  const releases = yield select(getReleases)
 
   const albumIds = releases.reduce(
-    (ids, [, albums]) => [...ids, ...albums.map((album) => album.id)],
+    (ids, { albums }) => ids.concat(albums.map((album) => album.id)),
     /** @type {string[]} */ ([])
   )
 
-  const trackIdsCalls = chunks(albumIds, 20).map((albumIdsChunk) =>
+  const trackIdsCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
     call(getAlbumsTrackIds, token, albumIdsChunk, market)
   )
 
-  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
+  /** @type {Await<ReturnType<getAlbumsTrackIds>>[]} */
   const trackIds = yield all(trackIdsCalls)
   const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
   /** @type {SpotifyPlaylist} */
   let firstPlaylist
 
-  for (const [part, playlistTrackUrisChunk] of chunks(trackUris, 9500).entries()) {
+  for (const [part, playlistTrackUrisChunk] of chunk(trackUris, 9500).entries()) {
     const fullName = part > 0 ? `${name} (${part + 1})` : name
-    /** @type {Await<ReturnType<typeof createPlaylist>>} */
+    /** @type {Await<ReturnType<createPlaylist>>} */
     const playlist = yield call(createPlaylist, token, user.id, fullName, description, isPrivate)
 
     if (!firstPlaylist) {
       firstPlaylist = playlist
     }
 
-    for (const trackUrisChunk of chunks(playlistTrackUrisChunk, 100)) {
+    for (const trackUrisChunk of chunk(playlistTrackUrisChunk, 100)) {
       yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk)
     }
   }
 
   yield put(createPlaylistFinished(firstPlaylist.id))
 }
-
-export default createPlaylistSaga

@@ -18,7 +18,7 @@ function LastSync({ className }) {
       setValue(moment(lastSyncDate).fromNow())
     }
 
-    const intervalId = setInterval(update, 1000 * 60)
+    const intervalId = setInterval(update, 60 * 1000)
     window.addEventListener('focus', update)
     update()
 

@@ -1,15 +1,11 @@
+import { Base64 } from 'js-base64'
 import queryString from 'query-string'
 import moment from 'moment'
-import { Base64 } from 'js-base64'
-import { SYNC, CREATE_PLAYLIST } from 'state/actions'
-import { Scope } from 'enums'
 
-const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
-
-/**
- * How many minutes to subtract from the actual token expiration time
- */
-const TOKEN_PADDING_MINUTES = 30
+const CODE_CHARSET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~'
+const AUTHORIZE_URL = 'https://accounts.spotify.com/authorize'
+const TOKEN_API_URL = 'https://accounts.spotify.com/api/token'
+const AUTH_REDIRECT_URL = process.env.REACT_APP_URL + '/auth'
 
 /**
  * Represents an error encountered during authorization
@@ -23,129 +19,140 @@ export class AuthError extends Error {
 }
 
 /**
+ * Generate cryptographically strong random code verifier
+ *
+ * @param {number} [length]
+ * @returns {string}
+ */
+export function generateCodeVerifier(length = 50) {
+  const randomValues = window.crypto.getRandomValues(new Uint32Array(length))
+  const codeVerifier = Array.from(randomValues)
+    .map((value) => value / 0x100000000) // Scale all values to [0, 1)
+    .map((value) => CODE_CHARSET[Math.floor(value * CODE_CHARSET.length)])
+    .join('')
+
+  return codeVerifier
+}
+
+/**
+ * Create base64 encoded code challenge
+ *
+ * @param {string} codeVerifier
+ * @returns {Promise<string>}
+ */
+export async function createCodeChallenge(codeVerifier) {
+  const codeBuffer = new TextEncoder().encode(codeVerifier)
+  const hashBuffer = await window.crypto.subtle.digest('SHA-256', codeBuffer)
+  const codeChallenge = Base64.fromUint8Array(new Uint8Array(hashBuffer), true)
+
+  return codeChallenge
+}
+
+/**
  * Validate incoming auth request and return parsed data
  *
  * @param {string} locationSearch
- * @param {string} locationHash
- * @param {string} nonce
- * @returns {{ action: string, scope: string, token: string, tokenExpires: string }}
+ * @param {string} originalNonce
+ * @returns {{ code: string, action: Action }}
  */
-export function validateAuthRequest(locationSearch, locationHash, nonce) {
-  /** @type {{ error?: string }} */
-  const search = queryString.parse(locationSearch)
+export function validateAuthRequest(locationSearch, originalNonce) {
+  /** @type {{ code?: string, state?: string, error?: string }} */
+  const { code, state, error } = queryString.parse(locationSearch)
 
-  if (search.error) {
-    throw new AuthError('Access denied')
+  if (error) {
+    throw new AuthError(`Authorization failed (${error})`)
   }
 
-  /** @type {{ access_token?: string, expires_in?: string, state?: string }} */
-  const hash = queryString.parse(locationHash)
-
-  if (!hash.access_token || !hash.expires_in || !hash.state) {
+  if (!code || !state) {
     throw new AuthError('Invalid request')
   }
 
-  /** @type {{ nonce?: string, action?: string, scope?: string }} */
-  const state = JSON.parse(Base64.decode(hash.state))
+  /** @type {{ action?: Action, nonce?: string }} */
+  const { action, nonce } = JSON.parse(Base64.decode(state))
 
-  if (state.nonce !== nonce) {
+  if (nonce !== originalNonce) {
     throw new AuthError('Invalid request')
   }
 
-  const { action, scope } = state
-  const token = hash.access_token
-  const tokenExpires = moment()
-    .add(Number(hash.expires_in) - 60 * TOKEN_PADDING_MINUTES, 'seconds')
-    .toISOString()
-
-  return { action, scope, token, tokenExpires }
-}
-
-/**
- * Check if token is valid and contains required scope for syncing
- *
- * @param {string} token
- * @param {string} tokenExpires
- * @param {string} tokenScope
- * @returns {boolean}
- */
-export function isValidSyncToken(token, tokenExpires, tokenScope) {
-  return isValidToken(token, tokenExpires) && Boolean(tokenScope?.includes(USER_FOLLOW_READ))
-}
-
-/**
- * Check if token is valid and contains required scope for creating playlist
- *
- * @param {string} token
- * @param {string} tokenExpires
- * @param {string} tokenScope
- * @param {boolean} isPrivate
- * @returns {boolean}
- */
-export function isValidPlaylistToken(token, tokenExpires, tokenScope, isPrivate) {
-  return (
-    isValidToken(token, tokenExpires) &&
-    Boolean(tokenScope?.includes(isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC))
-  )
-}
-
-/**
- * Check if token is valid
- *
- * @param {string} token
- * @param {string} tokenExpires
- * @returns {boolean}
- */
-function isValidToken(token, tokenExpires) {
-  return Boolean(token && tokenExpires && moment().isBefore(tokenExpires))
-}
-
-/**
- * Start sync authorization flow
- *
- * @param {string} nonce
- * @returns {void}
- */
-export function startSyncAuthFlow(nonce) {
-  startAuthFlow(SYNC, USER_FOLLOW_READ, nonce)
-}
-
-/**
- * Start playlist creation authorization flow
- *
- * @param {string} nonce
- * @param {boolean} isPrivate
- * @returns {void}
- */
-export function startPlaylistAuthFlow(nonce, isPrivate) {
-  startAuthFlow(
-    CREATE_PLAYLIST,
-    [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC].join(' '),
-    nonce
-  )
+  return { code, action }
 }
 
 /**
  * Start authorization flow
  *
- * @param {string} action
+ * @param {Action} action
  * @param {string} scope
+ * @param {string} codeChallenge
  * @param {string} nonce
  * @returns {void}
  */
-function startAuthFlow(action, scope, nonce) {
-  const state = Base64.encodeURI(JSON.stringify({ action, scope, nonce }))
-
+export function startAuthFlow(action, scope, codeChallenge, nonce) {
   const params = new URLSearchParams({
+    response_type: 'code',
     client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
-    redirect_uri: process.env.REACT_APP_URL + '/auth/',
-    response_type: 'token',
-    show_dialog: String(false),
+    redirect_uri: AUTH_REDIRECT_URL,
+    code_challenge_method: 'S256',
+    code_challenge: codeChallenge,
+    state: Base64.encodeURI(JSON.stringify({ action, nonce })),
     scope,
-    state,
   })
 
-  const url = `https://accounts.spotify.com/authorize?${params}`
+  window.location.replace(`${AUTHORIZE_URL}?${params}`)
+}
 
-  window.location.replace(url)
+/**
+ * Exchange authorization code for a token
+ *
+ * @param {string} code
+ * @param {string} codeVerifier
+ */
+export function exchangeCode(code, codeVerifier) {
+  return tokenRequest({
+    grant_type: 'authorization_code',
+    client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
+    redirect_uri: AUTH_REDIRECT_URL,
+    code_verifier: codeVerifier,
+    code,
+  })
+}
+
+/**
+ * Request new token
+ *
+ * @param {string} refreshToken
+ */
+export function getRefreshedToken(refreshToken) {
+  return tokenRequest({
+    grant_type: 'refresh_token',
+    client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
+    refresh_token: refreshToken,
+  })
+}
+
+/**
+ * Spotify token endpoint request wrapper
+ *
+ * @param {Record<string, string>} body
+ * @returns {Promise<TokenApiResult>}
+ */
+async function tokenRequest(body) {
+  const response = await fetch(TOKEN_API_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(body).toString(),
+  })
+
+  if (response.ok) {
+    /** @type {TokenApiResponse} */
+    const json = await response.json()
+
+    return {
+      token: json.access_token,
+      tokenScope: json.scope,
+      tokenExpires: moment().add(Number(json.expires_in), 'seconds').toISOString(),
+      refreshToken: json.refresh_token,
+    }
+  }
+
+  throw new AuthError(response.statusText)
 }

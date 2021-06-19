@@ -12,13 +12,14 @@ import classNames from 'classnames'
  *   value?: string
  *   defaultValue?: string
  *   placeholder?: string
+ *   disabled?: boolean
  *   onChange?: React.ChangeEventHandler<HTMLInputElement>
  *   onBlur?: React.FocusEventHandler<HTMLInputElement>
  * }} props
  * @param {React.Ref<HTMLInputElement>} ref
  */
 function Input(
-  { type = 'text', id, name, className, value, defaultValue, placeholder, onChange },
+  { type = 'text', id, name, className, value, defaultValue, placeholder, disabled, onChange },
   ref
 ) {
   return (
@@ -30,6 +31,7 @@ function Input(
       defaultValue={defaultValue}
       className={classNames(className, 'input', 'is-rounded', 'has-text-weight-medium', 'is-dark')}
       placeholder={placeholder}
+      disabled={disabled}
       onChange={onChange}
       ref={ref}
     />

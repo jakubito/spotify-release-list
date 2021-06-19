@@ -4,7 +4,7 @@ import { colord } from 'colord'
 import { AlbumGroup, MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
-const ALPHA_NUMERIC = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const NOTIFICATION_ICON = `${process.env.REACT_APP_URL}/android-chrome-192x192.png`
 
 /**
  * Promisified setTimeout
@@ -39,26 +39,6 @@ export function deferred(fn, ...args) {
 }
 
 /**
- * Split array into chunks
- *
- * @template T
- * @param {T[]} inputArray
- * @param {number} chunkSize
- * @returns {T[][]}
- */
-export function chunks(inputArray, chunkSize) {
-  const input = [...inputArray]
-  /** @type {T[][]} */
-  const result = []
-
-  while (input.length > 0) {
-    result.push(input.splice(0, chunkSize))
-  }
-
-  return result
-}
-
-/**
  * Wrapper around lodash `mergeWith` that concatenates array values
  *
  * @template {Object} T
@@ -70,25 +50,6 @@ export function merge(object, source) {
   return mergeWith(object, source, (objValue, srcValue) =>
     Array.isArray(objValue) ? objValue.concat(srcValue) : undefined
   )
-}
-
-/**
- * Pick random character from input string
- *
- * @param {string} input
- * @returns {string}
- */
-function pickRandom(input) {
-  return input[Math.floor(Math.random() * input.length)]
-}
-
-/**
- * Generate random nonce
- *
- * @returns {string}
- */
-export function generateNonce() {
-  return Array.from(Array(20), () => pickRandom(ALPHA_NUMERIC)).join('')
 }
 
 /**
@@ -275,10 +236,37 @@ export function randomColorScheme({ rotation, saturation, lightness }) {
       hue -= 360
     }
 
-    const color = colord({ h: hue, s: saturation(), l: lightness() })
+    scheme[group] = colord({ h: hue, s: saturation(), l: lightness() }).toHex()
 
-    return { ...scheme, [group]: color.toHex() }
+    return scheme
   }, /** @type {GroupColorScheme} */ ({}))
 
   return scheme
+}
+
+/**
+ * Create new notification
+ *
+ * @param {string} title
+ * @param {string} [body]
+ * @returns {Notification}
+ */
+export function createNotification(title, body) {
+  const notification = new Notification(title, { body, icon: NOTIFICATION_ICON })
+
+  notification.addEventListener('click', () => {
+    window.focus()
+    notification.close()
+  })
+
+  return notification
+}
+
+/**
+ * Check if all modals are closed
+ *
+ * @returns {boolean}
+ */
+export function modalsClosed() {
+  return !document.documentElement.classList.contains('is-modal-open')
 }

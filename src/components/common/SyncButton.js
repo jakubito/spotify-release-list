@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
-import { defer } from 'helpers'
+import { defer, modalsClosed } from 'helpers'
 import { getSyncing, getWorking, getSyncingProgress } from 'state/selectors'
 import { sync } from 'state/actions'
 import { Button } from 'components/common'
@@ -16,24 +16,25 @@ function SyncButton({ title, icon, medium }) {
   const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const working = useSelector(getWorking)
-  const [triggered, setTriggered] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
-  const onClick = () => {
-    setTriggered(true)
-    defer(dispatch, sync())
+  const dispatchSync = () => {
+    dispatch(sync())
   }
 
-  useHotkeys('r', () => {
-    dispatch(sync())
-  })
+  const onClick = () => {
+    setDisabled(true)
+    defer(dispatchSync)
+  }
 
-  useEffect(() => setTriggered(syncing), [syncing])
+  useHotkeys('r', dispatchSync, { filter: modalsClosed })
+  useEffect(() => setDisabled(working), [working])
 
   return (
     <Button
       title={`${title} [R]`}
       className={classNames('SyncButton', { 'is-syncing': syncing })}
-      disabled={triggered || working}
+      disabled={disabled}
       onClick={onClick}
       icon={icon}
       medium={medium}

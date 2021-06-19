@@ -33,6 +33,26 @@ body,
   &::placeholder {
     color: $grey;
   }
+
+  &:disabled {
+    color: $grey-light;
+    background-color: $grey-darker;
+  }
+}
+
+.textarea.is-dark {
+  background-color: $darkest;
+  color: $white-ter;
+
+  &:not(.is-danger) {
+    border-color: $darkest;
+  }
+
+  &:hover,
+  &:focus {
+    box-shadow: 0 0 0 0.125em $black-bis;
+    background-color: $black-ter;
+  }
 }
 
 .input.is-danger {
@@ -167,6 +187,21 @@ body,
   opacity: 0.7;
 }
 
+.message {
+  &.is-dark {
+    background: $grey-darker;
+
+    .message-body {
+      color: $white-bis;
+      border-color: $grey-dark;
+    }
+  }
+
+  .message-body {
+    padding: 15px;
+  }
+}
+
 .is-checkradio[type='checkbox'] {
   &:hover {
     &.is-dark.has-background-color {
@@ -218,5 +253,22 @@ body,
         }
       }
     }
+  }
+}
+
+.notification {
+  position: absolute;
+  width: auto;
+  max-width: 600px;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+
+  @include mobile {
+    width: calc(100% - 30px);
+    max-width: none;
+    left: 15px;
+    transform: none;
   }
 }

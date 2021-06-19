@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getSettingsTheme } from 'state/selectors'
 import { setSettings } from 'state/actions'
@@ -22,16 +21,6 @@ const options = [
 function ThemeField() {
   const theme = useSelector(getSettingsTheme)
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    const { classList } = document.documentElement
-
-    classList.remove(...Object.values(Theme))
-
-    if (theme) {
-      classList.add(...theme.split(' '))
-    }
-  }, [theme])
 
   return (
     <div className="ThemeField Settings__field field">

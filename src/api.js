@@ -5,12 +5,13 @@ import { buildUser, buildArtist, buildAlbumRaw, sleep } from 'helpers'
  * Default to account market
  */
 const DEFAULT_MARKET = 'from_token'
+const API_URL = 'https://api.spotify.com/v1'
 const HTTP_TOO_MANY_REQUESTS = 429
 
 /**
  * Represents an error encountered during data fetching
  */
-class FetchError extends Error {
+export class FetchError extends Error {
   /**
    * @param {number} status
    * @param {string} statusText
@@ -185,7 +186,7 @@ export function addTracksToPlaylist(token, playlistId, trackUris) {
  * @returns {string}
  */
 function apiUrl(endpoint) {
-  return `https://api.spotify.com/v1/${endpoint}`
+  return `${API_URL}/${endpoint}`
 }
 
 /**
@@ -230,9 +231,9 @@ function post(endpoint, token, body) {
 async function request(endpoint, token, method, headers = {}, body) {
   const defaultHeaders = { authorization: `Bearer ${token}`, accept: 'application/json' }
   const response = await fetch(endpoint, {
+    headers: { ...defaultHeaders, ...headers },
     method,
     body,
-    headers: { ...defaultHeaders, ...headers },
   })
 
   if (response.ok) {
