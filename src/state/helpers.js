@@ -1,5 +1,6 @@
+import moment from 'moment'
 import orderBy from 'lodash/orderBy'
-import { AlbumGroupIndex } from 'enums'
+import { AlbumGroupIndex, MomentFormat } from 'enums'
 import { merge } from 'helpers'
 
 /**
@@ -10,8 +11,9 @@ import { merge } from 'helpers'
  * @returns {AlbumRaw[]}
  */
 export function mergeAlbumsRaw(albumsRaw, minDate) {
+  const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
   const albumsRawMap = albumsRaw.reduce((map, album) => {
-    if (album.releaseDate < minDate) {
+    if (album.releaseDate < minDate || album.releaseDate > maxDate) {
       return map
     }
 
@@ -19,12 +21,10 @@ export function mergeAlbumsRaw(albumsRaw, minDate) {
 
     if (!matched) {
       map[album.id] = album
-
       return map
     }
 
     merge(matched.artistIds, album.artistIds)
-
     return map
   }, /** @type {{ [id: string]: AlbumRaw }} */ ({}))
 
