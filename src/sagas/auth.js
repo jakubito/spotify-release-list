@@ -34,7 +34,7 @@ export function* authorizeSaga(action) {
     yield call(authorizeMainSaga, action)
   } catch (error) {
     yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
-    yield put(authorizeError())
+    yield put(authorizeError(error instanceof AuthError))
     Sentry.captureException(error)
   }
 }
@@ -90,7 +90,7 @@ export function authorize(action, scopes, saga, ...args) {
         yield call(triggerNewAuthFlow, action, scopes.join(' '))
       }
     } catch (error) {
-      yield put(authorizeError())
+      yield put(authorizeError(error instanceof AuthError))
       Sentry.captureException(error)
 
       throw error
