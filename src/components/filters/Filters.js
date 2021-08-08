@@ -6,6 +6,7 @@ import AlbumGroupsFilter from './AlbumGroupsFilter'
 import DateRangeFilter from './DateRangeFilter'
 import SearchFilter from './SearchFilter'
 import VariousArtistsFilter from './VariousArtistsFilter'
+import DuplicatesFilter from './DuplicatesFilter'
 
 /**
  * Render filters
@@ -31,6 +32,7 @@ function Filters() {
       <DateRangeFilter />
       <AlbumGroupsFilter />
       <VariousArtistsFilter />
+      <DuplicatesFilter />
     </div>
   )
 }

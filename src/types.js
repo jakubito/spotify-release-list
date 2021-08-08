@@ -62,6 +62,7 @@
  *   startDate?: string
  *   endDate?: string
  *   excludeVariousArtists: boolean
+ *   excludeDuplicates: boolean
  * }} Filters
  *
  * @typedef {{

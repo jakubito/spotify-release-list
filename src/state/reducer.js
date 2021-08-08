@@ -78,6 +78,7 @@ export const initialState = {
     startDate: null,
     endDate: null,
     excludeVariousArtists: false,
+    excludeDuplicates: false,
   },
   seenFeatures: [],
   updateReady: false,
@@ -97,7 +98,11 @@ function rootReducer(state = initialState, { type, payload }) {
     case AUTHORIZE_FINISHED:
       return { ...state, authorizing: false }
     case AUTHORIZE_ERROR:
-      return { ...state, authorizing: false, authData: initialState.authData }
+      return {
+        ...state,
+        authData: payload.resetAuthData ? initialState.authData : state.authData,
+        authorizing: false,
+      }
     case SET_AUTH_DATA:
       return { ...state, authData: { ...state.authData, ...payload.authData } }
     case SYNC_START:
@@ -109,6 +114,7 @@ function rootReducer(state = initialState, { type, payload }) {
         filters: {
           ...initialState.filters,
           excludeVariousArtists: state.filters.excludeVariousArtists,
+          excludeDuplicates: state.filters.excludeDuplicates,
         },
       }
     case SYNC_FINISHED:

@@ -373,7 +373,8 @@
     "search": "",
     "startDate": null,
     "endDate": null,
-    "excludeVariousArtists": false
+    "excludeVariousArtists": false,
+    "excludeDuplicates": false
   },
   "seenFeatures": [],
   "updateReady": false

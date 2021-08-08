@@ -61,8 +61,9 @@ export function authorizeFinished() {
   return action(AUTHORIZE_FINISHED)
 }
 
-export function authorizeError() {
-  return action(AUTHORIZE_ERROR)
+/** @param {boolean} [resetAuthData] */
+export function authorizeError(resetAuthData = false) {
+  return action(AUTHORIZE_ERROR, { resetAuthData })
 }
 
 /** @param {Partial<AuthData>} authData */

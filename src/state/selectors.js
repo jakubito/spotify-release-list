@@ -90,6 +90,10 @@ export const getFiltersExcludeVariousArtists = createSelector(
   getFilters,
   (filters) => filters.excludeVariousArtists
 )
+export const getFiltersExcludeDuplicates = createSelector(
+  getFilters,
+  (filters) => filters.excludeDuplicates
+)
 
 /**
  * Get relevant app data.
@@ -126,6 +130,7 @@ export const getFiltersApplied = createSelector(
   getFiltersStartDate,
   getFiltersEndDate,
   getFiltersExcludeVariousArtists,
+  getFiltersExcludeDuplicates,
   (groups, ...rest) => Boolean(groups.length) || includesTruthy(rest)
 )
 
@@ -163,22 +168,22 @@ const getOriginalReleases = createSelector(getOriginalReleasesMap, buildReleases
 /**
  * Check if there are any releases
  */
-export const getHasOriginalReleases = createSelector(getOriginalReleases, (entries) =>
-  Boolean(entries.length)
+export const getHasOriginalReleases = createSelector(getOriginalReleases, (releases) =>
+  Boolean(releases.length)
 )
 
 /**
  * Get earliest date in current releases collection
  */
-export const getReleasesMinDate = createSelector(getOriginalReleases, (entries) =>
-  entries.length ? last(entries).date : null
+export const getReleasesMinDate = createSelector(getOriginalReleases, (releases) =>
+  releases.length ? last(releases).date : null
 )
 
 /**
  * Get latest date in current releases collection
  */
-export const getReleasesMaxDate = createSelector(getOriginalReleases, (entries) =>
-  entries.length ? entries[0].date : null
+export const getReleasesMaxDate = createSelector(getOriginalReleases, (releases) =>
+  releases.length ? releases[0].date : null
 )
 
 /**
@@ -239,7 +244,24 @@ const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
     }
 
     return ids
-  }, [])
+  }, /** @type {string[]} */ ([]))
+)
+
+/**
+ * Get album IDs with duplicates removed
+ */
+const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) =>
+  releases.reduce((ids, { albums }) => {
+    /** @type {Record<string, string>} */
+    const namesMap = {}
+
+    for (const album of albums) {
+      if (album.name in namesMap) continue
+      namesMap[album.name] = album.id
+    }
+
+    return ids.concat(Object.values(namesMap))
+  }, /** @type {string[]} */ ([]))
 )
 
 /**
@@ -277,6 +299,14 @@ const getVariousArtistsFiltered = createSelector(
 )
 
 /**
+ * Get albums IDs based on duplicates filter
+ */
+const getDuplicatesFiltered = createSelector(
+  [getFiltersExcludeDuplicates, getNoDuplicatesAlbumIds],
+  (exclude, ids) => exclude && ids
+)
+
+/**
  * Intersect all filtered results and return albums as an array
  */
 const getFilteredAlbumsArray = createSelector(
@@ -285,6 +315,7 @@ const getFilteredAlbumsArray = createSelector(
   getDateRangeFiltered,
   getAlbumGroupsFiltered,
   getVariousArtistsFiltered,
+  getDuplicatesFiltered,
   (albums, ...filtered) => intersect(filtered.filter(Array.isArray)).map((id) => albums[id])
 )
 
@@ -294,7 +325,7 @@ const getFilteredAlbumsArray = createSelector(
 const getFilteredReleasesMap = createSelector(getFilteredAlbumsArray, buildReleasesMap)
 
 /**
- * Get filtered releases as `[release date, albums]` entries / tuples
+ * Get filtered releases as ordered array of { date, albums } objects
  */
 const getFilteredReleases = createSelector(getFilteredReleasesMap, buildReleases)
 
