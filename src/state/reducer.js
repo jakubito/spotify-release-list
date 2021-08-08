@@ -78,6 +78,7 @@ export const initialState = {
     startDate: null,
     endDate: null,
     excludeVariousArtists: false,
+    excludeDuplicates: false,
   },
   seenFeatures: [],
   updateReady: false,
@@ -113,6 +114,7 @@ function rootReducer(state = initialState, { type, payload }) {
         filters: {
           ...initialState.filters,
           excludeVariousArtists: state.filters.excludeVariousArtists,
+          excludeDuplicates: state.filters.excludeDuplicates,
         },
       }
     case SYNC_FINISHED:
