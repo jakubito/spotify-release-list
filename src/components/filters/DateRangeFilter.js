@@ -49,7 +49,7 @@ function DateRangeFilter() {
   }, [values])
 
   return (
-    <div className={classNames('DateRangeFilter', 'filter', { focused: focus })}>
+    <div className={classNames('DateRangeFilter Filters__filter', { focused: focus })}>
       <Media query={{ maxWidth: 425 }}>
         {(matches) => (
           <DateRangePicker

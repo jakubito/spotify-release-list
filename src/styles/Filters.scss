@@ -1,5 +1,5 @@
 .Filters {
-  padding: 15px 15px 15px 260px;
+  padding: 15px 15px 0 260px;
   margin-bottom: 5px;
   background-color: $black-bis;
 
@@ -7,13 +7,13 @@
     padding-left: 15px;
   }
 
-  .filter {
+  &__filter {
     display: flex;
     margin-bottom: 15px;
     align-items: center;
 
-    &:last-child {
-      margin-bottom: 0;
+    &--inline {
+      display: inline-block;
     }
   }
 }

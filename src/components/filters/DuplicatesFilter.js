@@ -12,13 +12,17 @@ function DuplicatesFilter() {
   const exclude = useSelector(getFiltersExcludeDuplicates)
 
   return (
-    <Checkbox
-      id="duplicatesFilter"
-      label="Exclude duplicates"
-      defaultChecked={exclude}
-      onChange={(event) => defer(dispatch, setFilters({ excludeDuplicates: event.target.checked }))}
-      dark
-    />
+    <div className="Filters__filter Filters__filter--inline">
+      <Checkbox
+        id="duplicatesFilter"
+        label="Exclude duplicates"
+        defaultChecked={exclude}
+        onChange={(event) =>
+          defer(dispatch, setFilters({ excludeDuplicates: event.target.checked }))
+        }
+        dark
+      />
+    </div>
   )
 }
 

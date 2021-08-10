@@ -12,15 +12,17 @@ function VariousArtistsFilter() {
   const exclude = useSelector(getFiltersExcludeVariousArtists)
 
   return (
-    <Checkbox
-      id="variousArtistsFilter"
-      label="Exclude Various Artists"
-      defaultChecked={exclude}
-      onChange={(event) =>
-        defer(dispatch, setFilters({ excludeVariousArtists: event.target.checked }))
-      }
-      dark
-    />
+    <div className="Filters__filter Filters__filter--inline">
+      <Checkbox
+        id="variousArtistsFilter"
+        label="Exclude Various Artists"
+        defaultChecked={exclude}
+        onChange={(event) =>
+          defer(dispatch, setFilters({ excludeVariousArtists: event.target.checked }))
+        }
+        dark
+      />
+    </div>
   )
 }
 

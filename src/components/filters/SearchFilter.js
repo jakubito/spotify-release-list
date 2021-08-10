@@ -42,7 +42,7 @@ function SearchFilter() {
   )
 
   return (
-    <div className="SearchFilter filter">
+    <div className="SearchFilter Filters__filter">
       <Input
         value={value}
         onChange={onChange}
