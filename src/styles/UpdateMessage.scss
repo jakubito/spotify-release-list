@@ -12,6 +12,8 @@
     font-size: 16px;
     padding: 0 8px;
     text-decoration: underline !important;
+    white-space: normal;
+    height: auto;
 
     &:focus {
       color: $white-bis !important;

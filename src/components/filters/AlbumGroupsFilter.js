@@ -24,7 +24,7 @@ function AlbumGroupsFilter() {
   }
 
   return (
-    <div className="AlbumGroupsFilter filter">
+    <div className="AlbumGroupsFilter Filters__filter">
       {AlbumGroupLabels.filter(([group]) => releasesGroupMap[group]).map(([group, label]) => (
         <Button
           title={label}

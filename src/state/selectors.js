@@ -142,7 +142,6 @@ export const getLastSyncDate = createSelector(
   (lastSync, lastAutoSync) => {
     if (lastSync || lastAutoSync) {
       const newer = (lastSync || '') > (lastAutoSync || '') ? lastSync : lastAutoSync
-
       return new Date(newer)
     }
 
@@ -256,8 +255,9 @@ const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) =
     const namesMap = {}
 
     for (const album of albums) {
-      if (album.name in namesMap) continue
-      namesMap[album.name] = album.id
+      const name = album.name.toLowerCase()
+      if (name in namesMap) continue
+      namesMap[name] = album.id
     }
 
     return ids.concat(Object.values(namesMap))
