@@ -133,6 +133,8 @@
  * @typedef {Channel<RequestChannelMessage>} RequestChannel
  * @typedef {(data: Settings) => string} SettingsSerializer
  * @typedef {JTDParser<Settings>} SettingsParser
+ * @typedef {Record<string, unknown>} SentryContext
+ * @typedef {Record<string, SentryContext>} SentryContexts
  */
 
 /**

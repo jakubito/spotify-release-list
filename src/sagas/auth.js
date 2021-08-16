@@ -1,6 +1,6 @@
-import * as Sentry from '@sentry/browser'
 import { call, fork, put, select, take } from 'redux-saga/effects'
 import { navigate } from '@reach/router'
+import { captureException } from 'helpers'
 import {
   AuthError,
   createCodeChallenge,
@@ -35,7 +35,7 @@ export function* authorizeSaga(action) {
   } catch (error) {
     yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
     yield put(authorizeError(error instanceof AuthError))
-    Sentry.captureException(error)
+    yield call(captureException, error)
   }
 }
 
@@ -91,7 +91,7 @@ export function authorize(action, scopes, saga, ...args) {
       }
     } catch (error) {
       yield put(authorizeError(error instanceof AuthError))
-      Sentry.captureException(error)
+      yield call(captureException, error)
 
       throw error
     }

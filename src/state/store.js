@@ -2,9 +2,9 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { persistStore, persistReducer, createMigrate } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import localForage from 'localforage'
-import * as Sentry from '@sentry/browser'
 import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from 'sagas'
+import { captureException } from 'helpers'
 import migrations from './migrations'
 import rootReducer from './reducer'
 
@@ -33,7 +33,7 @@ const persistConfig = {
 }
 
 const composeEnhancers = /** @type {any} */ (window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const sagaMiddleware = createSagaMiddleware({ onError: (error) => Sentry.captureException(error) })
+const sagaMiddleware = createSagaMiddleware({ onError: captureException })
 
 /** @type {import('redux').Store<State>} */
 const store = createStore(
