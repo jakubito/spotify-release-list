@@ -57,41 +57,59 @@ export function useRefChangeKey(value) {
 /**
  * Call `handler` when clicked outside of `ref`
  *
- * Taken from https://codesandbox.io/s/opmco?file=/src/useClickOutside.js
- * Improved version of https://usehooks.com/useOnClickOutside/
- *
  * @param {React.MutableRefObject} ref
  * @param {(event: MouseEvent) => void} handler
  */
 export function useClickOutside(ref, handler) {
   useEffect(() => {
-    let startedWhenMounted = false
     let startedInside = false
 
+    /** @type {(event: MouseEvent | TouchEvent) => void} */
+    const interactionListener = (event) => {
+      startedInside = ref.current?.contains(event.target)
+    }
+
     /** @type {(event: MouseEvent) => void} */
-    const listener = (event) => {
-      // Do nothing if `mousedown` or `touchstart` started inside ref element
-      if (startedInside || !startedWhenMounted) return
-      // Do nothing if clicking ref's element or descendent elements
-      if (!ref.current || ref.current.contains(event.target)) return
+    const clickListener = (event) => {
+      if (!ref.current) return
+      if (ref.current.contains(event.target)) return
+      if (startedInside) return
 
       handler(event)
     }
 
-    /** @type {(event: MouseEvent | TouchEvent) => void} */
-    const validateEventStart = (event) => {
-      startedWhenMounted = ref.current
-      startedInside = ref.current && ref.current.contains(event.target)
-    }
-
-    document.addEventListener('mousedown', validateEventStart)
-    document.addEventListener('touchstart', validateEventStart)
-    document.addEventListener('click', listener)
+    document.addEventListener('mousedown', interactionListener)
+    document.addEventListener('touchstart', interactionListener)
+    document.addEventListener('click', clickListener)
 
     return () => {
-      document.removeEventListener('mousedown', validateEventStart)
-      document.removeEventListener('touchstart', validateEventStart)
-      document.removeEventListener('click', listener)
+      document.removeEventListener('mousedown', interactionListener)
+      document.removeEventListener('touchstart', interactionListener)
+      document.removeEventListener('click', clickListener)
     }
-  }, [ref])
+  }, [])
+}
+
+/**
+ * Call `handler` when focused outside of `ref`
+ *
+ * @param {React.MutableRefObject} ref
+ * @param {(event: FocusEvent) => void} handler
+ */
+export function useFocusOutside(ref, handler) {
+  useEffect(() => {
+    /** @type {(event: FocusEvent) => void} */
+    const focusListener = (event) => {
+      if (!ref.current) return
+      if (ref.current.contains(event.target)) return
+
+      handler(event)
+    }
+
+    document.addEventListener('focusin', focusListener)
+
+    return () => {
+      document.removeEventListener('focusin', focusListener)
+    }
+  }, [])
 }
