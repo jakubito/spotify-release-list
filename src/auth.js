@@ -11,10 +11,14 @@ const AUTH_REDIRECT_URL = process.env.REACT_APP_URL + '/auth'
  * Represents an error encountered during authorization
  */
 export class AuthError extends Error {
-  /** @param {string} [message] */
-  constructor(message) {
+  /**
+   * @param {string} [message]
+   * @param {SentryContexts} [contexts]
+   */
+  constructor(message, contexts) {
     super(message)
     this.name = 'AuthError'
+    this.contexts = contexts
   }
 }
 
@@ -60,18 +64,22 @@ export function validateAuthRequest(locationSearch, originalNonce) {
   const { code, state, error } = queryString.parse(locationSearch)
 
   if (error) {
-    throw new AuthError(`Authorization failed (${error})`)
+    if (error === 'access_denied') {
+      throw new AuthError('Access denied')
+    }
+
+    throw new AuthError('Authorization failed', { extra: { error } })
   }
 
   if (!code || !state) {
-    throw new AuthError('Invalid request')
+    throw new AuthError('Authorization failed', { extra: { locationSearch, code, state } })
   }
 
   /** @type {{ action?: Action, nonce?: string }} */
   const { action, nonce } = JSON.parse(Base64.decode(state))
 
   if (nonce !== originalNonce) {
-    throw new AuthError('Invalid request')
+    throw new AuthError('Authorization failed', { extra: { locationSearch, nonce, originalNonce } })
   }
 
   return { code, action }

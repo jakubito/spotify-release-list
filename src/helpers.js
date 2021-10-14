@@ -1,6 +1,7 @@
 import mergeWith from 'lodash/mergeWith'
 import random from 'lodash/random'
 import { colord } from 'colord'
+import * as Sentry from '@sentry/browser'
 import { AlbumGroup, MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
@@ -269,4 +270,13 @@ export function createNotification(title, body) {
  */
 export function modalsClosed() {
   return !document.documentElement.classList.contains('is-modal-open')
+}
+
+/**
+ * Sentry captureException wrapper
+ *
+ * @param {Error & { contexts?: SentryContexts }} error
+ */
+export function captureException(error) {
+  Sentry.captureException(error, { contexts: error.contexts })
 }

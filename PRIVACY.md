@@ -8,7 +8,7 @@ There are two external services being used by the app - Spotify and Sentry.
 
 ### Spotify
 
-[Spotify Web API](https://developer.spotify.com/documentation/web-api/) is used to fetch all data about the artists you follow and their releases. It uses [Implicit Grant Flow](https://developer.spotify.com/documentation/general/guides/authorization-guide/#implicit-grant-flow) as authorization mechanism. This means all communication is happening strictly between your browser and Spotify servers.
+[Spotify Web API](https://developer.spotify.com/documentation/web-api/) is used to fetch all data about the artists you follow and their releases. It uses [Authorization Code Flow with Proof Key for Code Exchange (PKCE)](https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow-with-proof-key-for-code-exchange-pkce) as authorization mechanism. All communication is happening strictly between your browser and Spotify servers.
 
 ### Sentry
 
@@ -31,7 +31,7 @@ All scopes are asked for progressively (only when they are needed). You can use 
 
 Your existing playlist data is never touched. Feel free to check the code.
 
-If you want to remove previously authorized access, you can do it anytime in your [Spotify profile](https://spotify.com/account/apps).
+If you want to remove previously authorized access, you can do it anytime on your [Spotify profile page](https://spotify.com/account/apps).
 
 [Official authorization scopes documentation](https://developer.spotify.com/documentation/general/guides/scopes)
 

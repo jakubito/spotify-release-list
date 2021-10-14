@@ -4,6 +4,7 @@ import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
 import last from 'lodash/last'
 import isEqual from 'lodash/isEqual'
+import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge } from 'helpers'
 import { buildReleases, buildReleasesMap } from './helpers'
@@ -249,20 +250,24 @@ const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
 /**
  * Get album IDs with duplicates removed
  */
-const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) =>
-  releases.reduce((ids, { albums }) => {
+const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) => {
+  const charsMap = { '[': '(', ']': ')', '’': "'" }
+  const escapedChars = escapeRegExp(Object.keys(charsMap).join(''))
+  const charsRegex = new RegExp(`[${escapedChars}]`, 'g')
+
+  return releases.reduce((ids, { albums }) => {
     /** @type {Record<string, string>} */
     const namesMap = {}
 
     for (const album of albums) {
-      const name = album.name.toLowerCase()
-      if (name in namesMap) continue
-      namesMap[name] = album.id
+      const unifiedName = album.name.replace(charsRegex, (key) => charsMap[key]).toLowerCase()
+      if (unifiedName in namesMap) continue
+      namesMap[unifiedName] = album.id
     }
 
     return ids.concat(Object.values(namesMap))
   }, /** @type {string[]} */ ([]))
-)
+})
 
 /**
  * Get album IDs based on search filter

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import classNames from 'classnames'
-import { useClickOutside } from 'hooks'
+import { useClickOutside, useFocusOutside } from 'hooks'
 
 /**
  * Render color picker input
@@ -22,6 +22,7 @@ function ColorInput({ id, name, className, color, onChange }) {
   const closePicker = () => setPickerVisible(false)
 
   useClickOutside(containerRef, closePicker)
+  useFocusOutside(containerRef, closePicker)
 
   return (
     <div
@@ -37,7 +38,6 @@ function ColorInput({ id, name, className, color, onChange }) {
             color={color}
             onChange={onChange}
             onFocus={openPicker}
-            onBlur={closePicker}
           />
           <span className="ColorInput__icon icon is-small is-left">
             <i className="fas fa-hashtag" />
