@@ -61,7 +61,7 @@ function renderAlbum({ album, groupColors, covers, uriLinks }) {
       {covers && (
         <Anchor title={name} href={link} className="Album__cover media-left">
           <figure className="Album__figure">
-            <img src={image} alt={name} className="Album__image" />
+            <img src={image} alt={name} className="Album__image" crossOrigin="anonymous" />
           </figure>
         </Anchor>
       )}
