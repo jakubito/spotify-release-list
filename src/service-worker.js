@@ -12,7 +12,6 @@ import { clientsClaim } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
-import { CacheableResponsePlugin } from 'workbox-cacheable-response'
 import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'
 
 const worker = /** @type {ServiceWorkerGlobalScope} */ (/** @type {any} */ (self))
@@ -59,6 +58,10 @@ worker.addEventListener('message', (event) => {
   }
 })
 
+worker.addEventListener('activate', (event) => {
+  event.waitUntil(Promise.all([caches.delete('images'), caches.delete('spotify-images')]))
+})
+
 // Cache font awesome assets
 registerRoute(
   /https:\/\/kit\.fontawesome\.com\/.*\.js/,
@@ -72,29 +75,38 @@ registerRoute(
   new CacheFirst({
     cacheName: 'fontawesome-assets',
     plugins: [
-      new CacheableResponsePlugin({
-        statuses: [0, 200],
-      }),
       new ExpirationPlugin({
-        maxEntries: 20,
+        maxEntries: 10,
         maxAgeSeconds: 60 * 60 * 24 * 365,
       }),
     ],
   })
 )
 
-// Cache images
+// Cache app images
 registerRoute(
-  ({ request }) => request.destination === 'image',
+  ({ request, sameOrigin }) => request.destination === 'image' && sameOrigin,
   new CacheFirst({
     cacheName: 'images',
     plugins: [
-      new CacheableResponsePlugin({
-        statuses: [0, 200],
-      }),
       new ExpirationPlugin({
-        maxEntries: 300,
+        maxEntries: 10,
         maxAgeSeconds: 60 * 60 * 24 * 365,
+      }),
+    ],
+  })
+)
+
+// Cache Spotify images
+registerRoute(
+  ({ request, sameOrigin }) => request.destination === 'image' && !sameOrigin,
+  new CacheFirst({
+    cacheName: 'spotify-images',
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 200,
+        maxAgeSeconds: 60 * 60 * 24 * 365,
+        purgeOnQuotaError: true,
       }),
     ],
   })

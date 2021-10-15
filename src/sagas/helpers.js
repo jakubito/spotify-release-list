@@ -114,3 +114,21 @@ export function windowEventChannel(event) {
     }
   })
 }
+
+/**
+ * Service worker event listener transformed into channel
+ *
+ * @template {keyof ServiceWorkerEventMap} T
+ * @param {ServiceWorker} serviceWorker
+ * @param {T} event
+ * @returns {EventChannel<ServiceWorkerEventMap[T]>}
+ */
+export function serviceWorkerEventChannel(serviceWorker, event) {
+  return eventChannel((emitter) => {
+    serviceWorker.addEventListener(event, emitter)
+
+    return () => {
+      serviceWorker.removeEventListener(event, emitter)
+    }
+  })
+}

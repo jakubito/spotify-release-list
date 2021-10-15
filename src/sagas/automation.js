@@ -47,8 +47,8 @@ function* autoSyncManager() {
       yield race([call(autoSyncWorker), take(focus)])
     }
   } finally {
-    blur.close()
-    focus.close()
+    yield call(blur.close)
+    yield call(focus.close)
   }
 }
 

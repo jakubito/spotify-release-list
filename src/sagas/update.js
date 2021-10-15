@@ -1,6 +1,6 @@
 import { call, fork, put, spawn, take, takeLeading } from 'redux-saga/effects'
 import { TRIGGER_UPDATE, updateReady } from 'state/actions'
-import { throttle, windowEventChannel } from './helpers'
+import { serviceWorkerEventChannel, throttle, windowEventChannel } from './helpers'
 
 /**
  * Main update saga
@@ -18,11 +18,21 @@ function* update() {
   const { serviceWorker } = navigator
   /** @type {Await<ReturnType<typeof serviceWorker.getRegistration>>} */
   const registration = yield call([serviceWorker, serviceWorker.getRegistration])
+  const workerToActivate = registration?.waiting
 
-  if (registration?.waiting) {
-    yield call([registration.waiting, registration.waiting.postMessage], { type: 'SKIP_WAITING' })
+  if (!workerToActivate) return
+
+  /** @type {EventChannel<ServiceWorkerEventMap['statechange']>} */
+  const stateChange = yield call(serviceWorkerEventChannel, workerToActivate, 'statechange')
+
+  yield call([registration.waiting, registration.waiting.postMessage], { type: 'SKIP_WAITING' })
+
+  while (true) {
+    yield take(stateChange)
+    if (workerToActivate.state === 'activated') break
   }
 
+  yield call(stateChange.close)
   yield call([window.location, /** @type {Fn} */ (window.location.reload)])
 }
 
