@@ -96,18 +96,3 @@ registerRoute(
     ],
   })
 )
-
-// Cache Spotify images
-registerRoute(
-  ({ request, sameOrigin }) => request.destination === 'image' && !sameOrigin,
-  new CacheFirst({
-    cacheName: 'spotify-images',
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 200,
-        maxAgeSeconds: 60 * 60 * 24 * 365,
-        purgeOnQuotaError: true,
-      }),
-    ],
-  })
-)
