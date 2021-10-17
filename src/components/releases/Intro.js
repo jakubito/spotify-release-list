@@ -31,6 +31,9 @@ function Intro() {
           text
         />
       </div>
+      <p className="Intro__footer has-text-centered">
+        Spotify is a trademark of Spotify AB. This app is not affiliated with Spotify.
+      </p>
     </div>
   )
 }

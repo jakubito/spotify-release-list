@@ -10,4 +10,11 @@
   &__button {
     margin: 0 10px;
   }
+
+  &__footer {
+    margin-top: 25px;
+    font-size: 16px;
+    font-weight: 500;
+    color: $grey-light;
+  }
 }
