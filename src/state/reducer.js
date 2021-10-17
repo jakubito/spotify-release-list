@@ -3,7 +3,6 @@ import {
   AUTHORIZE_START,
   AUTHORIZE_FINISHED,
   AUTHORIZE_ERROR,
-  SET_AUTH_DATA,
   SYNC_START,
   SYNC_FINISHED,
   SYNC_ERROR,
@@ -33,16 +32,8 @@ import {
 import { buildAlbumsMap, mergeAlbumsRaw } from './helpers'
 
 /** @type {State} */
-export const initialState = {
+export const INITIAL_STATE = {
   authorizing: false,
-  authData: {
-    nonce: null,
-    codeVerifier: null,
-    token: null,
-    tokenScope: null,
-    tokenExpires: null,
-    refreshToken: null,
-  },
   albums: {},
   syncing: false,
   syncingProgress: 0,
@@ -91,20 +82,13 @@ export const initialState = {
  * @param {Action} action
  * @returns {State}
  */
-function rootReducer(state = initialState, { type, payload }) {
+function rootReducer(state = INITIAL_STATE, { type, payload }) {
   switch (type) {
     case AUTHORIZE_START:
       return { ...state, authorizing: true }
     case AUTHORIZE_FINISHED:
-      return { ...state, authorizing: false }
     case AUTHORIZE_ERROR:
-      return {
-        ...state,
-        authData: payload.resetAuthData ? initialState.authData : state.authData,
-        authorizing: false,
-      }
-    case SET_AUTH_DATA:
-      return { ...state, authData: { ...state.authData, ...payload.authData } }
+      return { ...state, authorizing: false }
     case SYNC_START:
       return {
         ...state,
@@ -112,7 +96,7 @@ function rootReducer(state = initialState, { type, payload }) {
         syncingProgress: 0,
         filtersVisible: false,
         filters: {
-          ...initialState.filters,
+          ...INITIAL_STATE.filters,
           excludeVariousArtists: state.filters.excludeVariousArtists,
           excludeDuplicates: state.filters.excludeDuplicates,
         },
@@ -137,7 +121,7 @@ function rootReducer(state = initialState, { type, payload }) {
     case SHOW_PLAYLIST_MODAL:
       return { ...state, playlistModalVisible: true }
     case HIDE_PLAYLIST_MODAL:
-      return { ...state, playlistModalVisible: false, playlistId: initialState.playlistId }
+      return { ...state, playlistModalVisible: false, playlistId: INITIAL_STATE.playlistId }
     case SHOW_MESSAGE:
       return { ...state, message: { ...payload } }
     case HIDE_MESSAGE:
@@ -152,7 +136,7 @@ function rootReducer(state = initialState, { type, payload }) {
     case CREATE_PLAYLIST_CANCEL:
       return { ...state, creatingPlaylist: false }
     case RESET_PLAYLIST:
-      return { ...state, playlistId: initialState.playlistId }
+      return { ...state, playlistId: INITIAL_STATE.playlistId }
     case ADD_SEEN_FEATURE:
       return { ...state, seenFeatures: [...state.seenFeatures, payload.feature] }
     case TOGGLE_FILTERS_VISIBLE:
@@ -160,13 +144,13 @@ function rootReducer(state = initialState, { type, payload }) {
     case SET_FILTERS:
       return { ...state, filters: { ...state.filters, ...payload.filters } }
     case RESET_FILTERS:
-      return { ...state, filters: initialState.filters, filtersVisible: false }
+      return { ...state, filters: INITIAL_STATE.filters, filtersVisible: false }
     case UPDATE_READY:
       return { ...state, updateReady: true }
     case DISMISS_UPDATE:
       return { ...state, updateReady: false }
     case RESET:
-      return initialState
+      return INITIAL_STATE
     default:
       return state
   }

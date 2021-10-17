@@ -8,16 +8,13 @@ import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge } from 'helpers'
 import { buildReleases, buildReleasesMap } from './helpers'
-import { initialState } from './reducer'
+import { INITIAL_STATE } from './reducer'
 
 const VARIOUS_ARTISTS = 'Various Artist'
 const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
 
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
-
-/** @param {State} state */
-export const getAuthData = (state) => state.authData
 
 /** @param {State} state */
 export const getUser = (state) => state.user
@@ -101,7 +98,7 @@ export const getFiltersExcludeDuplicates = createSelector(
  *
  * @param {State} state
  */
-const getAppData = createSelector([getAuthData, getLastSync, getSettings], (...values) => values)
+const getAppData = createSelector(getLastSync, getSettings, (...values) => values)
 
 /**
  * Check if any relevant app data exist. This is used to determine visibility
@@ -111,7 +108,7 @@ const getAppData = createSelector([getAuthData, getLastSync, getSettings], (...v
  */
 export const getHasAppData = createSelector(
   getAppData,
-  (appData) => !isEqual(appData, getAppData(initialState))
+  (appData) => !isEqual(appData, getAppData(INITIAL_STATE))
 )
 
 /**

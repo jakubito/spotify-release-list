@@ -3,7 +3,6 @@ export const AUTHORIZE = 'AUTHORIZE'
 export const AUTHORIZE_START = 'AUTHORIZE_START'
 export const AUTHORIZE_FINISHED = 'AUTHORIZE_FINISH'
 export const AUTHORIZE_ERROR = 'AUTHORIZE_ERROR'
-export const SET_AUTH_DATA = 'SET_AUTH_DATA'
 export const SYNC = 'SYNC'
 export const SYNC_START = 'SYNC_START'
 export const SYNC_FINISHED = 'SYNC_FINISHED'
@@ -64,11 +63,6 @@ export function authorizeFinished() {
 /** @param {boolean} [resetAuthData] */
 export function authorizeError(resetAuthData = false) {
   return action(AUTHORIZE_ERROR, { resetAuthData })
-}
-
-/** @param {Partial<AuthData>} authData */
-export function setAuthData(authData) {
-  return action(SET_AUTH_DATA, { authData })
 }
 
 /** @param {boolean} [auto] */

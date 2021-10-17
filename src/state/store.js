@@ -19,7 +19,6 @@ const persistConfig = {
   migrate: createMigrate(migrations),
   writeFailHandler: captureException,
   whitelist: [
-    'authData',
     'albums',
     'lastSync',
     'lastAutoSync',

@@ -328,14 +328,6 @@
     }
   },
   "authorizing": false,
-  "authData": {
-    "nonce": null,
-    "codeVerifier": null,
-    "token": null,
-    "tokenScope": null,
-    "tokenExpires": null,
-    "refreshToken": null
-  },
   "syncing": false,
   "syncingProgress": 0,
   "lastSync": "2020-12-24T10:09:32.229Z",

@@ -24,8 +24,7 @@ function* update() {
 
   /** @type {EventChannel<ServiceWorkerEventMap['statechange']>} */
   const stateChange = yield call(serviceWorkerEventChannel, workerToActivate, 'statechange')
-
-  yield call([registration.waiting, registration.waiting.postMessage], { type: 'SKIP_WAITING' })
+  yield call([workerToActivate, workerToActivate.postMessage], { type: 'SKIP_WAITING' })
 
   while (true) {
     yield take(stateChange)

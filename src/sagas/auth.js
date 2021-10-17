@@ -1,22 +1,22 @@
-import { call, fork, put, select, take } from 'redux-saga/effects'
+import { call, fork, put, take } from 'redux-saga/effects'
 import { navigate } from '@reach/router'
 import { captureException } from 'helpers'
 import {
   AuthError,
   createCodeChallenge,
+  deleteAuthData,
   exchangeCode,
   generateCodeVerifier,
+  getAuthData,
   getRefreshedToken,
+  setAuthData,
   startAuthFlow,
   validateAuthRequest,
 } from 'auth'
-import { persistor } from 'state'
-import { getAuthData } from 'state/selectors'
 import {
   authorizeStart,
   authorizeFinished,
   authorizeError,
-  setAuthData,
   showErrorMessage,
   SYNC_START,
   CREATE_PLAYLIST_START,
@@ -56,13 +56,13 @@ function* authorizeMainSaga({ payload }) {
   yield put(authorizeStart())
 
   /** @type {ReturnType<getAuthData>} */
-  const { nonce, codeVerifier } = yield select(getAuthData)
+  const { nonce, codeVerifier } = yield call(getAuthData)
   /** @type {ReturnType<validateAuthRequest>} */
   const { code, action } = yield call(validateAuthRequest, payload.locationSearch, nonce)
   /** @type {Await<ReturnType<exchangeCode>>} */
   const tokenResult = yield call(exchangeCode, code, codeVerifier)
 
-  yield put(setAuthData(tokenResult))
+  yield call(setAuthData, tokenResult)
   yield put(authorizeFinished())
   yield put(action)
 }
@@ -81,7 +81,7 @@ export function authorize(action, scopes, saga, ...args) {
       yield put(authorizeStart())
 
       /** @type {ReturnType<getAuthData>} */
-      const { tokenScope, refreshToken } = yield select(getAuthData)
+      const { tokenScope, refreshToken } = yield call(getAuthData)
       const validScope = scopes.every((scope) => tokenScope?.includes(scope))
 
       if (refreshToken && validScope) {
@@ -106,11 +106,11 @@ export function authorize(action, scopes, saga, ...args) {
  */
 function* refreshTokenAndRun(saga, ...args) {
   /** @type {ReturnType<getAuthData>} */
-  const { refreshToken } = yield select(getAuthData)
+  const { refreshToken } = yield call(getAuthData)
   /** @type {Await<ReturnType<getRefreshedToken>>} */
   const tokenResult = yield call(getRefreshedToken, refreshToken)
 
-  yield put(setAuthData(tokenResult))
+  yield call(setAuthData, tokenResult)
   yield put(authorizeFinished())
   yield call(saga, ...args)
 }
@@ -129,7 +129,17 @@ function* triggerNewAuthFlow(action, scope) {
   /** @type {Await<ReturnType<createCodeChallenge>>} */
   const codeChallenge = yield call(createCodeChallenge, codeVerifier)
 
-  yield put(setAuthData({ nonce, codeVerifier }))
-  yield call(persistor.flush)
+  yield call(setAuthData, { nonce, codeVerifier })
   yield call(startAuthFlow, action, scope, codeChallenge, nonce)
+}
+
+/**
+ * Clear auth data on error
+ *
+ * @param {AuthorizeErrorAction} action
+ */
+export function* authorizeErrorSaga(action) {
+  if (action.payload.resetAuthData) {
+    yield call(deleteAuthData)
+  }
 }

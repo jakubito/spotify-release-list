@@ -3,7 +3,6 @@
  *
  * @typedef {{
  *   authorizing: boolean
- *   authData: AuthData
  *   albums: AlbumsMap
  *   syncing: boolean
  *   syncingProgress: number
@@ -168,6 +167,7 @@
  * Actions
  *
  * @typedef {ReturnType<import('state/actions').authorize>} AuthorizeAction
+ * @typedef {ReturnType<import('state/actions').authorizeError>} AuthorizeErrorAction
  * @typedef {ReturnType<import('state/actions').setSettings>} SetSettingsAction
  * @typedef {ReturnType<import('state/actions').setUser>} SetUserAction
  * @typedef {ReturnType<import('state/actions').reset>} ResetAction
