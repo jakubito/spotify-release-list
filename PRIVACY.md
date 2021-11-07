@@ -8,7 +8,7 @@ There are two external services being used by the app - Spotify and Sentry.
 
 ### Spotify
 
-[Spotify Web API](https://developer.spotify.com/documentation/web-api/) is used to fetch all data about the artists you follow and their releases. It uses [Authorization Code Flow with Proof Key for Code Exchange (PKCE)](https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow-with-proof-key-for-code-exchange-pkce) as authorization mechanism. All communication is happening strictly between your browser and Spotify servers.
+[Spotify Web API](https://developer.spotify.com/documentation/web-api/) is used to fetch all data about the artists you follow and their releases. It uses [Authorization Code Flow with Proof Key for Code Exchange (PKCE)](https://developer.spotify.com/documentation/general/guides/authorization/code-flow/) as authorization mechanism. All communication is happening strictly between your browser and Spotify servers.
 
 ### Sentry
 
