@@ -20,6 +20,8 @@
  *   filters: Filters
  *   seenFeatures: string[]
  *   updateReady: boolean
+ *   favorites: Favorites
+ *   editingFavorites: boolean
  * }} State
  *
  * @typedef {{
@@ -62,6 +64,7 @@
  *   endDate?: string
  *   excludeVariousArtists: boolean
  *   excludeDuplicates: boolean
+ *   favoritesOnly: boolean
  * }} Filters
  *
  * @typedef {{
@@ -118,6 +121,7 @@
  * @typedef {{ [id: string]: Artist }} ArtistsMap
  * @typedef {{ [id: string]: Album }} AlbumsMap
  * @typedef {{ [date: string]: Album[] }} ReleasesMap
+ * @typedef {{ [id: string]: boolean }} Favorites
  * @typedef {{ date: string, albums: Album[] }[]} Releases
  * @typedef {{ [group: string]: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates

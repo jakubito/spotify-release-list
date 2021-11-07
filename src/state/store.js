@@ -29,6 +29,7 @@ const persistConfig = {
     'filters',
     'filtersVisible',
     'seenFeatures',
+    'favorites',
   ],
 }
 

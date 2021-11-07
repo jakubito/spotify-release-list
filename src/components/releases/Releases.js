@@ -11,6 +11,7 @@ import ReleasesHeader from './ReleasesHeader'
 import Intro from './Intro'
 import Loading from './Loading'
 import ReleaseList from './ReleaseList'
+import FavoritesToolbar from './FavoritesToolbar'
 
 /**
  * Releases screen
@@ -54,6 +55,7 @@ function Releases(props) {
     <VerticalLayout>
       <ReleasesHeader />
       <Filters />
+      <FavoritesToolbar />
       <Content>{renderContent()}</Content>
       <PlaylistModalContainer />
     </VerticalLayout>

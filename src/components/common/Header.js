@@ -1,4 +1,3 @@
-import Media from 'react-media'
 import classNames from 'classnames'
 
 /**
@@ -6,17 +5,10 @@ import classNames from 'classnames'
  *
  * @param {{ title?: string, className?: string, children?: React.ReactNode }} props
  */
-function Header({ title, className, children }) {
+function Header({ title = 'Spotify Release List', className, children }) {
   return (
     <nav className={classNames('Header', className)}>
-      <div className="title is-4 has-text-light">
-        {title || (
-          <>
-            Spotify <Media query={{ maxWidth: 375 }}>{(matches) => matches && <br />}</Media>
-            Release List
-          </>
-        )}
-      </div>
+      <div className="title is-4 has-text-light">{title}</div>
       {children}
     </nav>
   )

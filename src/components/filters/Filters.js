@@ -22,9 +22,7 @@ function Filters() {
     }
   }, [])
 
-  if (!visible) {
-    return null
-  }
+  if (!visible) return null
 
   return (
     <div className="Filters fade-in">

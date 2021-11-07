@@ -28,8 +28,13 @@ import {
   RESET_FILTERS,
   UPDATE_READY,
   DISMISS_UPDATE,
+  TOGGLE_EDITING_FAVORITES,
+  SET_FAVORITE,
+  SET_FAVORITE_ALL,
+  SET_FAVORITE_NONE,
 } from 'state/actions'
-import { buildAlbumsMap, mergeAlbumsRaw } from './helpers'
+import { buildAlbumsMap, mergeAlbumsRaw } from 'state/helpers'
+import { getAlbumsArray, getFilteredAlbumsArray, getFiltersApplied } from 'state/selectors'
 
 /** @type {State} */
 export const INITIAL_STATE = {
@@ -70,9 +75,12 @@ export const INITIAL_STATE = {
     endDate: null,
     excludeVariousArtists: false,
     excludeDuplicates: false,
+    favoritesOnly: false,
   },
   seenFeatures: [],
   updateReady: false,
+  favorites: {},
+  editingFavorites: false,
 }
 
 /**
@@ -95,6 +103,7 @@ function rootReducer(state = INITIAL_STATE, { type, payload }) {
         syncing: true,
         syncingProgress: 0,
         filtersVisible: false,
+        editingFavorites: false,
         filters: {
           ...INITIAL_STATE.filters,
           excludeVariousArtists: state.filters.excludeVariousArtists,
@@ -105,6 +114,7 @@ function rootReducer(state = INITIAL_STATE, { type, payload }) {
       return {
         ...state,
         syncing: false,
+        favorites: {},
         previousSyncMaxDate: payload.previousSyncMaxDate,
         [payload.auto ? 'lastAutoSync' : 'lastSync']: new Date().toISOString(),
       }
@@ -115,7 +125,7 @@ function rootReducer(state = INITIAL_STATE, { type, payload }) {
     case SET_USER:
       return { ...state, ...payload }
     case SET_ALBUMS:
-      return setAlbums(state, payload)
+      return setAlbumsReducer(state, payload)
     case SET_SETTINGS:
       return { ...state, settings: { ...state.settings, ...payload.settings } }
     case SHOW_PLAYLIST_MODAL:
@@ -149,6 +159,14 @@ function rootReducer(state = INITIAL_STATE, { type, payload }) {
       return { ...state, updateReady: true }
     case DISMISS_UPDATE:
       return { ...state, updateReady: false }
+    case SET_FAVORITE:
+      return { ...state, favorites: { ...state.favorites, [payload.id]: payload.selected } }
+    case SET_FAVORITE_ALL:
+      return setFavoriteMassReducer(state, true)
+    case SET_FAVORITE_NONE:
+      return setFavoriteMassReducer(state, false)
+    case TOGGLE_EDITING_FAVORITES:
+      return { ...state, editingFavorites: !state.editingFavorites }
     case RESET:
       return INITIAL_STATE
     default:
@@ -157,15 +175,38 @@ function rootReducer(state = INITIAL_STATE, { type, payload }) {
 }
 
 /**
+ * Albums reducer
+ *
  * @param {State} state
  * @param {{ albumsRaw: AlbumRaw[], artists: Artist[], minDate: string }} payload
  * @returns {State}
  */
-function setAlbums(state, { albumsRaw, artists, minDate }) {
+export function setAlbumsReducer(state, { albumsRaw, artists, minDate }) {
   const albumsRawMerged = mergeAlbumsRaw(albumsRaw, minDate)
   const albums = buildAlbumsMap(albumsRawMerged, artists)
 
   return { ...state, albums }
+}
+
+/**
+ * Mass select favorites reducer
+ *
+ * @param {State} state
+ * @param {boolean} selected
+ * @returns {State}
+ */
+export function setFavoriteMassReducer(state, selected) {
+  const filtersApplied = getFiltersApplied(state)
+  const albums = filtersApplied ? getFilteredAlbumsArray(state) : getAlbumsArray(state)
+  const favorites = albums.reduce(
+    (map, album) => {
+      map[album.id] = selected
+      return map
+    },
+    { ...state.favorites }
+  )
+
+  return { ...state, favorites }
 }
 
 export default rootReducer

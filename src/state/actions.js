@@ -33,6 +33,10 @@ export const AUTO_SYNC_STOP = 'AUTO_SYNC_STOP'
 export const UPDATE_READY = 'UPDATE_READY'
 export const DISMISS_UPDATE = 'DISMISS_UPDATE'
 export const TRIGGER_UPDATE = 'TRIGGER_UPDATE'
+export const SET_FAVORITE = 'SET_FAVORITE'
+export const SET_FAVORITE_ALL = 'SET_FAVORITE_ALL'
+export const SET_FAVORITE_NONE = 'SET_FAVORITE_NONE'
+export const TOGGLE_EDITING_FAVORITES = 'TOGGLE_EDITING_FAVORITES'
 
 /**
  * Create action object
@@ -213,4 +217,24 @@ export function dismissUpdate() {
 
 export function triggerUpdate() {
   return action(TRIGGER_UPDATE)
+}
+
+/**
+ * @param {string} id
+ * @param {boolean} selected
+ */
+export function setFavorite(id, selected) {
+  return action(SET_FAVORITE, { id, selected })
+}
+
+export function setFavoriteAll() {
+  return action(SET_FAVORITE_ALL)
+}
+
+export function setFavoriteNone() {
+  return action(SET_FAVORITE_NONE)
+}
+
+export function toggleEditingFavorites() {
+  return action(TOGGLE_EDITING_FAVORITES)
 }
