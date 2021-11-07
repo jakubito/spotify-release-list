@@ -3,8 +3,8 @@ import chunk from 'lodash/chunk'
 import { spotifyUri } from 'helpers'
 import { Scope, SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
-import { AuthError } from 'auth'
-import { getAuthData, getPlaylistForm, getReleases, getSettings, getUser } from 'state/selectors'
+import { AuthError, getAuthData } from 'auth'
+import { getPlaylistForm, getReleases, getSettings, getUser } from 'state/selectors'
 import {
   createPlaylistStart,
   createPlaylistFinished,
@@ -46,7 +46,7 @@ function* createPlaylistMainSaga() {
   yield put(createPlaylistStart())
 
   /** @type {ReturnType<getAuthData>} */
-  const { token } = yield select(getAuthData)
+  const { token } = yield call(getAuthData)
   /** @type {ReturnType<getUser>} */
   const user = yield select(getUser)
   /** @type {ReturnType<getPlaylistForm>} */

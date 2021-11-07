@@ -8,14 +8,28 @@ import classNames from 'classnames'
  *   name?: string
  *   className?: string
  *   label?: string
+ *   labelClassName?: string
  *   value?: string
  *   checked?: boolean
  *   defaultChecked?: boolean
  *   onChange?: React.ChangeEventHandler<HTMLInputElement>
+ *   readOnly?: boolean
  *   dark?: boolean
  * }} props
  */
-function Checkbox({ id, name, className, label, value, checked, defaultChecked, onChange, dark }) {
+function Checkbox({
+  id,
+  name,
+  className,
+  label,
+  labelClassName,
+  value,
+  checked,
+  defaultChecked,
+  onChange,
+  readOnly,
+  dark,
+}) {
   return (
     <>
       <input
@@ -26,12 +40,16 @@ function Checkbox({ id, name, className, label, value, checked, defaultChecked, 
         checked={checked}
         defaultChecked={defaultChecked}
         onChange={onChange}
+        readOnly={readOnly}
         className={classNames(className, 'is-checkradio', 'is-circle', 'has-background-color', {
           'is-white': !dark,
           'is-dark': dark,
+          'no-label': !label,
         })}
       />
-      {label && <label htmlFor={id}>{label}</label>}
+      <label htmlFor={id} className={classNames(labelClassName)}>
+        {label}
+      </label>
     </>
   )
 }

@@ -3,7 +3,6 @@ export const AUTHORIZE = 'AUTHORIZE'
 export const AUTHORIZE_START = 'AUTHORIZE_START'
 export const AUTHORIZE_FINISHED = 'AUTHORIZE_FINISH'
 export const AUTHORIZE_ERROR = 'AUTHORIZE_ERROR'
-export const SET_AUTH_DATA = 'SET_AUTH_DATA'
 export const SYNC = 'SYNC'
 export const SYNC_START = 'SYNC_START'
 export const SYNC_FINISHED = 'SYNC_FINISHED'
@@ -34,6 +33,10 @@ export const AUTO_SYNC_STOP = 'AUTO_SYNC_STOP'
 export const UPDATE_READY = 'UPDATE_READY'
 export const DISMISS_UPDATE = 'DISMISS_UPDATE'
 export const TRIGGER_UPDATE = 'TRIGGER_UPDATE'
+export const SET_FAVORITE = 'SET_FAVORITE'
+export const SET_FAVORITE_ALL = 'SET_FAVORITE_ALL'
+export const SET_FAVORITE_NONE = 'SET_FAVORITE_NONE'
+export const TOGGLE_EDITING_FAVORITES = 'TOGGLE_EDITING_FAVORITES'
 
 /**
  * Create action object
@@ -64,11 +67,6 @@ export function authorizeFinished() {
 /** @param {boolean} [resetAuthData] */
 export function authorizeError(resetAuthData = false) {
   return action(AUTHORIZE_ERROR, { resetAuthData })
-}
-
-/** @param {Partial<AuthData>} authData */
-export function setAuthData(authData) {
-  return action(SET_AUTH_DATA, { authData })
 }
 
 /** @param {boolean} [auto] */
@@ -219,4 +217,24 @@ export function dismissUpdate() {
 
 export function triggerUpdate() {
   return action(TRIGGER_UPDATE)
+}
+
+/**
+ * @param {string} id
+ * @param {boolean} selected
+ */
+export function setFavorite(id, selected) {
+  return action(SET_FAVORITE, { id, selected })
+}
+
+export function setFavoriteAll() {
+  return action(SET_FAVORITE_ALL)
+}
+
+export function setFavoriteNone() {
+  return action(SET_FAVORITE_NONE)
+}
+
+export function toggleEditingFavorites() {
+  return action(TOGGLE_EDITING_FAVORITES)
 }

@@ -8,16 +8,13 @@ import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge } from 'helpers'
 import { buildReleases, buildReleasesMap } from './helpers'
-import { initialState } from './reducer'
+import { INITIAL_STATE } from './reducer'
 
 const VARIOUS_ARTISTS = 'Various Artist'
 const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
 
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
-
-/** @param {State} state */
-export const getAuthData = (state) => state.authData
 
 /** @param {State} state */
 export const getUser = (state) => state.user
@@ -70,6 +67,12 @@ export const getFilters = (state) => state.filters
 /** @param {State} state */
 export const getUpdateReady = (state) => state.updateReady
 
+/** @param {State} state */
+export const getFavorites = (state) => state.favorites
+
+/** @param {State} state */
+export const getEditingFavorites = (state) => state.editingFavorites
+
 // Individual settings selectors
 export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups)
 export const getSettingsGroupColors = createSelector(
@@ -95,13 +98,17 @@ export const getFiltersExcludeDuplicates = createSelector(
   getFilters,
   (filters) => filters.excludeDuplicates
 )
+export const getFiltersFavoritesOnly = createSelector(
+  getFilters,
+  (filters) => filters.favoritesOnly
+)
 
 /**
  * Get relevant app data.
  *
  * @param {State} state
  */
-const getAppData = createSelector([getAuthData, getLastSync, getSettings], (...values) => values)
+const getAppData = createSelector(getLastSync, getSettings, (...values) => values)
 
 /**
  * Check if any relevant app data exist. This is used to determine visibility
@@ -111,7 +118,7 @@ const getAppData = createSelector([getAuthData, getLastSync, getSettings], (...v
  */
 export const getHasAppData = createSelector(
   getAppData,
-  (appData) => !isEqual(appData, getAppData(initialState))
+  (appData) => !isEqual(appData, getAppData(INITIAL_STATE))
 )
 
 /**
@@ -132,6 +139,7 @@ export const getFiltersApplied = createSelector(
   getFiltersEndDate,
   getFiltersExcludeVariousArtists,
   getFiltersExcludeDuplicates,
+  getFiltersFavoritesOnly,
   (groups, ...rest) => Boolean(groups.length) || includesTruthy(rest)
 )
 
@@ -153,7 +161,7 @@ export const getLastSyncDate = createSelector(
 /**
  * Get all albums / releases as an array
  */
-const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums))
+export const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums))
 
 /**
  * Get all releases as a map with release dates as keys
@@ -270,6 +278,16 @@ const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) =
 })
 
 /**
+ * Get favorite album ids
+ */
+const getFavoriteAlbumIds = createSelector(getFavorites, (favorites) =>
+  Object.entries(favorites).reduce((ids, [id, selected]) => {
+    if (selected) ids.push(id)
+    return ids
+  }, [])
+)
+
+/**
  * Get album IDs based on search filter
  */
 const getSearchFiltered = createSelector(
@@ -312,15 +330,24 @@ const getDuplicatesFiltered = createSelector(
 )
 
 /**
+ * Get favorite album ids based on favorites filter
+ */
+const getFavoritesFiltered = createSelector(
+  [getFiltersFavoritesOnly, getFavoriteAlbumIds],
+  (favoritesOnly, ids) => favoritesOnly && ids
+)
+
+/**
  * Intersect all filtered results and return albums as an array
  */
-const getFilteredAlbumsArray = createSelector(
+export const getFilteredAlbumsArray = createSelector(
   getAlbums,
   getSearchFiltered,
   getDateRangeFiltered,
   getAlbumGroupsFiltered,
   getVariousArtistsFiltered,
   getDuplicatesFiltered,
+  getFavoritesFiltered,
   (albums, ...filtered) => intersect(filtered.filter(Array.isArray)).map((id) => albums[id])
 )
 

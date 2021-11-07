@@ -7,6 +7,7 @@ import { AlbumGroupLabels } from 'enums'
 import { getFiltersGroups, getReleasesGroupMap } from 'state/selectors'
 import { setFilters } from 'state/actions'
 import { Button } from 'components/common'
+import FavoritesFilter from './FavoritesFilter'
 
 /**
  * Render album groups filter
@@ -25,6 +26,7 @@ function AlbumGroupsFilter() {
 
   return (
     <div className="AlbumGroupsFilter Filters__filter">
+      <FavoritesFilter />
       {AlbumGroupLabels.filter(([group]) => releasesGroupMap[group]).map(([group, label]) => (
         <Button
           title={label}

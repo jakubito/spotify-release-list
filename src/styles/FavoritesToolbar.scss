@@ -1,0 +1,10 @@
+.FavoritesToolbar {
+  display: flex;
+  justify-content: center;
+  padding: 10px 15px 5px;
+  min-height: fit-content;
+
+  .button {
+    margin: 0 8px;
+  }
+}

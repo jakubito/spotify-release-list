@@ -3,7 +3,6 @@ import {
   AUTHORIZE_START,
   AUTHORIZE_FINISHED,
   AUTHORIZE_ERROR,
-  SET_AUTH_DATA,
   SYNC_START,
   SYNC_FINISHED,
   SYNC_ERROR,
@@ -29,20 +28,17 @@ import {
   RESET_FILTERS,
   UPDATE_READY,
   DISMISS_UPDATE,
+  TOGGLE_EDITING_FAVORITES,
+  SET_FAVORITE,
+  SET_FAVORITE_ALL,
+  SET_FAVORITE_NONE,
 } from 'state/actions'
-import { buildAlbumsMap, mergeAlbumsRaw } from './helpers'
+import { buildAlbumsMap, mergeAlbumsRaw } from 'state/helpers'
+import { getAlbumsArray, getFilteredAlbumsArray, getFiltersApplied } from 'state/selectors'
 
 /** @type {State} */
-export const initialState = {
+export const INITIAL_STATE = {
   authorizing: false,
-  authData: {
-    nonce: null,
-    codeVerifier: null,
-    token: null,
-    tokenScope: null,
-    tokenExpires: null,
-    refreshToken: null,
-  },
   albums: {},
   syncing: false,
   syncingProgress: 0,
@@ -79,9 +75,12 @@ export const initialState = {
     endDate: null,
     excludeVariousArtists: false,
     excludeDuplicates: false,
+    favoritesOnly: false,
   },
   seenFeatures: [],
   updateReady: false,
+  favorites: {},
+  editingFavorites: false,
 }
 
 /**
@@ -91,28 +90,22 @@ export const initialState = {
  * @param {Action} action
  * @returns {State}
  */
-function rootReducer(state = initialState, { type, payload }) {
+function rootReducer(state = INITIAL_STATE, { type, payload }) {
   switch (type) {
     case AUTHORIZE_START:
       return { ...state, authorizing: true }
     case AUTHORIZE_FINISHED:
-      return { ...state, authorizing: false }
     case AUTHORIZE_ERROR:
-      return {
-        ...state,
-        authData: payload.resetAuthData ? initialState.authData : state.authData,
-        authorizing: false,
-      }
-    case SET_AUTH_DATA:
-      return { ...state, authData: { ...state.authData, ...payload.authData } }
+      return { ...state, authorizing: false }
     case SYNC_START:
       return {
         ...state,
         syncing: true,
         syncingProgress: 0,
         filtersVisible: false,
+        editingFavorites: false,
         filters: {
-          ...initialState.filters,
+          ...INITIAL_STATE.filters,
           excludeVariousArtists: state.filters.excludeVariousArtists,
           excludeDuplicates: state.filters.excludeDuplicates,
         },
@@ -121,6 +114,7 @@ function rootReducer(state = initialState, { type, payload }) {
       return {
         ...state,
         syncing: false,
+        favorites: {},
         previousSyncMaxDate: payload.previousSyncMaxDate,
         [payload.auto ? 'lastAutoSync' : 'lastSync']: new Date().toISOString(),
       }
@@ -131,13 +125,13 @@ function rootReducer(state = initialState, { type, payload }) {
     case SET_USER:
       return { ...state, ...payload }
     case SET_ALBUMS:
-      return setAlbums(state, payload)
+      return setAlbumsReducer(state, payload)
     case SET_SETTINGS:
       return { ...state, settings: { ...state.settings, ...payload.settings } }
     case SHOW_PLAYLIST_MODAL:
       return { ...state, playlistModalVisible: true }
     case HIDE_PLAYLIST_MODAL:
-      return { ...state, playlistModalVisible: false, playlistId: initialState.playlistId }
+      return { ...state, playlistModalVisible: false, playlistId: INITIAL_STATE.playlistId }
     case SHOW_MESSAGE:
       return { ...state, message: { ...payload } }
     case HIDE_MESSAGE:
@@ -152,7 +146,7 @@ function rootReducer(state = initialState, { type, payload }) {
     case CREATE_PLAYLIST_CANCEL:
       return { ...state, creatingPlaylist: false }
     case RESET_PLAYLIST:
-      return { ...state, playlistId: initialState.playlistId }
+      return { ...state, playlistId: INITIAL_STATE.playlistId }
     case ADD_SEEN_FEATURE:
       return { ...state, seenFeatures: [...state.seenFeatures, payload.feature] }
     case TOGGLE_FILTERS_VISIBLE:
@@ -160,28 +154,59 @@ function rootReducer(state = initialState, { type, payload }) {
     case SET_FILTERS:
       return { ...state, filters: { ...state.filters, ...payload.filters } }
     case RESET_FILTERS:
-      return { ...state, filters: initialState.filters, filtersVisible: false }
+      return { ...state, filters: INITIAL_STATE.filters, filtersVisible: false }
     case UPDATE_READY:
       return { ...state, updateReady: true }
     case DISMISS_UPDATE:
       return { ...state, updateReady: false }
+    case SET_FAVORITE:
+      return { ...state, favorites: { ...state.favorites, [payload.id]: payload.selected } }
+    case SET_FAVORITE_ALL:
+      return setFavoriteMassReducer(state, true)
+    case SET_FAVORITE_NONE:
+      return setFavoriteMassReducer(state, false)
+    case TOGGLE_EDITING_FAVORITES:
+      return { ...state, editingFavorites: !state.editingFavorites }
     case RESET:
-      return initialState
+      return INITIAL_STATE
     default:
       return state
   }
 }
 
 /**
+ * Albums reducer
+ *
  * @param {State} state
  * @param {{ albumsRaw: AlbumRaw[], artists: Artist[], minDate: string }} payload
  * @returns {State}
  */
-function setAlbums(state, { albumsRaw, artists, minDate }) {
+export function setAlbumsReducer(state, { albumsRaw, artists, minDate }) {
   const albumsRawMerged = mergeAlbumsRaw(albumsRaw, minDate)
   const albums = buildAlbumsMap(albumsRawMerged, artists)
 
   return { ...state, albums }
+}
+
+/**
+ * Mass select favorites reducer
+ *
+ * @param {State} state
+ * @param {boolean} selected
+ * @returns {State}
+ */
+export function setFavoriteMassReducer(state, selected) {
+  const filtersApplied = getFiltersApplied(state)
+  const albums = filtersApplied ? getFilteredAlbumsArray(state) : getAlbumsArray(state)
+  const favorites = albums.reduce(
+    (map, album) => {
+      map[album.id] = selected
+      return map
+    },
+    { ...state.favorites }
+  )
+
+  return { ...state, favorites }
 }
 
 export default rootReducer

@@ -128,6 +128,10 @@ body,
 }
 
 @include mobile {
+  .button {
+    justify-content: center;
+  }
+
   .button.has-badge .icon:nth-child(1) {
     margin-right: calc(-0.5em - 1px) !important;
   }
@@ -243,15 +247,25 @@ body,
 
         &::before,
         &:before {
-          background-color: $darkest !important;
+          background-color: $primary !important;
         }
 
         &::after,
         &:after {
-          background-color: $darkest !important;
-          border-color: $white-ter !important;
+          background-color: $primary !important;
+          border-color: $darkest !important;
         }
       }
+    }
+  }
+
+  &.no-label {
+    + label {
+      margin: 0;
+      padding: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: block;
     }
   }
 }

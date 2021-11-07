@@ -11,8 +11,14 @@ import {
   getFiltersApplied,
   getHasOriginalReleases,
   getWorking,
+  getEditingFavorites,
 } from 'state/selectors'
-import { showPlaylistModal, toggleFiltersVisible, resetFilters } from 'state/actions'
+import {
+  showPlaylistModal,
+  toggleFiltersVisible,
+  resetFilters,
+  toggleEditingFavorites,
+} from 'state/actions'
 import { Header, SyncButton, Button, ButtonLink, LastSync } from 'components/common'
 
 /**
@@ -27,11 +33,14 @@ function ReleasesHeader() {
   const hasOriginalReleases = useSelector(getHasOriginalReleases)
   const filtersVisible = useSelector(getFiltersVisible)
   const filtersApplied = useSelector(getFiltersApplied)
+  const editingFavorites = useSelector(getEditingFavorites)
 
   const toggleFilters = deferred(dispatch, toggleFiltersVisible())
+  const toggleFavorites = deferred(dispatch, toggleEditingFavorites())
   const openPlaylistModal = deferred(dispatch, showPlaylistModal())
 
   useHotkeys('e', openPlaylistModal, { enabled: !syncing && lastSyncDate && hasReleases })
+  useHotkeys('d', toggleFavorites, { enabled: !syncing && lastSyncDate && hasReleases })
   useHotkeys('f', toggleFilters, {
     enabled: !syncing && lastSyncDate && hasOriginalReleases,
     filter: modalsClosed,
@@ -68,14 +77,28 @@ function ReleasesHeader() {
       )}
       <div className="right">
         {lastSyncDate && hasReleases && !syncing && (
-          <Button
-            title="Export to playlist [E]"
-            icon="fas fa-upload"
-            onClick={openPlaylistModal}
-            disabled={working}
-          >
-            <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
-          </Button>
+          <>
+            <Button
+              title="Edit favorites [D]"
+              icon={classNames({
+                'fas fa-heart': !editingFavorites,
+                'far fa-heart': editingFavorites,
+              })}
+              onClick={toggleFavorites}
+              disabled={working}
+              dark={editingFavorites}
+            >
+              <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Edit</span>}</Media>
+            </Button>
+            <Button
+              title="Export to playlist [E]"
+              icon="fas fa-upload"
+              onClick={openPlaylistModal}
+              disabled={working}
+            >
+              <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
+            </Button>
+          </>
         )}
         <ButtonLink to="/settings" title="Settings [S]" icon="fas fa-cog" disabled={working}>
           <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Settings</span>}</Media>

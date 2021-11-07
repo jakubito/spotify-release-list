@@ -22,6 +22,7 @@ Display list of Spotify releases from artists you follow
 <kbd>R</kbd> Refresh  
 <kbd>S</kbd> Show settings  
 <kbd>F</kbd> Toggle filters pane  
+<kbd>D</kbd> Toggle favorites edit mode  
 <kbd>E</kbd> Export  
 <kbd>ESC</kbd> Cancel / Close active modal
 

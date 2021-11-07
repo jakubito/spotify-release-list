@@ -3,8 +3,8 @@ import { channel, buffers } from 'redux-saga'
 import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
 import { MomentFormat, Scope } from 'enums'
 import { getUser, getUserFollowedArtists, getArtistAlbums } from 'api'
-import { AuthError } from 'auth'
-import { getAuthData, getSettings, getReleasesMaxDate } from 'state/selectors'
+import { AuthError, getAuthData } from 'auth'
+import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
   setSyncingProgress,
   setUser,
@@ -58,7 +58,7 @@ function* syncMainSaga(action) {
   yield put(syncStart())
 
   /** @type {ReturnType<getAuthData>} */
-  const { token } = yield select(getAuthData)
+  const { token } = yield call(getAuthData)
   /** @type {ReturnType<getSettings>} */
   const { groups, market, days } = yield select(getSettings)
   /** @type {ReturnType<getReleasesMaxDate>} */

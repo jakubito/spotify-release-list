@@ -6,6 +6,7 @@ const CODE_CHARSET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 const AUTHORIZE_URL = 'https://accounts.spotify.com/authorize'
 const TOKEN_API_URL = 'https://accounts.spotify.com/api/token'
 const AUTH_REDIRECT_URL = process.env.REACT_APP_URL + '/auth'
+const AUTH_DATA_KEY = 'authData'
 
 /**
  * Represents an error encountered during authorization
@@ -163,4 +164,30 @@ async function tokenRequest(body) {
   }
 
   throw new AuthError(response.statusText)
+}
+
+/**
+ * Load auth data from local storage
+ *
+ * @returns {AuthData}
+ */
+export function getAuthData() {
+  const authData = localStorage.getItem(AUTH_DATA_KEY)
+  return authData ? JSON.parse(authData) : {}
+}
+
+/**
+ * Save auth data to local storage
+ *
+ * @param {AuthData} authData
+ */
+export function setAuthData(authData) {
+  localStorage.setItem(AUTH_DATA_KEY, JSON.stringify({ ...getAuthData(), ...authData }))
+}
+
+/**
+ * Clear auth data
+ */
+export function deleteAuthData() {
+  localStorage.removeItem(AUTH_DATA_KEY)
 }
