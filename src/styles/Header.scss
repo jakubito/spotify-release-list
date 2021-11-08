@@ -62,12 +62,10 @@
     display: flex;
     align-items: center;
 
-    button {
+    .button {
       margin-right: 15px;
 
       @include mobile {
-        padding-left: 1em;
-        padding-right: 1em;
         margin-right: 10px;
       }
 

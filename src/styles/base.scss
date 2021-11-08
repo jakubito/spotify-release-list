@@ -130,6 +130,11 @@ body,
 @include mobile {
   .button {
     justify-content: center;
+
+    &--compact {
+      padding-left: 1em !important;
+      padding-right: 1em !important;
+    }
   }
 
   .button.has-badge .icon:nth-child(1) {
