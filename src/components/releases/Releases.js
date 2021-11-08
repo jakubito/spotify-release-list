@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { navigate } from '@reach/router'
-import { getSyncing, getUser, getReleases, getWorking } from 'state/selectors'
+import { getSyncing, getUser, getReleases, getWorking, getEditingFavorites } from 'state/selectors'
 import { useRefChangeKey } from 'hooks'
 import { deferred } from 'helpers'
 import { VerticalLayout, Content, Centered } from 'components/common'
@@ -23,7 +23,8 @@ function Releases(props) {
   const working = useSelector(getWorking)
   const syncing = useSelector(getSyncing)
   const releases = useSelector(getReleases)
-  const key = useRefChangeKey(releases)
+  const editingFavorites = useSelector(getEditingFavorites)
+  const key = useRefChangeKey([releases, editingFavorites])
 
   useHotkeys('s', deferred(navigate, '/settings'), { enabled: !working })
 

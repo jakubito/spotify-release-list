@@ -42,14 +42,14 @@ export function useFeature(feature) {
 }
 
 /**
- * Return different key on every value change
+ * Return different key on every dependency change
  *
- * @param {any} value
+ * @param {import('react').DependencyList} dependencyList
  * @returns {number}
  */
-export function useRefChangeKey(value) {
+export function useRefChangeKey(dependencyList) {
   const keyRef = useRef(0)
-  const key = useMemo(() => (keyRef.current = 1 - keyRef.current), [value])
+  const key = useMemo(() => (keyRef.current = 1 - keyRef.current), dependencyList)
 
   return key
 }
