@@ -1,8 +1,16 @@
 import { useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { navigate } from '@reach/router'
-import { getSyncing, getUser, getReleases, getWorking, getEditingFavorites } from 'state/selectors'
-import { useRefChangeKey } from 'hooks'
+import {
+  getSyncing,
+  getUser,
+  getReleases,
+  getWorking,
+  getEditingFavorites,
+  getFiltersVisible,
+  getPlaylistModalVisible,
+} from 'state/selectors'
+import { useDynamicKey } from 'hooks'
 import { deferred } from 'helpers'
 import { VerticalLayout, Content, Centered } from 'components/common'
 import { Filters } from 'components/filters'
@@ -11,7 +19,6 @@ import ReleasesHeader from './ReleasesHeader'
 import Intro from './Intro'
 import Loading from './Loading'
 import ReleaseList from './ReleaseList'
-import FavoritesToolbar from './FavoritesToolbar'
 
 /**
  * Releases screen
@@ -23,8 +30,12 @@ function Releases(props) {
   const working = useSelector(getWorking)
   const syncing = useSelector(getSyncing)
   const releases = useSelector(getReleases)
-  const editingFavorites = useSelector(getEditingFavorites)
-  const key = useRefChangeKey([releases, editingFavorites])
+  const listKey = useDynamicKey([
+    useSelector(getEditingFavorites),
+    useSelector(getFiltersVisible),
+    useSelector(getPlaylistModalVisible),
+    releases,
+  ])
 
   useHotkeys('s', deferred(navigate, '/settings'), { enabled: !working })
 
@@ -49,14 +60,13 @@ function Releases(props) {
       return <Centered>No albums to display</Centered>
     }
 
-    return <ReleaseList releases={releases} key={key} />
+    return <ReleaseList releases={releases} key={listKey} />
   }
 
   return (
     <VerticalLayout>
       <ReleasesHeader />
       <Filters />
-      <FavoritesToolbar />
       <Content>{renderContent()}</Content>
       <PlaylistModalContainer />
     </VerticalLayout>
