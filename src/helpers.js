@@ -93,11 +93,13 @@ export function* dateRange(startDate, endDate) {
 /**
  * Create playlist name suggestion
  *
- * @param {Moment} startDate
- * @param {Moment} endDate
+ * @param {Moment} [startDate]
+ * @param {Moment} [endDate]
  * @returns {string|null}
  */
 export function playlistName(startDate, endDate) {
+  if (!startDate || !endDate) return 'New Releases'
+
   const start = startDate.format('MMM D')
   const end = endDate.format('MMM D')
 
