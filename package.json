@@ -7,8 +7,8 @@
   "license": "ISC",
   "dependencies": {
     "@reach/router": "^1.2.1",
-    "@sentry/browser": "^6.14.1",
-    "ajv": "^8.6.3",
+    "@sentry/browser": "^6.14.3",
+    "ajv": "^8.7.1",
     "bulma": "^0.9.3",
     "bulma-checkradio": "^2.1.2",
     "classnames": "^2.3.1",
@@ -24,7 +24,7 @@
     "react-colorful": "^5.5.0",
     "react-dates": "^21.8.0",
     "react-dom": "^17.0.2",
-    "react-hook-form": "^7.19.1",
+    "react-hook-form": "^7.19.4",
     "react-hotkeys-hook": "^3.4.4",
     "react-ios-pwa-prompt": "^1.8.4",
     "react-redux": "^7.2.6",
@@ -44,7 +44,7 @@
   "devDependencies": {
     "@opengovsg/credits-generator": "^1.0.6",
     "@types/jest": "^27.0.2",
-    "@types/node": "^16.11.6",
+    "@types/node": "^16.11.7",
     "@types/react": "^17.0.34",
     "@types/react-dom": "^17.0.11",
     "prettier": "^2.4.1",
