@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { toggleFiltersVisible } from 'state/actions'
+import { deferred } from 'helpers'
+import { resetFilters, toggleFiltersVisible } from 'state/actions'
 import { getFiltersApplied, getFiltersVisible } from 'state/selectors'
+import { Button } from 'components/common'
 import AlbumGroupsFilter from './AlbumGroupsFilter'
 import DateRangeFilter from './DateRangeFilter'
 import SearchFilter from './SearchFilter'
@@ -31,6 +33,11 @@ function Filters() {
       <AlbumGroupsFilter />
       <VariousArtistsFilter />
       <DuplicatesFilter />
+      {filtersApplied && (
+        <div className="Filters__filter is-hidden-tablet">
+          <Button title="Reset all filters" onClick={deferred(dispatch, resetFilters())} text />
+        </div>
+      )}
     </div>
   )
 }

@@ -17,8 +17,10 @@ function AlbumGroupsFilter() {
   const releasesGroupMap = useSelector(getReleasesGroupMap)
   const filtersGroups = useSelector(getFiltersGroups)
   const [values, setValues] = useState(filtersGroups)
+  const groupsToRender = AlbumGroupLabels.filter(([group]) => group in releasesGroupMap)
 
   useEffect(deferred(dispatch, setFilters({ groups: values })), [values])
+  useEffect(() => setValues(filtersGroups), [filtersGroups])
 
   if (Object.keys(releasesGroupMap).length === 1) {
     return null
@@ -27,7 +29,7 @@ function AlbumGroupsFilter() {
   return (
     <div className="AlbumGroupsFilter Filters__filter">
       <FavoritesFilter />
-      {AlbumGroupLabels.filter(([group]) => releasesGroupMap[group]).map(([group, label]) => (
+      {groupsToRender.map(([group, label]) => (
         <Button
           title={label}
           className={classNames('group', { active: values.includes(group) })}

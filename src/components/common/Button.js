@@ -1,3 +1,4 @@
+import { useMediaQuery } from 'react-responsive'
 import classNames from 'classnames'
 import { isString } from 'helpers'
 
@@ -23,9 +24,13 @@ function Button({
   danger,
   text,
   style,
+  compact,
 }) {
+  const isTablet = useMediaQuery({ minWidth: 769 })
   const noStyle = !dark && !darker && !primary && !danger && !text
   const content = children || title
+  const contentWrapped = isString(content) ? <span>{content}</span> : content
+  const displayContent = !compact || isTablet
 
   return (
     <button
@@ -42,6 +47,7 @@ function Button({
         'is-primary': primary,
         'is-danger': danger,
         'is-text': text,
+        'button--compact': compact,
       })}
     >
       {icon && (
@@ -49,7 +55,7 @@ function Button({
           <i className={icon} />
         </span>
       )}
-      {isString(content) ? <span>{content}</span> : content}
+      {displayContent && contentWrapped}
     </button>
   )
 }

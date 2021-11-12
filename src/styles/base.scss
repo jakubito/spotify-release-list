@@ -69,15 +69,17 @@ body,
 }
 
 .button.is-primary {
-  background-color: $primary !important;
-  color: $black !important;
+  background-color: $primary;
+  color: $black;
 
   &:hover {
-    background-color: $primary-light !important;
+    background-color: $primary-light;
+    color: $black;
   }
 
   &:active {
-    background-color: $primary-slightly-darker !important;
+    background-color: $primary-slightly-darker;
+    color: $black;
   }
 }
 
@@ -130,6 +132,11 @@ body,
 @include mobile {
   .button {
     justify-content: center;
+
+    &--compact {
+      padding-left: 1em !important;
+      padding-right: 1em !important;
+    }
   }
 
   .button.has-badge .icon:nth-child(1) {
@@ -166,6 +173,10 @@ body,
 .is-checkradio[type='radio']:focus + label::before,
 .is-checkradio[type='radio']:focus + label:before {
   outline: none;
+}
+
+.modal {
+  position: fixed;
 }
 
 .modal-content {

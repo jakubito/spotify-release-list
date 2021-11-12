@@ -154,7 +154,7 @@ function rootReducer(state = INITIAL_STATE, { type, payload }) {
     case SET_FILTERS:
       return { ...state, filters: { ...state.filters, ...payload.filters } }
     case RESET_FILTERS:
-      return { ...state, filters: INITIAL_STATE.filters, filtersVisible: false }
+      return { ...state, filters: INITIAL_STATE.filters }
     case UPDATE_READY:
       return { ...state, updateReady: true }
     case DISMISS_UPDATE:

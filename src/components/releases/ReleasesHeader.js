@@ -1,5 +1,4 @@
 import { useSelector, useDispatch } from 'react-redux'
-import Media from 'react-media'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
 import { deferred, modalsClosed } from 'helpers'
@@ -47,61 +46,75 @@ function ReleasesHeader() {
   })
 
   return (
-    <Header>
+    <Header compact={Boolean(lastSyncDate)}>
       {lastSyncDate && (
-        <div className="left">
-          <SyncButton title="Refresh" icon="fas fa-sync-alt" />
+        <div className="Header__left">
+          <SyncButton title="Refresh" icon="fas fa-sync-alt" compact />
           {!syncing && (
             <>
               {hasOriginalReleases && (
-                <Button
-                  title="Toggle Filters [F]"
-                  icon={classNames('fas', {
-                    'fa-search': !filtersVisible,
-                    'fa-minus': filtersVisible,
-                  })}
-                  onClick={toggleFilters}
-                  disabled={working}
-                  dark={filtersVisible}
-                >
-                  Filter
-                </Button>
+                <>
+                  <Button
+                    title="Edit favorites [D]"
+                    icon={classNames({
+                      'fas fa-heart': !editingFavorites,
+                      'far fa-heart': editingFavorites,
+                    })}
+                    onClick={toggleFavorites}
+                    disabled={working}
+                    dark={editingFavorites}
+                    compact
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    title="Toggle Filters [F]"
+                    icon={classNames('fas', {
+                      'fa-search': !filtersVisible,
+                      'fa-minus': filtersVisible,
+                    })}
+                    onClick={toggleFilters}
+                    disabled={working}
+                    dark={filtersVisible}
+                    compact
+                  >
+                    Filter
+                  </Button>
+                </>
               )}
               {filtersApplied && (
-                <Button title="Reset filters" onClick={deferred(dispatch, resetFilters())} text />
+                <Button
+                  title="Reset filters"
+                  className="is-hidden-mobile"
+                  onClick={deferred(dispatch, resetFilters())}
+                  text
+                />
               )}
-              <LastSync className="is-hidden-mobile" />
+              <LastSync className="is-hidden-touch is-hidden-desktop-only" />
             </>
           )}
         </div>
       )}
-      <div className="right">
+      <div className="Header__right">
         {lastSyncDate && hasReleases && !syncing && (
-          <>
-            <Button
-              title="Edit favorites [D]"
-              icon={classNames({
-                'fas fa-heart': !editingFavorites,
-                'far fa-heart': editingFavorites,
-              })}
-              onClick={toggleFavorites}
-              disabled={working}
-              dark={editingFavorites}
-            >
-              <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Edit</span>}</Media>
-            </Button>
-            <Button
-              title="Export to playlist [E]"
-              icon="fas fa-upload"
-              onClick={openPlaylistModal}
-              disabled={working}
-            >
-              <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Export</span>}</Media>
-            </Button>
-          </>
+          <Button
+            title="Export to playlist [E]"
+            icon="fas fa-upload"
+            onClick={openPlaylistModal}
+            disabled={working}
+            compact
+          >
+            Export
+          </Button>
         )}
-        <ButtonLink to="/settings" title="Settings [S]" icon="fas fa-cog" disabled={working}>
-          <Media query={{ minWidth: 769 }}>{(matches) => matches && <span>Settings</span>}</Media>
+        <ButtonLink
+          to="/settings"
+          title="Settings [S]"
+          icon="fas fa-cog"
+          disabled={working}
+          compact
+        >
+          Settings
         </ButtonLink>
       </div>
     </Header>

@@ -107,6 +107,7 @@
  *   danger?: boolean
  *   text?: boolean
  *   style?: React.CSSProperties
+ *   compact?: boolean
  * }} ButtonProps
  *
  * @typedef {{

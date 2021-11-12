@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Media from 'react-media'
+import { useMediaQuery } from 'react-responsive'
 import { DateRangePicker } from 'react-dates'
 import classNames from 'classnames'
 import { getFiltersDates, getReleasesMinMaxDates } from 'state/selectors'
@@ -19,6 +19,7 @@ function DateRangeFilter() {
   const dispatch = useDispatch()
   const filtersDates = useSelector(getFiltersDates)
   const { minDate, maxDate } = useSelector(getReleasesMinMaxDates)
+  const isPhone = useMediaQuery({ maxWidth: 425 })
 
   const [focus, setFocus] = useState(null)
   const [values, setValues] = useState({
@@ -36,42 +37,42 @@ function DateRangeFilter() {
 
   useEffect(() => {
     const { startDate, endDate } = values
+    if (!startDate || !endDate) return
 
-    if (startDate && endDate) {
-      defer(
-        dispatch,
-        setFilters({
-          startDate: startDate.format(ISO_DATE),
-          endDate: endDate.format(ISO_DATE),
-        })
-      )
-    }
+    defer(
+      dispatch,
+      setFilters({
+        startDate: startDate.format(ISO_DATE),
+        endDate: endDate.format(ISO_DATE),
+      })
+    )
   }, [values])
+
+  useEffect(() => {
+    if (filtersDates) return
+    setValues({ startDate: null, endDate: null })
+  }, [filtersDates])
 
   return (
     <div className={classNames('DateRangeFilter Filters__filter', { focused: focus })}>
-      <Media query={{ maxWidth: 425 }}>
-        {(matches) => (
-          <DateRangePicker
-            startDate={values.startDate}
-            endDate={values.endDate}
-            startDateId="startDateFilter"
-            endDateId="endDateFilter"
-            minDate={minDate}
-            maxDate={maxDate}
-            onDatesChange={setValues}
-            isOutsideRange={isOutsideRange}
-            focusedInput={focus}
-            onFocusChange={setFocus}
-            numberOfMonths={1}
-            firstDayOfWeek={1}
-            minimumNights={0}
-            verticalSpacing={10}
-            readOnly={matches}
-            hideKeyboardShortcutsPanel
-          />
-        )}
-      </Media>
+      <DateRangePicker
+        startDate={values.startDate}
+        endDate={values.endDate}
+        startDateId="startDateFilter"
+        endDateId="endDateFilter"
+        minDate={minDate}
+        maxDate={maxDate}
+        onDatesChange={setValues}
+        isOutsideRange={isOutsideRange}
+        focusedInput={focus}
+        onFocusChange={setFocus}
+        numberOfMonths={1}
+        firstDayOfWeek={1}
+        minimumNights={0}
+        verticalSpacing={10}
+        readOnly={isPhone}
+        hideKeyboardShortcutsPanel
+      />
       <DateRangeShortcuts setValues={setValues} />
       {filtersDates && <Button title="Reset" className="reset" onClick={reset} text />}
     </div>

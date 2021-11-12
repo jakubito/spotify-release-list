@@ -29,7 +29,7 @@ function NameField() {
       <div className="control">
         <Input
           id="name"
-          defaultValue={filtersDates && playlistName(filtersDates.startDate, filtersDates.endDate)}
+          defaultValue={playlistName(filtersDates?.startDate, filtersDates?.endDate)}
           className={classNames({ 'is-danger': errors.name })}
           {...nameField}
           ref={(element) => {
