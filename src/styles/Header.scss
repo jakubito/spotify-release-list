@@ -4,11 +4,7 @@
   padding: 15px;
   flex: 0 0 auto;
 
-  @include touch {
-    flex-wrap: wrap;
-  }
-
-  .title {
+  &__title {
     min-height: 40px;
     display: flex;
     align-items: center;
@@ -23,40 +19,22 @@
       text-align: left;
       flex: 0 1 auto;
     }
-
-    @include mobile-small {
-      font-size: 18px;
-    }
   }
 
-  .left {
+  &__left {
     display: flex;
     align-items: center;
-
-    @include touch {
-      order: 2;
-      flex: 0 0 100%;
-      margin-top: 15px;
-    }
-
-    @include mobile {
-      flex-wrap: wrap;
-    }
 
     .button {
       margin-right: 15px;
 
       @include mobile {
         margin-right: 10px;
-
-        &:last-of-type {
-          margin-right: 0;
-        }
       }
     }
   }
 
-  .right {
+  &__right {
     justify-content: flex-end;
     margin-left: auto;
     display: flex;

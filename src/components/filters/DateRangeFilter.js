@@ -37,17 +37,21 @@ function DateRangeFilter() {
 
   useEffect(() => {
     const { startDate, endDate } = values
+    if (!startDate || !endDate) return
 
-    if (startDate && endDate) {
-      defer(
-        dispatch,
-        setFilters({
-          startDate: startDate.format(ISO_DATE),
-          endDate: endDate.format(ISO_DATE),
-        })
-      )
-    }
+    defer(
+      dispatch,
+      setFilters({
+        startDate: startDate.format(ISO_DATE),
+        endDate: endDate.format(ISO_DATE),
+      })
+    )
   }, [values])
+
+  useEffect(() => {
+    if (filtersDates) return
+    setValues({ startDate: null, endDate: null })
+  }, [filtersDates])
 
   return (
     <div className={classNames('DateRangeFilter Filters__filter', { focused: focus })}>

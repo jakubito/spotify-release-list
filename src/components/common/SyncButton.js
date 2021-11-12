@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useMediaQuery } from 'react-responsive'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
 import { defer, modalsClosed } from 'helpers'
@@ -10,13 +11,20 @@ import { Button } from 'components/common'
 /**
  * Render sync button
  *
- * @param {{ title: string, icon?: string, medium?: boolean }} props
+ * @param {{
+ *   title: string
+ *   icon?: string
+ *   medium?: boolean
+ *   compact?: boolean
+ * }} props
  */
-function SyncButton({ title, icon, medium }) {
+function SyncButton({ title, icon, medium, compact }) {
   const dispatch = useDispatch()
   const syncing = useSelector(getSyncing)
   const working = useSelector(getWorking)
   const [disabled, setDisabled] = useState(false)
+  const isTablet = useMediaQuery({ minWidth: 769 })
+  const displayTitle = !compact || isTablet
 
   const dispatchSync = () => {
     dispatch(sync())
@@ -33,14 +41,17 @@ function SyncButton({ title, icon, medium }) {
   return (
     <Button
       title={`${title} [R]`}
-      className={classNames('SyncButton', { 'is-syncing': syncing })}
+      className={classNames('SyncButton', {
+        'SyncButton--syncing': syncing,
+        'SyncButton--compact': compact,
+      })}
       disabled={disabled}
       onClick={onClick}
       icon={icon}
       medium={medium}
       primary
     >
-      <span>{title}</span>
+      {displayTitle && <span>{title}</span>}
       {syncing && (
         <>
           <ProgressBar />

@@ -15,12 +15,13 @@ function FavoritesFilter() {
   const [selected, setSelected] = useState(favoritesOnly)
 
   useEffect(deferred(dispatch, setFilters({ favoritesOnly: selected })), [selected])
+  useEffect(() => setSelected(favoritesOnly), [favoritesOnly])
 
   return (
     <Button
       title="Favorites"
       icon="fas fa-heart"
-      className={classNames('group', { active: favoritesOnly })}
+      className={classNames('group', { active: selected })}
       onClick={() => setSelected(!selected)}
     />
   )

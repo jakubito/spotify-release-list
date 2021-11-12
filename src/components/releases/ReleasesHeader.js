@@ -46,10 +46,10 @@ function ReleasesHeader() {
   })
 
   return (
-    <Header>
+    <Header compact={Boolean(lastSyncDate)}>
       {lastSyncDate && (
-        <div className="left">
-          <SyncButton title="Refresh" icon="fas fa-sync-alt" />
+        <div className="Header__left">
+          <SyncButton title="Refresh" icon="fas fa-sync-alt" compact />
           {!syncing && (
             <>
               {hasOriginalReleases && (
@@ -83,14 +83,19 @@ function ReleasesHeader() {
                 </>
               )}
               {filtersApplied && (
-                <Button title="Reset filters" onClick={deferred(dispatch, resetFilters())} text />
+                <Button
+                  title="Reset filters"
+                  className="is-hidden-mobile"
+                  onClick={deferred(dispatch, resetFilters())}
+                  text
+                />
               )}
-              <LastSync className="is-hidden-mobile" />
+              <LastSync className="is-hidden-touch is-hidden-desktop-only" />
             </>
           )}
         </div>
       )}
-      <div className="right">
+      <div className="Header__right">
         {lastSyncDate && hasReleases && !syncing && (
           <Button
             title="Export to playlist [E]"

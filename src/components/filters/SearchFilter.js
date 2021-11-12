@@ -36,6 +36,7 @@ function SearchFilter() {
     defer(dispatch, setFilters({ search: '' }))
   }
 
+  useEffect(() => setValue(filtersSearch), [filtersSearch])
   useEffect(
     deferred(() => inputRef.current?.focus()),
     []
