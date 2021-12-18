@@ -51,6 +51,7 @@
  *   market: Market
  *   theme: string
  *   uriLinks: boolean
+ *   includeLikedSongs: boolean
  *   covers: boolean
  *   autoSync: boolean
  *   autoSyncTime: string

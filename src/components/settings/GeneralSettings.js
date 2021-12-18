@@ -6,6 +6,7 @@ import TimePeriodField from './TimePeriodField'
 import UriLinksField from './UriLinksField'
 import DataInfo from './DataInfo'
 import DataReset from './DataReset'
+import IncludeLikedSongsField from './IncludeLikedSongsField'
 
 /**
  * Render general settings fields
@@ -22,6 +23,7 @@ function GeneralSettings(props) {
       <TimePeriodField />
       <MarketField />
       <UriLinksField />
+      <IncludeLikedSongsField />
       {user && <DataInfo />}
       {hasAppData && <DataReset />}
     </div>
