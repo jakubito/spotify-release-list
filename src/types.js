@@ -196,7 +196,8 @@
  * @typedef {{ id: string, display_name: string, images: SpotifyImage[] }} SpotifyUser
  * @typedef {{ id: string, name: string }} SpotifyArtist
  * @typedef {{ id: string, name: string }} SpotifyPlaylist
- * @typedef {{ id: string }} SpotifyTrack
+ * @typedef {{ id: string, artists: SpotifyArtist[] }} SpotifyTrack
+ * @typedef {{ added_at: string, track: SpotifyTrack }} SpotifySavedTrack
  * @typedef {{ snapshot_id: string }} SpotifyPlaylistSnapshot
  *
  * @typedef {{

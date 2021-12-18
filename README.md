@@ -35,7 +35,8 @@ See [PRIVACY.md](https://github.com/jakubito/spotify-release-list/blob/master/PR
 1. Install dependencies with `yarn install`
 2. Save app url to `REACT_APP_URL` environment variable
 3. Save Spotify client ID to `REACT_APP_SPOTIFY_CLIENT_ID` environment variable
-4. Run `yarn start` to run dev server or `yarn build` to build the app
+4. Set Spotify redirect URI to the `REACT_APP_URL` plus `/auth`
+5. Run `yarn start` to run dev server or `yarn build` to build the app
 
 ## Bug reporting
 

@@ -14,7 +14,8 @@ import {
 import { authorize } from './auth'
 import { withTitle } from './helpers'
 
-const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
+const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, USER_LIBRARY_READ, PLAYLIST_MODIFY_PUBLIC } =
+  Scope
 const { TRACK } = SpotifyEntity
 
 /**
@@ -26,7 +27,11 @@ export function* createPlaylistSaga(action) {
   try {
     /** @type {ReturnType<getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
-    const scopes = [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC]
+    const scopes = [
+      USER_FOLLOW_READ,
+      isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC,
+      USER_LIBRARY_READ, // TODO: make this conditional
+    ]
     /** @type {ReturnType<withTitle>} */
     const titled = yield call(withTitle, 'Creating playlist...', createPlaylistMainSaga)
     /** @type {ReturnType<authorize>} */

@@ -2,7 +2,8 @@ import moment from 'moment'
 import { channel, buffers } from 'redux-saga'
 import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
 import { MomentFormat, Scope } from 'enums'
-import { getUser, getUserFollowedArtists, getArtistAlbums } from 'api'
+import { getUser, getArtistAlbums, getUserLikedSongArtists } from 'api'
+// import { getUser, getUserFollowedArtists, getArtistAlbums, getUserLikedSongArtists } from 'api'
 import { AuthError, getAuthData } from 'auth'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
@@ -17,7 +18,7 @@ import {
 import { authorize } from './auth'
 import { withTitle, progressWorker, requestWorker } from './helpers'
 
-const { USER_FOLLOW_READ } = Scope
+const { USER_FOLLOW_READ, USER_LIBRARY_READ } = Scope
 const { ISO_DATE } = MomentFormat
 
 /**
@@ -40,7 +41,8 @@ export function* syncSaga(action) {
     /** @type {ReturnType<withTitle>} */
     const titled = yield call(withTitle, 'Loading...', syncMainSaga, action)
     /** @type {ReturnType<authorize>} */
-    const authorized = yield call(authorize, action, [USER_FOLLOW_READ], titled)
+    // TODO: make scopes conditional here
+    const authorized = yield call(authorize, action, [USER_FOLLOW_READ, USER_LIBRARY_READ], titled)
 
     yield call(authorized)
   } catch (error) {
@@ -66,8 +68,11 @@ function* syncMainSaga(action) {
 
   /** @type {Await<ReturnType<getUser>>} */
   const user = yield call(getUser, token)
-  /** @type {Await<ReturnType<getUserFollowedArtists>>} */
-  const artists = yield call(getUserFollowedArtists, token)
+  // /** @type {Await<ReturnType<getUserFollowedArtists>>} */
+  // const artists = yield call(getUserFollowedArtists, token)
+  // TODO: make this a setting here
+  /** @type {Await<ReturnType<getUserLikedSongArtists>>} */
+  const artists = yield call(getUserLikedSongArtists, token)
 
   /** @type {AlbumRaw[]} */
   const albums = []

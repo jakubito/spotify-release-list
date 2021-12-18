@@ -14,6 +14,7 @@ export const Address = {
 /** @enum {string} */
 export const Scope = {
   USER_FOLLOW_READ: 'user-follow-read',
+  USER_LIBRARY_READ: 'user-library-read',
   PLAYLIST_MODIFY_PRIVATE: 'playlist-modify-private',
   PLAYLIST_MODIFY_PUBLIC: 'playlist-modify-public',
 }

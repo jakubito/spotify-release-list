@@ -65,6 +65,42 @@ export async function getUserFollowedArtists(token) {
 }
 
 /**
+ * Return the artists whose songs the user has liked
+ *
+ * @param {string} token
+ * @returns {Promise<Artist[]>}
+ */
+export async function getUserLikedSongArtists(token) {
+  /** @type {Artist[]} */
+  const artists = []
+  const params = new URLSearchParams({ limit: String(50) })
+
+  let next = apiUrl(`me/tracks?${params}`)
+
+  // TODO: consider this more -- can we get all artists? cache them?
+  // This only pulls the latest to avoid rate limiting, need to investigate more
+  let limit = 5
+
+  while (next && limit > 0) {
+    /** @type Paged<SpotifySavedTrack> */
+    const response = await get(next, token)
+    console.log(response)
+
+    const allArtists = response.items.map((item) => item.track.artists).flat()
+    const nextArtists = allArtists.map(buildArtist)
+
+    artists.push(...nextArtists)
+    next = response.next
+    limit = limit + -1
+  }
+
+  // Remove duplicate artists
+  const uniqueArtists = [...new Set(artists)]
+
+  return uniqueArtists
+}
+
+/**
  * Return an artist's albums
  *
  * @param {string} token
