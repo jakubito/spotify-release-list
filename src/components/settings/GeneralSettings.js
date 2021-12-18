@@ -8,6 +8,7 @@ import DataInfo from './DataInfo'
 import DataReset from './DataReset'
 import FirstDayOfWeekField from './FirstDayOfWeekField'
 import FetchExtraDataField from './FetchExtraDataField'
+import IncludeLikedSongsField from './IncludeLikedSongsField'
 import LabelBlocklistField from './LabelBlocklistField'
 
 /**
@@ -25,6 +26,7 @@ function GeneralSettings() {
       <MarketField />
       <FirstDayOfWeekField />
       <UriLinksField />
+      <IncludeLikedSongsField />
       <LabelBlocklistField />
       {user && <DataInfo />}
       {hasAppData && <DataReset />}

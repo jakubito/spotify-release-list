@@ -94,9 +94,15 @@ function Album({ album }) {
  * @param {{ album: Album, uriLinks: boolean }} props
  */
 function renderArtists({ album, uriLinks }) {
-  const primary = Object.values(album.artists)
-    .flat()
-    .map((artist) => renderArtist({ artist, uriLinks, className: 'Album__artist' }))
+  const primaryArtists = [...new Set(Object.values(album.artists).flat())]
+
+  const uniquePrimaryArtists = [
+    ...new Map(primaryArtists.map((artist) => [artist['id'], artist])).values(),
+  ]
+
+  const primary = uniquePrimaryArtists.map((artist) =>
+    renderArtist({ artist, uriLinks, className: 'Album__artist' })
+  )
   const other = album.otherArtists.map((artist) =>
     renderArtist({ artist, uriLinks, className: 'Album__artist Album__artist--other' })
   )

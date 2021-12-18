@@ -4,7 +4,7 @@ import mergeWith from 'lodash/mergeWith'
 import random from 'lodash/random'
 import { colord } from 'colord'
 import * as Sentry from '@sentry/browser'
-import { AlbumGroup, AlbumGroupIndex, MomentFormat } from 'enums'
+import { AlbumGroup, AlbumGroupIndex, MomentFormat, Scope } from 'enums'
 
 const { ISO_DATE } = MomentFormat
 const NOTIFICATION_ICON = `${process.env.REACT_APP_URL}/android-chrome-192x192.png`
@@ -459,4 +459,43 @@ export function deleteLabels(albumsMap, labelsList) {
 export function calculatePageSize(width, height) {
   const estimate = Math.round((width * height) / 20_000)
   return Math.max(20, Math.min(100, estimate))
+}
+
+/**
+ * Get the Spotify auth scopes for playlist creation.
+ *
+ * @param {PlaylistForm} playlistForm
+ * @returns {string[]}
+ */
+export function getPlaylistScopes(playlistForm) {
+  const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
+
+  let scopes = [USER_FOLLOW_READ]
+  const { isPrivate } = playlistForm
+
+  if (isPrivate) {
+    scopes.push(PLAYLIST_MODIFY_PRIVATE)
+  } else {
+    scopes.push(PLAYLIST_MODIFY_PUBLIC)
+  }
+
+  return scopes
+}
+
+/**
+ * Get the Spotify auth scopes for artist collection.
+ *
+ * @param {Settings} settings
+ * @returns {string[]}
+ */
+export function getScopes(settings) {
+  const { USER_FOLLOW_READ, USER_LIBRARY_READ } = Scope
+  const { includeLikedSongs } = settings
+
+  let scopes = [USER_FOLLOW_READ]
+
+  if (includeLikedSongs) {
+    scopes.push(USER_LIBRARY_READ)
+  }
+  return []
 }
