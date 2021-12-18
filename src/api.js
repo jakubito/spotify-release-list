@@ -79,12 +79,11 @@ export async function getUserLikedSongArtists(token) {
 
   // TODO: consider this more -- can we get all artists? cache them?
   // This only pulls the latest to avoid rate limiting, need to investigate more
-  let limit = 5
+  let limit = 12
 
   while (next && limit > 0) {
     /** @type Paged<SpotifySavedTrack> */
     const response = await get(next, token)
-    console.log(response)
 
     const allArtists = response.items.map((item) => item.track.artists).flat()
     const nextArtists = allArtists.map(buildArtist)

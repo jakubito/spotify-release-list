@@ -284,25 +284,37 @@ export function captureException(error) {
 }
 
 /**
- * Generates the list of scopes for Spotify authentication.
+ * Get the Spotify auth scopes for playlist creation.
+ *
+ * @param {PlaylistForm} playlistForm
+ * @returns {string[]}
+ */
+export function getPlaylistScopes(playlistForm) {
+  const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
+
+  let scopes = [USER_FOLLOW_READ]
+  const { isPrivate } = playlistForm
+
+  if (isPrivate) {
+    scopes.push(PLAYLIST_MODIFY_PRIVATE)
+  } else {
+    scopes.push(PLAYLIST_MODIFY_PUBLIC)
+  }
+
+  return scopes
+}
+
+/**
+ * Get the Spotify auth scopes for artist collection.
  *
  * @param {Settings} settings
  * @returns {string[]}
  */
 export function getScopes(settings) {
-  const { USER_FOLLOW_READ, USER_LIBRARY_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } =
-    Scope
+  const { USER_FOLLOW_READ, USER_LIBRARY_READ } = Scope
   const { includeLikedSongs } = settings
-  // TODO: handle isPrivate from playlist form, potentially move flag to settings
-  // const { includeLikedSongs, isPrivate } = settings
 
   let scopes = [USER_FOLLOW_READ]
-
-  // if (isPrivate) {
-  //   scopes.push(PLAYLIST_MODIFY_PRIVATE)
-  // } else {
-  //   scopes.push(PLAYLIST_MODIFY_PUBLIC)
-  // }
 
   if (includeLikedSongs) {
     scopes.push(USER_LIBRARY_READ)
