@@ -5,7 +5,7 @@ import { defer } from 'helpers'
 import HelpText from './HelpText'
 
 /**
- * Render URI / URL links field
+ * Include liked songs field
  */
 function IncludeLikedSongsField() {
   const includeLikedSongs = useSelector(getIncludeLikedSongs)
