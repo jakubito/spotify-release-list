@@ -27,6 +27,7 @@ export function* createPlaylistSaga(action) {
   try {
     /** @type {ReturnType<getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
+    // TODO: move this to helpers
     const scopes = [
       USER_FOLLOW_READ,
       isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC,

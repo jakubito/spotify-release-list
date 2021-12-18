@@ -26,6 +26,7 @@ You might be hesitant to allow a 3rd party app to acces your data (I know I am).
 - `user-follow-read` - The only required scope. This allows the app to get the list of artists you follow.
 - `playlist-modify-private` - Allows the app to export releases to a new private playlist.
 - `playlist-modify-public` - Allows the app to export releases to a new public playlist.
+  // TODO: update this
 
 All scopes are asked for progressively (only when they are needed). You can use the app with the default (read-only) scope just fine.
 

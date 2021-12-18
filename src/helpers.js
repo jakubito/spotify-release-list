@@ -2,7 +2,7 @@ import mergeWith from 'lodash/mergeWith'
 import random from 'lodash/random'
 import { colord } from 'colord'
 import * as Sentry from '@sentry/browser'
-import { AlbumGroup, MomentFormat } from 'enums'
+import { AlbumGroup, MomentFormat, Scope } from 'enums'
 
 const { ISO_DATE } = MomentFormat
 const NOTIFICATION_ICON = `${process.env.REACT_APP_URL}/android-chrome-192x192.png`
@@ -281,4 +281,31 @@ export function modalsClosed() {
  */
 export function captureException(error) {
   Sentry.captureException(error, { contexts: error.contexts })
+}
+
+/**
+ * Generates the list of scopes for Spotify authentication.
+ *
+ * @param {Settings} settings
+ * @returns {string[]}
+ */
+export function getScopes(settings) {
+  const { USER_FOLLOW_READ, USER_LIBRARY_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } =
+    Scope
+  const { includeLikedSongs } = settings
+  // TODO: handle isPrivate from playlist form, potentially move flag to settings
+  // const { includeLikedSongs, isPrivate } = settings
+
+  let scopes = [USER_FOLLOW_READ]
+
+  // if (isPrivate) {
+  //   scopes.push(PLAYLIST_MODIFY_PRIVATE)
+  // } else {
+  //   scopes.push(PLAYLIST_MODIFY_PUBLIC)
+  // }
+
+  if (includeLikedSongs) {
+    scopes.push(USER_LIBRARY_READ)
+  }
+  return []
 }
