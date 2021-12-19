@@ -63,6 +63,7 @@
  *   startDate?: string
  *   endDate?: string
  *   excludeVariousArtists: boolean
+ *   excludeRemixes: boolean
  *   excludeDuplicates: boolean
  *   favoritesOnly: boolean
  * }} Filters

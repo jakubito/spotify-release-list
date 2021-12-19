@@ -9,6 +9,7 @@ import DateRangeFilter from './DateRangeFilter'
 import SearchFilter from './SearchFilter'
 import VariousArtistsFilter from './VariousArtistsFilter'
 import DuplicatesFilter from './DuplicatesFilter'
+import RemixesFilter from './RemixesFilter'
 
 /**
  * Render filters
@@ -32,6 +33,7 @@ function Filters() {
       <DateRangeFilter />
       <AlbumGroupsFilter />
       <VariousArtistsFilter />
+      <RemixesFilter />
       <DuplicatesFilter />
       {filtersApplied && (
         <div className="Filters__filter is-hidden-tablet">
