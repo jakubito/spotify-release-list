@@ -77,11 +77,7 @@ export async function getUserLikedSongArtists(token) {
 
   let next = apiUrl(`me/tracks?${params}`)
 
-  // TODO: consider this more -- can we get all artists? cache them?
-  // This only pulls the latest to avoid rate limiting, need to investigate more
-  let limit = 12
-
-  while (next && limit > 0) {
+  while (next) {
     /** @type Paged<SpotifySavedTrack> */
     const response = await get(next, token)
 
@@ -91,7 +87,6 @@ export async function getUserLikedSongArtists(token) {
 
     artists.push(...nextArtists)
     next = response.next
-    limit = limit + -1
   }
 
   // Remove duplicate artists

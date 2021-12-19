@@ -22,7 +22,10 @@ function IncludeLikedSongsField() {
     <div className="LikedSongsField Settings__field field">
       <label className="label has-text-light">
         Liked songs{' '}
-        <HelpText>If enabled, this will include artists whose songs you've liked.</HelpText>
+        <HelpText>
+          If enabled, this will include artists whose songs you've liked. This will make fetching
+          much slower.
+        </HelpText>
       </label>
       <div className="control">
         <div className="field">
