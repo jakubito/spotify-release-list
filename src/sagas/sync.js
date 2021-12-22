@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { channel, buffers } from 'redux-saga'
 import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
-import { MomentFormat, Scope } from 'enums'
+import { MomentFormat } from 'enums'
 import { getUser, getUserFollowedArtists, getArtistAlbums, getUserLikedSongArtists } from 'api'
 import { AuthError, getAuthData } from 'auth'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
