@@ -9,40 +9,42 @@ const { MONTH_NAME } = MomentFormat
 /**
  * Date range filter shortcuts definition
  *
- * @type {DateRangeShortcut[]}
+ * @returns {DateRangeShortcut[]}
  */
-const shortcuts = [
-  {
-    title: 'Today',
-    start: moment().startOf('day'),
-    end: moment().endOf('day'),
-  },
-  {
-    title: 'Yesterday',
-    start: moment().subtract(1, 'day').startOf('day'),
-    end: moment().subtract(1, 'day').endOf('day'),
-  },
-  {
-    title: 'This week',
-    start: moment().startOf('isoWeek'),
-    end: moment().endOf('isoWeek'),
-  },
-  {
-    title: 'Last week',
-    start: moment().subtract(1, 'week').startOf('isoWeek'),
-    end: moment().subtract(1, 'week').endOf('isoWeek'),
-  },
-  {
-    title: (start) => start.format(MONTH_NAME),
-    start: moment().startOf('month'),
-    end: moment().endOf('month'),
-  },
-  {
-    title: (start) => start.format(MONTH_NAME),
-    start: moment().subtract(1, 'month').startOf('month'),
-    end: moment().subtract(1, 'month').endOf('month'),
-  },
-]
+function getShortcuts() {
+  return [
+    {
+      title: 'Today',
+      start: moment().startOf('day'),
+      end: moment().endOf('day'),
+    },
+    {
+      title: 'Yesterday',
+      start: moment().subtract(1, 'day').startOf('day'),
+      end: moment().subtract(1, 'day').endOf('day'),
+    },
+    {
+      title: 'This week',
+      start: moment().startOf('week'),
+      end: moment().endOf('week'),
+    },
+    {
+      title: 'Last week',
+      start: moment().subtract(1, 'week').startOf('week'),
+      end: moment().subtract(1, 'week').endOf('week'),
+    },
+    {
+      title: (start) => start.format(MONTH_NAME),
+      start: moment().startOf('month'),
+      end: moment().endOf('month'),
+    },
+    {
+      title: (start) => start.format(MONTH_NAME),
+      start: moment().subtract(1, 'month').startOf('month'),
+      end: moment().subtract(1, 'month').endOf('month'),
+    },
+  ]
+}
 
 /**
  * Render date range filter shortcuts
@@ -51,7 +53,7 @@ const shortcuts = [
  */
 function DateRangeShortcuts({ setValues }) {
   const { minDate, maxDate } = useSelector(getReleasesMinMaxDates)
-  const validShortcuts = shortcuts.filter(
+  const validShortcuts = getShortcuts().filter(
     ({ start, end }) => start.isBefore(maxDate) && end.isAfter(minDate)
   )
 

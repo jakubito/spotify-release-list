@@ -55,6 +55,7 @@
  *   autoSync: boolean
  *   autoSyncTime: string
  *   notifications: boolean
+ *   firstDayOfWeek: number
  * }} Settings
  *
  * @typedef {{

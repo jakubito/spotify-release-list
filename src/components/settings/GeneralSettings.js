@@ -6,6 +6,7 @@ import TimePeriodField from './TimePeriodField'
 import UriLinksField from './UriLinksField'
 import DataInfo from './DataInfo'
 import DataReset from './DataReset'
+import FirstDayOfWeekField from './FirstDayOfWeekField'
 
 /**
  * Render general settings fields
@@ -21,6 +22,7 @@ function GeneralSettings(props) {
       <AlbumGroupsField />
       <TimePeriodField />
       <MarketField />
+      <FirstDayOfWeekField />
       <UriLinksField />
       {user && <DataInfo />}
       {hasAppData && <DataReset />}

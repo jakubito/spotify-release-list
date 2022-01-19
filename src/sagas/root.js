@@ -19,6 +19,7 @@ import { createPlaylistSaga } from './playlist'
 import { autoSyncSaga } from './automation'
 import { updateSaga } from './update'
 import { notificationSaga } from './notification'
+import { firstDayOfWeekUpdateSaga } from './locale'
 
 /**
  * Root saga
@@ -26,6 +27,7 @@ import { notificationSaga } from './notification'
 export function* rootSaga() {
   yield take(HYDRATE)
   yield takeEvery(SET_SETTINGS, themeUpdateSaga)
+  yield takeEvery(SET_SETTINGS, firstDayOfWeekUpdateSaga)
   yield takeEvery(RESET, deleteAuthData)
   yield takeEvery(AUTHORIZE_ERROR, authorizeErrorSaga)
   yield takeLeading(AUTHORIZE, authorizeSaga)
