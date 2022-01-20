@@ -4,10 +4,8 @@ import ThemeField from './ThemeField'
 
 /**
  * Render appearance settings fields
- *
- * @param {RouteComponentProps} props
  */
-function AppearanceSettings(props) {
+function AppearanceSettings() {
   return (
     <div className="fade-in">
       <GroupColorsField />

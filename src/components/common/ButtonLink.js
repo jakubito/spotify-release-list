@@ -1,4 +1,4 @@
-import { navigate, useMatch } from '@reach/router'
+import { useMatch, useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
 import { deferred } from 'helpers'
 import { Button } from '.'
@@ -10,6 +10,7 @@ import { Button } from '.'
  */
 function ButtonLink({ to, match, activeClass, className, ...buttonProps }) {
   const active = useMatch(match || to)
+  const navigate = useNavigate()
 
   return (
     <Button

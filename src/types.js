@@ -216,7 +216,6 @@
 /**
  * Imported types
  *
- * @typedef {import('@reach/router').RouteComponentProps} RouteComponentProps
  * @typedef {import('redux-persist').PersistedState & State} PersistedState
  * @typedef {import('redux-saga').Task} Task
  * @typedef {moment.Moment} Moment

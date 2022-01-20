@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { navigate } from '@reach/router'
+import { useNavigate } from 'react-router-dom'
 import { getSyncing, getUser, getReleases, getWorking, getEditingFavorites } from 'state/selectors'
 import { useDynamicKey } from 'hooks'
 import { deferred } from 'helpers'
@@ -14,10 +14,9 @@ import ReleaseList from './ReleaseList'
 
 /**
  * Releases screen
- *
- * @param {RouteComponentProps} props
  */
-function Releases(props) {
+function Releases() {
+  const navigate = useNavigate()
   const user = useSelector(getUser)
   const working = useSelector(getWorking)
   const syncing = useSelector(getSyncing)

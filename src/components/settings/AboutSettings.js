@@ -5,10 +5,8 @@ const { GITHUB_PROFILE, DONATE, EMAIL, GITHUB, PRIVACY, CREDITS, CHANGELOG } = A
 
 /**
  * Render about section
- *
- * @param {RouteComponentProps} props
  */
-function AboutSettings(props) {
+function AboutSettings() {
   return (
     <VerticalLayout className="AboutSettings fade-in">
       <div className="AboutSettings__item">

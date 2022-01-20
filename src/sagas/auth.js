@@ -1,5 +1,4 @@
-import { call, fork, put, take } from 'redux-saga/effects'
-import { navigate } from '@reach/router'
+import { call, put } from 'redux-saga/effects'
 import { captureException } from 'helpers'
 import {
   AuthError,
@@ -13,15 +12,7 @@ import {
   startAuthFlow,
   validateAuthRequest,
 } from 'auth'
-import {
-  authorizeStart,
-  authorizeFinished,
-  authorizeError,
-  showErrorMessage,
-  SYNC_START,
-  CREATE_PLAYLIST_START,
-  AUTHORIZE_ERROR,
-} from 'state/actions'
+import { authorizeStart, authorizeFinished, authorizeError, showErrorMessage } from 'state/actions'
 
 /**
  * Authorization wrapper saga
@@ -30,21 +21,12 @@ import {
  */
 export function* authorizeSaga(action) {
   try {
-    yield fork(redirectWhenReady)
     yield call(authorizeMainSaga, action)
   } catch (error) {
     yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
     yield put(authorizeError(error instanceof AuthError))
     yield call(captureException, error)
   }
-}
-
-/**
- * Redirect to root after action has started or authorization error is encountered
- */
-function* redirectWhenReady() {
-  yield take([SYNC_START, CREATE_PLAYLIST_START, AUTHORIZE_ERROR])
-  yield call(/** @type {Navigate} */ (navigate), '/')
 }
 
 /**

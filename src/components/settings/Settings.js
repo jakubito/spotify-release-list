@@ -1,5 +1,5 @@
 import { useHotkeys } from 'react-hotkeys-hook'
-import { navigate } from '@reach/router'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { deferred, modalsClosed } from 'helpers'
 import { VerticalLayout, HorizontalLayout, Content } from 'components/common'
 import SettingsHeader from './SettingsHeader'
@@ -7,10 +7,10 @@ import SettingsMenu from './SettingsMenu'
 
 /**
  * Settings screen
- *
- * @param {RouteComponentProps & { children: React.ReactNode }} props
  */
-function Settings({ children }) {
+function Settings() {
+  const navigate = useNavigate()
+
   useHotkeys('esc, enter', deferred(navigate, '/'), {
     filter: modalsClosed,
     enableOnTags: ['INPUT', 'SELECT'],
@@ -22,7 +22,9 @@ function Settings({ children }) {
       <Content className="Settings__content">
         <HorizontalLayout className="Settings__layout">
           <SettingsMenu />
-          <div className="Settings__children">{children}</div>
+          <div className="Settings__children">
+            <Outlet />
+          </div>
         </HorizontalLayout>
       </Content>
     </VerticalLayout>

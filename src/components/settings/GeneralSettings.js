@@ -10,10 +10,8 @@ import FirstDayOfWeekField from './FirstDayOfWeekField'
 
 /**
  * Render general settings fields
- *
- * @param {RouteComponentProps} props
  */
-function GeneralSettings(props) {
+function GeneralSettings() {
   const user = useSelector(getUser)
   const hasAppData = useSelector(getHasAppData)
 
