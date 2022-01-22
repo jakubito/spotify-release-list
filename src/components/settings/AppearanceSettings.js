@@ -1,4 +1,5 @@
 import CoversField from './CoversField'
+import DisplayTracksField from './DisplayTracksField'
 import GroupColorsField from './GroupColorsField'
 import ThemeField from './ThemeField'
 
@@ -11,6 +12,7 @@ function AppearanceSettings() {
       <GroupColorsField />
       <ThemeField />
       <CoversField />
+      <DisplayTracksField />
     </div>
   )
 }

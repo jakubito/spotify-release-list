@@ -233,6 +233,7 @@ describe('buildAlbumRaw', () => {
       artists: [{ id: 'testId', name: 'Test Artist' }],
       release_date: 'testReleaseDate',
       album_group: 'single',
+      total_tracks: 20,
     }
     const actual = buildAlbumRaw(spotifyAlbum, 'testArtistId')
     const expected = {

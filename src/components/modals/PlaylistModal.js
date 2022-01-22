@@ -3,7 +3,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useForm, FormProvider } from 'react-hook-form'
 import { useModal } from 'hooks'
 import { createPlaylist, setPlaylistForm } from 'state/actions'
-import { getCreatingPlaylist, getPlaylistId, getReleasesCount } from 'state/selectors'
+import {
+  getCreatingPlaylist,
+  getPlaylistId,
+  getReleasesArray,
+  getReleasesTrackCount,
+} from 'state/selectors'
 import { PlaylistForm, PlaylistInfo, PlaylistLoading } from 'components/playlist'
 
 /**
@@ -12,7 +17,8 @@ import { PlaylistForm, PlaylistInfo, PlaylistLoading } from 'components/playlist
  * @param {{ closeModal: () => void }} props
  */
 function PlaylistModal({ closeModal }) {
-  const releasesCount = useSelector(getReleasesCount)
+  const albums = useSelector(getReleasesArray)
+  const totalTrackCount = useSelector(getReleasesTrackCount)
   const creatingPlaylist = useSelector(getCreatingPlaylist)
   const playlistId = useSelector(getPlaylistId)
   const [submitTriggered, setSubmitTriggered] = useState(false)
@@ -40,8 +46,10 @@ function PlaylistModal({ closeModal }) {
         <div className="modal-background" onClick={closeModal} />
         <div className="modal-content has-background-black-bis has-text-light fade-in">
           <h4 className="title is-4 has-text-light has-text-centered">
-            Exporting <span className="has-text-primary">{releasesCount}</span>{' '}
-            {releasesCount > 1 ? 'releases' : 'release'}
+            Exporting <span className="has-text-primary">{albums.length}</span>{' '}
+            {albums.length > 1 ? 'releases' : 'release'} (
+            <span className="has-text-primary">{totalTrackCount}</span>&nbsp;
+            {totalTrackCount > 1 ? 'tracks' : 'track'})
           </h4>
           {renderContent()}
         </div>

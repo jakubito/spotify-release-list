@@ -68,6 +68,7 @@ export const INITIAL_STATE = {
     autoSyncTime: '08:00',
     notifications: true,
     firstDayOfWeek: 0,
+    displayTracks: false,
   },
   filters: {
     groups: [],

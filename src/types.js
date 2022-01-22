@@ -56,6 +56,7 @@
  *   autoSyncTime: string
  *   notifications: boolean
  *   firstDayOfWeek: number
+ *   displayTracks: boolean
  * }} Settings
  *
  * @typedef {{
@@ -73,6 +74,7 @@
  *   name: string
  *   image: string
  *   releaseDate: string
+ *   totalTracks: number
  * }} AlbumBase
  *
  * @typedef {AlbumBase & {
@@ -191,6 +193,7 @@
  *   artists: SpotifyArtist[]
  *   release_date: string
  *   album_group: AlbumGroup
+ *   total_tracks: number
  * }} SpotifyAlbum
  *
  * @typedef {{ width: number, height: number, url: string }} SpotifyImage

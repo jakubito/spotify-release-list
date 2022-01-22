@@ -17,14 +17,11 @@ function Auth() {
   const firstRender = useRef(true)
 
   useEffect(() => {
-    dispatch(authorize(location.search))
-  }, [])
-
-  useEffect(() => {
     if (!firstRender.current) navigate('/')
   }, [syncing, creatingPlaylist, message])
 
   useEffect(() => {
+    dispatch(authorize(location.search))
     firstRender.current = false
   }, [])
 
