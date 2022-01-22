@@ -73,6 +73,9 @@ export const getFavorites = (state) => state.favorites
 /** @param {State} state */
 export const getEditingFavorites = (state) => state.editingFavorites
 
+/** @param {State} state */
+export const getLastSettingsPath = (state) => state.lastSettingsPath
+
 // Individual settings selectors
 export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups)
 export const getSettingsGroupColors = createSelector(

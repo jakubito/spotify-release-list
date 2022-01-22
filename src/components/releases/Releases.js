@@ -1,7 +1,14 @@
 import { useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useNavigate } from 'react-router-dom'
-import { getSyncing, getUser, getReleases, getWorking, getEditingFavorites } from 'state/selectors'
+import {
+  getSyncing,
+  getUser,
+  getReleases,
+  getWorking,
+  getEditingFavorites,
+  getLastSettingsPath,
+} from 'state/selectors'
 import { useDynamicKey } from 'hooks'
 import { deferred } from 'helpers'
 import { VerticalLayout, Content, Centered } from 'components/common'
@@ -21,10 +28,11 @@ function Releases() {
   const working = useSelector(getWorking)
   const syncing = useSelector(getSyncing)
   const editingFavorites = useSelector(getEditingFavorites)
+  const lastSettingsPath = useSelector(getLastSettingsPath)
   const releases = useSelector(getReleases)
   const listKey = useDynamicKey([editingFavorites, releases])
 
-  useHotkeys('s', deferred(navigate, '/settings'), { enabled: !working })
+  useHotkeys('s', deferred(navigate, lastSettingsPath || '/settings'), { enabled: !working })
 
   const renderContent = () => {
     if (!user) {

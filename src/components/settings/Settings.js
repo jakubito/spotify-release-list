@@ -1,6 +1,9 @@
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { deferred, modalsClosed } from 'helpers'
+import { setLastSettingsPath } from 'state/actions'
 import { VerticalLayout, HorizontalLayout, Content } from 'components/common'
 import SettingsHeader from './SettingsHeader'
 import SettingsMenu from './SettingsMenu'
@@ -9,7 +12,13 @@ import SettingsMenu from './SettingsMenu'
  * Settings screen
  */
 function Settings() {
+  const location = useLocation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(setLastSettingsPath(location.pathname))
+  }, [location])
 
   useHotkeys('esc, enter', deferred(navigate, '/'), {
     filter: modalsClosed,

@@ -22,6 +22,7 @@
  *   updateReady: boolean
  *   favorites: Favorites
  *   editingFavorites: boolean
+ *   lastSettingsPath?: string
  * }} State
  *
  * @typedef {{

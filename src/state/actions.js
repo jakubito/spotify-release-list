@@ -37,6 +37,7 @@ export const SET_FAVORITE = 'SET_FAVORITE'
 export const SET_FAVORITE_ALL = 'SET_FAVORITE_ALL'
 export const SET_FAVORITE_NONE = 'SET_FAVORITE_NONE'
 export const TOGGLE_EDITING_FAVORITES = 'TOGGLE_EDITING_FAVORITES'
+export const SET_LAST_SETTINGS_PATH = 'SET_LAST_SETTINGS_PATH'
 
 /**
  * Create action object
@@ -237,4 +238,11 @@ export function setFavoriteNone() {
 
 export function toggleEditingFavorites() {
   return action(TOGGLE_EDITING_FAVORITES)
+}
+
+/**
+ * @param {string} path
+ */
+export function setLastSettingsPath(path) {
+  return action(SET_LAST_SETTINGS_PATH, { path })
 }
