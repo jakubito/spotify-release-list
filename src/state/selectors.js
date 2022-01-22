@@ -73,6 +73,9 @@ export const getFavorites = (state) => state.favorites
 /** @param {State} state */
 export const getEditingFavorites = (state) => state.editingFavorites
 
+/** @param {State} state */
+export const getLastSettingsPath = (state) => state.lastSettingsPath
+
 // Individual settings selectors
 export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups)
 export const getSettingsGroupColors = createSelector(
@@ -370,14 +373,21 @@ export const getReleases = createSelector(
 )
 
 /**
- * Get final releases count
+ * Get final releases array
  */
-export const getReleasesCount = createSelector(
+export const getReleasesArray = createSelector(
   [getFiltersApplied, getFilteredAlbumsArray, getAlbumsArray],
-  (filtersApplied, filtered, original) => (filtersApplied ? filtered.length : original.length)
+  (filtersApplied, filtered, original) => (filtersApplied ? filtered : original)
 )
 
 /**
- * Check if there are any releases (original / filtered)
+ * Check if there are any releases currently displayed
  */
-export const getHasReleases = createSelector(getReleasesCount, (count) => Boolean(count))
+export const getHasReleases = createSelector(getReleasesArray, (albums) => Boolean(albums.length))
+
+/**
+ * Get final releases track count
+ */
+export const getReleasesTrackCount = createSelector(getReleasesArray, (albums) =>
+  albums.reduce((count, album) => count + album.totalTracks, 0)
+)

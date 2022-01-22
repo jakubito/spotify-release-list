@@ -1,14 +1,13 @@
 import { useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { navigate } from '@reach/router'
+import { useNavigate } from 'react-router-dom'
 import {
   getSyncing,
   getUser,
   getReleases,
   getWorking,
   getEditingFavorites,
-  getFiltersVisible,
-  getPlaylistModalVisible,
+  getLastSettingsPath,
 } from 'state/selectors'
 import { useDynamicKey } from 'hooks'
 import { deferred } from 'helpers'
@@ -22,22 +21,18 @@ import ReleaseList from './ReleaseList'
 
 /**
  * Releases screen
- *
- * @param {RouteComponentProps} props
  */
-function Releases(props) {
+function Releases() {
+  const navigate = useNavigate()
   const user = useSelector(getUser)
   const working = useSelector(getWorking)
   const syncing = useSelector(getSyncing)
+  const editingFavorites = useSelector(getEditingFavorites)
+  const lastSettingsPath = useSelector(getLastSettingsPath)
   const releases = useSelector(getReleases)
-  const listKey = useDynamicKey([
-    useSelector(getEditingFavorites),
-    useSelector(getFiltersVisible),
-    useSelector(getPlaylistModalVisible),
-    releases,
-  ])
+  const listKey = useDynamicKey([editingFavorites, releases])
 
-  useHotkeys('s', deferred(navigate, '/settings'), { enabled: !working })
+  useHotkeys('s', deferred(navigate, lastSettingsPath || '/settings'), { enabled: !working })
 
   const renderContent = () => {
     if (!user) {

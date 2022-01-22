@@ -22,6 +22,7 @@
  *   updateReady: boolean
  *   favorites: Favorites
  *   editingFavorites: boolean
+ *   lastSettingsPath?: string
  * }} State
  *
  * @typedef {{
@@ -55,6 +56,8 @@
  *   autoSync: boolean
  *   autoSyncTime: string
  *   notifications: boolean
+ *   firstDayOfWeek: number
+ *   displayTracks: boolean
  * }} Settings
  *
  * @typedef {{
@@ -72,6 +75,7 @@
  *   name: string
  *   image: string
  *   releaseDate: string
+ *   totalTracks: number
  * }} AlbumBase
  *
  * @typedef {AlbumBase & {
@@ -190,6 +194,7 @@
  *   artists: SpotifyArtist[]
  *   release_date: string
  *   album_group: AlbumGroup
+ *   total_tracks: number
  * }} SpotifyAlbum
  *
  * @typedef {{ width: number, height: number, url: string }} SpotifyImage
@@ -215,7 +220,6 @@
 /**
  * Imported types
  *
- * @typedef {import('@reach/router').RouteComponentProps} RouteComponentProps
  * @typedef {import('redux-persist').PersistedState & State} PersistedState
  * @typedef {import('redux-saga').Task} Task
  * @typedef {moment.Moment} Moment

@@ -9,7 +9,7 @@ import ReleaseDay from './ReleaseDay'
  * @param {{ releases: Releases }} props
  */
 function ReleaseList({ releases }) {
-  const { cursor, slice, next, reset } = usePaginate(releases, 50)
+  const { cursor, slice, next, reset } = usePaginate(releases, 100)
 
   return (
     <>

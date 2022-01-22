@@ -15,13 +15,13 @@ function CoversField() {
   return (
     <div className="CoversField Settings__field field">
       <label className="label has-text-light" htmlFor="covers">
-        Album covers <HelpText>(turn off to use less data)</HelpText>
+        Album cover <HelpText>(turn off to use less data)</HelpText>
       </label>
       <div className="control">
         <div className="field">
           <Checkbox
             id="covers"
-            label="Display album covers"
+            label="Display album cover"
             defaultChecked={covers}
             onChange={(event) => defer(dispatch, setSettings({ covers: event.target.checked }))}
           />

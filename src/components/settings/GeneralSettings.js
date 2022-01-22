@@ -6,13 +6,12 @@ import TimePeriodField from './TimePeriodField'
 import UriLinksField from './UriLinksField'
 import DataInfo from './DataInfo'
 import DataReset from './DataReset'
+import FirstDayOfWeekField from './FirstDayOfWeekField'
 
 /**
  * Render general settings fields
- *
- * @param {RouteComponentProps} props
  */
-function GeneralSettings(props) {
+function GeneralSettings() {
   const user = useSelector(getUser)
   const hasAppData = useSelector(getHasAppData)
 
@@ -21,6 +20,7 @@ function GeneralSettings(props) {
       <AlbumGroupsField />
       <TimePeriodField />
       <MarketField />
+      <FirstDayOfWeekField />
       <UriLinksField />
       {user && <DataInfo />}
       {hasAppData && <DataReset />}

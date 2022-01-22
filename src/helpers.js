@@ -220,6 +220,7 @@ export function buildAlbumRaw(source, artistId) {
     albumArtists: source.artists.map(buildArtist),
     releaseDate: source.release_date,
     artistIds: { [source.album_group]: [artistId] },
+    totalTracks: source.total_tracks,
   }
 }
 

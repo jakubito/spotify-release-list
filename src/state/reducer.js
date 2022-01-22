@@ -32,6 +32,7 @@ import {
   SET_FAVORITE,
   SET_FAVORITE_ALL,
   SET_FAVORITE_NONE,
+  SET_LAST_SETTINGS_PATH,
 } from 'state/actions'
 import { buildAlbumsMap, mergeAlbumsRaw } from 'state/helpers'
 import { getAlbumsArray, getFilteredAlbumsArray, getFiltersApplied } from 'state/selectors'
@@ -67,6 +68,8 @@ export const INITIAL_STATE = {
     autoSync: false,
     autoSyncTime: '08:00',
     notifications: true,
+    firstDayOfWeek: 0,
+    displayTracks: false,
   },
   filters: {
     groups: [],
@@ -81,6 +84,7 @@ export const INITIAL_STATE = {
   updateReady: false,
   favorites: {},
   editingFavorites: false,
+  lastSettingsPath: null,
 }
 
 /**
@@ -122,8 +126,9 @@ function rootReducer(state = INITIAL_STATE, { type, payload }) {
     case SYNC_CANCEL:
       return { ...state, syncing: false }
     case SET_SYNCING_PROGRESS:
+      return { ...state, syncingProgress: payload.syncingProgress }
     case SET_USER:
-      return { ...state, ...payload }
+      return { ...state, user: payload.user }
     case SET_ALBUMS:
       return setAlbumsReducer(state, payload)
     case SET_SETTINGS:
@@ -167,6 +172,8 @@ function rootReducer(state = INITIAL_STATE, { type, payload }) {
       return setFavoriteMassReducer(state, false)
     case TOGGLE_EDITING_FAVORITES:
       return { ...state, editingFavorites: !state.editingFavorites }
+    case SET_LAST_SETTINGS_PATH:
+      return { ...state, lastSettingsPath: payload.path }
     case RESET:
       return INITIAL_STATE
     default:

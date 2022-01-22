@@ -26,9 +26,8 @@ function* update() {
   const stateChange = yield call(serviceWorkerEventChannel, workerToActivate, 'statechange')
   yield call([workerToActivate, workerToActivate.postMessage], { type: 'SKIP_WAITING' })
 
-  while (true) {
+  while (workerToActivate.state !== 'activated') {
     yield take(stateChange)
-    if (workerToActivate.state === 'activated') break
   }
 
   yield call(stateChange.close)

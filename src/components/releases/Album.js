@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import classNames from 'classnames'
-import {
-  getEditingFavorites,
-  getFavorites,
-  getSettingsCovers,
-  getSettingsGroupColors,
-  getSettingsUriLinks,
-} from 'state/selectors'
+import { getEditingFavorites, getFavorites, getSettings } from 'state/selectors'
 import { setFavorite } from 'state/actions'
 import { defer, spotifyLink } from 'helpers'
 import { SpotifyEntity } from 'enums'
@@ -21,11 +15,9 @@ const { ALBUM, ARTIST } = SpotifyEntity
  * @param {{ album: Album }} props
  */
 function Album({ album }) {
-  const { id, name, image, artists } = album
+  const { id, name, image, artists, totalTracks } = album
   const dispatch = useDispatch()
-  const groupColors = useSelector(getSettingsGroupColors)
-  const covers = useSelector(getSettingsCovers)
-  const uriLinks = useSelector(getSettingsUriLinks)
+  const { groupColors, covers, uriLinks, displayTracks } = useSelector(getSettings)
   const favorites = useSelector(getFavorites)
   const editingFavorites = useSelector(getEditingFavorites)
   const [checked, setChecked] = useState(Boolean(favorites[id]))
@@ -68,10 +60,13 @@ function Album({ album }) {
           </Anchor>
         )}
       </div>
-      <div className="media-content">
-        <Anchor title={name} href={link} color={groupColors[mainGroup]} className="Album__title">
-          {name}
-        </Anchor>
+      <div className="Album__content media-content">
+        <div className="Album__title-row">
+          <Anchor title={name} href={link} color={groupColors[mainGroup]} className="Album__title">
+            {name}
+          </Anchor>
+          {displayTracks && <span className="Album__tracks">{totalTracks}</span>}
+        </div>
         {renderArtists({ album, uriLinks })}
       </div>
     </article>

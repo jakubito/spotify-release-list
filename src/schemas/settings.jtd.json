@@ -18,6 +18,8 @@
     "autoSync": { "type": "boolean" },
     "autoSyncTime": { "type": "string" },
     "notifications": { "type": "boolean" },
+    "firstDayOfWeek": { "type": "uint16" },
+    "displayTracks": { "type": "boolean" },
     "market": {
       "enum": [
         "",

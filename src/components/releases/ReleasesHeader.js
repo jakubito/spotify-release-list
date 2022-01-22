@@ -11,6 +11,7 @@ import {
   getHasOriginalReleases,
   getWorking,
   getEditingFavorites,
+  getLastSettingsPath,
 } from 'state/selectors'
 import {
   showPlaylistModal,
@@ -33,6 +34,7 @@ function ReleasesHeader() {
   const filtersVisible = useSelector(getFiltersVisible)
   const filtersApplied = useSelector(getFiltersApplied)
   const editingFavorites = useSelector(getEditingFavorites)
+  const lastSettingsPath = useSelector(getLastSettingsPath)
 
   const toggleFilters = deferred(dispatch, toggleFiltersVisible())
   const toggleFavorites = deferred(dispatch, toggleEditingFavorites())
@@ -108,7 +110,7 @@ function ReleasesHeader() {
           </Button>
         )}
         <ButtonLink
-          to="/settings"
+          to={lastSettingsPath || '/settings'}
           title="Settings [S]"
           icon="fas fa-cog"
           disabled={working}

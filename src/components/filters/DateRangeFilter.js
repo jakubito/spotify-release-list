@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
 import { DateRangePicker } from 'react-dates'
 import classNames from 'classnames'
-import { getFiltersDates, getReleasesMinMaxDates } from 'state/selectors'
+import { getFiltersDates, getReleasesMinMaxDates, getSettings } from 'state/selectors'
 import { setFilters } from 'state/actions'
 import { defer } from 'helpers'
 import { MomentFormat } from 'enums'
@@ -19,6 +19,7 @@ function DateRangeFilter() {
   const dispatch = useDispatch()
   const filtersDates = useSelector(getFiltersDates)
   const { minDate, maxDate } = useSelector(getReleasesMinMaxDates)
+  const { firstDayOfWeek } = useSelector(getSettings)
   const isPhone = useMediaQuery({ maxWidth: 425 })
 
   const [focus, setFocus] = useState(null)
@@ -67,7 +68,7 @@ function DateRangeFilter() {
         focusedInput={focus}
         onFocusChange={setFocus}
         numberOfMonths={1}
-        firstDayOfWeek={1}
+        firstDayOfWeek={firstDayOfWeek}
         minimumNights={0}
         verticalSpacing={10}
         readOnly={isPhone}

@@ -122,12 +122,25 @@
     filter: brightness(0.92);
   }
 
-  &__title {
-    display: block;
-    font-size: 1.25rem;
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__title-row {
     margin-top: 4px;
     margin-bottom: 5px;
+    font-size: 1.25rem;
     line-height: 1.2;
+
+    @include theme(compact) {
+      margin-top: 1px;
+      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+  }
+
+  &__title {
     color: $primary-slightly-darker;
     text-decoration: none;
 
@@ -135,14 +148,22 @@
       text-decoration-line: underline;
     }
 
-    @include theme(compact) {
-      font-size: 1rem;
-      margin-top: 1px;
-      margin-bottom: 4px;
-    }
-
     @include theme(single-column) {
       width: fit-content;
+    }
+  }
+
+  &__tracks {
+    font-size: 1rem;
+    padding: 1px 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+    background-color: $black-ter;
+    color: $grey-light;
+    border-radius: 4px;
+
+    @include theme(compact) {
+      font-size: 0.75rem;
     }
   }
 

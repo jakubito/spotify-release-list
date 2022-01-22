@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { navigate } from '@reach/router'
+import { useNavigate } from 'react-router-dom'
 import { reset } from 'state/actions'
 import { deferred } from 'helpers'
 import { Button } from 'components/common'
@@ -11,6 +11,7 @@ import { ResetModal } from 'components/modals'
  */
 function DataReset() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [modalVisible, setModalVisible] = useState(false)
 
   const resetData = deferred(() => {

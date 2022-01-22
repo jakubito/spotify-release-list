@@ -11,7 +11,7 @@ import HelpText from './HelpText'
 /**
  * Import settings from JSON
  *
- * @param {RouteComponentProps & { parse: SettingsParser }} props
+ * @param {{ parse: SettingsParser }} props
  */
 function LoadSettingsField({ parse }) {
   const dispatch = useDispatch()

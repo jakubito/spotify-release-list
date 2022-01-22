@@ -7,7 +7,7 @@ import { Button } from 'components/common'
 /**
  * Render current settings as JSON
  *
- * @param {RouteComponentProps & { serialize: SettingsSerializer }} props
+ * @param {{ serialize: SettingsSerializer }} props
  */
 function CurrentSettingsField({ serialize }) {
   /** @type {React.MutableRefObject<HTMLTextAreaElement>} */

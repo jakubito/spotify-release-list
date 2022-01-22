@@ -1,1 +1,6 @@
-/* /index.html 200
+/auth                 /index.html 200
+/settings             /index.html 200
+/settings/appearance  /index.html 200
+/settings/automation  /index.html 200
+/settings/backup      /index.html 200
+/settings/about       /index.html 200

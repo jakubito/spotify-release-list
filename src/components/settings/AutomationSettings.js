@@ -4,10 +4,8 @@ import NotificationsField from './NotificationsField'
 
 /**
  * Render automation settings screen
- *
- * @param {RouteComponentProps} props
  */
-function AutomationSettings(props) {
+function AutomationSettings() {
   return (
     <div className="fade-in">
       <article className="message is-dark">

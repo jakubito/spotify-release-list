@@ -11,10 +11,8 @@ const parse = ajv.compileParser(schema)
 
 /**
  * Render settings backup screen
- *
- * @param {RouteComponentProps} props
  */
-function BackupSettings(props) {
+function BackupSettings() {
   return (
     <div className="fade-in">
       <CurrentSettingsField serialize={serialize} />
