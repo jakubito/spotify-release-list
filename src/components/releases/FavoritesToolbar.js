@@ -29,8 +29,8 @@ function FavoritesToolbar({ resetList }) {
 
   return (
     <div className="FavoritesToolbar">
-      <Button title="Add all" icon="fas fa-check" onClick={addAll} darker small />
-      <Button title="Remove all" icon="fas fa-times" onClick={removeAll} darker small />
+      <Button title="Add all" icon="fas fa-plus" onClick={addAll} darker small />
+      <Button title="Remove all" icon="fas fa-minus" onClick={removeAll} darker small />
     </div>
   )
 }

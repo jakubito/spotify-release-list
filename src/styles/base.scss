@@ -26,9 +26,7 @@
 
 html,
 body,
-#root,
-// reach-router's wrapper
-#root > div:first-child {
+#root {
   height: 100%;
   background-color: $black;
   color: $white-ter;
