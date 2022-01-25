@@ -29,8 +29,18 @@ function FavoritesToolbar({ resetList }) {
 
   return (
     <div className="FavoritesToolbar">
-      <Button title="Add all" icon="fas fa-plus" onClick={addAll} darker small />
-      <Button title="Remove all" icon="fas fa-minus" onClick={removeAll} darker small />
+      <Button title="Add all albums to favorites" icon="fas fa-plus" onClick={addAll} darker small>
+        Add all
+      </Button>
+      <Button
+        title="Remove all albums from favorites"
+        icon="fas fa-minus"
+        onClick={removeAll}
+        darker
+        small
+      >
+        Remove all
+      </Button>
     </div>
   )
 }
