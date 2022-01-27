@@ -21,7 +21,7 @@ function Auth() {
   }, [syncing, creatingPlaylist, message])
 
   useEffect(() => {
-    dispatch(authorize(location.search))
+    dispatch(authorize({ locationSearch: location.search }))
     firstRender.current = false
   }, [])
 

@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from 'redux'
+import { configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer, createMigrate } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import localForage from 'localforage'
@@ -33,14 +33,9 @@ const persistConfig = {
   ],
 }
 
-const composeEnhancers = /** @type {any} */ (window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const reducer = persistReducer(persistConfig, rootReducer)
 const sagaMiddleware = createSagaMiddleware({ onError: captureException })
-
-/** @type {import('redux').Store<State>} */
-const store = createStore(
-  persistReducer(persistConfig, rootReducer),
-  composeEnhancers(applyMiddleware(sagaMiddleware))
-)
+const store = configureStore({ reducer, middleware: [sagaMiddleware] })
 
 /** @type {import('redux-persist').Persistor} */
 export let persistor

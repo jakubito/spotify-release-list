@@ -26,9 +26,8 @@ function PlaylistInfo({ closeModal }) {
         <ButtonAnchor
           title={name}
           href={spotifyLink(id, PLAYLIST, uriLinks)}
-          icon="fas fa-music"
           className="PlaylistInfo__link"
-          primary
+          text
         >
           {name}
         </ButtonAnchor>

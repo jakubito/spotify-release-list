@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getEditingFavorites, getHasReleases } from 'state/selectors'
 import { Button } from 'components/common'
 import { deferred } from 'helpers'
-import { setFavoriteAll, setFavoriteNone } from 'state/actions'
+import { setFavoriteAll } from 'state/actions'
 
 /**
  * Render favorites edit mode toolbar
@@ -16,12 +16,12 @@ function FavoritesToolbar({ resetList }) {
 
   const addAll = deferred(() => {
     resetList()
-    dispatch(setFavoriteAll())
+    dispatch(setFavoriteAll(true))
   })
 
   const removeAll = deferred(() => {
     resetList()
-    dispatch(setFavoriteNone())
+    dispatch(setFavoriteAll(false))
   })
 
   if (!editingFavorites) return null

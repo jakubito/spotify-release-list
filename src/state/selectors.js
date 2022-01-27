@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { createDraftSafeSelector } from '@reduxjs/toolkit'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
@@ -375,7 +376,7 @@ export const getReleases = createSelector(
 /**
  * Get final releases array
  */
-export const getReleasesArray = createSelector(
+export const getReleasesArray = createDraftSafeSelector(
   [getFiltersApplied, getFilteredAlbumsArray, getAlbumsArray],
   (filtersApplied, filtered, original) => (filtersApplied ? filtered : original)
 )

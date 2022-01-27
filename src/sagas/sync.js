@@ -6,13 +6,13 @@ import { getUser, getUserFollowedArtists, getArtistAlbums } from 'api'
 import { AuthError, getAuthData } from 'auth'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
+  saveAlbums,
   setSyncingProgress,
   setUser,
-  syncStart,
-  syncFinished,
-  syncError,
-  setAlbums,
   showErrorMessage,
+  syncError,
+  syncFinished,
+  syncStart,
 } from 'state/actions'
 import { authorize } from './auth'
 import { withTitle, progressWorker, requestWorker } from './helpers'
@@ -44,7 +44,7 @@ export function* syncSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
+    yield put(showErrorMessage(error instanceof AuthError && error.message))
     yield put(syncError())
   }
 }
@@ -107,6 +107,6 @@ function* syncMainSaga(action) {
   yield delay(LOADING_ANIMATION)
 
   yield put(setUser(user))
-  yield put(setAlbums(albums, artists, minDate))
-  yield put(syncFinished(previousSyncMaxDate, action.payload.auto))
+  yield put(saveAlbums({ artists, minDate, albumsRaw: albums }))
+  yield put(syncFinished({ previousSyncMaxDate, auto: action.payload?.auto }))
 }

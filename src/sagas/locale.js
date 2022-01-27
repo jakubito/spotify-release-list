@@ -6,7 +6,7 @@ import moment from 'moment'
  * @param {SetSettingsAction} action
  */
 export function firstDayOfWeekUpdateSaga(action) {
-  const { firstDayOfWeek } = action.payload.settings
+  const { firstDayOfWeek } = action.payload
 
   if (firstDayOfWeek === undefined) return
 

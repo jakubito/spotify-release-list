@@ -23,8 +23,8 @@ export function* authorizeSaga(action) {
   try {
     yield call(authorizeMainSaga, action)
   } catch (error) {
-    yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
-    yield put(authorizeError(error instanceof AuthError))
+    yield put(showErrorMessage(error instanceof AuthError && error.message))
+    yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
     yield call(captureException, error)
   }
 }
@@ -72,7 +72,7 @@ export function authorize(action, scopes, saga, ...args) {
         yield call(triggerNewAuthFlow, action, scopes.join(' '))
       }
     } catch (error) {
-      yield put(authorizeError(error instanceof AuthError))
+      yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
       yield call(captureException, error)
 
       throw error
@@ -121,7 +121,7 @@ function* triggerNewAuthFlow(action, scope) {
  * @param {AuthorizeErrorAction} action
  */
 export function* authorizeErrorSaga(action) {
-  if (action.payload.resetAuthData) {
+  if (action.payload?.resetAuthData) {
     yield call(deleteAuthData)
   }
 }

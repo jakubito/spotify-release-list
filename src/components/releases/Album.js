@@ -29,7 +29,7 @@ function Album({ album }) {
     if (!editingFavorites) return
 
     setChecked(!checked)
-    defer(dispatch, setFavorite(id, !checked))
+    defer(dispatch, setFavorite({ id, selected: !checked }))
     event.preventDefault()
   }
 

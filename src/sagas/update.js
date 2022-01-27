@@ -1,12 +1,12 @@
 import { call, fork, put, spawn, take, takeLeading } from 'redux-saga/effects'
-import { TRIGGER_UPDATE, updateReady } from 'state/actions'
+import { triggerUpdate, updateReady } from 'state/actions'
 import { serviceWorkerEventChannel, throttle, windowEventChannel } from './helpers'
 
 /**
  * Main update saga
  */
 export function* updateSaga() {
-  yield takeLeading(TRIGGER_UPDATE, update)
+  yield takeLeading(triggerUpdate.type, update)
   yield fork(appFocusCheck)
   yield fork(waitingCheck)
 }

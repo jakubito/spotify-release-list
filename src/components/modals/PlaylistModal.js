@@ -75,7 +75,7 @@ function useOnSubmit(setSubmitTriggered) {
     const description = formData.description.trim()
     const isPrivate = formData.visibility === 'private'
 
-    dispatch(setPlaylistForm(name, description, isPrivate))
+    dispatch(setPlaylistForm({ name, description, isPrivate }))
     dispatch(createPlaylist())
   }
 

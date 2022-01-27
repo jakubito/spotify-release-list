@@ -1,41 +1,42 @@
+import { createReducer } from '@reduxjs/toolkit'
 import { AlbumGroup, GroupColorSchemes } from 'enums'
 import {
-  AUTHORIZE_START,
-  AUTHORIZE_FINISHED,
-  AUTHORIZE_ERROR,
-  SYNC_START,
-  SYNC_FINISHED,
-  SYNC_ERROR,
-  SYNC_CANCEL,
-  SET_SYNCING_PROGRESS,
-  SET_USER,
-  SET_ALBUMS,
-  RESET,
-  SET_SETTINGS,
-  SHOW_PLAYLIST_MODAL,
-  HIDE_PLAYLIST_MODAL,
-  SHOW_MESSAGE,
-  HIDE_MESSAGE,
-  SET_PLAYLIST_FORM,
-  CREATE_PLAYLIST_START,
-  CREATE_PLAYLIST_FINISHED,
-  CREATE_PLAYLIST_ERROR,
-  CREATE_PLAYLIST_CANCEL,
-  RESET_PLAYLIST,
-  ADD_SEEN_FEATURE,
-  TOGGLE_FILTERS_VISIBLE,
-  SET_FILTERS,
-  RESET_FILTERS,
-  UPDATE_READY,
-  DISMISS_UPDATE,
-  TOGGLE_EDITING_FAVORITES,
-  SET_FAVORITE,
-  SET_FAVORITE_ALL,
-  SET_FAVORITE_NONE,
-  SET_LAST_SETTINGS_PATH,
+  addSeenFeature,
+  authorizeError,
+  authorizeFinished,
+  authorizeStart,
+  createPlaylistCancel,
+  createPlaylistError,
+  createPlaylistFinished,
+  createPlaylistStart,
+  dismissUpdate,
+  hideMessage,
+  hidePlaylistModal,
+  reset,
+  resetFilters,
+  resetPlaylist,
+  saveAlbums,
+  setFavorite,
+  setFavoriteAll,
+  setFilters,
+  setLastSettingsPath,
+  setPlaylistForm,
+  setSettings,
+  setSyncingProgress,
+  setUser,
+  showErrorMessage,
+  showMessage,
+  showPlaylistModal,
+  syncCancel,
+  syncError,
+  syncFinished,
+  syncStart,
+  toggleEditingFavorites,
+  toggleFiltersVisible,
+  updateReady,
 } from 'state/actions'
 import { buildAlbumsMap, mergeAlbumsRaw } from 'state/helpers'
-import { getAlbumsArray, getFilteredAlbumsArray, getFiltersApplied } from 'state/selectors'
+import { getReleasesArray } from 'state/selectors'
 
 /** @type {State} */
 export const INITIAL_STATE = {
@@ -87,133 +88,125 @@ export const INITIAL_STATE = {
   lastSettingsPath: null,
 }
 
-/**
- * State root reducer
- *
- * @param {State} state
- * @param {Action} action
- * @returns {State}
- */
-function rootReducer(state = INITIAL_STATE, { type, payload }) {
-  switch (type) {
-    case AUTHORIZE_START:
-      return { ...state, authorizing: true }
-    case AUTHORIZE_FINISHED:
-    case AUTHORIZE_ERROR:
-      return { ...state, authorizing: false }
-    case SYNC_START:
-      return {
-        ...state,
-        syncing: true,
-        syncingProgress: 0,
-        filtersVisible: false,
-        editingFavorites: false,
-        filters: {
-          ...INITIAL_STATE.filters,
-          excludeVariousArtists: state.filters.excludeVariousArtists,
-          excludeDuplicates: state.filters.excludeDuplicates,
-        },
+const rootReducer = createReducer(INITIAL_STATE, (builder) => {
+  builder
+    .addCase(authorizeStart, (state) => {
+      state.authorizing = true
+    })
+    .addCase(authorizeFinished, (state) => {
+      state.authorizing = false
+    })
+    .addCase(authorizeError, (state) => {
+      state.authorizing = false
+    })
+    .addCase(syncStart, (state) => {
+      state.syncing = true
+      state.syncingProgress = 0
+      state.filtersVisible = false
+      state.editingFavorites = false
+      state.filters = {
+        ...INITIAL_STATE.filters,
+        excludeVariousArtists: state.filters.excludeVariousArtists,
+        excludeDuplicates: state.filters.excludeDuplicates,
       }
-    case SYNC_FINISHED:
-      return {
-        ...state,
-        syncing: false,
-        favorites: {},
-        previousSyncMaxDate: payload.previousSyncMaxDate,
-        [payload.auto ? 'lastAutoSync' : 'lastSync']: new Date().toISOString(),
+    })
+    .addCase(syncFinished, (state, action) => {
+      state.syncing = false
+      state.favorites = {}
+      state.previousSyncMaxDate = action.payload.previousSyncMaxDate
+      state[action.payload.auto ? 'lastAutoSync' : 'lastSync'] = new Date().toISOString()
+    })
+    .addCase(syncError, (state) => {
+      state.syncing = false
+    })
+    .addCase(syncCancel, (state) => {
+      state.syncing = false
+    })
+    .addCase(setSyncingProgress, (state, action) => {
+      state.syncingProgress = action.payload
+    })
+    .addCase(setUser, (state, action) => {
+      state.user = action.payload
+    })
+    .addCase(saveAlbums, (state, action) => {
+      const merged = mergeAlbumsRaw(action.payload.albumsRaw, action.payload.minDate)
+      state.albums = buildAlbumsMap(merged, action.payload.artists)
+    })
+    .addCase(setSettings, (state, action) => {
+      Object.assign(state.settings, action.payload)
+    })
+    .addCase(showPlaylistModal, (state) => {
+      state.playlistModalVisible = true
+    })
+    .addCase(hidePlaylistModal, (state) => {
+      state.playlistModalVisible = false
+      state.playlistId = null
+    })
+    .addCase(showMessage, (state, action) => {
+      state.message = { text: action.payload, type: 'normal' }
+    })
+    .addCase(showErrorMessage, (state, action) => {
+      const text = action.payload || 'Oops! Something went wrong.'
+      state.message = { text, type: 'error' }
+    })
+    .addCase(hideMessage, (state) => {
+      state.message = null
+    })
+    .addCase(setPlaylistForm, (state, action) => {
+      state.playlistForm = action.payload
+    })
+    .addCase(createPlaylistStart, (state) => {
+      state.creatingPlaylist = true
+      state.playlistModalVisible = true
+    })
+    .addCase(createPlaylistFinished, (state, action) => {
+      state.creatingPlaylist = false
+      state.playlistId = action.payload.id
+    })
+    .addCase(createPlaylistError, (state) => {
+      state.creatingPlaylist = false
+    })
+    .addCase(createPlaylistCancel, (state) => {
+      state.creatingPlaylist = false
+    })
+    .addCase(resetPlaylist, (state) => {
+      state.playlistId = null
+    })
+    .addCase(addSeenFeature, (state, action) => {
+      state.seenFeatures.push(action.payload)
+    })
+    .addCase(toggleFiltersVisible, (state) => {
+      state.filtersVisible = !state.filtersVisible
+    })
+    .addCase(setFilters, (state, action) => {
+      Object.assign(state.filters, action.payload)
+    })
+    .addCase(resetFilters, (state) => {
+      Object.assign(state.filters, INITIAL_STATE.filters)
+    })
+    .addCase(updateReady, (state) => {
+      state.updateReady = true
+    })
+    .addCase(dismissUpdate, (state) => {
+      state.updateReady = false
+    })
+    .addCase(setFavorite, (state, action) => {
+      state.favorites[action.payload.id] = action.payload.selected
+    })
+    .addCase(setFavoriteAll, (state, action) => {
+      for (const album of getReleasesArray(state)) {
+        state.favorites[album.id] = action.payload
       }
-    case SYNC_ERROR:
-    case SYNC_CANCEL:
-      return { ...state, syncing: false }
-    case SET_SYNCING_PROGRESS:
-      return { ...state, syncingProgress: payload.syncingProgress }
-    case SET_USER:
-      return { ...state, user: payload.user }
-    case SET_ALBUMS:
-      return setAlbumsReducer(state, payload)
-    case SET_SETTINGS:
-      return { ...state, settings: { ...state.settings, ...payload.settings } }
-    case SHOW_PLAYLIST_MODAL:
-      return { ...state, playlistModalVisible: true }
-    case HIDE_PLAYLIST_MODAL:
-      return { ...state, playlistModalVisible: false, playlistId: INITIAL_STATE.playlistId }
-    case SHOW_MESSAGE:
-      return { ...state, message: { ...payload } }
-    case HIDE_MESSAGE:
-      return { ...state, message: null }
-    case SET_PLAYLIST_FORM:
-      return { ...state, playlistForm: { ...payload } }
-    case CREATE_PLAYLIST_START:
-      return { ...state, creatingPlaylist: true, playlistModalVisible: true }
-    case CREATE_PLAYLIST_FINISHED:
-      return { ...state, creatingPlaylist: false, playlistId: payload.id }
-    case CREATE_PLAYLIST_ERROR:
-    case CREATE_PLAYLIST_CANCEL:
-      return { ...state, creatingPlaylist: false }
-    case RESET_PLAYLIST:
-      return { ...state, playlistId: INITIAL_STATE.playlistId }
-    case ADD_SEEN_FEATURE:
-      return { ...state, seenFeatures: [...state.seenFeatures, payload.feature] }
-    case TOGGLE_FILTERS_VISIBLE:
-      return { ...state, filtersVisible: !state.filtersVisible }
-    case SET_FILTERS:
-      return { ...state, filters: { ...state.filters, ...payload.filters } }
-    case RESET_FILTERS:
-      return { ...state, filters: INITIAL_STATE.filters }
-    case UPDATE_READY:
-      return { ...state, updateReady: true }
-    case DISMISS_UPDATE:
-      return { ...state, updateReady: false }
-    case SET_FAVORITE:
-      return { ...state, favorites: { ...state.favorites, [payload.id]: payload.selected } }
-    case SET_FAVORITE_ALL:
-      return setFavoriteMassReducer(state, true)
-    case SET_FAVORITE_NONE:
-      return setFavoriteMassReducer(state, false)
-    case TOGGLE_EDITING_FAVORITES:
-      return { ...state, editingFavorites: !state.editingFavorites }
-    case SET_LAST_SETTINGS_PATH:
-      return { ...state, lastSettingsPath: payload.path }
-    case RESET:
-      return INITIAL_STATE
-    default:
-      return state
-  }
-}
-
-/**
- * Albums reducer
- *
- * @param {State} state
- * @param {{ albumsRaw: AlbumRaw[], artists: Artist[], minDate: string }} payload
- * @returns {State}
- */
-export function setAlbumsReducer(state, { albumsRaw, artists, minDate }) {
-  const albumsRawMerged = mergeAlbumsRaw(albumsRaw, minDate)
-  const albums = buildAlbumsMap(albumsRawMerged, artists)
-
-  return { ...state, albums }
-}
-
-/**
- * Mass select favorites reducer
- *
- * @param {State} state
- * @param {boolean} selected
- * @returns {State}
- */
-export function setFavoriteMassReducer(state, selected) {
-  const filtersApplied = getFiltersApplied(state)
-  const albums = filtersApplied ? getFilteredAlbumsArray(state) : getAlbumsArray(state)
-  const favorites = albums.reduce(
-    (map, album) => {
-      map[album.id] = selected
-      return map
-    },
-    { ...state.favorites }
-  )
-
-  return { ...state, favorites }
-}
+    })
+    .addCase(toggleEditingFavorites, (state) => {
+      state.editingFavorites = !state.editingFavorites
+    })
+    .addCase(setLastSettingsPath, (state, action) => {
+      state.lastSettingsPath = action.payload
+    })
+    .addCase(reset, (state) => {
+      Object.assign(state, INITIAL_STATE)
+    })
+})
 
 export default rootReducer

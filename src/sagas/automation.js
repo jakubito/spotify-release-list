@@ -3,15 +3,13 @@ import moment from 'moment'
 import {
   autoSyncStart,
   autoSyncStop,
+  reset,
+  setSettings,
+  setUser,
   sync,
-  AUTO_SYNC_START,
-  AUTO_SYNC_STOP,
-  SYNC_CANCEL,
-  SYNC_ERROR,
-  SYNC_FINISHED,
-  SET_SETTINGS,
-  SET_USER,
-  RESET,
+  syncCancel,
+  syncError,
+  syncFinished,
 } from 'state/actions'
 import { getLastAutoSync, getLastSync, getSettings, getUser } from 'state/selectors'
 import { takeLeadingCancellable, windowEventChannel } from './helpers'
@@ -25,10 +23,10 @@ const POLLING_INTERVAL = 60 * 1000
  * Main auto sync saga
  */
 export function* autoSyncSaga() {
-  yield takeLeadingCancellable(AUTO_SYNC_START, AUTO_SYNC_STOP, autoSyncManager)
-  yield takeEvery(SET_SETTINGS, settingWatcher)
-  yield takeEvery(SET_USER, userWatcher)
-  yield takeEvery(RESET, resetWatcher)
+  yield takeLeadingCancellable(autoSyncStart.type, autoSyncStop.type, autoSyncManager)
+  yield takeEvery(setSettings.type, settingWatcher)
+  yield takeEvery(setUser.type, userWatcher)
+  yield takeEvery(reset.type, resetWatcher)
   yield fork(initialStart)
 }
 
@@ -72,8 +70,8 @@ function* autoSyncWorker() {
     if (lastSync && todaySync.isBefore(lastSync)) continue
     if (lastAutoSync && todaySync.isBefore(lastAutoSync)) continue
 
-    yield put(sync(true))
-    yield take([SYNC_FINISHED, SYNC_ERROR, SYNC_CANCEL])
+    yield put(sync({ auto: true }))
+    yield take([syncFinished.type, syncError.type, syncCancel.type])
   }
 }
 
@@ -85,7 +83,7 @@ function* autoSyncWorker() {
 function* settingWatcher(action) {
   /** @type {ReturnType<getUser>} */
   const user = yield select(getUser)
-  const { autoSync } = action.payload.settings
+  const { autoSync } = action.payload
 
   if (!user) return
   if (autoSync === undefined) return

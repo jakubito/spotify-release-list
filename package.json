@@ -6,6 +6,7 @@
   "repository": "github:jakubito/spotify-release-list",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.7.1",
     "@sentry/browser": "^6.16.1",
     "ajv": "^8.9.0",
     "bulma": "^0.9.3",

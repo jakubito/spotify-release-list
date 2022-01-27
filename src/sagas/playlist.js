@@ -6,9 +6,9 @@ import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
 import { AuthError, getAuthData } from 'auth'
 import { getPlaylistForm, getReleases, getSettings, getUser } from 'state/selectors'
 import {
-  createPlaylistStart,
-  createPlaylistFinished,
   createPlaylistError,
+  createPlaylistFinished,
+  createPlaylistStart,
   showErrorMessage,
 } from 'state/actions'
 import { authorize } from './auth'
@@ -34,7 +34,7 @@ export function* createPlaylistSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error instanceof AuthError ? error.message : undefined))
+    yield put(showErrorMessage(error instanceof AuthError && error.message))
     yield put(createPlaylistError())
   }
 }
@@ -85,5 +85,5 @@ function* createPlaylistMainSaga() {
     }
   }
 
-  yield put(createPlaylistFinished(firstPlaylist.id))
+  yield put(createPlaylistFinished({ id: firstPlaylist.id }))
 }

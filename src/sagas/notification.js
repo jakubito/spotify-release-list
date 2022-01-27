@@ -1,6 +1,6 @@
 import { call, delay, race, select, take } from 'redux-saga/effects'
 import { createNotification } from 'helpers'
-import { SYNC_FINISHED } from 'state/actions'
+import { syncFinished } from 'state/actions'
 import { getPreviousSyncMaxDate, getReleasesMaxDate, getSettings } from 'state/selectors'
 import { windowEventChannel } from './helpers'
 
@@ -26,7 +26,7 @@ function* notificationWorker() {
   yield delay(5 * 1000)
 
   while (true) {
-    yield take(SYNC_FINISHED)
+    yield take(syncFinished.type)
 
     /** @type {ReturnType<getSettings>} */
     const { notifications } = yield select(getSettings)
