@@ -28,11 +28,11 @@ function* notificationWorker() {
   while (true) {
     yield take(syncFinished.type)
 
-    /** @type {ReturnType<getSettings>} */
+    /** @type {ReturnType<typeof getSettings>} */
     const { notifications } = yield select(getSettings)
-    /** @type {ReturnType<getPreviousSyncMaxDate>} */
+    /** @type {ReturnType<typeof getPreviousSyncMaxDate>} */
     const previousMaxDate = yield select(getPreviousSyncMaxDate)
-    /** @type {ReturnType<getReleasesMaxDate>} */
+    /** @type {ReturnType<typeof getReleasesMaxDate>} */
     const currentMaxDate = yield select(getReleasesMaxDate)
 
     if (Notification.permission !== 'granted') continue

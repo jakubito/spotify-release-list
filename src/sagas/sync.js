@@ -37,9 +37,9 @@ const LOADING_ANIMATION = 550
  */
 export function* syncSaga(action) {
   try {
-    /** @type {ReturnType<withTitle>} */
+    /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(withTitle, 'Loading...', syncMainSaga, action)
-    /** @type {ReturnType<authorize>} */
+    /** @type {ReturnType<typeof authorize>} */
     const authorized = yield call(authorize, action, [USER_FOLLOW_READ], titled)
 
     yield call(authorized)
@@ -57,16 +57,16 @@ export function* syncSaga(action) {
 function* syncMainSaga(action) {
   yield put(syncStart())
 
-  /** @type {ReturnType<getAuthData>} */
+  /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
-  /** @type {ReturnType<getSettings>} */
+  /** @type {ReturnType<typeof getSettings>} */
   const { groups, market, days } = yield select(getSettings)
-  /** @type {ReturnType<getReleasesMaxDate>} */
+  /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
-  /** @type {Await<ReturnType<getUser>>} */
+  /** @type {Await<ReturnType<typeof getUser>>} */
   const user = yield call(getUser, token)
-  /** @type {Await<ReturnType<getUserFollowedArtists>>} */
+  /** @type {Await<ReturnType<typeof getUserFollowedArtists>>} */
   const artists = yield call(getUserFollowedArtists, token)
 
   /** @type {AlbumRaw[]} */
@@ -79,7 +79,7 @@ function* syncMainSaga(action) {
 
   /** @type {RequestChannel} */
   const requestChannel = yield call(channel, buffers.fixed(artists.length))
-  /** @type {ResponseChannel<Await<ReturnType<getArtistAlbums>>>} */
+  /** @type {ResponseChannel<Await<ReturnType<typeof getArtistAlbums>>>} */
   const responseChannel = yield call(channel, buffers.fixed(REQUEST_WORKERS))
 
   for (let i = 0; i < REQUEST_WORKERS; i += 1) {
@@ -93,7 +93,7 @@ function* syncMainSaga(action) {
   }
 
   for (let fetched = 0; fetched < artists.length; fetched += 1) {
-    /** @type {ResponseChannelMessage<Await<ReturnType<getArtistAlbums>>>} */
+    /** @type {ResponseChannelMessage<Await<ReturnType<typeof getArtistAlbums>>>} */
     const response = yield take(responseChannel)
 
     if (response.result) {

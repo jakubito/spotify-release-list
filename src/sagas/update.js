@@ -40,9 +40,9 @@ function* update() {
 function* appFocusCheck() {
   /** @type {EventChannel<WindowEventMap['focus']>} */
   const focus = yield call(windowEventChannel, 'focus')
-  /** @type {ReturnType<throttle>} */
+  /** @type {ReturnType<typeof throttle>} */
   const updateCheckThrottled = yield call(throttle, 1, 'hour', updateCheck)
-  /** @type {ReturnType<throttle>} */
+  /** @type {ReturnType<typeof throttle>} */
   const waitingCheckThrottled = yield call(throttle, 1, 'day', waitingCheck)
 
   while (true) {

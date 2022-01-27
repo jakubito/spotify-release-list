@@ -37,11 +37,11 @@ export function* authorizeSaga(action) {
 function* authorizeMainSaga({ payload }) {
   yield put(authorizeStart())
 
-  /** @type {ReturnType<getAuthData>} */
+  /** @type {ReturnType<typeof getAuthData>} */
   const { nonce, codeVerifier } = yield call(getAuthData)
-  /** @type {ReturnType<validateAuthRequest>} */
+  /** @type {ReturnType<typeof validateAuthRequest>} */
   const { code, action } = yield call(validateAuthRequest, payload.locationSearch, nonce)
-  /** @type {Await<ReturnType<exchangeCode>>} */
+  /** @type {Await<ReturnType<typeof exchangeCode>>} */
   const tokenResult = yield call(exchangeCode, code, codeVerifier)
 
   yield call(setAuthData, tokenResult)
@@ -62,7 +62,7 @@ export function authorize(action, scopes, saga, ...args) {
     try {
       yield put(authorizeStart())
 
-      /** @type {ReturnType<getAuthData>} */
+      /** @type {ReturnType<typeof getAuthData>} */
       const { tokenScope, refreshToken } = yield call(getAuthData)
       const validScope = scopes.every((scope) => tokenScope?.includes(scope))
 
@@ -87,9 +87,9 @@ export function authorize(action, scopes, saga, ...args) {
  * @param {...any} args
  */
 function* refreshTokenAndRun(saga, ...args) {
-  /** @type {ReturnType<getAuthData>} */
+  /** @type {ReturnType<typeof getAuthData>} */
   const { refreshToken } = yield call(getAuthData)
-  /** @type {Await<ReturnType<getRefreshedToken>>} */
+  /** @type {Await<ReturnType<typeof getRefreshedToken>>} */
   const tokenResult = yield call(getRefreshedToken, refreshToken)
 
   yield call(setAuthData, tokenResult)
@@ -104,11 +104,11 @@ function* refreshTokenAndRun(saga, ...args) {
  * @param {string} scope
  */
 function* triggerNewAuthFlow(action, scope) {
-  /** @type {ReturnType<generateCodeVerifier>} */
+  /** @type {ReturnType<typeof generateCodeVerifier>} */
   const nonce = yield call(generateCodeVerifier, 20)
-  /** @type {ReturnType<generateCodeVerifier>} */
+  /** @type {ReturnType<typeof generateCodeVerifier>} */
   const codeVerifier = yield call(generateCodeVerifier)
-  /** @type {Await<ReturnType<createCodeChallenge>>} */
+  /** @type {Await<ReturnType<typeof createCodeChallenge>>} */
   const codeChallenge = yield call(createCodeChallenge, codeVerifier)
 
   yield call(setAuthData, { nonce, codeVerifier })

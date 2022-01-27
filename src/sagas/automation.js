@@ -57,11 +57,11 @@ function* autoSyncWorker() {
   while (true) {
     yield delay(POLLING_INTERVAL)
 
-    /** @type {ReturnType<getLastSync>} */
+    /** @type {ReturnType<typeof getLastSync>} */
     const lastSync = yield select(getLastSync)
-    /** @type {ReturnType<getLastAutoSync>} */
+    /** @type {ReturnType<typeof getLastAutoSync>} */
     const lastAutoSync = yield select(getLastAutoSync)
-    /** @type {ReturnType<getSettings>} */
+    /** @type {ReturnType<typeof getSettings>} */
     const { autoSyncTime } = yield select(getSettings)
     const [hours, minutes] = autoSyncTime.split(':').map(Number)
     const todaySync = moment().set({ hours, minutes, seconds: 1 })
@@ -81,7 +81,7 @@ function* autoSyncWorker() {
  * @param {SetSettingsAction} action
  */
 function* settingWatcher(action) {
-  /** @type {ReturnType<getUser>} */
+  /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
   const { autoSync } = action.payload
 
@@ -99,7 +99,7 @@ function* settingWatcher(action) {
  * Oversee user changes
  */
 function* userWatcher() {
-  /** @type {ReturnType<getSettings>} */
+  /** @type {ReturnType<typeof getSettings>} */
   const { autoSync } = yield select(getSettings)
 
   if (autoSync) {
@@ -118,9 +118,9 @@ function* resetWatcher() {
  * Start service on initial load
  */
 function* initialStart() {
-  /** @type {ReturnType<getUser>} */
+  /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
-  /** @type {ReturnType<getSettings>} */
+  /** @type {ReturnType<typeof getSettings>} */
   const { autoSync } = yield select(getSettings)
 
   if (user && autoSync) {

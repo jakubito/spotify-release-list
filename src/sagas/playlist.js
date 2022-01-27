@@ -24,12 +24,12 @@ const { TRACK } = SpotifyEntity
  */
 export function* createPlaylistSaga(action) {
   try {
-    /** @type {ReturnType<getPlaylistForm>} */
+    /** @type {ReturnType<typeof getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
     const scopes = [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC]
-    /** @type {ReturnType<withTitle>} */
+    /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(withTitle, 'Creating playlist...', createPlaylistMainSaga)
-    /** @type {ReturnType<authorize>} */
+    /** @type {ReturnType<typeof authorize>} */
     const authorized = yield call(authorize, action, scopes, titled)
 
     yield call(authorized)
@@ -45,15 +45,15 @@ export function* createPlaylistSaga(action) {
 function* createPlaylistMainSaga() {
   yield put(createPlaylistStart())
 
-  /** @type {ReturnType<getAuthData>} */
+  /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
-  /** @type {ReturnType<getUser>} */
+  /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
-  /** @type {ReturnType<getPlaylistForm>} */
+  /** @type {ReturnType<typeof getPlaylistForm>} */
   const { name, description, isPrivate } = yield select(getPlaylistForm)
-  /** @type {ReturnType<getSettings>} */
+  /** @type {ReturnType<typeof getSettings>} */
   const { market } = yield select(getSettings)
-  /** @type {ReturnType<getReleases>} */
+  /** @type {ReturnType<typeof getReleases>} */
   const releases = yield select(getReleases)
 
   const albumIds = releases.reduce(
@@ -65,7 +65,7 @@ function* createPlaylistMainSaga() {
     call(getAlbumsTrackIds, token, albumIdsChunk, market)
   )
 
-  /** @type {Await<ReturnType<getAlbumsTrackIds>>[]} */
+  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
   const trackIds = yield all(trackIdsCalls)
   const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
   /** @type {SpotifyPlaylist} */
@@ -73,7 +73,7 @@ function* createPlaylistMainSaga() {
 
   for (const [part, playlistTrackUrisChunk] of chunk(trackUris, 9500).entries()) {
     const fullName = part > 0 ? `${name} (${part + 1})` : name
-    /** @type {Await<ReturnType<createPlaylist>>} */
+    /** @type {Await<ReturnType<typeof createPlaylist>>} */
     const playlist = yield call(createPlaylist, token, user.id, fullName, description, isPrivate)
 
     if (!firstPlaylist) {
