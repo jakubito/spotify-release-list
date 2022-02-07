@@ -16,7 +16,7 @@ function AlbumGroupsField() {
 
   /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChange = (event) => {
-    const newValue = xor(groups, [event.target.value])
+    const newValue = xor(groups, [/**@type {AlbumGroup} */ (event.target.value)])
     const newValueOrdered = orderBy(newValue, (group) => AlbumGroupIndex[group])
 
     if (newValueOrdered.length > 0) {

@@ -20,6 +20,10 @@
     "notifications": { "type": "boolean" },
     "firstDayOfWeek": { "type": "uint16" },
     "displayTracks": { "type": "boolean" },
+    "fullAlbumData": { "type": "boolean" },
+    "displayLabels": { "type": "boolean" },
+    "displayPopularity": { "type": "boolean" },
+    "labelBlocklist": { "type": "string" },
     "market": {
       "enum": [
         "",

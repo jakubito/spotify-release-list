@@ -23,6 +23,7 @@
  *   favorites: Favorites
  *   editingFavorites: boolean
  *   lastSettingsPath?: string
+ *   labelBlocklistHeight?: number
  * }} State
  *
  * @typedef {{
@@ -58,6 +59,10 @@
  *   notifications: boolean
  *   firstDayOfWeek: number
  *   displayTracks: boolean
+ *   fullAlbumData: boolean
+ *   displayLabels: boolean
+ *   displayPopularity: boolean
+ *   labelBlocklist: string
  * }} Settings
  *
  * @typedef {{
@@ -76,15 +81,17 @@
  *   image: string
  *   releaseDate: string
  *   totalTracks: number
+ *   label?: string
+ *   popularity?: number
  * }} AlbumBase
  *
  * @typedef {AlbumBase & {
- *   artistIds: { [group: string]: string[] }
+ *   artistIds: { [key in AlbumGroup]?: string[] }
  *   albumArtists: Artist[]
  * }} AlbumRaw
  *
  * @typedef {AlbumBase & {
- *   artists: { [group: string]: Artist[] }
+ *   artists: { [key in AlbumGroup]?: Artist[] }
  *   otherArtists: Artist[]
  * }} Album
  *
@@ -128,12 +135,12 @@
  * @typedef {{ [date: string]: Album[] }} ReleasesMap
  * @typedef {{ [id: string]: boolean }} Favorites
  * @typedef {{ date: string, albums: Album[] }[]} Releases
- * @typedef {{ [group: string]: string[] }} ReleasesGroupMap
+ * @typedef {{ [key in AlbumGroup]?: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
  * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
- * @typedef {{ [group: string]: string }} GroupColorScheme
+ * @typedef {{ [key in AlbumGroup]: string }} GroupColorScheme
  * @typedef {(to: string) => Promise<void>} Navigate
  * @typedef {[Fn, ...any[]]} RequestChannelMessage
  * @typedef {Channel<RequestChannelMessage>} RequestChannel
@@ -149,7 +156,7 @@
  */
 
 /**
- * @template T
+ * @template [T=any]
  * @typedef {Channel<ResponseChannelMessage<T>>} ResponseChannel<T>
  */
 
@@ -159,15 +166,28 @@
  */
 
 /**
+ * @template T
+ * @typedef {T[keyof T]} Values<T>
+ */
+
+/**
  * Enums
  *
  * @typedef {import('./enums').Address} Address
  * @typedef {import('./enums').Scope} Scope
  * @typedef {import('./enums').SpotifyEntity} SpotifyEntity
  * @typedef {import('./enums').MomentFormat} MomentFormat
- * @typedef {import('./enums').AlbumGroup} AlbumGroup
  * @typedef {import('./enums').Theme} Theme
  * @typedef {import('./enums').Market} Market
+ *
+ * @typedef {{
+ *   ALBUM: 'album'
+ *   SINGLE: 'single'
+ *   COMPILATION: 'compilation'
+ *   APPEARS_ON: 'appears_on'
+ * }} AlbumGroupEnum
+ * @typedef {Values<AlbumGroupEnum>} AlbumGroup
+ * @typedef {Values<Omit<AlbumGroupEnum, 'APPEARS_ON'>>} AlbumType
  */
 
 /**
@@ -183,8 +203,6 @@
  * @typedef {ReturnType<typeof import('state/actions').syncError>} SyncErrorAction
  * @typedef {ReturnType<typeof import('state/actions').syncCancel>} SyncCancelAction
  * @typedef {ReturnType<typeof import('state/actions').setSyncingProgress>} SetSyncingProgressAction
- * @typedef {ReturnType<typeof import('state/actions').setUser>} SetUserAction
- * @typedef {ReturnType<typeof import('state/actions').saveAlbums>} SaveAlbumsAction
  * @typedef {ReturnType<typeof import('state/actions').reset>} ResetAction
  * @typedef {ReturnType<typeof import('state/actions').setSettings>} SetSettingsAction
  * @typedef {ReturnType<typeof import('state/actions').showPlaylistModal>} ShowPlaylistModalAction
@@ -223,8 +241,6 @@
  *   | SyncErrorAction
  *   | SyncCancelAction
  *   | SetSyncingProgressAction
- *   | SetUserAction
- *   | SaveAlbumsAction
  *   | ResetAction
  *   | SetSettingsAction
  *   | ShowPlaylistModalAction
@@ -264,8 +280,15 @@
  *   artists: SpotifyArtist[]
  *   release_date: string
  *   album_group: AlbumGroup
+ *   album_type: AlbumType
  *   total_tracks: number
  * }} SpotifyAlbum
+ *
+ * @typedef {Omit<SpotifyAlbum, 'album_group'> & {
+ *   label: string
+ *   popularity: number
+ *   tracks: Paged<SpotifyTrack>
+ * }} SpotifyAlbumFull
  *
  * @typedef {{ width: number, height: number, url: string }} SpotifyImage
  * @typedef {{ id: string, display_name: string, images: SpotifyImage[] }} SpotifyUser
@@ -316,11 +339,16 @@
  */
 
 /**
- * @template T
- * @typedef {import('@reduxjs/toolkit').ActionCreatorWithPayload<T>} ActionCreatorWithPayload<T>
+ * @template P,[T=string]
+ * @typedef {import('@reduxjs/toolkit').ActionCreatorWithPayload<P,T>} ActionCreatorWithPayload<P,T>
+ */
+
+/**
+ * @template P,[T=string]
+ * @typedef {import('@reduxjs/toolkit').ActionCreatorWithOptionalPayload<P,T>} ActionCreatorWithOptionalPayload<P,T>
  */
 
 /**
  * @template T
- * @typedef {import('@reduxjs/toolkit').ActionCreatorWithOptionalPayload<T>} ActionCreatorWithOptionalPayload<T>
+ * @typedef {import('@reduxjs/toolkit').Draft<T>} Draft<T>
  */

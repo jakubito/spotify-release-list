@@ -14,6 +14,7 @@ import classNames from 'classnames'
  *   defaultChecked?: boolean
  *   onChange?: React.ChangeEventHandler<HTMLInputElement>
  *   readOnly?: boolean
+ *   disabled?: boolean
  *   dark?: boolean
  * }} props
  */
@@ -28,6 +29,7 @@ function Checkbox({
   defaultChecked,
   onChange,
   readOnly,
+  disabled,
   dark,
 }) {
   return (
@@ -41,6 +43,7 @@ function Checkbox({
         defaultChecked={defaultChecked}
         onChange={onChange}
         readOnly={readOnly}
+        disabled={disabled}
         className={classNames(className, 'is-checkradio', 'is-circle', 'has-background-color', {
           'is-white': !dark,
           'is-dark': dark,

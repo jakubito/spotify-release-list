@@ -97,7 +97,8 @@ body,
     color: $black;
   }
 
-  &:active {
+  &:active,
+  &:focus {
     background-color: $primary-slightly-darker;
     color: $black;
   }
@@ -315,5 +316,33 @@ body,
     max-width: none;
     left: 15px;
     transform: none;
+  }
+}
+
+.label {
+  .tag {
+    vertical-align: top;
+    margin-left: 16px;
+    font-weight: 500;
+  }
+}
+
+.select {
+  &:after {
+    border-color: $black-ter !important;
+  }
+
+  &:hover,
+  &:focus {
+    &:after {
+      border-color: $grey !important;
+    }
+  }
+
+  select {
+    &:focus {
+      box-shadow: 0 0 0 0.125em rgba($grey, 25%);
+      border-color: $grey;
+    }
   }
 }

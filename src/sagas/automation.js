@@ -5,7 +5,6 @@ import {
   autoSyncStop,
   reset,
   setSettings,
-  setUser,
   sync,
   syncCancel,
   syncError,
@@ -25,7 +24,7 @@ const POLLING_INTERVAL = 60 * 1000
 export function* autoSyncSaga() {
   yield takeLeadingCancellable(autoSyncStart.type, autoSyncStop.type, autoSyncManager)
   yield takeEvery(setSettings.type, settingWatcher)
-  yield takeEvery(setUser.type, userWatcher)
+  yield takeEvery(syncFinished.type, syncFinishedWatcher)
   yield takeEvery(reset.type, resetWatcher)
   yield fork(initialStart)
 }
@@ -96,9 +95,9 @@ function* settingWatcher(action) {
 }
 
 /**
- * Oversee user changes
+ * Oversee sync finished action
  */
-function* userWatcher() {
+function* syncFinishedWatcher() {
   /** @type {ReturnType<typeof getSettings>} */
   const { autoSync } = yield select(getSettings)
 

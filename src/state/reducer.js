@@ -1,7 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { AlbumGroup, GroupColorSchemes } from 'enums'
+import { deleteLabels } from 'helpers'
 import {
   addSeenFeature,
+  applyLabelBlocklist,
   authorizeError,
   authorizeFinished,
   authorizeStart,
@@ -15,15 +17,14 @@ import {
   reset,
   resetFilters,
   resetPlaylist,
-  saveAlbums,
   setFavorite,
   setFavoriteAll,
   setFilters,
+  setLabelBlocklistHeight,
   setLastSettingsPath,
   setPlaylistForm,
   setSettings,
   setSyncingProgress,
-  setUser,
   showErrorMessage,
   showMessage,
   showPlaylistModal,
@@ -35,7 +36,6 @@ import {
   toggleFiltersVisible,
   updateReady,
 } from 'state/actions'
-import { buildAlbumsMap, mergeAlbumsRaw } from 'state/helpers'
 import { getReleasesArray } from 'state/selectors'
 
 /** @type {State} */
@@ -71,6 +71,10 @@ export const INITIAL_STATE = {
     notifications: true,
     firstDayOfWeek: 0,
     displayTracks: false,
+    fullAlbumData: false,
+    displayLabels: false,
+    displayPopularity: false,
+    labelBlocklist: '',
   },
   filters: {
     groups: [],
@@ -86,6 +90,7 @@ export const INITIAL_STATE = {
   favorites: {},
   editingFavorites: false,
   lastSettingsPath: null,
+  labelBlocklistHeight: null,
 }
 
 const rootReducer = createReducer(INITIAL_STATE, (builder) => {
@@ -111,10 +116,12 @@ const rootReducer = createReducer(INITIAL_STATE, (builder) => {
       }
     })
     .addCase(syncFinished, (state, action) => {
-      state.syncing = false
-      state.favorites = {}
+      state.albums = action.payload.albums
+      state.user = action.payload.user
       state.previousSyncMaxDate = action.payload.previousSyncMaxDate
       state[action.payload.auto ? 'lastAutoSync' : 'lastSync'] = new Date().toISOString()
+      state.syncing = false
+      state.favorites = {}
     })
     .addCase(syncError, (state) => {
       state.syncing = false
@@ -124,13 +131,6 @@ const rootReducer = createReducer(INITIAL_STATE, (builder) => {
     })
     .addCase(setSyncingProgress, (state, action) => {
       state.syncingProgress = action.payload
-    })
-    .addCase(setUser, (state, action) => {
-      state.user = action.payload
-    })
-    .addCase(saveAlbums, (state, action) => {
-      const merged = mergeAlbumsRaw(action.payload.albumsRaw, action.payload.minDate)
-      state.albums = buildAlbumsMap(merged, action.payload.artists)
     })
     .addCase(setSettings, (state, action) => {
       Object.assign(state.settings, action.payload)
@@ -206,6 +206,12 @@ const rootReducer = createReducer(INITIAL_STATE, (builder) => {
     })
     .addCase(reset, (state) => {
       Object.assign(state, INITIAL_STATE)
+    })
+    .addCase(applyLabelBlocklist, (state) => {
+      deleteLabels(state.albums, state.settings.labelBlocklist)
+    })
+    .addCase(setLabelBlocklistHeight, (state, action) => {
+      state.labelBlocklistHeight = action.payload
     })
 })
 

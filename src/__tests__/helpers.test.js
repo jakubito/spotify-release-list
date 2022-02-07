@@ -12,8 +12,9 @@ import {
   buildArtist,
   buildAlbumRaw,
 } from 'helpers'
+import { AlbumGroup } from 'enums'
 import { getOriginalReleasesMap } from 'state/selectors'
-import mockState from './fixtures/state.json'
+import mockState from './fixtures/state'
 
 describe('sleep', () => {
   beforeEach(() => {
@@ -232,7 +233,8 @@ describe('buildAlbumRaw', () => {
       ],
       artists: [{ id: 'testId', name: 'Test Artist' }],
       release_date: 'testReleaseDate',
-      album_group: 'single',
+      album_group: AlbumGroup.SINGLE,
+      album_type: AlbumGroup.SINGLE,
       total_tracks: 20,
     }
     const actual = buildAlbumRaw(spotifyAlbum, 'testArtistId')
@@ -242,6 +244,7 @@ describe('buildAlbumRaw', () => {
       image: 'imageUrl300',
       albumArtists: [{ id: 'testId', name: 'Test Artist' }],
       releaseDate: 'testReleaseDate',
+      totalTracks: 20,
       artistIds: {
         single: ['testArtistId'],
       },

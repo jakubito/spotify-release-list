@@ -56,7 +56,7 @@
   "scripts": {
     "start": "REACT_APP_GIT_SHA=`git rev-parse --short HEAD` REACT_APP_VERSION=$npm_package_version BROWSER=none react-scripts start",
     "build": "REACT_APP_GIT_SHA=`git rev-parse --short HEAD` REACT_APP_VERSION=$npm_package_version react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --testPathIgnorePatterns=fixtures",
     "eject": "react-scripts eject",
     "prettify": "prettier --write 'src/**/*.{js,scss}'",
     "analyze": "source-map-explorer 'build/static/js/*.js'",

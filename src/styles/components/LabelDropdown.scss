@@ -1,0 +1,41 @@
+.LabelDropdown {
+  $root: &;
+
+  &__trigger {
+    position: relative;
+    cursor: pointer;
+    border: 0;
+    line-height: 1.5;
+    text-align: left;
+
+    &:focus,
+    &:hover {
+      background-color: $grey-darker;
+
+      #{$root}__trigger-icon {
+        display: block;
+      }
+    }
+
+    &--active {
+      background-color: $grey-darker;
+    }
+  }
+
+  &__trigger-icon {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding-left: 15px;
+    padding-right: 4px;
+    display: none;
+    color: $grey-light;
+    background-color: $grey-darker;
+    background: linear-gradient(90deg, rgba($grey-darker, 0) 0%, rgba($grey-darker, 1) 40%);
+
+    &--active {
+      display: block;
+    }
+  }
+}

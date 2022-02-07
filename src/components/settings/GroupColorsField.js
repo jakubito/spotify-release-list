@@ -14,8 +14,7 @@ import GroupColorsShortcuts from './GroupColorsShortcuts'
 function GroupColorsField() {
   const groupColors = useSelector(getSettingsGroupColors)
   const dispatch = useDispatch()
-  /** @type {React.MutableRefObject<Record<AlbumGroup, HTMLDivElement>>} */
-  const refs = useRef({})
+  const refs = useRef(/** @type {Record<AlbumGroup, HTMLDivElement>} */ ({}))
 
   /** @type {(group: AlbumGroup, color: string) => void} */
   const saveColor = (group, color) => {

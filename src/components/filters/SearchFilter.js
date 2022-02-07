@@ -47,7 +47,7 @@ function SearchFilter() {
       <Input
         value={value}
         onChange={onChange}
-        placeholder="Search artists and releases"
+        placeholder="Search artists / labels / releases"
         ref={inputRef}
       />
       {filtersSearch && <Button title="Reset" className="reset" onClick={reset} text />}

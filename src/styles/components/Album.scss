@@ -153,20 +153,6 @@
     }
   }
 
-  &__tracks {
-    font-size: 1rem;
-    padding: 1px 4px;
-    margin-left: 8px;
-    vertical-align: middle;
-    background-color: $black-ter;
-    color: $grey-light;
-    border-radius: 4px;
-
-    @include theme(compact) {
-      font-size: 0.75rem;
-    }
-  }
-
   &__artists {
     color: $grey;
     line-height: 1.25;
@@ -189,6 +175,48 @@
     &--other {
       color: $grey !important;
       text-decoration-color: $grey-darker !important;
+    }
+  }
+
+  &__meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    gap: 10px;
+
+    &:empty {
+      display: none;
+    }
+
+    @include theme(compact) {
+      margin-top: 8px;
+      gap: 8px;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    padding: 0px 6px;
+    background-color: $darkest;
+    color: $grey-lightest;
+    border-radius: 4px;
+    font-weight: 300;
+    user-select: none;
+
+    @include theme(compact) {
+      font-size: 0.75rem;
+      padding: 0px 4px;
+    }
+  }
+
+  &__popularity-icon {
+    margin-right: 6px;
+    color: $grey;
+
+    @include theme(compact) {
+      margin-right: 4px;
     }
   }
 

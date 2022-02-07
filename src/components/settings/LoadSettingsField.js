@@ -37,7 +37,7 @@ function LoadSettingsField({ parse }) {
           className={classNames('BackupSettings__textarea textarea is-dark is-family-code', {
             'is-danger': error,
           })}
-          rows={6}
+          rows={8}
           {...register('settingsJson', {
             required: true,
             validate: (value) => (parse(value) ? true : capitalize(parse.message)),

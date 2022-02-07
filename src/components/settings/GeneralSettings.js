@@ -7,6 +7,8 @@ import UriLinksField from './UriLinksField'
 import DataInfo from './DataInfo'
 import DataReset from './DataReset'
 import FirstDayOfWeekField from './FirstDayOfWeekField'
+import FetchExtraDataField from './FetchExtraDataField'
+import LabelBlocklistField from './LabelBlocklistField'
 
 /**
  * Render general settings fields
@@ -18,10 +20,12 @@ function GeneralSettings() {
   return (
     <div className="fade-in">
       <AlbumGroupsField />
+      <FetchExtraDataField />
       <TimePeriodField />
       <MarketField />
       <FirstDayOfWeekField />
       <UriLinksField />
+      <LabelBlocklistField />
       {user && <DataInfo />}
       {hasAppData && <DataReset />}
     </div>

@@ -1,8 +1,10 @@
+import moment from 'moment'
+import orderBy from 'lodash/orderBy'
 import mergeWith from 'lodash/mergeWith'
 import random from 'lodash/random'
 import { colord } from 'colord'
 import * as Sentry from '@sentry/browser'
-import { AlbumGroup, MomentFormat } from 'enums'
+import { AlbumGroup, AlbumGroupIndex, MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
 const NOTIFICATION_ICON = `${process.env.REACT_APP_URL}/android-chrome-192x192.png`
@@ -282,4 +284,135 @@ export function modalsClosed() {
  */
 export function captureException(error) {
   Sentry.captureException(error, { contexts: error.contexts })
+}
+
+/**
+ * Merge album artists and filter out old albums
+ *
+ * @param {AlbumRaw[]} albumsRaw
+ * @param {string} minDate
+ * @returns {AlbumRaw[]}
+ */
+export function mergeAlbumsRaw(albumsRaw, minDate) {
+  const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
+  const albumsRawMap = albumsRaw.reduce((map, album) => {
+    if (album.releaseDate < minDate || album.releaseDate > maxDate) {
+      return map
+    }
+
+    const matched = map[album.id]
+
+    if (!matched) {
+      map[album.id] = album
+      return map
+    }
+
+    merge(matched.artistIds, album.artistIds)
+    return map
+  }, /** @type {{ [id: string]: AlbumRaw }} */ ({}))
+
+  return Object.values(albumsRawMap)
+}
+
+/**
+ * Build AlbumsMap
+ *
+ * @param {AlbumRaw[]} albumsRaw
+ * @param {Artist[]} artists
+ * @returns {AlbumsMap}
+ */
+export function buildAlbumsMap(albumsRaw, artists) {
+  const artistsMap = artists.reduce((map, artist) => {
+    map[artist.id] = artist
+    return map
+  }, /** @type {ArtistsMap} */ ({}))
+
+  const albumsMap = albumsRaw.reduce((map, albumRaw) => {
+    map[albumRaw.id] = buildAlbum(albumRaw, artistsMap)
+    return map
+  }, /** @type {AlbumsMap} */ ({}))
+
+  return albumsMap
+}
+
+/**
+ * Build Album
+ *
+ * @param {AlbumRaw} albumRaw
+ * @param {ArtistsMap} artistsMap
+ * @returns {Album}
+ */
+export function buildAlbum(albumRaw, artistsMap) {
+  const { artistIds, albumArtists, ...albumBase } = albumRaw
+
+  const artistIdsArray = Object.values(artistIds).flat()
+  const artistIdsEntries = orderBy(Object.entries(artistIds), ([group]) => AlbumGroupIndex[group])
+  const artistsEntries = artistIdsEntries.map(([group, artistIds]) => {
+    const artists = orderBy(
+      artistIds.map((id) => artistsMap[id]),
+      'name'
+    )
+
+    return /** @type {[group: AlbumGroup, artists: Artist[]]} */ ([group, artists])
+  })
+
+  const artists = Object.fromEntries(artistsEntries)
+  const otherArtists = albumArtists.filter((artist) => !artistIdsArray.includes(artist.id))
+
+  return { ...albumBase, artists, otherArtists }
+}
+
+/**
+ * Build ReleasesMap
+ *
+ * @param {Album[]} albums
+ * @returns {ReleasesMap}
+ */
+export function buildReleasesMap(albums) {
+  return albums.reduce(
+    (map, album) => merge(map, { [album.releaseDate]: [album] }),
+    /** @type {ReleasesMap} */ ({})
+  )
+}
+
+/**
+ * Build Releases
+ *
+ * @param {ReleasesMap} releasesMap
+ * @returns {Releases}
+ */
+export function buildReleases(releasesMap) {
+  const releasesUnordered = Object.entries(releasesMap).map(([date, albums]) => ({ date, albums }))
+  const releasesOrderedByDate = orderBy(releasesUnordered, 'date', 'desc')
+  const releases = releasesOrderedByDate.map((releaseDay) => {
+    releaseDay.albums = orderBy(releaseDay.albums, [
+      (album) => Object.values(album.artists).flat().shift().name.toLowerCase(),
+      'name',
+    ])
+    return releaseDay
+  })
+
+  return releases
+}
+
+/**
+ * Delete albums from specified labels. Mutates `albumsMap`
+ *
+ * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
+ * @param {string} labelsList
+ * @returns {AlbumsMap}
+ */
+export function deleteLabels(albumsMap, labelsList) {
+  const labels = labelsList
+    .split(/\r?\n/)
+    .map((label) => label.trim())
+    .filter(Boolean)
+
+  if (labels.length === 0) return albumsMap
+
+  for (const album of Object.values(albumsMap)) {
+    if (labels.includes(album.label)) delete albumsMap[album.id]
+  }
+
+  return albumsMap
 }

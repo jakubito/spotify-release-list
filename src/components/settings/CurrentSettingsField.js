@@ -30,7 +30,7 @@ function CurrentSettingsField({ serialize }) {
           ref={textareaRef}
           value={serialize(settings)}
           className="BackupSettings__textarea textarea is-dark is-family-code"
-          rows={6}
+          rows={8}
           readOnly
         />
       </div>
