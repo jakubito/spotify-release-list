@@ -119,6 +119,7 @@
  *   text?: boolean
  *   style?: React.CSSProperties
  *   compact?: boolean
+ *   newBadge?: boolean
  * }} ButtonProps
  *
  * @typedef {{

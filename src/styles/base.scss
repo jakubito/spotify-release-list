@@ -175,8 +175,9 @@ body,
   font-size: 10px;
   border-radius: 8px;
   color: $darkest;
+  font-weight: 600;
 
-  &.badge-inline {
+  &--inline {
     display: inline-block;
     position: static;
     vertical-align: middle;
@@ -184,7 +185,7 @@ body,
     font-size: 12px;
   }
 
-  &.is-primary {
+  &--primary {
     background-color: $primary;
   }
 }

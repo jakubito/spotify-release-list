@@ -7,7 +7,7 @@ import classNames from 'classnames'
  *   id?: string
  *   name?: string
  *   className?: string
- *   label?: string
+ *   label?: string | React.ReactNode
  *   labelClassName?: string
  *   value?: string
  *   checked?: boolean
