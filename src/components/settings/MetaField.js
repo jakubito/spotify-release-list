@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getSettings } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
+import { useFeature } from 'hooks'
 import { Checkbox } from 'components/common'
 
 /**
@@ -11,6 +12,7 @@ function MetaField() {
   const { displayLabels, displayPopularity, displayTracks, fullAlbumData } =
     useSelector(getSettings)
   const dispatch = useDispatch()
+  const { seen: labelsFeatureSeen } = useFeature('labels')
 
   return (
     <div className="MetaField Settings__field field">
@@ -19,7 +21,14 @@ function MetaField() {
         <div className="field">
           <Checkbox
             id="displayLabels"
-            label="Display label"
+            label={
+              <>
+                Display label
+                {!labelsFeatureSeen && (
+                  <div className="badge badge--inline badge--primary">NEW</div>
+                )}
+              </>
+            }
             defaultChecked={displayLabels}
             onChange={(event) =>
               defer(dispatch, setSettings({ displayLabels: event.target.checked }))
@@ -32,7 +41,14 @@ function MetaField() {
         <div className="field">
           <Checkbox
             id="displayPopularity"
-            label="Display popularity value"
+            label={
+              <>
+                Display popularity value
+                {!labelsFeatureSeen && (
+                  <div className="badge badge--inline badge--primary">NEW</div>
+                )}
+              </>
+            }
             defaultChecked={displayPopularity}
             onChange={(event) =>
               defer(dispatch, setSettings({ displayPopularity: event.target.checked }))
