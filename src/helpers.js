@@ -8,6 +8,8 @@ import { AlbumGroup, AlbumGroupIndex, MomentFormat } from 'enums'
 
 const { ISO_DATE } = MomentFormat
 const NOTIFICATION_ICON = `${process.env.REACT_APP_URL}/android-chrome-192x192.png`
+const VARIOUS_ARTISTS = 'Various Artist'
+const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
 
 /**
  * Promisified setTimeout
@@ -396,6 +398,19 @@ export function buildReleases(releasesMap) {
 }
 
 /**
+ * Check if album contains Various Artists
+ *
+ * @param {Album} album
+ * @returns {boolean}
+ */
+export function hasVariousArtists(album) {
+  return Object.values(album.artists)
+    .flat()
+    .concat(album.otherArtists)
+    .some((artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID)
+}
+
+/**
  * Delete albums from specified labels. Mutates `albumsMap`
  *
  * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
@@ -403,15 +418,28 @@ export function buildReleases(releasesMap) {
  * @returns {AlbumsMap}
  */
 export function deleteLabels(albumsMap, labelsList) {
-  const labels = labelsList
-    .split(/\r?\n/)
-    .map((label) => label.trim())
-    .filter(Boolean)
+  if (labelsList.trim().length === 0) return albumsMap
 
-  if (labels.length === 0) return albumsMap
+  /** @type {Record<string, string[]>} */
+  const labels = {}
+  const entries = labelsList.matchAll(/^\s*(?:\[(.*)\])?\s*(.*?)\s*$/gm)
+
+  for (const [, flags, label] of entries) {
+    labels[label] = flags?.split(',')
+  }
+
+  /** @param {Album} album */
+  function shouldDelete(album) {
+    if (album.label in labels) {
+      if (labels[album.label] === undefined) return true
+      if (labels[album.label].includes('VA') && hasVariousArtists(album)) return true
+    }
+
+    return false
+  }
 
   for (const album of Object.values(albumsMap)) {
-    if (labels.includes(album.label)) delete albumsMap[album.id]
+    if (shouldDelete(album)) delete albumsMap[album.id]
   }
 
   return albumsMap

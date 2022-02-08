@@ -16,10 +16,13 @@ function LabelDropdown({ label }) {
   const dispatch = useDispatch()
   const [active, setActive] = useState(false)
 
-  const block = () => {
-    const labelBlocklist = settings.labelBlocklist.trim().concat(`\n${label}`)
+  const block = (variousArtists = false) => {
+    const labelEntry = `${variousArtists ? '[VA] ' : ''}${label}`
+    const labelBlocklist = settings.labelBlocklist.trim().concat(`\n${labelEntry}`).trim()
+
     dispatch(setSettings({ labelBlocklist }))
     dispatch(applyLabelBlocklist())
+    setActive(false)
   }
 
   const trigger = (
@@ -51,12 +54,20 @@ function LabelDropdown({ label }) {
         Filter by this label
       </Button>
       <Button
-        titleOnly="Add this label to blocklist"
+        titleOnly="Block Various Artists releases from this label"
         icon="fas fa-ban"
+        className="dropdown-item"
+        onClick={deferred(block, true)}
+      >
+        Block VA releases only
+      </Button>
+      <Button
+        titleOnly="Block this label completely"
+        icon="fas fa-skull"
         className="dropdown-item"
         onClick={deferred(block)}
       >
-        Block this label
+        Block all releases
       </Button>
     </Dropdown>
   )

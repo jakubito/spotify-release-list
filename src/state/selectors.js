@@ -7,12 +7,9 @@ import last from 'lodash/last'
 import isEqual from 'lodash/isEqual'
 import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
-import { includesTruthy, getReleasesBetween, merge } from 'helpers'
+import { includesTruthy, getReleasesBetween, merge, hasVariousArtists } from 'helpers'
 import { buildReleases, buildReleasesMap } from 'helpers'
 import { INITIAL_STATE } from './reducer'
-
-const VARIOUS_ARTISTS = 'Various Artist'
-const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
 
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
@@ -251,15 +248,7 @@ const getFuseInstance = createSelector(
  */
 const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((ids, album) => {
-    const variousArtists = Object.values(album.artists)
-      .flat()
-      .concat(album.otherArtists)
-      .some((artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID)
-
-    if (!variousArtists) {
-      ids.push(album.id)
-    }
-
+    if (!hasVariousArtists(album)) ids.push(album.id)
     return ids
   }, /** @type {string[]} */ ([]))
 )
