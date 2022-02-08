@@ -1,7 +1,7 @@
 {
   "name": "spotify-release-list",
   "author": "Jakub Dobes <dobes.jakub@gmail.com>",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "private": true,
   "repository": "github:jakubito/spotify-release-list",
   "license": "ISC",
