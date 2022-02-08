@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
 import { deferred, modalsClosed } from 'helpers'
+import { useFeature } from 'hooks'
 import {
   getLastSyncDate,
   getHasReleases,
@@ -35,6 +36,7 @@ function ReleasesHeader() {
   const filtersApplied = useSelector(getFiltersApplied)
   const editingFavorites = useSelector(getEditingFavorites)
   const lastSettingsPath = useSelector(getLastSettingsPath)
+  const { seen: labelsFeatureSeen } = useFeature('labels')
 
   const toggleFilters = deferred(dispatch, toggleFiltersVisible())
   const toggleFavorites = deferred(dispatch, toggleEditingFavorites())
@@ -114,6 +116,7 @@ function ReleasesHeader() {
           title="Settings [S]"
           icon="fas fa-cog"
           disabled={working}
+          newBadge={!labelsFeatureSeen}
           compact
         >
           Settings

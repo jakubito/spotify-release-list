@@ -6,6 +6,7 @@ import { setFavorite } from 'state/actions'
 import { defer, spotifyLink } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { Anchor, Checkbox } from 'components/common'
+import LabelDropdown from './LabelDropdown'
 
 const { ALBUM, ARTIST } = SpotifyEntity
 
@@ -15,12 +16,13 @@ const { ALBUM, ARTIST } = SpotifyEntity
  * @param {{ album: Album }} props
  */
 function Album({ album }) {
-  const { id, name, image, artists, totalTracks } = album
+  const { id, name, image, artists, totalTracks, label, popularity } = album
   const dispatch = useDispatch()
-  const { groupColors, covers, uriLinks, displayTracks } = useSelector(getSettings)
+  const { groupColors, covers, uriLinks, displayLabels, displayPopularity, displayTracks } =
+    useSelector(getSettings)
   const favorites = useSelector(getFavorites)
   const editingFavorites = useSelector(getEditingFavorites)
-  const [checked, setChecked] = useState(Boolean(favorites[id]))
+  const [favoriteLocal, setFavoriteLocal] = useState(Boolean(favorites[id]))
   const link = spotifyLink(id, ALBUM, uriLinks)
   const mainGroup = Object.keys(artists).shift()
 
@@ -28,13 +30,13 @@ function Album({ album }) {
   function favoriteClickHandler(event) {
     if (!editingFavorites) return
 
-    setChecked(!checked)
-    defer(dispatch, setFavorite(id, !checked))
+    setFavoriteLocal(!favoriteLocal)
+    defer(dispatch, setFavorite({ id, selected: !favoriteLocal }))
     event.preventDefault()
   }
 
   useEffect(() => {
-    setChecked(Boolean(favorites[id]))
+    setFavoriteLocal(Boolean(favorites[id]))
   }, [favorites])
 
   return (
@@ -47,7 +49,7 @@ function Album({ album }) {
           <Checkbox
             id={`album-favorite-${id}`}
             labelClassName="Album__favorite-checkbox-label"
-            checked={checked}
+            checked={favoriteLocal}
             readOnly
             dark
           />
@@ -60,14 +62,27 @@ function Album({ album }) {
           </Anchor>
         )}
       </div>
-      <div className="Album__content media-content">
+      <div className="Album__content">
         <div className="Album__title-row">
           <Anchor title={name} href={link} color={groupColors[mainGroup]} className="Album__title">
             {name}
           </Anchor>
-          {displayTracks && <span className="Album__tracks">{totalTracks}</span>}
         </div>
         {renderArtists({ album, uriLinks })}
+        <div className="Album__meta-row">
+          {displayLabels && label && <LabelDropdown label={label} />}
+          {displayPopularity && Number.isInteger(popularity) && (
+            <div className="Album__meta " title="Popularity">
+              <i className="Album__popularity-icon fas fa-chart-line" />
+              {popularity}
+            </div>
+          )}
+          {displayTracks && (
+            <div className="Album__meta">
+              {totalTracks}&nbsp;{totalTracks > 1 ? 'tracks' : 'track'}
+            </div>
+          )}
+        </div>
       </div>
     </article>
   )

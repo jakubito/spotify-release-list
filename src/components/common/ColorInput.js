@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import classNames from 'classnames'
-import { useClickOutside, useFocusOutside } from 'hooks'
+import { Dropdown } from 'components/common'
 
 /**
  * Render color picker input
@@ -15,41 +15,34 @@ import { useClickOutside, useFocusOutside } from 'hooks'
  * }} props
  */
 function ColorInput({ id, name, className, color, onChange }) {
-  /** @type {React.MutableRefObject<HTMLDivElement>} */
-  const containerRef = useRef()
   const [pickerVisible, setPickerVisible] = useState(false)
-  const openPicker = () => setPickerVisible(true)
-  const closePicker = () => setPickerVisible(false)
 
-  useClickOutside(containerRef, closePicker)
-  useFocusOutside(containerRef, closePicker)
+  const trigger = (
+    <div className="control has-icons-left">
+      <HexColorInput
+        id={id}
+        name={name}
+        className="ColorInput__input input is-rounded has-text-weight-medium is-dark"
+        color={color}
+        onChange={onChange}
+        onFocus={() => setPickerVisible(true)}
+      />
+      <span className="ColorInput__icon icon is-small is-left">
+        <i className="fas fa-hashtag" />
+      </span>
+    </div>
+  )
 
   return (
-    <div
-      className={classNames(className, 'ColorInput dropdown', { 'is-active': pickerVisible })}
-      ref={containerRef}
+    <Dropdown
+      className={classNames(className, 'ColorInput dropdown')}
+      contentClassName="ColorInput__content"
+      active={pickerVisible}
+      trigger={trigger}
+      close={() => setPickerVisible(false)}
     >
-      <div className="dropdown-trigger">
-        <div className="control has-icons-left">
-          <HexColorInput
-            id={id}
-            name={name}
-            className="ColorInput__input input is-rounded has-text-weight-medium is-dark"
-            color={color}
-            onChange={onChange}
-            onFocus={openPicker}
-          />
-          <span className="ColorInput__icon icon is-small is-left">
-            <i className="fas fa-hashtag" />
-          </span>
-        </div>
-      </div>
-      <div className="dropdown-menu">
-        <div className="ColorInput__content dropdown-content">
-          <HexColorPicker color={color} onChange={onChange} />
-        </div>
-      </div>
-    </div>
+      <HexColorPicker color={color} onChange={onChange} />
+    </Dropdown>
   )
 }
 

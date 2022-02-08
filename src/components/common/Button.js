@@ -25,6 +25,7 @@ function Button({
   text,
   style,
   compact,
+  newBadge,
 }) {
   const isTablet = useMediaQuery({ minWidth: 769 })
   const noStyle = !dark && !darker && !primary && !danger && !text
@@ -48,6 +49,7 @@ function Button({
         'is-danger': danger,
         'is-text': text,
         'button--compact': compact,
+        'has-badge': newBadge,
       })}
     >
       {icon && (
@@ -56,6 +58,7 @@ function Button({
         </span>
       )}
       {displayContent && contentWrapped}
+      {newBadge && <div className="badge badge--info">NEW</div>}
     </button>
   )
 }

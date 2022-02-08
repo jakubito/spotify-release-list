@@ -1,14 +1,14 @@
 import { fork, take, takeEvery, takeLeading } from 'redux-saga/effects'
+import { REHYDRATE } from 'redux-persist'
 import {
-  HYDRATE,
-  AUTHORIZE,
-  AUTHORIZE_ERROR,
-  SYNC,
-  SYNC_CANCEL,
-  CREATE_PLAYLIST,
-  CREATE_PLAYLIST_CANCEL,
-  SET_SETTINGS,
-  RESET,
+  authorize,
+  authorizeError,
+  createPlaylist,
+  createPlaylistCancel,
+  reset,
+  setSettings,
+  sync,
+  syncCancel,
 } from 'state/actions'
 import { deleteAuthData } from 'auth'
 import { takeLeadingCancellable } from './helpers'
@@ -25,14 +25,14 @@ import { firstDayOfWeekUpdateSaga } from './locale'
  * Root saga
  */
 export function* rootSaga() {
-  yield take(HYDRATE)
-  yield takeEvery(SET_SETTINGS, themeUpdateSaga)
-  yield takeEvery(SET_SETTINGS, firstDayOfWeekUpdateSaga)
-  yield takeEvery(RESET, deleteAuthData)
-  yield takeEvery(AUTHORIZE_ERROR, authorizeErrorSaga)
-  yield takeLeading(AUTHORIZE, authorizeSaga)
-  yield takeLeadingCancellable(SYNC, SYNC_CANCEL, syncSaga)
-  yield takeLeadingCancellable(CREATE_PLAYLIST, CREATE_PLAYLIST_CANCEL, createPlaylistSaga)
+  yield take(REHYDRATE)
+  yield takeEvery(setSettings.type, themeUpdateSaga)
+  yield takeEvery(setSettings.type, firstDayOfWeekUpdateSaga)
+  yield takeEvery(reset.type, deleteAuthData)
+  yield takeEvery(authorizeError.type, authorizeErrorSaga)
+  yield takeLeading(authorize.type, authorizeSaga)
+  yield takeLeadingCancellable(sync.type, syncCancel.type, syncSaga)
+  yield takeLeadingCancellable(createPlaylist.type, createPlaylistCancel.type, createPlaylistSaga)
   yield fork(autoSyncSaga)
 
   if (navigator.serviceWorker) {

@@ -23,6 +23,7 @@
  *   favorites: Favorites
  *   editingFavorites: boolean
  *   lastSettingsPath?: string
+ *   labelBlocklistHeight?: number
  * }} State
  *
  * @typedef {{
@@ -58,6 +59,10 @@
  *   notifications: boolean
  *   firstDayOfWeek: number
  *   displayTracks: boolean
+ *   fullAlbumData: boolean
+ *   displayLabels: boolean
+ *   displayPopularity: boolean
+ *   labelBlocklist: string
  * }} Settings
  *
  * @typedef {{
@@ -76,15 +81,17 @@
  *   image: string
  *   releaseDate: string
  *   totalTracks: number
+ *   label?: string
+ *   popularity?: number
  * }} AlbumBase
  *
  * @typedef {AlbumBase & {
- *   artistIds: { [group: string]: string[] }
+ *   artistIds: { [key in AlbumGroup]?: string[] }
  *   albumArtists: Artist[]
  * }} AlbumRaw
  *
  * @typedef {AlbumBase & {
- *   artists: { [group: string]: Artist[] }
+ *   artists: { [key in AlbumGroup]?: Artist[] }
  *   otherArtists: Artist[]
  * }} Album
  *
@@ -112,6 +119,7 @@
  *   text?: boolean
  *   style?: React.CSSProperties
  *   compact?: boolean
+ *   newBadge?: boolean
  * }} ButtonProps
  *
  * @typedef {{
@@ -128,14 +136,12 @@
  * @typedef {{ [date: string]: Album[] }} ReleasesMap
  * @typedef {{ [id: string]: boolean }} Favorites
  * @typedef {{ date: string, albums: Album[] }[]} Releases
- * @typedef {{ [group: string]: string[] }} ReleasesGroupMap
+ * @typedef {{ [key in AlbumGroup]?: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
- * @typedef {{ type: string, payload: any }} Action
- * @typedef {(...args: any[]) => Action} ActionCreator
  * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
- * @typedef {{ [group: string]: string }} GroupColorScheme
+ * @typedef {{ [key in AlbumGroup]: string }} GroupColorScheme
  * @typedef {(to: string) => Promise<void>} Navigate
  * @typedef {[Fn, ...any[]]} RequestChannelMessage
  * @typedef {Channel<RequestChannelMessage>} RequestChannel
@@ -151,7 +157,7 @@
  */
 
 /**
- * @template T
+ * @template [T=any]
  * @typedef {Channel<ResponseChannelMessage<T>>} ResponseChannel<T>
  */
 
@@ -161,27 +167,108 @@
  */
 
 /**
+ * @template T
+ * @typedef {T[keyof T]} Values<T>
+ */
+
+/**
  * Enums
  *
  * @typedef {import('./enums').Address} Address
  * @typedef {import('./enums').Scope} Scope
  * @typedef {import('./enums').SpotifyEntity} SpotifyEntity
  * @typedef {import('./enums').MomentFormat} MomentFormat
- * @typedef {import('./enums').AlbumGroup} AlbumGroup
  * @typedef {import('./enums').Theme} Theme
  * @typedef {import('./enums').Market} Market
+ *
+ * @typedef {{
+ *   ALBUM: 'album'
+ *   SINGLE: 'single'
+ *   COMPILATION: 'compilation'
+ *   APPEARS_ON: 'appears_on'
+ * }} AlbumGroupEnum
+ * @typedef {Values<AlbumGroupEnum>} AlbumGroup
+ * @typedef {Values<Omit<AlbumGroupEnum, 'APPEARS_ON'>>} AlbumType
  */
 
 /**
  * Actions
  *
- * @typedef {ReturnType<import('state/actions').authorize>} AuthorizeAction
- * @typedef {ReturnType<import('state/actions').authorizeError>} AuthorizeErrorAction
- * @typedef {ReturnType<import('state/actions').setSettings>} SetSettingsAction
- * @typedef {ReturnType<import('state/actions').setUser>} SetUserAction
- * @typedef {ReturnType<import('state/actions').reset>} ResetAction
- * @typedef {ReturnType<import('state/actions').sync>} SyncAction
- * @typedef {ReturnType<import('state/actions').createPlaylist>} CreatePlaylistAction
+ * @typedef {ReturnType<typeof import('state/actions').authorize>} AuthorizeAction
+ * @typedef {ReturnType<typeof import('state/actions').authorizeStart>} AuthorizeStartAction
+ * @typedef {ReturnType<typeof import('state/actions').authorizeFinished>} AuthorizeFinishedAction
+ * @typedef {ReturnType<typeof import('state/actions').authorizeError>} AuthorizeErrorAction
+ * @typedef {ReturnType<typeof import('state/actions').sync>} SyncAction
+ * @typedef {ReturnType<typeof import('state/actions').syncStart>} SyncStartAction
+ * @typedef {ReturnType<typeof import('state/actions').syncFinished>} SyncFinishedAction
+ * @typedef {ReturnType<typeof import('state/actions').syncError>} SyncErrorAction
+ * @typedef {ReturnType<typeof import('state/actions').syncCancel>} SyncCancelAction
+ * @typedef {ReturnType<typeof import('state/actions').setSyncingProgress>} SetSyncingProgressAction
+ * @typedef {ReturnType<typeof import('state/actions').reset>} ResetAction
+ * @typedef {ReturnType<typeof import('state/actions').setSettings>} SetSettingsAction
+ * @typedef {ReturnType<typeof import('state/actions').showPlaylistModal>} ShowPlaylistModalAction
+ * @typedef {ReturnType<typeof import('state/actions').hidePlaylistModal>} HidePlaylistModalAction
+ * @typedef {ReturnType<typeof import('state/actions').showMessage>} ShowMessageAction
+ * @typedef {ReturnType<typeof import('state/actions').showErrorMessage>} ShowErrorMessageAction
+ * @typedef {ReturnType<typeof import('state/actions').hideMessage>} HideMessageAction
+ * @typedef {ReturnType<typeof import('state/actions').setPlaylistForm>} SetPlaylistFormAction
+ * @typedef {ReturnType<typeof import('state/actions').createPlaylist>} CreatePlaylistAction
+ * @typedef {ReturnType<typeof import('state/actions').createPlaylistStart>} CreatePlaylistStartAction
+ * @typedef {ReturnType<typeof import('state/actions').createPlaylistFinished>} CreatePlaylistFinishedAction
+ * @typedef {ReturnType<typeof import('state/actions').createPlaylistError>} CreatePlaylistErrorAction
+ * @typedef {ReturnType<typeof import('state/actions').createPlaylistCancel>} CreatePlaylistCancelAction
+ * @typedef {ReturnType<typeof import('state/actions').resetPlaylist>} ResetPlaylistAction
+ * @typedef {ReturnType<typeof import('state/actions').addSeenFeature>} AddSeenFeatureAction
+ * @typedef {ReturnType<typeof import('state/actions').toggleFiltersVisible>} ToggleFiltersVisibleAction
+ * @typedef {ReturnType<typeof import('state/actions').setFilters>} SetFiltersAction
+ * @typedef {ReturnType<typeof import('state/actions').resetFilters>} ResetFiltersAction
+ * @typedef {ReturnType<typeof import('state/actions').autoSyncStart>} AutoSyncStartAction
+ * @typedef {ReturnType<typeof import('state/actions').autoSyncStop>} AutoSyncStopAction
+ * @typedef {ReturnType<typeof import('state/actions').updateReady>} UpdateReadyAction
+ * @typedef {ReturnType<typeof import('state/actions').dismissUpdate>} DismissUpdateAction
+ * @typedef {ReturnType<typeof import('state/actions').triggerUpdate>} TriggerUpdateAction
+ * @typedef {ReturnType<typeof import('state/actions').setFavorite>} SetFavoriteAction
+ * @typedef {ReturnType<typeof import('state/actions').setFavoriteAll>} SetFavoriteAllAction
+ * @typedef {ReturnType<typeof import('state/actions').toggleEditingFavorites>} ToggleEditingFavoritesAction
+ * @typedef {ReturnType<typeof import('state/actions').setLastSettingsPath>} SetLastSettingsPathAction
+ *
+ * @typedef {AuthorizeAction
+ *   | AuthorizeStartAction
+ *   | AuthorizeFinishedAction
+ *   | AuthorizeErrorAction
+ *   | SyncAction
+ *   | SyncStartAction
+ *   | SyncFinishedAction
+ *   | SyncErrorAction
+ *   | SyncCancelAction
+ *   | SetSyncingProgressAction
+ *   | ResetAction
+ *   | SetSettingsAction
+ *   | ShowPlaylistModalAction
+ *   | HidePlaylistModalAction
+ *   | ShowMessageAction
+ *   | ShowErrorMessageAction
+ *   | HideMessageAction
+ *   | SetPlaylistFormAction
+ *   | CreatePlaylistAction
+ *   | CreatePlaylistStartAction
+ *   | CreatePlaylistFinishedAction
+ *   | CreatePlaylistErrorAction
+ *   | CreatePlaylistCancelAction
+ *   | ResetPlaylistAction
+ *   | AddSeenFeatureAction
+ *   | ToggleFiltersVisibleAction
+ *   | SetFiltersAction
+ *   | ResetFiltersAction
+ *   | AutoSyncStartAction
+ *   | AutoSyncStopAction
+ *   | UpdateReadyAction
+ *   | DismissUpdateAction
+ *   | TriggerUpdateAction
+ *   | SetFavoriteAction
+ *   | SetFavoriteAllAction
+ *   | ToggleEditingFavoritesAction
+ *   | SetLastSettingsPathAction} Action
  */
 
 /**
@@ -194,8 +281,15 @@
  *   artists: SpotifyArtist[]
  *   release_date: string
  *   album_group: AlbumGroup
+ *   album_type: AlbumType
  *   total_tracks: number
  * }} SpotifyAlbum
+ *
+ * @typedef {Omit<SpotifyAlbum, 'album_group'> & {
+ *   label: string
+ *   popularity: number
+ *   tracks: Paged<SpotifyTrack>
+ * }} SpotifyAlbumFull
  *
  * @typedef {{ width: number, height: number, url: string }} SpotifyImage
  * @typedef {{ id: string, display_name: string, images: SpotifyImage[] }} SpotifyUser
@@ -243,4 +337,19 @@
 /**
  * @template T
  * @typedef {import('react-hook-form').SubmitHandler<T>} SubmitHandler<T>
+ */
+
+/**
+ * @template P,[T=string]
+ * @typedef {import('@reduxjs/toolkit').ActionCreatorWithPayload<P,T>} ActionCreatorWithPayload<P,T>
+ */
+
+/**
+ * @template P,[T=string]
+ * @typedef {import('@reduxjs/toolkit').ActionCreatorWithOptionalPayload<P,T>} ActionCreatorWithOptionalPayload<P,T>
+ */
+
+/**
+ * @template T
+ * @typedef {import('@reduxjs/toolkit').Draft<T>} Draft<T>
  */

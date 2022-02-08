@@ -1,0 +1,16 @@
+.Dropdown {
+  &--dark {
+    .dropdown-content {
+      background-color: $darkest !important;
+    }
+  }
+
+  .dropdown-item {
+    border-radius: 0;
+    font-weight: 400 !important;
+
+    .icon {
+      margin-left: 0 !important;
+    }
+  }
+}

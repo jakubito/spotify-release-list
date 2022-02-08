@@ -1,7 +1,7 @@
 @import './variables';
 
-@import '~bulma/bulma';
 @import '~bulma-checkradio/dist/css/bulma-checkradio';
+@import '~bulma/bulma';
 @import '~react-dates/lib/css/_datepicker.css';
 
 @import './mixins';
@@ -45,3 +45,6 @@
 @import './components/BackupSettings';
 @import './components/UpdateMessage';
 @import './components/FavoritesToolbar';
+@import './components/Dropdown';
+@import './components/LabelDropdown';
+@import './components/LabelBlocklistField';

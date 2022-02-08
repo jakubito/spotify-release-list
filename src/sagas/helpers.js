@@ -63,7 +63,7 @@ export function throttle(amount, unit, saga, ...args) {
  * Worker saga that dispatches progress value to the store at specific interval
  *
  * @param {Progress} progress
- * @param {ActionCreator} setProgressAction
+ * @param {ActionCreatorWithPayload<number>} setProgressAction
  * @param {number} updateInterval - How often to dispatch progress value (milliseconds)
  */
 export function* progressWorker(progress, setProgressAction, updateInterval) {

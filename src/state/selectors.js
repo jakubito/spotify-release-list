@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { createDraftSafeSelector } from '@reduxjs/toolkit'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
@@ -6,12 +7,9 @@ import last from 'lodash/last'
 import isEqual from 'lodash/isEqual'
 import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
-import { includesTruthy, getReleasesBetween, merge } from 'helpers'
-import { buildReleases, buildReleasesMap } from './helpers'
+import { includesTruthy, getReleasesBetween, merge, hasVariousArtists } from 'helpers'
+import { buildReleases, buildReleasesMap } from 'helpers'
 import { INITIAL_STATE } from './reducer'
-
-const VARIOUS_ARTISTS = 'Various Artist'
-const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
 
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
@@ -75,6 +73,9 @@ export const getEditingFavorites = (state) => state.editingFavorites
 
 /** @param {State} state */
 export const getLastSettingsPath = (state) => state.lastSettingsPath
+
+/** @param {State} state */
+export const getLabelBlocklistHeight = (state) => state.labelBlocklistHeight
 
 // Individual settings selectors
 export const getSettingsGroups = createSelector(getSettings, (settings) => settings.groups)
@@ -235,8 +236,10 @@ const getFuseInstance = createSelector(
   getAlbumsArray,
   (albums) =>
     new Fuse(albums, {
-      keys: ['name', ...Object.values(AlbumGroup).map((group) => `artists.${group}.name`)],
       threshold: 0.1,
+      keys: Object.values(AlbumGroup)
+        .map((group) => `artists.${group}.name`)
+        .concat('name', 'label'),
     })
 )
 
@@ -245,15 +248,7 @@ const getFuseInstance = createSelector(
  */
 const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((ids, album) => {
-    const variousArtists = Object.values(album.artists)
-      .flat()
-      .concat(album.otherArtists)
-      .some((artist) => artist.name === VARIOUS_ARTISTS || artist.id === VARIOUS_ARTISTS_ID)
-
-    if (!variousArtists) {
-      ids.push(album.id)
-    }
-
+    if (!hasVariousArtists(album)) ids.push(album.id)
     return ids
   }, /** @type {string[]} */ ([]))
 )
@@ -375,7 +370,7 @@ export const getReleases = createSelector(
 /**
  * Get final releases array
  */
-export const getReleasesArray = createSelector(
+export const getReleasesArray = createDraftSafeSelector(
   [getFiltersApplied, getFilteredAlbumsArray, getAlbumsArray],
   (filtersApplied, filtered, original) => (filtersApplied ? filtered : original)
 )

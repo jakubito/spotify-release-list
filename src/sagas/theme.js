@@ -7,7 +7,7 @@ import { Theme } from 'enums'
  */
 export function themeUpdateSaga(action) {
   const { classList } = document.documentElement
-  const { theme } = action.payload.settings
+  const { theme } = action.payload
 
   if (theme === undefined) return
 

@@ -32,7 +32,7 @@ export const MomentFormat = {
   MONTH_NAME: 'MMMM',
 }
 
-/** @enum {string} */
+/** @type {AlbumGroupEnum} */
 export const AlbumGroup = {
   ALBUM: 'album',
   SINGLE: 'single',
@@ -42,7 +42,7 @@ export const AlbumGroup = {
 
 const { ALBUM, SINGLE, COMPILATION, APPEARS_ON } = AlbumGroup
 
-/** @type {{ [group: string]: number }} */
+/** @type {{ [key in AlbumGroup]: number }} */
 export const AlbumGroupIndex = {
   [ALBUM]: 0,
   [SINGLE]: 1,

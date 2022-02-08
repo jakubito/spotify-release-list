@@ -99,7 +99,7 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
     next = last(albums).releaseDate < minDate ? null : response.next
   }
 
-  const [lastGroup] = Object.keys(last(albums).artistIds)
+  const [lastGroup] = /** @type {[AlbumGroup]} */ (Object.keys(last(albums).artistIds))
   const restGroups = groups.slice(groups.indexOf(lastGroup) + 1)
 
   if (restGroups.length > 0) {
@@ -117,20 +117,34 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
  * @param {string} token
  * @param {string[]} albumIds
  * @param {Market} [market]
- * @returns {Promise<string[]>}
+ * @returns {Promise<SpotifyAlbumFull[]>}
  */
-export async function getAlbumsTrackIds(token, albumIds, market) {
-  /** @type {string[]} */
-  const trackIds = []
+export async function getFullAlbums(token, albumIds, market) {
   const params = new URLSearchParams({
     ids: albumIds.join(','),
     market: market || DEFAULT_MARKET,
   })
 
-  /** @type {{ albums: Array<{ tracks: Paged<SpotifyTrack> }> }} */
+  /** @type {{ albums: SpotifyAlbumFull[] }} */
   const response = await get(apiUrl(`albums?${params}`), token)
 
-  for (const album of response.albums) {
+  return response.albums
+}
+
+/**
+ * Return an album's track IDs
+ *
+ * @param {string} token
+ * @param {string[]} albumIds
+ * @param {Market} [market]
+ * @returns {Promise<string[]>}
+ */
+export async function getAlbumsTrackIds(token, albumIds, market) {
+  /** @type {string[]} */
+  const trackIds = []
+  const albums = await getFullAlbums(token, albumIds, market)
+
+  for (const album of albums) {
     const albumTrackIds = album.tracks.items.map((track) => track.id)
     let next = album.tracks.next
 

@@ -3,15 +3,12 @@ import moment from 'moment'
 import {
   autoSyncStart,
   autoSyncStop,
+  reset,
+  setSettings,
   sync,
-  AUTO_SYNC_START,
-  AUTO_SYNC_STOP,
-  SYNC_CANCEL,
-  SYNC_ERROR,
-  SYNC_FINISHED,
-  SET_SETTINGS,
-  SET_USER,
-  RESET,
+  syncCancel,
+  syncError,
+  syncFinished,
 } from 'state/actions'
 import { getLastAutoSync, getLastSync, getSettings, getUser } from 'state/selectors'
 import { takeLeadingCancellable, windowEventChannel } from './helpers'
@@ -25,10 +22,10 @@ const POLLING_INTERVAL = 60 * 1000
  * Main auto sync saga
  */
 export function* autoSyncSaga() {
-  yield takeLeadingCancellable(AUTO_SYNC_START, AUTO_SYNC_STOP, autoSyncManager)
-  yield takeEvery(SET_SETTINGS, settingWatcher)
-  yield takeEvery(SET_USER, userWatcher)
-  yield takeEvery(RESET, resetWatcher)
+  yield takeLeadingCancellable(autoSyncStart.type, autoSyncStop.type, autoSyncManager)
+  yield takeEvery(setSettings.type, settingWatcher)
+  yield takeEvery(syncFinished.type, syncFinishedWatcher)
+  yield takeEvery(reset.type, resetWatcher)
   yield fork(initialStart)
 }
 
@@ -59,11 +56,11 @@ function* autoSyncWorker() {
   while (true) {
     yield delay(POLLING_INTERVAL)
 
-    /** @type {ReturnType<getLastSync>} */
+    /** @type {ReturnType<typeof getLastSync>} */
     const lastSync = yield select(getLastSync)
-    /** @type {ReturnType<getLastAutoSync>} */
+    /** @type {ReturnType<typeof getLastAutoSync>} */
     const lastAutoSync = yield select(getLastAutoSync)
-    /** @type {ReturnType<getSettings>} */
+    /** @type {ReturnType<typeof getSettings>} */
     const { autoSyncTime } = yield select(getSettings)
     const [hours, minutes] = autoSyncTime.split(':').map(Number)
     const todaySync = moment().set({ hours, minutes, seconds: 1 })
@@ -72,8 +69,8 @@ function* autoSyncWorker() {
     if (lastSync && todaySync.isBefore(lastSync)) continue
     if (lastAutoSync && todaySync.isBefore(lastAutoSync)) continue
 
-    yield put(sync(true))
-    yield take([SYNC_FINISHED, SYNC_ERROR, SYNC_CANCEL])
+    yield put(sync({ auto: true }))
+    yield take([syncFinished.type, syncError.type, syncCancel.type])
   }
 }
 
@@ -83,9 +80,9 @@ function* autoSyncWorker() {
  * @param {SetSettingsAction} action
  */
 function* settingWatcher(action) {
-  /** @type {ReturnType<getUser>} */
+  /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
-  const { autoSync } = action.payload.settings
+  const { autoSync } = action.payload
 
   if (!user) return
   if (autoSync === undefined) return
@@ -98,10 +95,10 @@ function* settingWatcher(action) {
 }
 
 /**
- * Oversee user changes
+ * Oversee sync finished action
  */
-function* userWatcher() {
-  /** @type {ReturnType<getSettings>} */
+function* syncFinishedWatcher() {
+  /** @type {ReturnType<typeof getSettings>} */
   const { autoSync } = yield select(getSettings)
 
   if (autoSync) {
@@ -120,9 +117,9 @@ function* resetWatcher() {
  * Start service on initial load
  */
 function* initialStart() {
-  /** @type {ReturnType<getUser>} */
+  /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
-  /** @type {ReturnType<getSettings>} */
+  /** @type {ReturnType<typeof getSettings>} */
   const { autoSync } = yield select(getSettings)
 
   if (user && autoSync) {

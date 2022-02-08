@@ -26,9 +26,7 @@
 
 html,
 body,
-#root,
-// reach-router's wrapper
-#root > div:first-child {
+#root {
   height: 100%;
   background-color: $black;
   color: $white-ter;
@@ -99,7 +97,8 @@ body,
     color: $black;
   }
 
-  &:active {
+  &:active,
+  &:focus {
     background-color: $primary-slightly-darker;
     color: $black;
   }
@@ -175,9 +174,11 @@ body,
   margin: 0;
   font-size: 10px;
   border-radius: 8px;
-  color: $darkest;
+  color: $white-ter;
+  background-color: $darkest;
+  font-weight: 600;
 
-  &.badge-inline {
+  &--inline {
     display: inline-block;
     position: static;
     vertical-align: middle;
@@ -185,8 +186,8 @@ body,
     font-size: 12px;
   }
 
-  &.is-primary {
-    background-color: $primary;
+  &--info {
+    background-color: $info;
   }
 }
 
@@ -318,4 +319,36 @@ body,
     left: 15px;
     transform: none;
   }
+}
+
+.label {
+  .tag {
+    vertical-align: top;
+    margin-left: 16px;
+    font-weight: 500;
+  }
+}
+
+.select {
+  &:after {
+    border-color: $black-ter !important;
+  }
+
+  &:hover,
+  &:focus {
+    &:after {
+      border-color: $grey !important;
+    }
+  }
+
+  select {
+    &:focus {
+      box-shadow: 0 0 0 0.125em rgba($grey, 25%);
+      border-color: $grey;
+    }
+  }
+}
+
+strong {
+  color: $white-ter;
 }

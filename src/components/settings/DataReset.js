@@ -26,6 +26,7 @@ function DataReset() {
         icon="fas fa-trash-alt"
         className="DataReset__button"
         onClick={deferred(setModalVisible, true)}
+        small
       />
       {modalVisible && (
         <ResetModal closeModal={deferred(setModalVisible, false)} resetData={resetData} />

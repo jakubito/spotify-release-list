@@ -1,12 +1,12 @@
 import { call, fork, put, spawn, take, takeLeading } from 'redux-saga/effects'
-import { TRIGGER_UPDATE, updateReady } from 'state/actions'
+import { triggerUpdate, updateReady } from 'state/actions'
 import { serviceWorkerEventChannel, throttle, windowEventChannel } from './helpers'
 
 /**
  * Main update saga
  */
 export function* updateSaga() {
-  yield takeLeading(TRIGGER_UPDATE, update)
+  yield takeLeading(triggerUpdate.type, update)
   yield fork(appFocusCheck)
   yield fork(waitingCheck)
 }
@@ -40,9 +40,9 @@ function* update() {
 function* appFocusCheck() {
   /** @type {EventChannel<WindowEventMap['focus']>} */
   const focus = yield call(windowEventChannel, 'focus')
-  /** @type {ReturnType<throttle>} */
+  /** @type {ReturnType<typeof throttle>} */
   const updateCheckThrottled = yield call(throttle, 1, 'hour', updateCheck)
-  /** @type {ReturnType<throttle>} */
+  /** @type {ReturnType<typeof throttle>} */
   const waitingCheckThrottled = yield call(throttle, 1, 'day', waitingCheck)
 
   while (true) {
