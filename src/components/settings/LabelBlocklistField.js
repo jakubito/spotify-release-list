@@ -42,7 +42,7 @@ function LabelBlocklistField() {
     <div className="LabelBlocklistField Settings__field field">
       <label className="label has-text-light">
         Label blocklist
-        {!labelsFeatureSeen && <div className="badge badge--inline badge--primary">NEW</div>}
+        {!labelsFeatureSeen && <div className="badge badge--inline badge--info">NEW</div>}
         {!fullAlbumData && <span className="tag is-warning">Label data required</span>}
       </label>
       <div className="LabelBlocklistField__help">

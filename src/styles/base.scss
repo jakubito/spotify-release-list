@@ -174,7 +174,8 @@ body,
   margin: 0;
   font-size: 10px;
   border-radius: 8px;
-  color: $darkest;
+  color: $white-ter;
+  background-color: $darkest;
   font-weight: 600;
 
   &--inline {
@@ -185,8 +186,8 @@ body,
     font-size: 12px;
   }
 
-  &--primary {
-    background-color: $primary;
+  &--info {
+    background-color: $info;
   }
 }
 

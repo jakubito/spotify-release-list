@@ -58,7 +58,7 @@ function Button({
         </span>
       )}
       {displayContent && contentWrapped}
-      {newBadge && <div className="badge badge--primary">NEW</div>}
+      {newBadge && <div className="badge badge--info">NEW</div>}
     </button>
   )
 }

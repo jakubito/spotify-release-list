@@ -24,9 +24,7 @@ function MetaField() {
             label={
               <>
                 Display label
-                {!labelsFeatureSeen && (
-                  <div className="badge badge--inline badge--primary">NEW</div>
-                )}
+                {!labelsFeatureSeen && <div className="badge badge--inline badge--info">NEW</div>}
               </>
             }
             defaultChecked={displayLabels}
@@ -44,9 +42,7 @@ function MetaField() {
             label={
               <>
                 Display popularity value
-                {!labelsFeatureSeen && (
-                  <div className="badge badge--inline badge--primary">NEW</div>
-                )}
+                {!labelsFeatureSeen && <div className="badge badge--inline badge--info">NEW</div>}
               </>
             }
             defaultChecked={displayPopularity}

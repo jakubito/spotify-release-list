@@ -18,7 +18,7 @@ function FetchExtraDataField() {
     <div className="FetchExtraDataField Settings__field field">
       <label className="label has-text-light" htmlFor="fetchExtraData">
         Fetch extra album data <HelpText>(faster when turned off)</HelpText>
-        {!labelsFeatureSeen && <div className="badge badge--inline badge--primary">NEW</div>}
+        {!labelsFeatureSeen && <div className="badge badge--inline badge--info">NEW</div>}
       </label>
       <div className="control">
         <div className="field">
