@@ -17,7 +17,7 @@ function LabelDropdown({ label }) {
   const [active, setActive] = useState(false)
 
   const block = (variousArtists = false) => {
-    const labelEntry = `${variousArtists ? '[VA] ' : ''}${label}`
+    const labelEntry = `${variousArtists ? '*VA* ' : ''}${label}`
     const labelBlocklist = settings.labelBlocklist.trim().concat(`\n${labelEntry}`).trim()
 
     dispatch(setSettings({ labelBlocklist }))

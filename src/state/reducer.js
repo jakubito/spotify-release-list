@@ -208,7 +208,8 @@ const rootReducer = createReducer(INITIAL_STATE, (builder) => {
       Object.assign(state, INITIAL_STATE)
     })
     .addCase(applyLabelBlocklist, (state) => {
-      deleteLabels(state.albums, state.settings.labelBlocklist)
+      const deletedIds = deleteLabels(state.albums, state.settings.labelBlocklist)
+      for (const id of deletedIds) delete state.favorites[id]
     })
     .addCase(setLabelBlocklistHeight, (state, action) => {
       state.labelBlocklistHeight = action.payload

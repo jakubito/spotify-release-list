@@ -92,11 +92,10 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
 
     albums.push(...nextAlbums)
 
-    if (!response.next) {
-      return albums
-    }
+    if (!response.next) return albums
+    if (last(albums).releaseDate < minDate) break
 
-    next = last(albums).releaseDate < minDate ? null : response.next
+    next = response.next
   }
 
   const [lastGroup] = /** @type {[AlbumGroup]} */ (Object.keys(last(albums).artistIds))
@@ -250,20 +249,16 @@ async function request(endpoint, token, method, headers = {}, body) {
     body,
   })
 
-  if (response.ok) {
-    return response.json()
-  }
+  if (response.ok) return response.json()
 
   if (response.status === HTTP_TOO_MANY_REQUESTS) {
     const retryAfter = Number(response.headers.get('Retry-After'))
     await sleep((retryAfter + 1) * 1000)
-
     return request(endpoint, token, method, headers, body)
   }
 
   if (response.status >= 400 && response.status < 500) {
     const json = await response.json()
-
     throw new FetchError(response.status, response.statusText, json.error.message)
   }
 
