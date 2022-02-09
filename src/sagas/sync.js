@@ -83,9 +83,9 @@ function* syncMainSaga(action) {
   const minDate = moment().subtract(days, 'day').format(ISO_DATE)
 
   /** @type {RequestChannel} */
-  const requestChannel = yield call(channel, buffers.fixed(artists.length))
+  const requestChannel = yield call(channel, buffers.expanding(artists.length))
   /** @type {ResponseChannel} */
-  const responseChannel = yield call(channel, buffers.fixed(REQUEST_WORKERS))
+  const responseChannel = yield call(channel, buffers.expanding(REQUEST_WORKERS))
 
   for (let i = 0; i < REQUEST_WORKERS; i += 1) {
     tasks.push(yield fork(requestWorker, requestChannel, responseChannel))
