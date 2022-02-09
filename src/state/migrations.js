@@ -25,6 +25,14 @@ const migrations = {
   4: resetDataWithMessage,
   5: resetDataWithMessage,
   6: resetDataWithMessage,
+  7: (state) => ({
+    ...state,
+    favorites: {},
+    settings: {
+      ...state.settings,
+      labelBlocklist: state.settings.labelBlocklist.replaceAll('[VA]', '*VA*'),
+    },
+  }),
 }
 
 /**
