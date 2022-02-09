@@ -411,18 +411,20 @@ export function hasVariousArtists(album) {
 }
 
 /**
- * Delete albums from specified labels. Mutates `albumsMap`
+ * Delete albums from specified labels and return deleted IDs. Mutates `albumsMap`.
  *
  * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
  * @param {string} labelsList
- * @returns {AlbumsMap}
+ * @returns {string[]}
  */
 export function deleteLabels(albumsMap, labelsList) {
-  if (labelsList.trim().length === 0) return albumsMap
+  if (labelsList.trim().length === 0) return []
 
+  /** @type {string[]} */
+  const ids = []
   /** @type {Record<string, string[]>} */
   const labels = {}
-  const entries = labelsList.matchAll(/^\s*(?:\[(.*)\])?\s*(.*?)\s*$/gm)
+  const entries = labelsList.matchAll(/^\s*(?:\*(\S*)\*)?\s*(.*?)\s*$/gm)
 
   for (const [, flags, label] of entries) {
     labels[label] = flags?.split(',')
@@ -439,8 +441,11 @@ export function deleteLabels(albumsMap, labelsList) {
   }
 
   for (const album of Object.values(albumsMap)) {
-    if (shouldDelete(album)) delete albumsMap[album.id]
+    if (shouldDelete(album)) {
+      ids.push(album.id)
+      delete albumsMap[album.id]
+    }
   }
 
-  return albumsMap
+  return ids
 }
