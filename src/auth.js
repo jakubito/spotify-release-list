@@ -106,7 +106,7 @@ export function startAuthFlow(action, scope, codeChallenge, nonce) {
     scope,
   })
 
-  window.location.replace(`${AUTHORIZE_URL}?${params}`)
+  window.location.assign(`${AUTHORIZE_URL}?${params}`)
 }
 
 /**
