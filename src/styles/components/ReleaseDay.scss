@@ -28,6 +28,11 @@
       font-size: 1.25rem;
     }
 
+    @include desktop {
+      position: sticky;
+      top: 16px;
+    }
+
     @include desktop-only {
       flex: 0 0 170px;
     }
