@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { deferred, modalsClosed } from 'helpers'
-import { useFeature } from 'hooks'
 import { setLastSettingsPath } from 'state/actions'
 import { VerticalLayout, HorizontalLayout, Content } from 'components/common'
 import SettingsHeader from './SettingsHeader'
@@ -16,7 +15,6 @@ function Settings() {
   const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { setSeen } = useFeature('labels')
 
   useEffect(() => {
     dispatch(setLastSettingsPath(location.pathname))
@@ -26,8 +24,6 @@ function Settings() {
     filter: modalsClosed,
     enableOnTags: ['INPUT', 'SELECT'],
   })
-
-  useEffect(() => setSeen, [])
 
   return (
     <VerticalLayout className="Settings">

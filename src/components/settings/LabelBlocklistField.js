@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { defer, sleep } from 'helpers'
-import { useFeature } from 'hooks'
 import { getLabelBlocklistHeight, getSettings } from 'state/selectors'
 import { applyLabelBlocklist, setLabelBlocklistHeight, setSettings } from 'state/actions'
 import { Button } from 'components/common'
@@ -18,7 +17,6 @@ function LabelBlocklistField() {
   const [applied, setApplied] = useState(false)
   /** @type {React.MutableRefObject<HTMLTextAreaElement>} */
   const textareaRef = useRef()
-  const { seen: labelsFeatureSeen } = useFeature('labels')
 
   const apply = () => {
     defer(dispatch, applyLabelBlocklist())
@@ -44,7 +42,6 @@ function LabelBlocklistField() {
     <div className="LabelBlocklistField Settings__field field">
       <label className="label has-text-light">
         Label blocklist
-        {!labelsFeatureSeen && <div className="badge badge--inline badge--info">NEW</div>}
         {!fullAlbumData && <span className="tag is-warning">Label data required</span>}
       </label>
       <div className="LabelBlocklistField__help">
