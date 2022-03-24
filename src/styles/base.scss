@@ -32,6 +32,20 @@ body,
   color: $white-ter;
 }
 
+html {
+  &:before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 30px;
+    position: absolute;
+    top: -12px;
+    left: -26px;
+    background: linear-gradient(180deg, rgba(0, 102, 204, 1) 72%, rgba(255, 204, 0, 1) 28%);
+    transform: rotate(-45deg);
+  }
+}
+
 .is-modal-open {
   position: fixed;
   overflow-y: scroll;
