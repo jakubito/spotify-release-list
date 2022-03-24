@@ -98,6 +98,10 @@ export const getFiltersExcludeVariousArtists = createSelector(
   getFilters,
   (filters) => filters.excludeVariousArtists
 )
+export const getFiltersExcludeRemixes = createSelector(
+  getFilters,
+  (filters) => filters.excludeRemixes
+)
 export const getFiltersExcludeDuplicates = createSelector(
   getFilters,
   (filters) => filters.excludeDuplicates
@@ -142,6 +146,7 @@ export const getFiltersApplied = createSelector(
   getFiltersStartDate,
   getFiltersEndDate,
   getFiltersExcludeVariousArtists,
+  getFiltersExcludeRemixes,
   getFiltersExcludeDuplicates,
   getFiltersFavoritesOnly,
   (groups, ...rest) => Boolean(groups.length) || includesTruthy(rest)
@@ -254,6 +259,16 @@ const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
 )
 
 /**
+ * Get all non-"Remix" album IDs
+ */
+const getNonRemixAlbumIds = createSelector(getAlbumsArray, (albums) =>
+  albums.reduce((ids, album) => {
+    if (!/remix/i.test(album.name)) ids.push(album.id)
+    return ids
+  }, /** @type {string[]} */ ([]))
+)
+
+/**
  * Get album IDs with duplicates removed
  */
 const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) => {
@@ -320,6 +335,14 @@ const getVariousArtistsFiltered = createSelector(
 )
 
 /**
+ * Get album IDs based on remix filter
+ */
+const getRemixFiltered = createSelector(
+  [getFiltersExcludeRemixes, getNonRemixAlbumIds],
+  (exclude, ids) => exclude && ids
+)
+
+/**
  * Get albums IDs based on duplicates filter
  */
 const getDuplicatesFiltered = createSelector(
@@ -344,6 +367,7 @@ export const getFilteredAlbumsArray = createSelector(
   getDateRangeFiltered,
   getAlbumGroupsFiltered,
   getVariousArtistsFiltered,
+  getRemixFiltered,
   getDuplicatesFiltered,
   getFavoritesFiltered,
   (albums, ...filtered) => intersect(filtered.filter(Array.isArray)).map((id) => albums[id])

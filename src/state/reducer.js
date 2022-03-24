@@ -82,6 +82,7 @@ export const INITIAL_STATE = {
     startDate: null,
     endDate: null,
     excludeVariousArtists: false,
+    excludeRemixes: false,
     excludeDuplicates: false,
     favoritesOnly: false,
   },
@@ -112,6 +113,7 @@ const rootReducer = createReducer(INITIAL_STATE, (builder) => {
       state.filters = {
         ...INITIAL_STATE.filters,
         excludeVariousArtists: state.filters.excludeVariousArtists,
+        excludeRemixes: state.filters.excludeRemixes,
         excludeDuplicates: state.filters.excludeDuplicates,
       }
     })
