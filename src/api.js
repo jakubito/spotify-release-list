@@ -65,6 +65,36 @@ export async function getUserFollowedArtists(token) {
 }
 
 /**
+ * Return the artists whose songs the user has liked
+ *
+ * @param {string} token
+ * @param {Market} [market]
+ * @returns {Promise<Artist[]>}
+ */
+export async function getUserLikedSongsArtists(token, market) {
+  /** @type {Record<string, Artist>} */
+  const artists = {}
+  const params = new URLSearchParams({ limit: String(50), market: market || DEFAULT_MARKET })
+
+  let next = apiUrl(`me/tracks?${params}`)
+
+  while (next) {
+    /** @type Paged<SpotifySavedTrack> */
+    const response = await get(next, token)
+    const trackArtists = response.items.map((item) => item.track.artists).flat()
+
+    for (const artist of trackArtists) {
+      if (artist.id in artists) continue
+      artists[artist.id] = artist
+    }
+
+    next = response.next
+  }
+
+  return Object.values(artists).map(buildArtist)
+}
+
+/**
  * Return an artist's albums
  *
  * @param {string} token

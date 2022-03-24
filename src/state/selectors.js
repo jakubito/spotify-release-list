@@ -87,6 +87,10 @@ export const getSettingsDays = createSelector(getSettings, (settings) => setting
 export const getSettingsMarket = createSelector(getSettings, (settings) => settings.market)
 export const getSettingsTheme = createSelector(getSettings, (settings) => settings.theme)
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
+export const getIncludeLikedSongs = createSelector(
+  getSettings,
+  (settings) => settings.includeLikedSongs
+)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)
 
 // Individual filters selectors

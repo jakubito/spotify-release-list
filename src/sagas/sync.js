@@ -2,8 +2,14 @@ import moment from 'moment'
 import chunk from 'lodash/chunk'
 import { channel, buffers } from 'redux-saga'
 import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
-import { MomentFormat, Scope } from 'enums'
-import { getUser, getUserFollowedArtists, getArtistAlbums, getFullAlbums } from 'api'
+import { MomentFormat } from 'enums'
+import {
+  getUser,
+  getUserFollowedArtists,
+  getArtistAlbums,
+  getFullAlbums,
+  getUserLikedSongsArtists,
+} from 'api'
 import { AuthError, getAuthData } from 'auth'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
@@ -15,9 +21,8 @@ import {
 } from 'state/actions'
 import { authorize } from './auth'
 import { withTitle, progressWorker, requestWorker } from './helpers'
-import { buildAlbumsMap, deleteLabels, mergeAlbumsRaw } from 'helpers'
+import { buildAlbumsMap, deleteLabels, getScopes, mergeAlbumsRaw } from 'helpers'
 
-const { USER_FOLLOW_READ } = Scope
 const { ISO_DATE } = MomentFormat
 
 /**
@@ -44,8 +49,12 @@ export function* syncSaga(action) {
   try {
     /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(withTitle, 'Loading...', syncMainSaga, action)
+
+    const settings = yield select(getSettings)
+    const scopes = getScopes(settings)
+
     /** @type {ReturnType<typeof authorize>} */
-    const authorized = yield call(authorize, action, [USER_FOLLOW_READ], titled)
+    const authorized = yield call(authorize, action, scopes, titled)
 
     yield call(authorized)
   } catch (error) {
@@ -65,7 +74,9 @@ function* syncMainSaga(action) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
-  const { days, fullAlbumData, labelBlocklist } = yield select(getSettings)
+  const { days, market, fullAlbumData, labelBlocklist, includeLikedSongs } = yield select(
+    getSettings
+  )
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
@@ -73,6 +84,12 @@ function* syncMainSaga(action) {
   const user = yield call(getUser, token)
   /** @type {Await<ReturnType<typeof getUserFollowedArtists>>} */
   const artists = yield call(getUserFollowedArtists, token)
+
+  if (includeLikedSongs) {
+    /** @type {Await<ReturnType<typeof getUserLikedSongsArtists>>} */
+    const likedSongsArtists = yield call(getUserLikedSongsArtists, token, market)
+    artists.push(...likedSongsArtists)
+  }
 
   /** @type {AlbumRaw[]} */
   const albumsRaw = []
