@@ -6,7 +6,7 @@ import { getFiltersExcludeRemixes } from 'state/selectors'
 import { Checkbox } from 'components/common'
 
 /**
- * Render Various Artists filter
+ * Render remixes filter
  */
 function RemixesFilter() {
   const dispatch = useDispatch()

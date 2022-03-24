@@ -11,8 +11,6 @@ import { includesTruthy, getReleasesBetween, merge, hasVariousArtists } from 'he
 import { buildReleases, buildReleasesMap } from 'helpers'
 import { INITIAL_STATE } from './reducer'
 
-const REMIX = 'remix'
-
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
 
@@ -265,13 +263,7 @@ const getNonVariousArtistsAlbumIds = createSelector(getAlbumsArray, (albums) =>
  */
 const getNonRemixAlbumIds = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((ids, album) => {
-    console.log(album.name)
-    const { name } = album
-
-    if (!name.toLocaleLowerCase().includes(REMIX)) {
-      ids.push(album.id)
-    }
-
+    if (!/remix/i.test(album.name)) ids.push(album.id)
     return ids
   }, /** @type {string[]} */ ([]))
 )
