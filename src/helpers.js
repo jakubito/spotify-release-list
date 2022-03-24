@@ -7,6 +7,8 @@ import * as Sentry from '@sentry/browser'
 import { AlbumGroup, AlbumGroupIndex, MomentFormat, Scope } from 'enums'
 
 const { ISO_DATE } = MomentFormat
+const { USER_FOLLOW_READ, USER_LIBRARY_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } =
+  Scope
 const NOTIFICATION_ICON = `${process.env.REACT_APP_URL}/android-chrome-192x192.png`
 const VARIOUS_ARTISTS = 'Various Artist'
 const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
@@ -468,8 +470,6 @@ export function calculatePageSize(width, height) {
  * @returns {string[]}
  */
 export function getPlaylistScopes(playlistForm) {
-  const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
-
   let scopes = [USER_FOLLOW_READ]
   const { isPrivate } = playlistForm
 
@@ -489,7 +489,6 @@ export function getPlaylistScopes(playlistForm) {
  * @returns {string[]}
  */
 export function getScopes(settings) {
-  const { USER_FOLLOW_READ, USER_LIBRARY_READ } = Scope
   const { includeLikedSongs } = settings
 
   let scopes = [USER_FOLLOW_READ]
@@ -497,5 +496,5 @@ export function getScopes(settings) {
   if (includeLikedSongs) {
     scopes.push(USER_LIBRARY_READ)
   }
-  return []
+  return scopes
 }

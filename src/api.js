@@ -68,31 +68,30 @@ export async function getUserFollowedArtists(token) {
  * Return the artists whose songs the user has liked
  *
  * @param {string} token
+ * @param {Market} [market]
  * @returns {Promise<Artist[]>}
  */
-export async function getUserLikedSongArtists(token) {
-  /** @type {Artist[]} */
-  const artists = []
-  const params = new URLSearchParams({ limit: String(50) })
+export async function getUserLikedSongsArtists(token, market) {
+  /** @type {Record<string, Artist>} */
+  const artists = {}
+  const params = new URLSearchParams({ limit: String(50), market: market || DEFAULT_MARKET })
 
   let next = apiUrl(`me/tracks?${params}`)
 
   while (next) {
     /** @type Paged<SpotifySavedTrack> */
     const response = await get(next, token)
+    const trackArtists = response.items.map((item) => item.track.artists).flat()
 
-    // This is a 2D array of tracks with nested artists
-    const artistsByTrack = response.items.map((item) => item.track.artists).flat()
-    const nextArtists = artistsByTrack.map(buildArtist)
+    for (const artist of trackArtists) {
+      if (artist.id in artists) continue
+      artists[artist.id] = artist
+    }
 
-    artists.push(...nextArtists)
     next = response.next
   }
 
-  // Remove duplicate artists
-  const uniqueArtists = [...new Set(artists)]
-
-  return uniqueArtists
+  return Object.values(artists).map(buildArtist)
 }
 
 /**

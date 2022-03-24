@@ -2,13 +2,13 @@ import moment from 'moment'
 import chunk from 'lodash/chunk'
 import { channel, buffers } from 'redux-saga'
 import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
-import { MomentFormat, Scope } from 'enums'
+import { MomentFormat } from 'enums'
 import {
   getUser,
   getUserFollowedArtists,
   getArtistAlbums,
   getFullAlbums,
-  getUserLikedSongArtists,
+  getUserLikedSongsArtists,
 } from 'api'
 import { AuthError, getAuthData } from 'auth'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
@@ -74,19 +74,21 @@ function* syncMainSaga(action) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
-  const { days, fullAlbumData, labelBlocklist, includeLikedSongs } = yield select(getSettings)
+  const { days, market, fullAlbumData, labelBlocklist, includeLikedSongs } = yield select(
+    getSettings
+  )
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
   /** @type {Await<ReturnType<typeof getUser>>} */
   const user = yield call(getUser, token)
   /** @type {Await<ReturnType<typeof getUserFollowedArtists>>} */
-  let artists = yield call(getUserFollowedArtists, token)
+  const artists = yield call(getUserFollowedArtists, token)
 
   if (includeLikedSongs) {
-    /** @type {Await<ReturnType<getUserLikedSongArtists>>} */
-    const likedSongsArtists = yield call(getUserLikedSongArtists, token)
-    artists = artists.concat(likedSongsArtists)
+    /** @type {Await<ReturnType<typeof getUserLikedSongsArtists>>} */
+    const likedSongsArtists = yield call(getUserLikedSongsArtists, token, market)
+    artists.push(...likedSongsArtists)
   }
 
   /** @type {AlbumRaw[]} */
