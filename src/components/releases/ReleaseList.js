@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Waypoint } from 'react-waypoint'
+import { calculatePageSize } from 'helpers'
 import FavoritesToolbar from './FavoritesToolbar'
 import ReleaseDay from './ReleaseDay'
 
@@ -9,7 +10,9 @@ import ReleaseDay from './ReleaseDay'
  * @param {{ releases: Releases }} props
  */
 function ReleaseList({ releases }) {
-  const { cursor, slice, next, reset } = usePaginate(releases, 100)
+  const { clientWidth, clientHeight } = document.body
+  const pageSize = useMemo(() => calculatePageSize(clientWidth, clientHeight), [])
+  const { cursor, slice, next, reset } = usePaginate(releases, pageSize)
 
   return (
     <>
@@ -17,7 +20,7 @@ function ReleaseList({ releases }) {
       {slice.map(({ date, albums }) => (
         <ReleaseDay date={date} albums={albums} key={date} />
       ))}
-      {next && <Waypoint bottomOffset="-40%" onEnter={next} key={cursor} />}
+      {next && <Waypoint bottomOffset="-50%" onEnter={next} key={cursor} />}
     </>
   )
 }
@@ -35,7 +38,7 @@ function ReleaseList({ releases }) {
  * }}
  */
 function usePaginate(releases, pageSize) {
-  const nextCursor = (currentCursor = 0) => {
+  function nextCursor(currentCursor = 0) {
     let newCursor = currentCursor
     let pageCount = 0
 

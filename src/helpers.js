@@ -449,3 +449,14 @@ export function deleteLabels(albumsMap, labelsList) {
 
   return ids
 }
+
+/**
+ * Calculate approximate page size based on viewport size
+ *
+ * @param {number} width
+ * @param {number} height
+ */
+export function calculatePageSize(width, height) {
+  const estimate = Math.round((width * height) / 20_000)
+  return Math.max(20, Math.min(100, estimate))
+}
