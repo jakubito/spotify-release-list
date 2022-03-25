@@ -33,6 +33,22 @@ export const MomentFormat = {
   MONTH_NAME: 'MMMM',
 }
 
+/** @type {ArtistSourceEnum} */
+export const ArtistSource = {
+  FOLLOWED: 'followed',
+  SAVED_TRACKS: 'saved-tracks',
+  SAVED_ALBUMS: 'saved-albums',
+}
+
+const { FOLLOWED, SAVED_TRACKS, SAVED_ALBUMS } = ArtistSource
+
+/** @type {[group: ArtistSource, label: string][]} */
+export const ArtistSourceLabels = [
+  [FOLLOWED, 'Followed artists'],
+  [SAVED_TRACKS, 'Liked songs'],
+  [SAVED_ALBUMS, 'Saved albums'],
+]
+
 /** @type {AlbumGroupEnum} */
 export const AlbumGroup = {
   ALBUM: 'album',

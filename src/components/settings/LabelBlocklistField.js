@@ -44,7 +44,7 @@ function LabelBlocklistField() {
         Label blocklist
         {!fullAlbumData && <span className="tag is-warning">Label data required</span>}
       </label>
-      <div className="LabelBlocklistField__help">
+      <div className="Settings__help">
         <HelpText>
           Enter one label per line. Prepend the label name with <strong>*VA*</strong> to block
           Various Artists releases only. Labels will be automatically blocked on every refresh. You

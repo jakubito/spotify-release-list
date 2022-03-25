@@ -24,7 +24,8 @@ function FirstDayOfWeekField() {
 
   /** @type {React.ChangeEventHandler<HTMLSelectElement>} */
   const onChange = (event) => {
-    defer(dispatch, setSettings({ firstDayOfWeek: Number(event.target.value) }))
+    const newValue = /** @type {DayOfWeekShape} */ (Number(event.target.value))
+    defer(dispatch, setSettings({ firstDayOfWeek: newValue }))
   }
 
   return (

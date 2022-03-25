@@ -55,13 +55,12 @@ export async function getUserFollowedArtists(token) {
   while (next) {
     /** @type {{ artists: Paged<SpotifyArtist> }} */
     const response = await get(next, token)
-    const nextArtists = response.artists.items.map(buildArtist)
 
-    artists.push(...nextArtists)
+    artists.push(...response.artists.items)
     next = response.artists.next
   }
 
-  return artists
+  return artists.map(buildArtist)
 }
 
 /**
@@ -71,7 +70,7 @@ export async function getUserFollowedArtists(token) {
  * @param {Market} [market]
  * @returns {Promise<Artist[]>}
  */
-export async function getUserLikedSongsArtists(token, market) {
+export async function getUserSavedTracksArtists(token, market) {
   /** @type {Record<string, Artist>} */
   const artists = {}
   const params = new URLSearchParams({ limit: String(50), market: market || DEFAULT_MARKET })
@@ -81,11 +80,43 @@ export async function getUserLikedSongsArtists(token, market) {
   while (next) {
     /** @type Paged<SpotifySavedTrack> */
     const response = await get(next, token)
-    const trackArtists = response.items.map((item) => item.track.artists).flat()
 
-    for (const artist of trackArtists) {
-      if (artist.id in artists) continue
-      artists[artist.id] = artist
+    for (const savedTrack of response.items) {
+      for (const artist of savedTrack.track.artists) {
+        if (artist.id in artists) continue
+        artists[artist.id] = artist
+      }
+    }
+
+    next = response.next
+  }
+
+  return Object.values(artists).map(buildArtist)
+}
+
+/**
+ * Return the artists whose albums the user has saved
+ *
+ * @param {string} token
+ * @param {Market} [market]
+ * @returns {Promise<Artist[]>}
+ */
+export async function getUserSavedAlbumsArtists(token, market) {
+  /** @type {Record<string, Artist>} */
+  const artists = {}
+  const params = new URLSearchParams({ limit: String(50), market: market || DEFAULT_MARKET })
+
+  let next = apiUrl(`me/albums?${params}`)
+
+  while (next) {
+    /** @type Paged<SpotifySavedAlbum> */
+    const response = await get(next, token)
+
+    for (const savedAlbum of response.items) {
+      for (const artist of savedAlbum.album.artists) {
+        if (artist.id in artists) continue
+        artists[artist.id] = artist
+      }
     }
 
     next = response.next
