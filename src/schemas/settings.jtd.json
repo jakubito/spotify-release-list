@@ -1,5 +1,9 @@
 {
   "properties": {
+    "artistSources": {
+      "elements": { "enum": ["followed", "saved-tracks", "saved-albums"] }
+    },
+    "minimumSavedTracks": { "type": "uint16" },
     "groups": {
       "elements": { "enum": ["album", "single", "compilation", "appears_on"] }
     },
