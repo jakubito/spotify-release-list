@@ -67,11 +67,12 @@ export async function getUserFollowedArtists(token) {
  * Return the artists whose songs the user has liked
  *
  * @param {string} token
+ * @param {number} minimumSavedTracks
  * @param {Market} [market]
  * @returns {Promise<Artist[]>}
  */
-export async function getUserSavedTracksArtists(token, market) {
-  /** @type {Record<string, Artist>} */
+export async function getUserSavedTracksArtists(token, minimumSavedTracks, market) {
+  /** @type {Record<string, { count: number; artist: Artist}>} */
   const artists = {}
   const params = new URLSearchParams({ limit: String(50), market: market || DEFAULT_MARKET })
 
@@ -83,15 +84,21 @@ export async function getUserSavedTracksArtists(token, market) {
 
     for (const savedTrack of response.items) {
       for (const artist of savedTrack.track.artists) {
-        if (artist.id in artists) continue
-        artists[artist.id] = artist
+        if (artist.id in artists) {
+          artists[artist.id].count++
+          continue
+        }
+
+        artists[artist.id] = { count: 1, artist }
       }
     }
 
     next = response.next
   }
 
-  return Object.values(artists).map(buildArtist)
+  return Object.values(artists)
+    .filter(({ count }) => count >= minimumSavedTracks)
+    .map(({ artist }) => buildArtist(artist))
 }
 
 /**
@@ -205,6 +212,8 @@ export async function getAlbumsTrackIds(token, albumIds, market) {
   const albums = await getFullAlbums(token, albumIds, market)
 
   for (const album of albums) {
+    if (!album) continue
+
     const albumTrackIds = album.tracks.items.map((track) => track.id)
     let next = album.tracks.next
 

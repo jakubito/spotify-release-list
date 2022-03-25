@@ -25,7 +25,7 @@ function LabelBlocklistField() {
   }
 
   useEffect(() => {
-    if (!ResizeObserver) return
+    if (!window.ResizeObserver) return
 
     const callback = debounce(() => {
       const height = textareaRef.current?.offsetHeight

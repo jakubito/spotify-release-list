@@ -48,6 +48,7 @@
  *
  * @typedef {{
  *   artistSources: ArtistSource[]
+ *   minimumSavedTracks: number
  *   groups: AlbumGroup[]
  *   groupColors: GroupColorScheme
  *   days: number

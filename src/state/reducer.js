@@ -60,6 +60,7 @@ export const INITIAL_STATE = {
   filtersVisible: false,
   settings: {
     artistSources: [ArtistSource.FOLLOWED],
+    minimumSavedTracks: 1,
     groups: Object.values(AlbumGroup),
     groupColors: GroupColorSchemes.DEFAULT,
     days: 30,

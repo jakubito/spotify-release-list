@@ -129,13 +129,14 @@ function* getArtists() {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
-  const { artistSources, market } = yield select(getSettings)
+  const { artistSources, market, minimumSavedTracks } = yield select(getSettings)
   /** @type {CallEffect<Artist[]>[]} */
   const calls = []
 
   for (const source of artistSources) {
     if (source === FOLLOWED) calls.push(call(getUserFollowedArtists, token))
-    if (source === SAVED_TRACKS) calls.push(call(getUserSavedTracksArtists, token, market))
+    if (source === SAVED_TRACKS)
+      calls.push(call(getUserSavedTracksArtists, token, minimumSavedTracks, market))
     if (source === SAVED_ALBUMS) calls.push(call(getUserSavedAlbumsArtists, token, market))
   }
 

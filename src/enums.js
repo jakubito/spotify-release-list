@@ -45,8 +45,8 @@ const { FOLLOWED, SAVED_TRACKS, SAVED_ALBUMS } = ArtistSource
 /** @type {[group: ArtistSource, label: string][]} */
 export const ArtistSourceLabels = [
   [FOLLOWED, 'Followed artists'],
-  [SAVED_TRACKS, 'Liked songs'],
   [SAVED_ALBUMS, 'Saved albums'],
+  [SAVED_TRACKS, 'Liked songs'],
 ]
 
 /** @type {AlbumGroupEnum} */
