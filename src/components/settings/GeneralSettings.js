@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
 import { getHasAppData, getUser } from 'state/selectors'
+import ArtistSourcesField from './ArtistSourcesField'
 import AlbumGroupsField from './AlbumGroupsField'
 import MarketField from './MarketField'
 import TimePeriodField from './TimePeriodField'
@@ -19,6 +20,7 @@ function GeneralSettings() {
 
   return (
     <div className="fade-in">
+      <ArtistSourcesField />
       <AlbumGroupsField />
       <FetchExtraDataField />
       <TimePeriodField />

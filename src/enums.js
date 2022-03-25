@@ -14,6 +14,7 @@ export const Address = {
 /** @enum {string} */
 export const Scope = {
   USER_FOLLOW_READ: 'user-follow-read',
+  USER_LIBRARY_READ: 'user-library-read',
   PLAYLIST_MODIFY_PRIVATE: 'playlist-modify-private',
   PLAYLIST_MODIFY_PUBLIC: 'playlist-modify-public',
 }
@@ -31,6 +32,22 @@ export const MomentFormat = {
   ISO_DATE: 'YYYY-MM-DD',
   MONTH_NAME: 'MMMM',
 }
+
+/** @type {ArtistSourceEnum} */
+export const ArtistSource = {
+  FOLLOWED: 'followed',
+  SAVED_TRACKS: 'saved-tracks',
+  SAVED_ALBUMS: 'saved-albums',
+}
+
+const { FOLLOWED, SAVED_TRACKS, SAVED_ALBUMS } = ArtistSource
+
+/** @type {[group: ArtistSource, label: string][]} */
+export const ArtistSourceLabels = [
+  [FOLLOWED, 'Followed artists'],
+  [SAVED_TRACKS, 'Liked songs'],
+  [SAVED_ALBUMS, 'Saved albums'],
+]
 
 /** @type {AlbumGroupEnum} */
 export const AlbumGroup = {

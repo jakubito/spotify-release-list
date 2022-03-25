@@ -8,6 +8,7 @@ import HelpText from './HelpText'
 /** @type {SelectOptions} */
 const options = [
   ['7', 'Past week'],
+  ['14', 'Past 2 weeks'],
   ['30', 'Past month'],
   ['90', 'Past 3 months'],
   ['180', 'Past 6 months'],

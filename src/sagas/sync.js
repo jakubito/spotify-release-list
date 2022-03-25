@@ -1,10 +1,17 @@
 import moment from 'moment'
 import chunk from 'lodash/chunk'
 import { channel, buffers } from 'redux-saga'
-import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
-import { MomentFormat, Scope } from 'enums'
-import { getUser, getUserFollowedArtists, getArtistAlbums, getFullAlbums } from 'api'
-import { AuthError, getAuthData } from 'auth'
+import { call, put, select, take, fork, cancel, delay, all } from 'redux-saga/effects'
+import { ArtistSource, MomentFormat } from 'enums'
+import {
+  getUser,
+  getUserFollowedArtists,
+  getUserSavedTracksArtists,
+  getUserSavedAlbumsArtists,
+  getArtistAlbums,
+  getFullAlbums,
+} from 'api'
+import { AuthError, getAuthData, getSyncScopes } from 'auth'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
   setSyncingProgress,
@@ -17,8 +24,8 @@ import { authorize } from './auth'
 import { withTitle, progressWorker, requestWorker } from './helpers'
 import { buildAlbumsMap, deleteLabels, mergeAlbumsRaw } from 'helpers'
 
-const { USER_FOLLOW_READ } = Scope
 const { ISO_DATE } = MomentFormat
+const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS } = ArtistSource
 
 /**
  * Limit maximum number of concurrent requests
@@ -42,10 +49,15 @@ const BASE_SYNC_RATIO = 0.8
  */
 export function* syncSaga(action) {
   try {
+    /** @type {ReturnType<typeof getSettings>} */
+    const { artistSources } = yield select(getSettings)
+    /** @type {ReturnType<typeof getSyncScopes>} */
+    const scopes = yield call(getSyncScopes, artistSources)
+
     /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(withTitle, 'Loading...', syncMainSaga, action)
     /** @type {ReturnType<typeof authorize>} */
-    const authorized = yield call(authorize, action, [USER_FOLLOW_READ], titled)
+    const authorized = yield call(authorize, action, scopes, titled)
 
     yield call(authorized)
   } catch (error) {
@@ -71,8 +83,8 @@ function* syncMainSaga(action) {
 
   /** @type {Await<ReturnType<typeof getUser>>} */
   const user = yield call(getUser, token)
-  /** @type {Await<ReturnType<typeof getUserFollowedArtists>>} */
-  const artists = yield call(getUserFollowedArtists, token)
+  /** @type {Artist[]} */
+  const artists = yield call(getArtists)
 
   /** @type {AlbumRaw[]} */
   const albumsRaw = []
@@ -108,6 +120,36 @@ function* syncMainSaga(action) {
   yield cancel(tasks)
   yield delay(LOADING_ANIMATION)
   yield put(syncFinished({ albums, user, previousSyncMaxDate, auto: action.payload?.auto }))
+}
+
+/**
+ * Get artists based on selected sources
+ */
+function* getArtists() {
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield call(getAuthData)
+  /** @type {ReturnType<typeof getSettings>} */
+  const { artistSources, market } = yield select(getSettings)
+  /** @type {CallEffect<Artist[]>[]} */
+  const calls = []
+
+  for (const source of artistSources) {
+    if (source === FOLLOWED) calls.push(call(getUserFollowedArtists, token))
+    if (source === SAVED_TRACKS) calls.push(call(getUserSavedTracksArtists, token, market))
+    if (source === SAVED_ALBUMS) calls.push(call(getUserSavedAlbumsArtists, token, market))
+  }
+
+  /** @type {Artist[][]} */
+  const allArtists = yield all(calls)
+  /** @type {Record<string, Artist>} */
+  const artists = {}
+
+  for (const artist of allArtists.flat()) {
+    if (artist.id in artists) continue
+    artists[artist.id] = artist
+  }
+
+  return Object.values(artists)
 }
 
 /**

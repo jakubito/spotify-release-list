@@ -23,17 +23,16 @@ Sentry also saves IP addresses by default, but I turned this option off for bett
 
 You might be hesitant to allow a 3rd party app to acces your data (I know I am). For the sake of transparency, let me give you an overview of all the scopes (permissions) being used by the app:
 
-- `user-follow-read` - The only required scope. This allows the app to get the list of artists you follow.
-- `playlist-modify-private` - Allows the app to export releases to a new private playlist.
-- `playlist-modify-public` - Allows the app to export releases to a new public playlist.
+- `user-follow-read` **(read-only scope)** - Allows the app to get the list of artists you follow
+- `user-library-read` **(read-only scope)** - Allows the app to get the list of songs/albums you have saved in your library
+- `playlist-modify-private` - Allows the app to export releases to a new private playlist
+- `playlist-modify-public` - Allows the app to export releases to a new public playlist
 
-All scopes are asked for progressively (only when they are needed). You can use the app with the default (read-only) scope just fine.
-
-Your existing playlist data is never touched. Feel free to check the code.
+All scopes are asked for progressively (only when they are needed). Your existing playlist data is never touched. You can use the app with read-only scopes just fine, without ever giving the app access to modify your playlists.
 
 If you want to remove previously authorized access, you can do it anytime on your [Spotify profile page](https://spotify.com/account/apps).
 
-[Official authorization scopes documentation](https://developer.spotify.com/documentation/general/guides/scopes)
+[Official authorization scopes documentation](https://developer.spotify.com/documentation/general/guides/authorization/scopes/)
 
 ## Data Storage
 

@@ -1,9 +1,9 @@
 import { all, call, put, select } from 'redux-saga/effects'
 import chunk from 'lodash/chunk'
 import { spotifyUri } from 'helpers'
-import { Scope, SpotifyEntity } from 'enums'
+import { SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
-import { AuthError, getAuthData } from 'auth'
+import { AuthError, getAuthData, getPlaylistScope } from 'auth'
 import { getPlaylistForm, getReleases, getSettings, getUser } from 'state/selectors'
 import {
   createPlaylistError,
@@ -14,7 +14,6 @@ import {
 import { authorize } from './auth'
 import { withTitle } from './helpers'
 
-const { USER_FOLLOW_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } = Scope
 const { TRACK } = SpotifyEntity
 
 /**
@@ -26,11 +25,13 @@ export function* createPlaylistSaga(action) {
   try {
     /** @type {ReturnType<typeof getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
-    const scopes = [USER_FOLLOW_READ, isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC]
+    /** @type {ReturnType<typeof getPlaylistScope>} */
+    const scope = yield call(getPlaylistScope, isPrivate)
+
     /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(withTitle, 'Creating playlist...', createPlaylistMainSaga)
     /** @type {ReturnType<typeof authorize>} */
-    const authorized = yield call(authorize, action, scopes, titled)
+    const authorized = yield call(authorize, action, [scope], titled)
 
     yield call(authorized)
   } catch (error) {

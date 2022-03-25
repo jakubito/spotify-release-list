@@ -47,6 +47,7 @@
  * }} Message
  *
  * @typedef {{
+ *   artistSources: ArtistSource[]
  *   groups: AlbumGroup[]
  *   groupColors: GroupColorScheme
  *   days: number
@@ -57,7 +58,7 @@
  *   autoSync: boolean
  *   autoSyncTime: string
  *   notifications: boolean
- *   firstDayOfWeek: number
+ *   firstDayOfWeek: DayOfWeekShape
  *   displayTracks: boolean
  *   fullAlbumData: boolean
  *   displayLabels: boolean
@@ -71,6 +72,7 @@
  *   startDate?: string
  *   endDate?: string
  *   excludeVariousArtists: boolean
+ *   excludeRemixes: boolean
  *   excludeDuplicates: boolean
  *   favoritesOnly: boolean
  * }} Filters
@@ -181,6 +183,12 @@
  * @typedef {import('./enums').Theme} Theme
  * @typedef {import('./enums').Market} Market
  *
+ * @typedef {{
+ *   FOLLOWED: 'followed'
+ *   SAVED_TRACKS: 'saved-tracks'
+ *   SAVED_ALBUMS: 'saved-albums'
+ * }} ArtistSourceEnum
+ * @typedef {Values<ArtistSourceEnum>} ArtistSource
  * @typedef {{
  *   ALBUM: 'album'
  *   SINGLE: 'single'
@@ -295,7 +303,9 @@
  * @typedef {{ id: string, display_name: string, images: SpotifyImage[] }} SpotifyUser
  * @typedef {{ id: string, name: string }} SpotifyArtist
  * @typedef {{ id: string, name: string }} SpotifyPlaylist
- * @typedef {{ id: string }} SpotifyTrack
+ * @typedef {{ id: string, artists: SpotifyArtist[] }} SpotifyTrack
+ * @typedef {{ added_at: string, track: SpotifyTrack }} SpotifySavedTrack
+ * @typedef {{ added_at: string, album: SpotifyAlbumFull }} SpotifySavedAlbum
  * @typedef {{ snapshot_id: string }} SpotifyPlaylistSnapshot
  *
  * @typedef {{
@@ -316,6 +326,7 @@
  *
  * @typedef {import('redux-persist').PersistedState & State} PersistedState
  * @typedef {import('redux-saga').Task} Task
+ * @typedef {import('react-dates').DayOfWeekShape} DayOfWeekShape
  * @typedef {moment.Moment} Moment
  */
 
@@ -352,4 +363,9 @@
 /**
  * @template T
  * @typedef {import('@reduxjs/toolkit').Draft<T>} Draft<T>
+ */
+
+/**
+ * @template T
+ * @typedef {import('redux-saga/effects').CallEffect<T>} CallEffect<T>
  */

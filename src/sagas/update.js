@@ -17,21 +17,21 @@ export function* updateSaga() {
 function* update() {
   const { serviceWorker } = navigator
   /** @type {Await<ReturnType<typeof serviceWorker.getRegistration>>} */
-  const registration = yield call([serviceWorker, serviceWorker.getRegistration])
+  const registration = yield call([serviceWorker, 'getRegistration'])
   const workerToActivate = registration?.waiting
 
   if (!workerToActivate) return
 
   /** @type {EventChannel<ServiceWorkerEventMap['statechange']>} */
   const stateChange = yield call(serviceWorkerEventChannel, workerToActivate, 'statechange')
-  yield call([workerToActivate, workerToActivate.postMessage], { type: 'SKIP_WAITING' })
+  yield call([workerToActivate, 'postMessage'], { type: 'SKIP_WAITING' })
 
   while (workerToActivate.state !== 'activated') {
     yield take(stateChange)
   }
 
   yield call(stateChange.close)
-  yield call([window.location, /** @type {Fn} */ (window.location.reload)])
+  yield call([window.location, 'reload'])
 }
 
 /**
@@ -58,7 +58,7 @@ function* appFocusCheck() {
 function* updateCheck() {
   const { serviceWorker } = navigator
   /** @type {Await<ReturnType<typeof serviceWorker.getRegistration>>} */
-  const registration = yield call([serviceWorker, serviceWorker.getRegistration])
+  const registration = yield call([serviceWorker, 'getRegistration'])
 
   if (registration) {
     yield spawn([registration, registration.update])
@@ -71,7 +71,7 @@ function* updateCheck() {
 function* waitingCheck() {
   const { serviceWorker } = navigator
   /** @type {Await<ReturnType<typeof serviceWorker.getRegistration>>} */
-  const registration = yield call([serviceWorker, serviceWorker.getRegistration])
+  const registration = yield call([serviceWorker, 'getRegistration'])
 
   if (registration?.waiting) {
     yield put(updateReady())

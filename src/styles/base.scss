@@ -32,6 +32,23 @@ body,
   color: $white-ter;
 }
 
+#ua {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  z-index: 2;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 102, 204, 1) 30%,
+    rgba(255, 204, 0, 1) 30%,
+    rgba(255, 204, 0, 1) 50%,
+    rgba(0, 0, 0, 0) 50%
+  );
+}
+
 .is-modal-open {
   position: fixed;
   overflow-y: scroll;

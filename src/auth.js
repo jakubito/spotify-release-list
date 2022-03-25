@@ -1,12 +1,17 @@
 import { Base64 } from 'js-base64'
 import queryString from 'query-string'
 import moment from 'moment'
+import { ArtistSource, Scope } from 'enums'
 
 const CODE_CHARSET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~'
 const AUTHORIZE_URL = 'https://accounts.spotify.com/authorize'
 const TOKEN_API_URL = 'https://accounts.spotify.com/api/token'
 const AUTH_REDIRECT_URL = process.env.REACT_APP_URL + '/auth'
 const AUTH_DATA_KEY = 'authData'
+
+const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS } = ArtistSource
+const { USER_FOLLOW_READ, USER_LIBRARY_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_MODIFY_PUBLIC } =
+  Scope
 
 /**
  * Represents an error encountered during authorization
@@ -21,6 +26,33 @@ export class AuthError extends Error {
     this.name = 'AuthError'
     this.contexts = contexts
   }
+}
+
+/**
+ * Get the Spotify auth scopes for artist collection
+ *
+ * @param {ArtistSource[]} artistSources
+ * @returns {Scope[]}
+ */
+export function getSyncScopes(artistSources) {
+  const scopes = []
+
+  for (const source of artistSources) {
+    if (source === FOLLOWED) scopes.push(USER_FOLLOW_READ)
+    if (source === SAVED_ALBUMS || source === SAVED_TRACKS) scopes.push(USER_LIBRARY_READ)
+  }
+
+  return scopes
+}
+
+/**
+ * Get the Spotify auth scope for playlist creation
+ *
+ * @param {boolean} isPrivate
+ * @returns {Scope}
+ */
+export function getPlaylistScope(isPrivate) {
+  return isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC
 }
 
 /**
@@ -106,7 +138,7 @@ export function startAuthFlow(action, scope, codeChallenge, nonce) {
     scope,
   })
 
-  window.location.replace(`${AUTHORIZE_URL}?${params}`)
+  window.location.assign(`${AUTHORIZE_URL}?${params}`)
 }
 
 /**
