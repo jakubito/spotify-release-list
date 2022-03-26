@@ -48,6 +48,7 @@
  *
  * @typedef {{
  *   artistSources: ArtistSource[]
+ *   minimumSavedTracks: number
  *   groups: AlbumGroup[]
  *   groupColors: GroupColorScheme
  *   days: number
@@ -64,6 +65,7 @@
  *   displayLabels: boolean
  *   displayPopularity: boolean
  *   labelBlocklist: string
+ *   releasesOrder: ReleasesOrder
  * }} Settings
  *
  * @typedef {{
@@ -189,6 +191,13 @@
  *   SAVED_ALBUMS: 'saved-albums'
  * }} ArtistSourceEnum
  * @typedef {Values<ArtistSourceEnum>} ArtistSource
+ *
+ * @typedef {{
+ *   ARTIST: 'artist'
+ *   ALBUM_GROUP: 'album-group'
+ * }} ReleasesOrderEnum
+ * @typedef {Values<ReleasesOrderEnum>} ReleasesOrder
+ *
  * @typedef {{
  *   ALBUM: 'album'
  *   SINGLE: 'single'

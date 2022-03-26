@@ -4,7 +4,7 @@ import mergeWith from 'lodash/mergeWith'
 import random from 'lodash/random'
 import { colord } from 'colord'
 import * as Sentry from '@sentry/browser'
-import { AlbumGroup, AlbumGroupIndex, MomentFormat } from 'enums'
+import { AlbumGroup, AlbumGroupIndex, MomentFormat, ReleasesOrder } from 'enums'
 
 const { ISO_DATE } = MomentFormat
 const NOTIFICATION_ICON = `${process.env.REACT_APP_URL}/android-chrome-192x192.png`
@@ -381,16 +381,26 @@ export function buildReleasesMap(albums) {
  * Build Releases
  *
  * @param {ReleasesMap} releasesMap
+ * @param {ReleasesOrder} releasesOrder
  * @returns {Releases}
  */
-export function buildReleases(releasesMap) {
+export function buildReleases(releasesMap, releasesOrder) {
   const releasesUnordered = Object.entries(releasesMap).map(([date, albums]) => ({ date, albums }))
   const releasesOrderedByDate = orderBy(releasesUnordered, 'date', 'desc')
+
   const releases = releasesOrderedByDate.map((releaseDay) => {
-    releaseDay.albums = orderBy(releaseDay.albums, [
-      (album) => Object.values(album.artists).flat().shift().name.toLowerCase(),
-      'name',
-    ])
+    /** @param {Album} album */
+    const orderByAlbumGroup = (album) => AlbumGroupIndex[Object.keys(album.artists).shift()]
+    /** @param {Album} album */
+    const orderByArtistName = (album) =>
+      Object.values(album.artists).flat().shift().name.toLowerCase()
+
+    /** @type {Array<((album: Album) => string | number) | string>} */
+    const orders = [orderByArtistName, 'name']
+    if (releasesOrder === ReleasesOrder.ALBUM_GROUP) orders.unshift(orderByAlbumGroup)
+
+    releaseDay.albums = orderBy(releaseDay.albums, orders)
+
     return releaseDay
   })
 

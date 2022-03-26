@@ -14,12 +14,12 @@
 
   &__children {
     background-color: $black-bis;
+    border-radius: 10px;
 
     @include tablet {
       padding: 20px;
       width: 100%;
       margin-left: 20px;
-      border-radius: 3px;
     }
 
     @include mobile {

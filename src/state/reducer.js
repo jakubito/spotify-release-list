@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { AlbumGroup, ArtistSource, GroupColorSchemes } from 'enums'
+import { AlbumGroup, ArtistSource, GroupColorSchemes, ReleasesOrder } from 'enums'
 import { deleteLabels } from 'helpers'
 import {
   addSeenFeature,
@@ -60,6 +60,7 @@ export const INITIAL_STATE = {
   filtersVisible: false,
   settings: {
     artistSources: [ArtistSource.FOLLOWED],
+    minimumSavedTracks: 1,
     groups: Object.values(AlbumGroup),
     groupColors: GroupColorSchemes.DEFAULT,
     days: 30,
@@ -76,6 +77,7 @@ export const INITIAL_STATE = {
     displayLabels: false,
     displayPopularity: false,
     labelBlocklist: '',
+    releasesOrder: ReleasesOrder.ARTIST,
   },
   filters: {
     groups: [],

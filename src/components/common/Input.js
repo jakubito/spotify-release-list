@@ -12,6 +12,8 @@ import classNames from 'classnames'
  *   value?: string
  *   defaultValue?: string
  *   placeholder?: string
+ *   step?: string
+ *   pattern?: string
  *   disabled?: boolean
  *   onChange?: React.ChangeEventHandler<HTMLInputElement>
  *   onBlur?: React.FocusEventHandler<HTMLInputElement>
@@ -19,7 +21,19 @@ import classNames from 'classnames'
  * @param {React.Ref<HTMLInputElement>} ref
  */
 function Input(
-  { type = 'text', id, name, className, value, defaultValue, placeholder, disabled, onChange },
+  {
+    type = 'text',
+    id,
+    name,
+    className,
+    value,
+    defaultValue,
+    placeholder,
+    step,
+    pattern,
+    disabled,
+    onChange,
+  },
   ref
 ) {
   return (
@@ -31,6 +45,8 @@ function Input(
       defaultValue={defaultValue}
       className={classNames(className, 'input', 'is-rounded', 'has-text-weight-medium', 'is-dark')}
       placeholder={placeholder}
+      step={step}
+      pattern={pattern}
       disabled={disabled}
       onChange={onChange}
       ref={ref}
