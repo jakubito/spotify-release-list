@@ -92,6 +92,10 @@ export const getSettingsMarket = createSelector(getSettings, (settings) => setti
 export const getSettingsTheme = createSelector(getSettings, (settings) => settings.theme)
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)
+export const getSettingsReleasesOrder = createSelector(
+  getSettings,
+  (settings) => settings.releasesOrder
+)
 
 // Individual filters selectors
 export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)
@@ -184,7 +188,10 @@ export const getOriginalReleasesMap = createSelector(getAlbumsArray, buildReleas
 /**
  * Get all releases as ordered array of { date, albums } objects
  */
-const getOriginalReleases = createSelector(getOriginalReleasesMap, buildReleases)
+const getOriginalReleases = createSelector(
+  [getOriginalReleasesMap, getSettingsReleasesOrder],
+  buildReleases
+)
 
 /**
  * Check if there are any releases
@@ -385,7 +392,10 @@ const getFilteredReleasesMap = createSelector(getFilteredAlbumsArray, buildRelea
 /**
  * Get filtered releases as ordered array of { date, albums } objects
  */
-const getFilteredReleases = createSelector(getFilteredReleasesMap, buildReleases)
+const getFilteredReleases = createSelector(
+  [getFilteredReleasesMap, getSettingsReleasesOrder],
+  buildReleases
+)
 
 /**
  * Final releases selector that returns either filtered or original releases

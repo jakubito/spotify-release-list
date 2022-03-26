@@ -49,6 +49,18 @@ export const ArtistSourceLabels = [
   [SAVED_TRACKS, 'Liked songs'],
 ]
 
+/** @type {ReleasesOrderEnum} */
+export const ReleasesOrder = {
+  ARTIST: 'artist',
+  ALBUM_GROUP: 'album-group',
+}
+
+/** @type {[group: ReleasesOrder, label: string][]} */
+export const ReleasesOrderLabels = [
+  [ReleasesOrder.ARTIST, 'Artist name'],
+  [ReleasesOrder.ALBUM_GROUP, 'Album type → Artist name'],
+]
+
 /** @type {AlbumGroupEnum} */
 export const AlbumGroup = {
   ALBUM: 'album',
