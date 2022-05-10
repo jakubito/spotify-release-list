@@ -4,10 +4,6 @@
   padding: 15px;
   flex: 0 0 auto;
 
-  @include touch {
-    padding-left: 20px;
-  }
-
   &__title {
     min-height: 40px;
     display: flex;
