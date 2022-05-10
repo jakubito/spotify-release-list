@@ -32,6 +32,19 @@ body,
   color: $white-ter;
 }
 
+#demo {
+  background-color: $info;
+  color: $white-bis;
+  text-align: center;
+  padding: 6px 16px;
+  line-height: 1.2em;
+
+  a {
+    color: $white-bis;
+    text-decoration: underline;
+  }
+}
+
 #ua {
   display: flex;
   width: 30px;

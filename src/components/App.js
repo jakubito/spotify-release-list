@@ -12,6 +12,12 @@ function App() {
 
   return (
     <div className="App">
+      <div id="demo">
+        This is a demo version. For a full version, visit{' '}
+        <a href="https://spotifyreleaselist.netlify.app/" title="Spotify Release List">
+          spotifyreleaselist.netlify.app
+        </a>
+      </div>
       <Outlet />
       <BackToTop />
       <Message />

@@ -1,5 +1,4 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { AlbumGroup, ArtistSource, GroupColorSchemes, ReleasesOrder } from 'enums'
 import { deleteLabels } from 'helpers'
 import {
   addSeenFeature,
@@ -37,65 +36,10 @@ import {
   updateReady,
 } from 'state/actions'
 import { getReleasesArray } from 'state/selectors'
+import demoState from './demoState.json'
 
 /** @type {State} */
-export const INITIAL_STATE = {
-  authorizing: false,
-  albums: {},
-  syncing: false,
-  syncingProgress: 0,
-  lastSync: null,
-  lastAutoSync: null,
-  previousSyncMaxDate: null,
-  creatingPlaylist: false,
-  playlistId: null,
-  playlistForm: {
-    name: null,
-    description: null,
-    isPrivate: null,
-  },
-  user: null,
-  message: null,
-  playlistModalVisible: false,
-  filtersVisible: false,
-  settings: {
-    artistSources: [ArtistSource.FOLLOWED],
-    minimumSavedTracks: 1,
-    groups: Object.values(AlbumGroup),
-    groupColors: GroupColorSchemes.DEFAULT,
-    days: 30,
-    market: '',
-    theme: '',
-    uriLinks: false,
-    covers: true,
-    autoSync: false,
-    autoSyncTime: '08:00',
-    notifications: true,
-    firstDayOfWeek: 0,
-    displayTracks: false,
-    fullAlbumData: false,
-    displayLabels: false,
-    displayPopularity: false,
-    labelBlocklist: '',
-    releasesOrder: ReleasesOrder.ARTIST,
-  },
-  filters: {
-    groups: [],
-    search: '',
-    startDate: null,
-    endDate: null,
-    excludeVariousArtists: false,
-    excludeRemixes: false,
-    excludeDuplicates: false,
-    favoritesOnly: false,
-  },
-  seenFeatures: [],
-  updateReady: false,
-  favorites: {},
-  editingFavorites: false,
-  lastSettingsPath: null,
-  labelBlocklistHeight: null,
-}
+export const INITIAL_STATE = /** @type {State} */ (demoState)
 
 const rootReducer = createReducer(INITIAL_STATE, (builder) => {
   builder

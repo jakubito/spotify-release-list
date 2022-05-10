@@ -5,6 +5,7 @@ import { getReleasesMinMaxDates } from 'state/selectors'
 import { Button } from 'components/common'
 
 const { MONTH_NAME } = MomentFormat
+const today = '2022-05-10'
 
 /**
  * Date range filter shortcuts definition
@@ -15,33 +16,33 @@ function getShortcuts() {
   return [
     {
       title: 'Today',
-      start: moment().startOf('day'),
-      end: moment().endOf('day'),
+      start: moment(today).startOf('day'),
+      end: moment(today).endOf('day'),
     },
     {
       title: 'Yesterday',
-      start: moment().subtract(1, 'day').startOf('day'),
-      end: moment().subtract(1, 'day').endOf('day'),
+      start: moment(today).subtract(1, 'day').startOf('day'),
+      end: moment(today).subtract(1, 'day').endOf('day'),
     },
     {
       title: 'This week',
-      start: moment().startOf('week'),
-      end: moment().endOf('week'),
+      start: moment(today).startOf('week'),
+      end: moment(today).endOf('week'),
     },
     {
       title: 'Last week',
-      start: moment().subtract(1, 'week').startOf('week'),
-      end: moment().subtract(1, 'week').endOf('week'),
+      start: moment(today).subtract(1, 'week').startOf('week'),
+      end: moment(today).subtract(1, 'week').endOf('week'),
     },
     {
       title: (start) => start.format(MONTH_NAME),
-      start: moment().startOf('month'),
-      end: moment().endOf('month'),
+      start: moment(today).startOf('month'),
+      end: moment(today).endOf('month'),
     },
     {
       title: (start) => start.format(MONTH_NAME),
-      start: moment().subtract(1, 'month').startOf('month'),
-      end: moment().subtract(1, 'month').endOf('month'),
+      start: moment(today).subtract(1, 'month').startOf('month'),
+      end: moment(today).subtract(1, 'month').endOf('month'),
     },
   ]
 }

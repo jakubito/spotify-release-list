@@ -64,7 +64,7 @@ function AboutSettings() {
         <span className="icon">
           <i className="fas fa-code-branch" />
         </span>{' '}
-        Version {process.env.REACT_APP_VERSION} ({process.env.REACT_APP_GIT_SHA})
+        Version {process.env.REACT_APP_VERSION}-demo ({process.env.REACT_APP_GIT_SHA})
       </div>
     </VerticalLayout>
   )

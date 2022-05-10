@@ -1,19 +1,15 @@
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
-import PWAPrompt from 'react-ios-pwa-prompt'
-import * as Sentry from '@sentry/browser'
 import moment from 'moment'
 import 'react-dates/initialize'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { store, hydrate } from 'state'
 import { getSettings } from 'state/selectors'
-import { updateReady } from 'state/actions'
 import { Routes } from 'components'
 import 'styles/index.scss'
 
-Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
-serviceWorkerRegistration.register({ onUpdate: () => store.dispatch(updateReady()) })
+serviceWorkerRegistration.unregister()
 
 const container = document.getElementById('root')
 const root = createRoot(container)
@@ -28,7 +24,6 @@ hydrate.then(() => {
     <Provider store={store}>
       <BrowserRouter>
         <Routes />
-        <PWAPrompt />
       </BrowserRouter>
     </Provider>
   )
