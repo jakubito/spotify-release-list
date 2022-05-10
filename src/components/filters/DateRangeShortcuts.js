@@ -54,7 +54,7 @@ function getShortcuts() {
 function DateRangeShortcuts({ setValues }) {
   const { minDate, maxDate } = useSelector(getReleasesMinMaxDates)
   const validShortcuts = getShortcuts().filter(
-    ({ start, end }) => start.isBefore(maxDate) && end.isAfter(minDate)
+    ({ start, end }) => start.isSameOrBefore(maxDate) && end.isAfter(minDate)
   )
 
   return (
