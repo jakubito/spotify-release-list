@@ -12,9 +12,9 @@ import classNames from 'classnames'
  *   value?: string
  *   defaultValue?: string
  *   placeholder?: string
- *   step?: string
- *   min?: string
- *   max?: string
+ *   step?: string | number
+ *   min?: string | number
+ *   max?: string | number
  *   pattern?: string
  *   disabled?: boolean
  *   onChange?: React.ChangeEventHandler<HTMLInputElement>

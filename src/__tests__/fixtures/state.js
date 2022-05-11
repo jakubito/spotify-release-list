@@ -1,4 +1,4 @@
-import { AlbumGroup, GroupColorSchemes } from 'enums'
+import { AlbumGroup, ArtistSource, GroupColorSchemes, ReleasesOrder } from 'enums'
 
 const state = {
   albums: {
@@ -384,6 +384,8 @@ const state = {
   playlistModalVisible: false,
   filtersVisible: false,
   settings: {
+    artistSources: [ArtistSource.FOLLOWED],
+    minimumSavedTracks: 1,
     groups: [AlbumGroup.ALBUM, AlbumGroup.SINGLE],
     groupColors: GroupColorSchemes.DEFAULT,
     days: 7,
@@ -400,6 +402,7 @@ const state = {
     displayLabels: false,
     displayPopularity: false,
     labelBlocklist: '',
+    releasesOrder: ReleasesOrder.ARTIST,
   },
   filters: {
     groups: [],
@@ -407,6 +410,7 @@ const state = {
     startDate: null,
     endDate: null,
     excludeVariousArtists: false,
+    excludeRemixes: false,
     excludeDuplicates: false,
     favoritesOnly: false,
   },

@@ -14,7 +14,9 @@ import {
 } from 'helpers'
 import { AlbumGroup } from 'enums'
 import { getOriginalReleasesMap } from 'state/selectors'
-import mockState from './fixtures/state'
+import mockStateJson from './fixtures/state'
+
+const mockState = /** @type {State} */ (mockStateJson)
 
 describe('sleep', () => {
   beforeEach(() => {
