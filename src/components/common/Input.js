@@ -12,7 +12,9 @@ import classNames from 'classnames'
  *   value?: string
  *   defaultValue?: string
  *   placeholder?: string
- *   step?: string
+ *   step?: string | number
+ *   min?: string | number
+ *   max?: string | number
  *   pattern?: string
  *   disabled?: boolean
  *   onChange?: React.ChangeEventHandler<HTMLInputElement>
@@ -20,8 +22,8 @@ import classNames from 'classnames'
  * }} props
  * @param {React.Ref<HTMLInputElement>} ref
  */
-function Input(
-  {
+function Input(props, ref) {
+  const {
     type = 'text',
     id,
     name,
@@ -30,12 +32,13 @@ function Input(
     defaultValue,
     placeholder,
     step,
+    min,
+    max,
     pattern,
     disabled,
     onChange,
-  },
-  ref
-) {
+  } = props
+
   return (
     <input
       type={type}
@@ -46,6 +49,8 @@ function Input(
       className={classNames(className, 'input', 'is-rounded', 'has-text-weight-medium', 'is-dark')}
       placeholder={placeholder}
       step={step}
+      min={min}
+      max={max}
       pattern={pattern}
       disabled={disabled}
       onChange={onChange}

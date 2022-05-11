@@ -32,6 +32,7 @@ function MinimumSavedTracksField() {
             type="number"
             className="MinimumSavedTracksField__input"
             step="1"
+            min="1"
             pattern="\d*"
             defaultValue={String(minimumSavedTracks)}
             onChange={onChange}

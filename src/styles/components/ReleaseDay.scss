@@ -17,20 +17,19 @@
   &__date {
     flex: 0 0 225px;
     margin-top: 25px !important;
+    top: 16px;
     color: $grey;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     font-size: 1.5rem;
+    position: sticky;
+    background: $black;
+    z-index: 2;
 
     @include theme(compact) {
       margin-top: 16px !important;
       font-size: 1.25rem;
-    }
-
-    @include desktop {
-      position: sticky;
-      top: 16px;
     }
 
     @include desktop-only {
@@ -38,11 +37,16 @@
     }
 
     @include touch {
+      width: fit-content;
+      margin: 0 auto !important;
       flex: none;
-    }
+      top: 10px;
+      border-radius: 4px;
+      filter: drop-shadow(0px 0px 6px $black);
 
-    @include mobile {
-      justify-content: center;
+      .columns.is-gapless & {
+        padding: 2px 10px !important;
+      }
     }
   }
 
@@ -50,6 +54,10 @@
     color: $blue;
     font-size: 8px;
     margin-right: 2px;
+
+    @include touch {
+      margin-left: -8px;
+    }
   }
 
   &__albums {

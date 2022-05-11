@@ -98,6 +98,15 @@ function ReleasesHeader() {
         </div>
       )}
       <div className="Header__right">
+        <a
+          id="ua"
+          title="Help Ukraine 🇺🇦"
+          href="https://help.gov.ua/en"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          🇺🇦
+        </a>
         {lastSyncDate && hasReleases && !syncing && (
           <Button
             title="Export to playlist [E]"

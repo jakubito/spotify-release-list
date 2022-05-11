@@ -4,7 +4,6 @@
   border: none;
   padding-left: calc(1em + 0.25em + 1px) !important;
   padding-right: calc(1em + 0.25em + 1px) !important;
-  z-index: 3;
 
   &--compact {
     @include mobile {
