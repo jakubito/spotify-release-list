@@ -41,11 +41,11 @@
       margin: 0 auto !important;
       flex: none;
       top: 10px;
-      border-radius: 9999px;
+      border-radius: 4px;
       filter: drop-shadow(0px 0px 6px $black);
 
       .columns.is-gapless & {
-        padding: 2px 16px !important;
+        padding: 2px 10px !important;
       }
     }
   }

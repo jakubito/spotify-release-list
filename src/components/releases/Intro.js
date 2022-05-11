@@ -1,7 +1,7 @@
 import { Address } from 'enums'
 import { ButtonAnchor, SyncButton } from 'components/common'
 
-const { GITHUB, PRIVACY } = Address
+const { DEMO, GITHUB, PRIVACY } = Address
 
 /**
  * Render initial intro screen
@@ -14,6 +14,13 @@ function Intro() {
       </p>
       <SyncButton title="Log in with Spotify" icon="fab fa-spotify" medium />
       <div className="Intro__buttons has-text-centered has-text-grey">
+        <ButtonAnchor
+          href={DEMO}
+          title="Live demo"
+          icon="fas fa-play"
+          className="Intro__button"
+          text
+        />
         <ButtonAnchor
           href={GITHUB}
           title="GitHub repository"
