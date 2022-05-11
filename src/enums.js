@@ -9,6 +9,7 @@ export const Address = {
   CHANGELOG: `${GITHUB}/releases`,
   DONATE: 'https://paypal.me/jakubito',
   EMAIL: 'mailto:dobes.jakub@gmail.com',
+  DEMO: 'https://demo--spotifyreleaselist.netlify.app',
 }
 
 /** @enum {string} */
