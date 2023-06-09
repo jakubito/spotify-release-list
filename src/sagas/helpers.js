@@ -1,6 +1,7 @@
 import { eventChannel } from 'redux-saga'
 import { call, delay, fork, put, race, take } from 'redux-saga/effects'
 import moment from 'moment'
+import { FetchError } from 'api'
 
 /**
  * Behaves the same way as redux-saga's `takeLeading` but also can be cancelled
@@ -82,18 +83,26 @@ export function* progressWorker(progress, setProgressAction, updateInterval) {
  *
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel<any>} responseChannel
+ * @param {number} [retryLimit]
  */
-export function* requestWorker(requestChannel, responseChannel) {
+export function* requestWorker(requestChannel, responseChannel, retryLimit = 2) {
   while (true) {
     /** @type {RequestChannelMessage} */
     const request = yield take(requestChannel)
 
     try {
-      const result = yield call(...request)
+      const result = yield call(...request.payload)
       yield put(responseChannel, { result })
     } catch (error) {
       console.error(error)
-      yield put(responseChannel, { error })
+      if (error instanceof FetchError && request.callCount < retryLimit) {
+        yield delay(5000)
+        yield put(requestChannel, request)
+      } else {
+        yield put(responseChannel, { error })
+      }
+    } finally {
+      request.callCount++
     }
   }
 }
@@ -131,4 +140,12 @@ export function serviceWorkerEventChannel(serviceWorker, event) {
       serviceWorker.removeEventListener(event, emitter)
     }
   })
+}
+
+/**
+ * @param {RequestChannel} requestChannel
+ * @param {RequestChannelMessagePayload} payload
+ */
+export function* putRequestMessage(requestChannel, payload) {
+  yield put(requestChannel, { payload, callCount: 0 })
 }

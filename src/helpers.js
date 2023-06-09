@@ -285,6 +285,7 @@ export function modalsClosed() {
  * @param {Error & { contexts?: SentryContexts }} error
  */
 export function captureException(error) {
+  console.error(error)
   Sentry.captureException(error, { contexts: error.contexts })
 }
 

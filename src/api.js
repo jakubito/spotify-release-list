@@ -1,5 +1,5 @@
 import last from 'lodash/last'
-import { buildUser, buildArtist, buildAlbumRaw, sleep } from 'helpers'
+import { buildUser, buildAlbumRaw, sleep } from 'helpers'
 
 /**
  * Default to account market
@@ -29,107 +29,44 @@ export class FetchError extends Error {
  * Return current user
  *
  * @param {string} token
- * @returns {Promise<User>}
  */
 export async function getUser(token) {
   /** @type {SpotifyUser} */
   const userResponse = await get(apiUrl('me'), token)
-  const user = buildUser(userResponse)
-
-  return user
+  return buildUser(userResponse)
 }
 
 /**
- * Return current user's followed artists
+ * Return current user's followed artists page
  *
- * @param {string} token
- * @returns {Promise<Artist[]>}
+ * @type {CursorPagedRequest<SpotifyArtist>}
  */
-export async function getUserFollowedArtists(token) {
-  /** @type {Artist[]} */
-  const artists = []
-  const params = new URLSearchParams({ limit: String(50), type: 'artist' })
-
-  let next = apiUrl(`me/following?${params}`)
-
-  while (next) {
-    /** @type {{ artists: Paged<SpotifyArtist> }} */
-    const response = await get(next, token)
-
-    artists.push(...response.artists.items)
-    next = response.artists.next
-  }
-
-  return artists.map(buildArtist)
+export async function getUserFollowedArtistsPage(token, limit, after) {
+  const params = new URLSearchParams({ type: 'artist', limit: limit.toString() })
+  if (after) params.set('after', after)
+  /** @type {{ artists: CursorPaged<SpotifyArtist> }} */
+  const response = await get(apiUrl(`me/following?${params}`), token)
+  return response.artists
 }
 
 /**
- * Return the artists whose songs the user has liked
+ * Return saved tracks page
  *
- * @param {string} token
- * @param {number} minimumSavedTracks
- * @param {Market} [market]
- * @returns {Promise<Artist[]>}
+ * @type {PagedRequest<SpotifySavedTrack>}
  */
-export async function getUserSavedTracksArtists(token, minimumSavedTracks, market) {
-  /** @type {Record<string, { count: number; artist: Artist}>} */
-  const artists = {}
-  const params = new URLSearchParams({ limit: String(50), market: market || DEFAULT_MARKET })
-
-  let next = apiUrl(`me/tracks?${params}`)
-
-  while (next) {
-    /** @type Paged<SpotifySavedTrack> */
-    const response = await get(next, token)
-
-    for (const savedTrack of response.items) {
-      for (const artist of savedTrack.track.artists) {
-        if (artist.id in artists) {
-          artists[artist.id].count++
-          continue
-        }
-
-        artists[artist.id] = { count: 1, artist }
-      }
-    }
-
-    next = response.next
-  }
-
-  return Object.values(artists)
-    .filter(({ count }) => count >= minimumSavedTracks)
-    .map(({ artist }) => buildArtist(artist))
+export function getUserSavedTracksPage(token, limit, offset) {
+  const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+  return get(apiUrl(`me/tracks?${params}`), token)
 }
 
 /**
- * Return the artists whose albums the user has saved
+ * Return saved albums page
  *
- * @param {string} token
- * @param {Market} [market]
- * @returns {Promise<Artist[]>}
+ * @type {PagedRequest<SpotifySavedAlbum>}
  */
-export async function getUserSavedAlbumsArtists(token, market) {
-  /** @type {Record<string, Artist>} */
-  const artists = {}
-  const params = new URLSearchParams({ limit: String(50), market: market || DEFAULT_MARKET })
-
-  let next = apiUrl(`me/albums?${params}`)
-
-  while (next) {
-    /** @type Paged<SpotifySavedAlbum> */
-    const response = await get(next, token)
-
-    for (const savedAlbum of response.items) {
-      for (const artist of savedAlbum.album.artists) {
-        if (artist.id in artists) continue
-        artists[artist.id] = artist
-      }
-    }
-
-    next = response.next
-  }
-
-  return Object.values(artists).map(buildArtist)
+export function getUserSavedAlbumsPage(token, limit, offset) {
+  const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+  return get(apiUrl(`me/albums?${params}`), token)
 }
 
 /**
@@ -140,13 +77,12 @@ export async function getUserSavedAlbumsArtists(token, market) {
  * @param {AlbumGroup[]} groups
  * @param {Market} market
  * @param {string} minDate
- * @returns {Promise<AlbumRaw[]>}
  */
 export async function getArtistAlbums(token, artistId, groups, market, minDate) {
   /** @type {AlbumRaw[]} */
   const albums = []
   const params = new URLSearchParams({
-    limit: String(50),
+    limit: '50',
     include_groups: groups.join(','),
     market: market || DEFAULT_MARKET,
   })
@@ -184,7 +120,6 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
  * @param {string} token
  * @param {string[]} albumIds
  * @param {Market} [market]
- * @returns {Promise<SpotifyAlbumFull[]>}
  */
 export async function getFullAlbums(token, albumIds, market) {
   const params = new URLSearchParams({
@@ -204,7 +139,6 @@ export async function getFullAlbums(token, albumIds, market) {
  * @param {string} token
  * @param {string[]} albumIds
  * @param {Market} [market]
- * @returns {Promise<string[]>}
  */
 export async function getAlbumsTrackIds(token, albumIds, market) {
   /** @type {string[]} */
