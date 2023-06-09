@@ -52,7 +52,6 @@
  *   groups: AlbumGroup[]
  *   groupColors: GroupColorScheme
  *   days: number
- *   market: Market
  *   theme: string
  *   uriLinks: boolean
  *   covers: boolean
@@ -194,7 +193,6 @@
  * @typedef {import('./enums').SpotifyEntity} SpotifyEntity
  * @typedef {import('./enums').MomentFormat} MomentFormat
  * @typedef {import('./enums').Theme} Theme
- * @typedef {import('./enums').Market} Market
  *
  * @typedef {{
  *   FOLLOWED: 'followed'

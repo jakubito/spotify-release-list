@@ -1,10 +1,6 @@
 import last from 'lodash/last'
 import { buildUser, buildAlbumRaw, sleep } from 'helpers'
 
-/**
- * Default to account market
- */
-const DEFAULT_MARKET = 'from_token'
 const API_URL = 'https://api.spotify.com/v1'
 const HTTP_TOO_MANY_REQUESTS = 429
 
@@ -75,18 +71,12 @@ export function getUserSavedAlbumsPage(token, limit, offset) {
  * @param {string} token
  * @param {string} artistId
  * @param {AlbumGroup[]} groups
- * @param {Market} market
  * @param {string} minDate
  */
-export async function getArtistAlbums(token, artistId, groups, market, minDate) {
+export async function getArtistAlbums(token, artistId, groups, minDate) {
   /** @type {AlbumRaw[]} */
   const albums = []
-  const params = new URLSearchParams({
-    limit: '50',
-    include_groups: groups.join(','),
-    market: market || DEFAULT_MARKET,
-  })
-
+  const params = new URLSearchParams({ limit: '50', include_groups: groups.join(',') })
   let next = apiUrl(`artists/${artistId}/albums?${params}`)
 
   while (next) {
@@ -106,7 +96,7 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
   const restGroups = groups.slice(groups.indexOf(lastGroup) + 1)
 
   if (restGroups.length > 0) {
-    const restAlbums = await getArtistAlbums(token, artistId, restGroups, market, minDate)
+    const restAlbums = await getArtistAlbums(token, artistId, restGroups, minDate)
 
     albums.push(...restAlbums)
   }
@@ -119,17 +109,11 @@ export async function getArtistAlbums(token, artistId, groups, market, minDate) 
  *
  * @param {string} token
  * @param {string[]} albumIds
- * @param {Market} [market]
  */
-export async function getFullAlbums(token, albumIds, market) {
-  const params = new URLSearchParams({
-    ids: albumIds.join(','),
-    market: market || DEFAULT_MARKET,
-  })
-
+export async function getFullAlbums(token, albumIds) {
+  const params = new URLSearchParams({ ids: albumIds.join(',') })
   /** @type {{ albums: SpotifyAlbumFull[] }} */
   const response = await get(apiUrl(`albums?${params}`), token)
-
   return response.albums
 }
 
@@ -138,12 +122,11 @@ export async function getFullAlbums(token, albumIds, market) {
  *
  * @param {string} token
  * @param {string[]} albumIds
- * @param {Market} [market]
  */
-export async function getAlbumsTrackIds(token, albumIds, market) {
+export async function getAlbumsTrackIds(token, albumIds) {
   /** @type {string[]} */
   const trackIds = []
-  const albums = await getFullAlbums(token, albumIds, market)
+  const albums = await getFullAlbums(token, albumIds)
 
   for (const album of albums) {
     if (!album) continue

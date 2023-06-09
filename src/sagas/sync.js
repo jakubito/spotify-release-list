@@ -174,18 +174,10 @@ function* syncBaseData(albumsRaw, artists, minDate, requestChannel, responseChan
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
-  const { groups, market, fullAlbumData } = yield select(getSettings)
+  const { groups, fullAlbumData } = yield select(getSettings)
 
-  for (const artist of artists) {
-    yield putRequestMessage(requestChannel, [
-      getArtistAlbums,
-      token,
-      artist.id,
-      groups,
-      market,
-      minDate,
-    ])
-  }
+  for (const artist of artists)
+    yield putRequestMessage(requestChannel, [getArtistAlbums, token, artist.id, groups, minDate])
 
   for (let fetched = 0; fetched < artists.length; fetched += 1) {
     /** @type {ResponseChannelMessage<Await<ReturnType<typeof getArtistAlbums>>>} */
@@ -213,15 +205,11 @@ function* syncBaseData(albumsRaw, artists, minDate, requestChannel, responseChan
 function* syncExtraData(albumsRaw, albums, requestChannel, responseChannel, progress) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
-  /** @type {ReturnType<typeof getSettings>} */
-  const { market } = yield select(getSettings)
-
   const albumIds = albumsRaw.map((album) => album.id)
   const albumIdsChunks = chunk(albumIds, 20)
 
-  for (const albumIdsChunk of albumIdsChunks) {
-    yield putRequestMessage(requestChannel, [getFullAlbums, token, albumIdsChunk, market])
-  }
+  for (const albumIdsChunk of albumIdsChunks)
+    yield putRequestMessage(requestChannel, [getFullAlbums, token, albumIdsChunk])
 
   for (let fetched = 0; fetched < albumIdsChunks.length; fetched += 1) {
     /** @type {ResponseChannelMessage<Await<ReturnType<typeof getFullAlbums>>>} */
