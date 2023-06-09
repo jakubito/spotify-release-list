@@ -8,11 +8,9 @@ const { MONTH_NAME } = MomentFormat
 
 /**
  * Date range filter shortcuts definition
- *
- * @returns {DateRangeShortcut[]}
  */
 function getShortcuts() {
-  return [
+  return /** @type {DateRangeShortcut[]} */ ([
     {
       title: 'Today',
       start: moment().startOf('day'),
@@ -43,7 +41,7 @@ function getShortcuts() {
       start: moment().subtract(1, 'month').startOf('month'),
       end: moment().subtract(1, 'month').endOf('month'),
     },
-  ]
+  ])
 }
 
 /**

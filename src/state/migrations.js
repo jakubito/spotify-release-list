@@ -39,10 +39,9 @@ const migrations = {
  * Reset all data except settings and show message
  *
  * @param {PersistedState} state
- * @returns {PersistedState}
  */
 function resetDataWithMessage(state) {
-  return {
+  return /** @type {PersistedState} */ ({
     ...state,
     ...INITIAL_STATE,
     settings: state.settings,
@@ -50,7 +49,7 @@ function resetDataWithMessage(state) {
       text: 'Please log in again to continue.',
       type: 'info',
     },
-  }
+  })
 }
 
 export default migrations

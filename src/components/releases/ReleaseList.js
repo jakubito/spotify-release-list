@@ -30,12 +30,6 @@ function ReleaseList({ releases }) {
  *
  * @param {Releases} releases
  * @param {number} pageSize - Page size threshold
- * @returns {{
- *   cursor: number
- *   slice: Releases
- *   next: () => void | null
- *   reset: () => void
- * }}
  */
 function usePaginate(releases, pageSize) {
   function nextCursor(currentCursor = 0) {

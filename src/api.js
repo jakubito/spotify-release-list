@@ -183,7 +183,6 @@ export function addTracksToPlaylist(token, playlistId, trackUris) {
  * Create full API url
  *
  * @param {string} endpoint
- * @returns {string}
  */
 function apiUrl(endpoint) {
   return `${API_URL}/${endpoint}`
@@ -192,9 +191,10 @@ function apiUrl(endpoint) {
 /**
  * Fire GET request
  *
+ * @template T
  * @param {string} endpoint
  * @param {string} token
- * @returns {Promise<any>}
+ * @returns {Promise<T>}
  */
 function get(endpoint, token) {
   return request(endpoint, token, 'GET')
@@ -203,10 +203,11 @@ function get(endpoint, token) {
 /**
  * Fire POST request
  *
+ * @template T
  * @param {string} endpoint
  * @param {string} token
- * @param {{ [prop: string]: any }} body
- * @returns {Promise<any>}
+ * @param {Record<string, unknown>} body
+ * @returns {Promise<T>}
  */
 function post(endpoint, token, body) {
   return request(
@@ -221,12 +222,13 @@ function post(endpoint, token, body) {
 /**
  * Spotify API request wrapper
  *
+ * @template T
  * @param {string} endpoint
  * @param {string} token
  * @param {string} method
- * @param {{ [prop: string]: any }} [headers]
+ * @param {Record<string, string>} [headers]
  * @param {string} [body]
- * @returns {Promise<any>}
+ * @returns {Promise<T>}
  */
 async function request(endpoint, token, method, headers = {}, body) {
   const defaultHeaders = { authorization: `Bearer ${token}`, accept: 'application/json' }

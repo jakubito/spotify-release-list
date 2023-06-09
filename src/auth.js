@@ -32,9 +32,9 @@ export class AuthError extends Error {
  * Get the Spotify auth scopes for artist collection
  *
  * @param {ArtistSource[]} artistSources
- * @returns {Scope[]}
  */
 export function getSyncScopes(artistSources) {
+  /** @type {Scope[]} */
   const scopes = []
 
   for (const source of artistSources) {
@@ -49,7 +49,6 @@ export function getSyncScopes(artistSources) {
  * Get the Spotify auth scope for playlist creation
  *
  * @param {boolean} isPrivate
- * @returns {Scope}
  */
 export function getPlaylistScope(isPrivate) {
   return isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC
@@ -59,7 +58,6 @@ export function getPlaylistScope(isPrivate) {
  * Generate cryptographically strong random code verifier
  *
  * @param {number} [length]
- * @returns {string}
  */
 export function generateCodeVerifier(length = 50) {
   const randomValues = window.crypto.getRandomValues(new Uint32Array(length))
@@ -75,7 +73,6 @@ export function generateCodeVerifier(length = 50) {
  * Create base64 encoded code challenge
  *
  * @param {string} codeVerifier
- * @returns {Promise<string>}
  */
 export async function createCodeChallenge(codeVerifier) {
   const codeBuffer = new TextEncoder().encode(codeVerifier)
@@ -90,7 +87,6 @@ export async function createCodeChallenge(codeVerifier) {
  *
  * @param {string} locationSearch
  * @param {string} originalNonce
- * @returns {{ code: string, action: Action }}
  */
 export function validateAuthRequest(locationSearch, originalNonce) {
   /** @type {{ code?: string, state?: string, error?: string }} */
@@ -125,7 +121,6 @@ export function validateAuthRequest(locationSearch, originalNonce) {
  * @param {string} scope
  * @param {string} codeChallenge
  * @param {string} nonce
- * @returns {void}
  */
 export function startAuthFlow(action, scope, codeChallenge, nonce) {
   const params = new URLSearchParams({
@@ -174,7 +169,6 @@ export function getRefreshedToken(refreshToken) {
  * Spotify token endpoint request wrapper
  *
  * @param {Record<string, string>} body
- * @returns {Promise<TokenApiResult>}
  */
 async function tokenRequest(body) {
   const response = await fetch(TOKEN_API_URL, {
@@ -187,12 +181,12 @@ async function tokenRequest(body) {
     /** @type {TokenApiResponse} */
     const json = await response.json()
 
-    return {
+    return /** @type {TokenApiResult} */ ({
       token: json.access_token,
       tokenScope: json.scope,
       tokenExpires: moment().add(Number(json.expires_in), 'seconds').toISOString(),
       refreshToken: json.refresh_token,
-    }
+    })
   }
 
   throw new AuthError(response.statusText)
@@ -200,12 +194,10 @@ async function tokenRequest(body) {
 
 /**
  * Load auth data from local storage
- *
- * @returns {AuthData}
  */
 export function getAuthData() {
   const authData = localStorage.getItem(AUTH_DATA_KEY)
-  return authData ? JSON.parse(authData) : {}
+  return /** @type {AuthData} */ (authData ? JSON.parse(authData) : {})
 }
 
 /**
