@@ -41,10 +41,11 @@ function ReleasesHeader() {
   const openPlaylistModal = deferred(dispatch, showPlaylistModal())
 
   useHotkeys('e', openPlaylistModal, { enabled: !syncing && lastSyncDate && hasReleases })
-  useHotkeys('d', toggleFavorites, { enabled: !syncing && lastSyncDate && hasReleases })
+  useHotkeys('d', toggleFavorites, {
+    enabled: () => !syncing && lastSyncDate && hasReleases && modalsClosed(),
+  })
   useHotkeys('f', toggleFilters, {
-    enabled: !syncing && lastSyncDate && hasOriginalReleases,
-    filter: modalsClosed,
+    enabled: () => !syncing && lastSyncDate && hasOriginalReleases && modalsClosed(),
   })
 
   return (

@@ -11,7 +11,7 @@ import { deferred } from 'helpers'
  * @param {() => void} closeModal
  */
 export function useModal(closeModal) {
-  useHotkeys('esc', closeModal, { enableOnTags: ['INPUT'] })
+  useHotkeys('esc', closeModal, { enableOnFormTags: ['input'] })
 
   useEffect(() => {
     document.documentElement.classList.add('is-modal-open')
