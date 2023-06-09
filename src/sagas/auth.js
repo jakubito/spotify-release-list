@@ -23,7 +23,7 @@ export function* authorizeSaga(action) {
   try {
     yield call(authorizeMainSaga, action)
   } catch (error) {
-    yield put(showErrorMessage(error instanceof AuthError && error.message))
+    yield put(showErrorMessage(error.message ?? error.toString()))
     yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
     yield call(captureException, error)
   }

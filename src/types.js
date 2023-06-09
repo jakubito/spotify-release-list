@@ -52,7 +52,6 @@
  *   groups: AlbumGroup[]
  *   groupColors: GroupColorScheme
  *   days: number
- *   market: Market
  *   theme: string
  *   uriLinks: boolean
  *   covers: boolean
@@ -147,7 +146,8 @@
  * @typedef {[value: string, label: string][]} SelectOptions
  * @typedef {{ [key in AlbumGroup]: string }} GroupColorScheme
  * @typedef {(to: string) => Promise<void>} Navigate
- * @typedef {[Fn, ...any[]]} RequestChannelMessage
+ * @typedef {[Fn, ...any[]]} RequestChannelMessagePayload
+ * @typedef {{ payload: RequestChannelMessagePayload, callCount: number }} RequestChannelMessage
  * @typedef {Channel<RequestChannelMessage>} RequestChannel
  * @typedef {(data: Settings) => string} SettingsSerializer
  * @typedef {JTDParser<Settings>} SettingsParser
@@ -176,6 +176,16 @@
  */
 
 /**
+ * @template T
+ * @typedef {(token: string, limit: number, offset: number) => Promise<Paged<T>>} PagedRequest<T>
+ */
+
+/**
+ * @template T
+ * @typedef {(token: string, limit: number, after?: string) => Promise<CursorPaged<T>>} CursorPagedRequest<T>
+ */
+
+/**
  * Enums
  *
  * @typedef {import('./enums').Address} Address
@@ -183,7 +193,6 @@
  * @typedef {import('./enums').SpotifyEntity} SpotifyEntity
  * @typedef {import('./enums').MomentFormat} MomentFormat
  * @typedef {import('./enums').Theme} Theme
- * @typedef {import('./enums').Market} Market
  *
  * @typedef {{
  *   FOLLOWED: 'followed'
@@ -327,7 +336,26 @@
 
 /**
  * @template T
- * @typedef {{ items: T[], next: string | null }} Paged<T>
+ * @typedef {{
+ *   items: T[]
+ *   limit: number
+ *   offset: number
+ *   total: number
+ *   next: string | null
+ * }} Paged<T>
+ */
+
+/**
+ * @template T
+ * @typedef {{
+ *   items: T[]
+ *   limit: number
+ *   total: number
+ *   next: string | null
+ *   cursors: {
+ *     after: string | null
+ *   }
+ * }} CursorPaged<T>
  */
 
 /**
@@ -360,12 +388,14 @@
  */
 
 /**
- * @template P,[T=string]
+ * @template P
+ * @template {string} [T=string]
  * @typedef {import('@reduxjs/toolkit').ActionCreatorWithPayload<P,T>} ActionCreatorWithPayload<P,T>
  */
 
 /**
- * @template P,[T=string]
+ * @template P
+ * @template {string} [T=string]
  * @typedef {import('@reduxjs/toolkit').ActionCreatorWithOptionalPayload<P,T>} ActionCreatorWithOptionalPayload<P,T>
  */
 

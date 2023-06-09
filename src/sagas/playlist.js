@@ -3,8 +3,8 @@ import chunk from 'lodash/chunk'
 import { spotifyUri } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
-import { AuthError, getAuthData, getPlaylistScope } from 'auth'
-import { getPlaylistForm, getReleases, getSettings, getUser } from 'state/selectors'
+import { getAuthData, getPlaylistScope } from 'auth'
+import { getPlaylistForm, getReleases, getUser } from 'state/selectors'
 import {
   createPlaylistError,
   createPlaylistFinished,
@@ -35,7 +35,7 @@ export function* createPlaylistSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error instanceof AuthError && error.message))
+    yield put(showErrorMessage(error.message ?? error.toString()))
     yield put(createPlaylistError())
   }
 }
@@ -52,8 +52,6 @@ function* createPlaylistMainSaga() {
   const user = yield select(getUser)
   /** @type {ReturnType<typeof getPlaylistForm>} */
   const { name, description, isPrivate } = yield select(getPlaylistForm)
-  /** @type {ReturnType<typeof getSettings>} */
-  const { market } = yield select(getSettings)
   /** @type {ReturnType<typeof getReleases>} */
   const releases = yield select(getReleases)
 
@@ -63,7 +61,7 @@ function* createPlaylistMainSaga() {
   )
 
   const trackIdsCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
-    call(getAlbumsTrackIds, token, albumIdsChunk, market)
+    call(getAlbumsTrackIds, token, albumIdsChunk)
   )
 
   /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */

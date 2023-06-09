@@ -88,7 +88,6 @@ export const getSettingsGroupColors = createSelector(
   (settings) => settings.groupColors
 )
 export const getSettingsDays = createSelector(getSettings, (settings) => settings.days)
-export const getSettingsMarket = createSelector(getSettings, (settings) => settings.market)
 export const getSettingsTheme = createSelector(getSettings, (settings) => settings.theme)
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)

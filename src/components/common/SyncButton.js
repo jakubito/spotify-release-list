@@ -35,7 +35,7 @@ function SyncButton({ title, icon, medium, compact }) {
     defer(dispatchSync)
   }
 
-  useHotkeys('r', dispatchSync, { filter: modalsClosed })
+  useHotkeys('r', dispatchSync, { enabled: modalsClosed })
   useEffect(() => setDisabled(working), [working])
 
   return (

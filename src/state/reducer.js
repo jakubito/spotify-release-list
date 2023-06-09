@@ -64,7 +64,6 @@ export const INITIAL_STATE = {
     groups: Object.values(AlbumGroup),
     groupColors: GroupColorSchemes.DEFAULT,
     days: 30,
-    market: '',
     theme: '',
     uriLinks: false,
     covers: true,

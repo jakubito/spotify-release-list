@@ -389,7 +389,6 @@ const state = {
     groups: [AlbumGroup.ALBUM, AlbumGroup.SINGLE],
     groupColors: GroupColorSchemes.DEFAULT,
     days: 7,
-    market: '',
     theme: 'theme-compact',
     uriLinks: false,
     covers: true,
