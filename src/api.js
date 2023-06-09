@@ -266,5 +266,9 @@ async function request(endpoint, token, method, headers = {}, body) {
     throw new FetchError(response.status, response.statusText, json.error.message)
   }
 
-  throw new FetchError(response.status, response.statusText)
+  throw new FetchError(
+    response.status,
+    response.statusText,
+    `${response.status} ${response.statusText} error encountered while fetching`
+  )
 }

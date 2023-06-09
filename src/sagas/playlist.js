@@ -3,7 +3,7 @@ import chunk from 'lodash/chunk'
 import { spotifyUri } from 'helpers'
 import { SpotifyEntity } from 'enums'
 import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
-import { AuthError, getAuthData, getPlaylistScope } from 'auth'
+import { getAuthData, getPlaylistScope } from 'auth'
 import { getPlaylistForm, getReleases, getSettings, getUser } from 'state/selectors'
 import {
   createPlaylistError,
@@ -35,7 +35,7 @@ export function* createPlaylistSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error instanceof AuthError && error.message))
+    yield put(showErrorMessage(error.message ?? error.toString()))
     yield put(createPlaylistError())
   }
 }

@@ -11,7 +11,7 @@ import {
   getUserSavedAlbumsPage,
   getUserSavedTracksPage,
 } from 'api'
-import { AuthError, getAuthData, getSyncScopes } from 'auth'
+import { getAuthData, getSyncScopes } from 'auth'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
   setSyncingProgress,
@@ -61,7 +61,7 @@ export function* syncSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error instanceof AuthError && error.message))
+    yield put(showErrorMessage(error.message ?? error.toString()))
     yield put(syncError())
   }
 }
