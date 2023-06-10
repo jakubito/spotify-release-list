@@ -67,6 +67,7 @@ function useOnSubmit(setSubmitTriggered) {
    *   description: string
    *   visibility: 'private' | 'public'
    * }>}
+   * @returns {Promise<void>}
    */
   const onSubmit = async (formData) => {
     setSubmitTriggered(true)

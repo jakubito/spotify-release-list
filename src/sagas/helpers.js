@@ -2,6 +2,7 @@ import { eventChannel } from 'redux-saga'
 import { call, delay, fork, put, race, take } from 'redux-saga/effects'
 import moment from 'moment'
 import { FetchError } from 'api'
+import { getAuthData } from 'auth'
 
 /**
  * Behaves the same way as redux-saga's `takeLeading` but also can be cancelled
@@ -81,8 +82,9 @@ export function* progressWorker(progress, setProgressAction, updateInterval) {
 /**
  * Worker saga that fulfills requests stored in the queue until manually stopped
  *
+ * @template T
  * @param {RequestChannel} requestChannel
- * @param {ResponseChannel<any>} responseChannel
+ * @param {ResponseChannel<T>} responseChannel
  * @param {number} [retryLimit]
  */
 export function* requestWorker(requestChannel, responseChannel, retryLimit = 2) {
@@ -148,4 +150,80 @@ export function serviceWorkerEventChannel(serviceWorker, event) {
  */
 export function* putRequestMessage(requestChannel, payload) {
   yield put(requestChannel, { payload, callCount: 0 })
+}
+
+/**
+ * @template T
+ * @param {RequestChannel} requestChannel
+ * @param {ResponseChannel} responseChannel
+ * @param {CursorPagedRequest<T>} requestFn
+ */
+export function* getAllCursorPaged(requestChannel, responseChannel, requestFn) {
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield call(getAuthData)
+  /** @type {T[]} */
+  const items = []
+  const limit = 50
+  let workerActive = true
+
+  yield putRequestMessage(requestChannel, [requestFn, token, limit])
+
+  while (workerActive) {
+    /** @type {ResponseChannelMessage<Await<ReturnType<typeof requestFn>>>} */
+    const { result } = yield take(responseChannel)
+
+    if (result) {
+      items.push(...result.items)
+
+      if (result.cursors.after) {
+        yield putRequestMessage(requestChannel, [requestFn, token, limit, result.cursors.after])
+        continue
+      }
+    }
+
+    workerActive = false
+  }
+
+  return items
+}
+
+/**
+ * @template T
+ * @param {RequestChannel} requestChannel
+ * @param {ResponseChannel} responseChannel
+ * @param {number} workersCount
+ * @param {PagedRequest<T>} requestFn
+ */
+export function* getAllPaged(requestChannel, responseChannel, workersCount, requestFn) {
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield call(getAuthData)
+  /** @type {T[]} */
+  const items = []
+  const limit = 50
+  let activeWorkers = workersCount
+  let offset = 0
+
+  for (let i = 0; i < workersCount; i++) {
+    yield putRequestMessage(requestChannel, [requestFn, token, limit, offset])
+    offset += limit
+  }
+
+  while (activeWorkers > 0) {
+    /** @type {ResponseChannelMessage<Await<ReturnType<typeof requestFn>>>} */
+    const { result } = yield take(responseChannel)
+
+    if (result) {
+      items.push(...result.items)
+
+      if (offset > result.total) {
+        activeWorkers--
+        continue
+      }
+    }
+
+    yield putRequestMessage(requestChannel, [requestFn, token, limit, offset])
+    offset += limit
+  }
+
+  return items
 }

@@ -157,7 +157,7 @@
 
 /**
  * @template T
- * @typedef {{ result?: T, error?: import('api').FetchError }} ResponseChannelMessage<T>
+ * @typedef {{ result?: T, error?: Error }} ResponseChannelMessage<T>
  */
 
 /**

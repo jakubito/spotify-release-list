@@ -26,7 +26,6 @@ export function useModal(closeModal) {
  * Feature hook
  *
  * @param {string} feature
- * @returns {{ seen: boolean, setSeen: () => void }}
  */
 export function useFeature(feature) {
   const dispatch = useDispatch()
@@ -45,7 +44,6 @@ export function useFeature(feature) {
  * Returns a dynamic key that changes on every dependency change
  *
  * @param {import('react').DependencyList} dependencyList
- * @returns {number}
  */
 export function useDynamicKey(dependencyList) {
   const keyRef = useRef(0)

@@ -21,7 +21,14 @@ import {
   syncStart,
 } from 'state/actions'
 import { authorize } from './auth'
-import { withTitle, progressWorker, requestWorker, putRequestMessage } from './helpers'
+import {
+  withTitle,
+  progressWorker,
+  requestWorker,
+  putRequestMessage,
+  getAllCursorPaged,
+  getAllPaged,
+} from './helpers'
 import { buildAlbumsMap, buildArtist, deleteLabels, mergeAlbumsRaw } from 'helpers'
 
 const { ISO_DATE } = MomentFormat
@@ -30,17 +37,17 @@ const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS } = ArtistSource
 /**
  * Limit maximum number of concurrent requests
  */
-const REQUEST_WORKERS = 6
+const REQUEST_WORKERS_COUNT = 6
 
 /**
  * Loading bar animation duration in milliseconds
  */
-const LOADING_ANIMATION = 550
+const LOADING_ANIMATION = 350
 
 /**
  * How much percentage of overall progress is assigned to base sync when extra data fetch is enabled
  */
-const BASE_SYNC_RATIO = 0.8
+const BASE_SYNC_RATIO = 0.75
 
 /**
  * Synchronization saga
@@ -81,8 +88,6 @@ function* syncMainSaga(action) {
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
-  /** @type {AlbumRaw[]} */
-  const albumsRaw = []
   /** @type {Task[]} */
   const tasks = []
   /** @type {Progress} */
@@ -92,9 +97,9 @@ function* syncMainSaga(action) {
   /** @type {RequestChannel} */
   const requestChannel = yield call(channel, buffers.expanding(1000))
   /** @type {ResponseChannel} */
-  const responseChannel = yield call(channel, buffers.expanding(REQUEST_WORKERS))
+  const responseChannel = yield call(channel, buffers.expanding(REQUEST_WORKERS_COUNT))
 
-  for (let i = 0; i < REQUEST_WORKERS; i += 1)
+  for (let i = 0; i < REQUEST_WORKERS_COUNT; i += 1)
     tasks.push(yield fork(requestWorker, requestChannel, responseChannel))
 
   tasks.push(yield fork(progressWorker, progress, setSyncingProgress, LOADING_ANIMATION))
@@ -104,15 +109,23 @@ function* syncMainSaga(action) {
   /** @type {Artist[]} */
   const artists = yield call(getArtists, requestChannel, responseChannel)
 
-  yield call(syncBaseData, albumsRaw, artists, minDate, requestChannel, responseChannel, progress)
+  /** @type {AlbumRaw[]} */
+  const albumsRaw = yield call(
+    syncBaseData,
+    artists,
+    minDate,
+    requestChannel,
+    responseChannel,
+    progress
+  )
 
   /** @type {Await<ReturnType<typeof mergeAlbumsRaw>>} */
-  const merged = yield call(mergeAlbumsRaw, albumsRaw, minDate)
+  const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate)
   /** @type {Await<ReturnType<typeof buildAlbumsMap>>} */
-  const albums = yield call(buildAlbumsMap, merged, artists)
+  const albums = yield call(buildAlbumsMap, mergedAlbums, artists)
 
   if (fullAlbumData) {
-    yield call(syncExtraData, merged, albums, requestChannel, responseChannel, progress)
+    yield call(syncExtraData, mergedAlbums, albums, requestChannel, responseChannel, progress)
     yield call(deleteLabels, albums, labelBlocklist)
   }
 
@@ -138,16 +151,19 @@ function* getArtists(requestChannel, responseChannel) {
   const artists = {}
 
   if (artistSources.includes(FOLLOWED)) {
+    /** @type {Artist[]} */
     const artists = yield call(getUserFollowedArtists, requestChannel, responseChannel)
     allArtists.push(...artists)
   }
 
   if (artistSources.includes(SAVED_TRACKS)) {
+    /** @type {Artist[]} */
     const artists = yield call(getUserSavedTracksArtists, requestChannel, responseChannel)
     allArtists.push(...artists)
   }
 
   if (artistSources.includes(SAVED_ALBUMS)) {
+    /** @type {Artist[]} */
     const artists = yield call(getUserSavedAlbumsArtists, requestChannel, responseChannel)
     allArtists.push(...artists)
   }
@@ -163,14 +179,15 @@ function* getArtists(requestChannel, responseChannel) {
 /**
  * Fetch base album data
  *
- * @param {AlbumRaw[]} albumsRaw
  * @param {Artist[]} artists
  * @param {string} minDate
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
  * @param {Progress} progress
  */
-function* syncBaseData(albumsRaw, artists, minDate, requestChannel, responseChannel, progress) {
+function* syncBaseData(artists, minDate, requestChannel, responseChannel, progress) {
+  /** @type {AlbumRaw[]} */
+  const albumsRaw = []
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
@@ -191,6 +208,8 @@ function* syncBaseData(albumsRaw, artists, minDate, requestChannel, responseChan
 
     albumsRaw.push(...response.result)
   }
+
+  return albumsRaw
 }
 
 /**
@@ -234,6 +253,7 @@ function* syncExtraData(albumsRaw, albums, requestChannel, responseChannel, prog
  * @param {ResponseChannel} responseChannel
  */
 function* getUserFollowedArtists(requestChannel, responseChannel) {
+  /** @type {SpotifyArtist[]} */
   const artists = yield call(
     getAllCursorPaged,
     requestChannel,
@@ -253,8 +273,15 @@ function* getUserSavedTracksArtists(requestChannel, responseChannel) {
   const { minimumSavedTracks } = yield select(getSettings)
   /** @type {Record<string, { count: number; artist: Artist}>} */
   const artists = {}
+
   /** @type {SpotifySavedTrack[]} */
-  const tracks = yield call(getAllPaged, requestChannel, responseChannel, getUserSavedTracksPage)
+  const tracks = yield call(
+    getAllPaged,
+    requestChannel,
+    responseChannel,
+    REQUEST_WORKERS_COUNT,
+    getUserSavedTracksPage
+  )
 
   for (const item of tracks) {
     for (const artist of item.track.artists) {
@@ -279,8 +306,15 @@ function* getUserSavedTracksArtists(requestChannel, responseChannel) {
 function* getUserSavedAlbumsArtists(requestChannel, responseChannel) {
   /** @type {Record<string, Artist>} */
   const artists = {}
+
   /** @type {SpotifySavedAlbum[]} */
-  const albums = yield call(getAllPaged, requestChannel, responseChannel, getUserSavedAlbumsPage)
+  const albums = yield call(
+    getAllPaged,
+    requestChannel,
+    responseChannel,
+    REQUEST_WORKERS_COUNT,
+    getUserSavedAlbumsPage
+  )
 
   for (const item of albums) {
     for (const artist of item.album.artists) {
@@ -290,79 +324,4 @@ function* getUserSavedAlbumsArtists(requestChannel, responseChannel) {
   }
 
   return Object.values(artists).map(buildArtist)
-}
-
-/**
- * @template {{ id: string }} T
- * @param {RequestChannel} requestChannel
- * @param {ResponseChannel} responseChannel
- * @param {CursorPagedRequest<T>} requestFn
- */
-function* getAllCursorPaged(requestChannel, responseChannel, requestFn) {
-  /** @type {ReturnType<typeof getAuthData>} */
-  const { token } = yield call(getAuthData)
-  /** @type {T[]} */
-  const items = []
-  const limit = 50
-  let activeWorkers = 1
-
-  yield putRequestMessage(requestChannel, [requestFn, token, limit])
-
-  while (activeWorkers > 0) {
-    /** @type {ResponseChannelMessage<Await<ReturnType<typeof requestFn>>>} */
-    const { result } = yield take(responseChannel)
-
-    if (result) {
-      items.push(...result.items)
-
-      if (result.cursors.after) {
-        yield putRequestMessage(requestChannel, [requestFn, token, limit, result.cursors.after])
-        continue
-      }
-    }
-
-    activeWorkers--
-  }
-
-  return items
-}
-
-/**
- * @template T
- * @param {RequestChannel} requestChannel
- * @param {ResponseChannel} responseChannel
- * @param {PagedRequest<T>} requestFn
- */
-function* getAllPaged(requestChannel, responseChannel, requestFn) {
-  /** @type {ReturnType<typeof getAuthData>} */
-  const { token } = yield call(getAuthData)
-  /** @type {T[]} */
-  const items = []
-  const limit = 50
-  let activeWorkers = REQUEST_WORKERS
-  let offset = 0
-
-  for (let i = 0; i < REQUEST_WORKERS; i++) {
-    yield putRequestMessage(requestChannel, [requestFn, token, limit, offset])
-    offset += limit
-  }
-
-  while (activeWorkers > 0) {
-    /** @type {ResponseChannelMessage<Await<ReturnType<typeof requestFn>>>} */
-    const { result } = yield take(responseChannel)
-
-    if (result) {
-      items.push(...result.items)
-
-      if (offset > result.total) {
-        activeWorkers--
-        continue
-      }
-    }
-
-    yield putRequestMessage(requestChannel, [requestFn, token, limit, offset])
-    offset += limit
-  }
-
-  return items
 }

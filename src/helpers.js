@@ -15,7 +15,6 @@ const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
  * Promisified setTimeout
  *
  * @param {number} ms
- * @returns {Promise<void>}
  */
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -26,7 +25,6 @@ export function sleep(ms) {
  *
  * @param {function} fn
  * @param {...any} [args] - Arguments to be passed to function
- * @returns {void}
  */
 export function defer(fn, ...args) {
   requestAnimationFrame(() => setTimeout(() => fn(...args), 0))
@@ -37,7 +35,6 @@ export function defer(fn, ...args) {
  *
  * @param {function} fn
  * @param {...any} [args] - Arguments to be passed to function
- * @returns {() => void}
  */
 export function deferred(fn, ...args) {
   return () => defer(fn, ...args)
@@ -61,7 +58,6 @@ export function merge(object, source) {
  * Check if value is string
  *
  * @param {any} value
- * @returns {boolean}
  */
 export function isString(value) {
   return typeof value === 'string'
@@ -71,7 +67,6 @@ export function isString(value) {
  * Check if array includes truthy value
  *
  * @param {any[]} array
- * @returns {boolean}
  */
 export function includesTruthy(array) {
   return array.some((value) => value)
@@ -82,7 +77,6 @@ export function includesTruthy(array) {
  *
  * @param {Moment} startDate
  * @param {Moment} endDate
- * @yields {string}
  */
 export function* dateRange(startDate, endDate) {
   const current = startDate.clone()
@@ -99,7 +93,6 @@ export function* dateRange(startDate, endDate) {
  *
  * @param {Moment} [startDate]
  * @param {Moment} [endDate]
- * @returns {string|null}
  */
 export function playlistName(startDate, endDate) {
   if (!startDate || !endDate) return 'New Releases'
@@ -120,7 +113,6 @@ export function playlistName(startDate, endDate) {
  * @param {ReleasesMap} releasesMap
  * @param {Moment} startDate
  * @param {Moment} endDate
- * @returns {string[]}
  */
 export function getReleasesBetween(releasesMap, startDate, endDate) {
   /** @type {string[]} */
@@ -140,7 +132,6 @@ export function getReleasesBetween(releasesMap, startDate, endDate) {
  *
  * @param {string} id
  * @param {string} entity
- * @returns {string}
  */
 export function spotifyUri(id, entity) {
   return `spotify:${entity}:${id}`
@@ -151,7 +142,6 @@ export function spotifyUri(id, entity) {
  *
  * @param {string} id
  * @param {string} entity
- * @returns {string}
  */
 export function spotifyUrl(id, entity) {
   return `https://open.spotify.com/${entity}/${id}`
@@ -163,7 +153,6 @@ export function spotifyUrl(id, entity) {
  * @param {string} id
  * @param {string} entity
  * @param {boolean} [uri] - Return URI link if `true`
- * @returns {string}
  */
 export function spotifyLink(id, entity, uri = false) {
   return uri ? spotifyUri(id, entity) : spotifyUrl(id, entity)
@@ -173,15 +162,11 @@ export function spotifyLink(id, entity, uri = false) {
  * Pick image from array of images and return its URL
  *
  * @param {SpotifyImage[]} [images]
- * @returns {string|null}
+ * @returns {string | null}
  */
 export function getImage(images) {
-  if (!images?.length) {
-    return null
-  }
-
+  if (!images?.length) return null
   const image = images.find(({ width }) => width === 300)
-
   return image ? image.url : images[0].url
 }
 
@@ -189,24 +174,22 @@ export function getImage(images) {
  * Build User
  *
  * @param {SpotifyUser} source
- * @returns {User}
  */
 export function buildUser(source) {
-  return {
+  return /** @type {User} */ ({
     id: source.id,
     name: source.display_name,
     image: getImage(source.images),
-  }
+  })
 }
 
 /**
  * Build Artist
  *
  * @param {SpotifyArtist} source
- * @returns {Artist}
  */
 export function buildArtist(source) {
-  return { id: source.id, name: source.name }
+  return /** @type {Artist} */ ({ id: source.id, name: source.name })
 }
 
 /**
@@ -214,10 +197,9 @@ export function buildArtist(source) {
  *
  * @param {SpotifyAlbum} source
  * @param {string} artistId
- * @returns {AlbumRaw}
  */
 export function buildAlbumRaw(source, artistId) {
-  return {
+  return /** @type {AlbumRaw} */ ({
     id: source.id,
     name: source.name,
     image: getImage(source.images),
@@ -225,14 +207,13 @@ export function buildAlbumRaw(source, artistId) {
     releaseDate: source.release_date,
     artistIds: { [source.album_group]: [artistId] },
     totalTracks: source.total_tracks,
-  }
+  })
 }
 
 /**
  * Generate random color scheme
  *
  * @param {{ rotation: () => number, saturation: () => number, lightness: () => number }} options
- * @returns {GroupColorScheme}
  */
 export function randomColorScheme({ rotation, saturation, lightness }) {
   let hue = random(0, 359)
@@ -257,7 +238,6 @@ export function randomColorScheme({ rotation, saturation, lightness }) {
  *
  * @param {string} title
  * @param {string} [body]
- * @returns {Notification}
  */
 export function createNotification(title, body) {
   const notification = new Notification(title, { body, icon: NOTIFICATION_ICON })
@@ -272,8 +252,6 @@ export function createNotification(title, body) {
 
 /**
  * Check if all modals are closed
- *
- * @returns {boolean}
  */
 export function modalsClosed() {
   return !document.documentElement.classList.contains('is-modal-open')
@@ -294,7 +272,6 @@ export function captureException(error) {
  *
  * @param {AlbumRaw[]} albumsRaw
  * @param {string} minDate
- * @returns {AlbumRaw[]}
  */
 export function mergeAlbumsRaw(albumsRaw, minDate) {
   const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
@@ -322,7 +299,6 @@ export function mergeAlbumsRaw(albumsRaw, minDate) {
  *
  * @param {AlbumRaw[]} albumsRaw
  * @param {Artist[]} artists
- * @returns {AlbumsMap}
  */
 export function buildAlbumsMap(albumsRaw, artists) {
   const artistsMap = artists.reduce((map, artist) => {
@@ -343,7 +319,6 @@ export function buildAlbumsMap(albumsRaw, artists) {
  *
  * @param {AlbumRaw} albumRaw
  * @param {ArtistsMap} artistsMap
- * @returns {Album}
  */
 export function buildAlbum(albumRaw, artistsMap) {
   const { artistIds, albumArtists, ...albumBase } = albumRaw
@@ -362,14 +337,13 @@ export function buildAlbum(albumRaw, artistsMap) {
   const artists = Object.fromEntries(artistsEntries)
   const otherArtists = albumArtists.filter((artist) => !artistIdsArray.includes(artist.id))
 
-  return { ...albumBase, artists, otherArtists }
+  return /** @type {Album} */ ({ ...albumBase, artists, otherArtists })
 }
 
 /**
  * Build ReleasesMap
  *
  * @param {Album[]} albums
- * @returns {ReleasesMap}
  */
 export function buildReleasesMap(albums) {
   return albums.reduce(
@@ -383,12 +357,12 @@ export function buildReleasesMap(albums) {
  *
  * @param {ReleasesMap} releasesMap
  * @param {ReleasesOrder} releasesOrder
- * @returns {Releases}
  */
 export function buildReleases(releasesMap, releasesOrder) {
   const releasesUnordered = Object.entries(releasesMap).map(([date, albums]) => ({ date, albums }))
   const releasesOrderedByDate = orderBy(releasesUnordered, 'date', 'desc')
 
+  /** @type {Releases} */
   const releases = releasesOrderedByDate.map((releaseDay) => {
     /** @param {Album} album */
     const orderByAlbumGroup = (album) => AlbumGroupIndex[Object.keys(album.artists).shift()]
@@ -412,7 +386,6 @@ export function buildReleases(releasesMap, releasesOrder) {
  * Check if album contains Various Artists
  *
  * @param {Album} album
- * @returns {boolean}
  */
 export function hasVariousArtists(album) {
   return Object.values(album.artists)
@@ -426,7 +399,6 @@ export function hasVariousArtists(album) {
  *
  * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
  * @param {string} labelsList
- * @returns {string[]}
  */
 export function deleteLabels(albumsMap, labelsList) {
   if (labelsList.trim().length === 0) return []
