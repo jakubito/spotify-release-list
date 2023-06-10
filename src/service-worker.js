@@ -96,3 +96,16 @@ registerRoute(
     ],
   })
 )
+
+// Cache artists album data
+registerRoute(
+  /https:\/\/api\.spotify\.com\/v1\/artists\/.{22}\/albums/,
+  new CacheFirst({
+    cacheName: 'spotify-api',
+    plugins: [
+      new ExpirationPlugin({
+        maxAgeSeconds: 60 * 60,
+      }),
+    ],
+  })
+)
