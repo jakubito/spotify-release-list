@@ -42,12 +42,12 @@ const REQUEST_WORKERS_COUNT = 6
 /**
  * Loading bar animation duration in milliseconds
  */
-const LOADING_ANIMATION = 550
+const LOADING_ANIMATION = 350
 
 /**
  * How much percentage of overall progress is assigned to base sync when extra data fetch is enabled
  */
-const BASE_SYNC_RATIO = 0.8
+const BASE_SYNC_RATIO = 0.75
 
 /**
  * Synchronization saga
