@@ -59,7 +59,13 @@ worker.addEventListener('message', (event) => {
 })
 
 worker.addEventListener('activate', (event) => {
-  event.waitUntil(Promise.all([caches.delete('images'), caches.delete('spotify-images')]))
+  event.waitUntil(
+    Promise.all([
+      caches.delete('images'),
+      caches.delete('spotify-images'),
+      caches.delete('spotify-api'),
+    ])
+  )
 })
 
 // Cache font awesome assets
@@ -92,19 +98,6 @@ registerRoute(
       new ExpirationPlugin({
         maxEntries: 10,
         maxAgeSeconds: 60 * 60 * 24 * 365,
-      }),
-    ],
-  })
-)
-
-// Cache artists album data
-registerRoute(
-  /https:\/\/api\.spotify\.com\/v1\/artists\/.{22}\/albums/,
-  new CacheFirst({
-    cacheName: 'spotify-api',
-    plugins: [
-      new ExpirationPlugin({
-        maxAgeSeconds: 60 * 60,
       }),
     ],
   })
