@@ -82,9 +82,7 @@ export async function getArtistAlbums(token, artistId, groups, minDate) {
   while (next) {
     /** @type {Paged<SpotifyAlbum>} */
     const response = await get(next, token)
-    const nextAlbums = response.items.map((album) => buildAlbumRaw(album, artistId))
-
-    albums.push(...nextAlbums)
+    for (const item of response.items) albums.push(buildAlbumRaw(item, artistId))
 
     if (!response.next) return albums
     if (last(albums).releaseDate < minDate) break
@@ -97,8 +95,7 @@ export async function getArtistAlbums(token, artistId, groups, minDate) {
 
   if (restGroups.length > 0) {
     const restAlbums = await getArtistAlbums(token, artistId, restGroups, minDate)
-
-    albums.push(...restAlbums)
+    for (const album of restAlbums) albums.push(album)
   }
 
   return albums
@@ -137,13 +134,11 @@ export async function getAlbumsTrackIds(token, albumIds) {
     while (next) {
       /** @type {Paged<SpotifyTrack>} */
       const response = await get(next, token)
-      const nextAlbumTrackIds = response.items.map((track) => track.id)
-
-      albumTrackIds.push(...nextAlbumTrackIds)
+      for (const track of response.items) albumTrackIds.push(track.id)
       next = response.next
     }
 
-    trackIds.push(...albumTrackIds)
+    for (const id of albumTrackIds) trackIds.push(id)
   }
 
   return trackIds

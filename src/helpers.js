@@ -119,8 +119,8 @@ export function getReleasesBetween(releasesMap, startDate, endDate) {
   const releases = []
 
   for (const date of dateRange(startDate, endDate)) {
-    if (releasesMap[date]) {
-      releases.push(...releasesMap[date].map(({ id }) => id))
+    if (date in releasesMap) {
+      for (const album of releasesMap[date]) releases.push(album.id)
     }
   }
 

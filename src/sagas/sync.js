@@ -153,19 +153,19 @@ function* getArtists(requestChannel, responseChannel) {
   if (artistSources.includes(FOLLOWED)) {
     /** @type {Artist[]} */
     const artists = yield call(getUserFollowedArtists, requestChannel, responseChannel)
-    allArtists.push(...artists)
+    for (const artist of artists) allArtists.push(artist)
   }
 
   if (artistSources.includes(SAVED_TRACKS)) {
     /** @type {Artist[]} */
     const artists = yield call(getUserSavedTracksArtists, requestChannel, responseChannel)
-    allArtists.push(...artists)
+    for (const artist of artists) allArtists.push(artist)
   }
 
   if (artistSources.includes(SAVED_ALBUMS)) {
     /** @type {Artist[]} */
     const artists = yield call(getUserSavedAlbumsArtists, requestChannel, responseChannel)
-    allArtists.push(...artists)
+    for (const artist of artists) allArtists.push(artist)
   }
 
   for (const artist of allArtists) {
@@ -205,8 +205,7 @@ function* syncBaseData(artists, minDate, requestChannel, responseChannel, progre
     progress.value = newProgress
 
     if (response.error) continue
-
-    albumsRaw.push(...response.result)
+    for (const album of response.result) albumsRaw.push(album)
   }
 
   return albumsRaw
