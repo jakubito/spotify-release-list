@@ -10,6 +10,7 @@ import FirstDayOfWeekField from './FirstDayOfWeekField'
 import FetchExtraDataField from './FetchExtraDataField'
 import LabelBlocklistField from './LabelBlocklistField'
 import MinimumSavedTracksField from './MinimumSavedTracksField'
+import HistoryField from './HistoryField'
 
 /**
  * Render general settings fields
@@ -27,6 +28,7 @@ function GeneralSettings() {
       <TimePeriodField />
       <FirstDayOfWeekField />
       <UriLinksField />
+      <HistoryField />
       <LabelBlocklistField />
       {user && <DataInfo />}
       {hasAppData && <DataReset />}

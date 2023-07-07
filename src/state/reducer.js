@@ -77,6 +77,7 @@ export const INITIAL_STATE = {
     displayPopularity: false,
     labelBlocklist: '',
     releasesOrder: ReleasesOrder.ARTIST,
+    autoHistoryUpdate: false,
   },
   filters: {
     groups: [],

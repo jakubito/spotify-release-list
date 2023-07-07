@@ -1,5 +1,6 @@
 import { fork, take, takeEvery, takeLeading } from 'redux-saga/effects'
 import { REHYDRATE } from 'redux-persist'
+import * as history from 'history'
 import {
   authorize,
   authorizeError,
@@ -29,19 +30,15 @@ export function* rootSaga() {
   yield takeEvery(setSettings.type, themeUpdateSaga)
   yield takeEvery(setSettings.type, firstDayOfWeekUpdateSaga)
   yield takeEvery(reset.type, deleteAuthData)
+  yield takeEvery(reset.type, history.clear)
   yield takeEvery(authorizeError.type, authorizeErrorSaga)
   yield takeLeading(authorize.type, authorizeSaga)
   yield takeLeadingCancellable(sync.type, syncCancel.type, syncSaga)
   yield takeLeadingCancellable(createPlaylist.type, createPlaylistCancel.type, createPlaylistSaga)
   yield fork(autoSyncSaga)
 
-  if (navigator.serviceWorker) {
-    yield fork(updateSaga)
-  }
-
-  if (window.Notification) {
-    yield fork(notificationSaga)
-  }
+  if (navigator.serviceWorker) yield fork(updateSaga)
+  if (window.Notification) yield fork(notificationSaga)
 }
 
 export default rootSaga

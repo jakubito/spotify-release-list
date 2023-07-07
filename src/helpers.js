@@ -272,22 +272,19 @@ export function captureException(error) {
  *
  * @param {AlbumRaw[]} albumsRaw
  * @param {string} minDate
+ * @param {AlbumsHistory} history
  */
-export function mergeAlbumsRaw(albumsRaw, minDate) {
+export function mergeAlbumsRaw(albumsRaw, minDate, history) {
   const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
   const albumsRawMap = albumsRaw.reduce((map, album) => {
-    if (album.releaseDate < minDate || album.releaseDate > maxDate) {
-      return map
-    }
+    const { id, releaseDate, artistIds } = album
 
-    const matched = map[album.id]
+    if (history.has(id)) return map
+    if (releaseDate < minDate || releaseDate > maxDate) return map
 
-    if (!matched) {
-      map[album.id] = album
-      return map
-    }
+    if (id in map) merge(map[id].artistIds, artistIds)
+    else map[id] = album
 
-    merge(matched.artistIds, album.artistIds)
     return map
   }, /** @type {{ [id: string]: AlbumRaw }} */ ({}))
 

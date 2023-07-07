@@ -28,6 +28,7 @@
     "displayLabels": { "type": "boolean" },
     "displayPopularity": { "type": "boolean" },
     "labelBlocklist": { "type": "string" },
-    "releasesOrder": { "enum": ["artist", "album-group"] }
+    "releasesOrder": { "enum": ["artist", "album-group"] },
+    "autoHistoryUpdate": { "type": "boolean" }
   }
 }

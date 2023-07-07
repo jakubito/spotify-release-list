@@ -65,6 +65,7 @@
  *   displayPopularity: boolean
  *   labelBlocklist: string
  *   releasesOrder: ReleasesOrder
+ *   autoHistoryUpdate: boolean
  * }} Settings
  *
  * @typedef {{
@@ -153,6 +154,7 @@
  * @typedef {JTDParser<Settings>} SettingsParser
  * @typedef {Record<string, unknown>} SentryContext
  * @typedef {Record<string, SentryContext>} SentryContexts
+ * @typedef {Set<string>} AlbumsHistory
  */
 
 /**

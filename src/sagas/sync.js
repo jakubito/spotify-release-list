@@ -12,6 +12,8 @@ import {
   getUserSavedTracksPage,
 } from 'api'
 import { getAuthData, getSyncScopes } from 'auth'
+import { buildAlbumsMap, buildArtist, deleteLabels, mergeAlbumsRaw } from 'helpers'
+import * as history from 'history'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
   setSyncingProgress,
@@ -29,7 +31,6 @@ import {
   getAllCursorPaged,
   getAllPaged,
 } from './helpers'
-import { buildAlbumsMap, buildArtist, deleteLabels, mergeAlbumsRaw } from 'helpers'
 
 const { ISO_DATE } = MomentFormat
 const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS } = ArtistSource
@@ -83,8 +84,10 @@ function* syncMainSaga(action) {
 
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
+  /** @type {Await<ReturnType<typeof history.load>>} */
+  const albumsHistory = yield call(history.load)
   /** @type {ReturnType<typeof getSettings>} */
-  const { days, fullAlbumData, labelBlocklist } = yield select(getSettings)
+  const { days, fullAlbumData, labelBlocklist, autoHistoryUpdate } = yield select(getSettings)
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
@@ -120,13 +123,18 @@ function* syncMainSaga(action) {
   )
 
   /** @type {Await<ReturnType<typeof mergeAlbumsRaw>>} */
-  const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate)
+  const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate, albumsHistory)
   /** @type {Await<ReturnType<typeof buildAlbumsMap>>} */
   const albums = yield call(buildAlbumsMap, mergedAlbums, artists)
 
   if (fullAlbumData) {
     yield call(syncExtraData, mergedAlbums, albums, requestChannel, responseChannel, progress)
     yield call(deleteLabels, albums, labelBlocklist)
+  }
+
+  if (autoHistoryUpdate) {
+    for (const album of mergedAlbums) albumsHistory.add(album.id)
+    yield call(history.persist, albumsHistory)
   }
 
   yield cancel(tasks)
