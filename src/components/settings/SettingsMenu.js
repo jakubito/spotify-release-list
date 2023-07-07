@@ -15,24 +15,26 @@ const links = [
 function SettingsMenu() {
   return (
     <div className="SettingsMenu fade-in">
-      {links.map(({ title, to, icon }) => (
+      <div className="SettingsMenu__container">
+        {links.map(({ title, to, icon }) => (
+          <ButtonLink
+            key={to}
+            title={title}
+            to={to}
+            icon={icon}
+            className="SettingsMenu__link"
+            activeClass="SettingsMenu__link--active"
+            text
+          />
+        ))}
         <ButtonLink
-          key={to}
-          title={title}
-          to={to}
-          icon={icon}
-          className="SettingsMenu__link"
-          activeClass="SettingsMenu__link--active"
-          text
+          title="All good"
+          to="/"
+          icon="fas fa-check"
+          className="SettingsMenu__close is-hidden-mobile"
+          primary
         />
-      ))}
-      <ButtonLink
-        title="All good"
-        to="/"
-        icon="fas fa-check"
-        className="SettingsMenu__close is-hidden-mobile"
-        primary
-      />
+      </div>
     </div>
   )
 }

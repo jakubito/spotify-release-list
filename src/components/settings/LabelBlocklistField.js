@@ -63,9 +63,10 @@ function LabelBlocklistField() {
       </div>
       <Button
         title={applied ? 'Labels blocked' : 'Block labels now'}
-        icon={applied ? 'fas fa-check-circle' : 'fas fa-skull'}
+        icon={applied && 'fas fa-check-circle'}
         disabled={applied}
         onClick={apply}
+        small
       />
     </div>
   )
