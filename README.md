@@ -28,9 +28,14 @@ Display list of Spotify releases from artists you follow
 <kbd>E</kbd> Export  
 <kbd>ESC</kbd> Cancel / Close active modal
 
-## Privacy Policy
+## Troubleshooting
 
-See [PRIVACY.md](https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md)
+The app has been developed and tested in Chrome, but it should work in any other modern browser. If something's not working, please try the following before you report a bug:
+
+- [Some privacy-oriented extensions](https://github.com/jakubito/spotify-release-list/issues/36) or browsers may block communication to Spotify servers. Try adding an exemption or use a different browser.
+- Delete app data (see [General settings screen](https://spotifyreleaselist.netlify.app/settings))
+- [Remove Spotify Release List app access](https://www.spotify.com/account/apps)
+- If everything else fails, you can try to [Sign out everywhere](https://www.spotify.com/account/overview)
 
 ## Installation
 
@@ -39,6 +44,10 @@ See [PRIVACY.md](https://github.com/jakubito/spotify-release-list/blob/master/PR
 3. Save Spotify app's client ID to `REACT_APP_SPOTIFY_CLIENT_ID` environment variable
 4. Set your Spotify app's Redirect URI to the `REACT_APP_URL` + `/auth`
 5. Run `yarn start` to run dev server or `yarn build` to build the app
+
+## Privacy Policy
+
+See [PRIVACY.md](https://github.com/jakubito/spotify-release-list/blob/master/PRIVACY.md)
 
 ## Bug reporting
 
