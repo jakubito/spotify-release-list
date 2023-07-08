@@ -24,7 +24,7 @@
     justify-content: flex-end;
     font-size: 1.5rem;
     position: sticky;
-    background: $black;
+    background: #000000;
     z-index: 2;
 
     @include theme(compact) {
