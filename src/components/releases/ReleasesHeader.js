@@ -75,6 +75,7 @@ function ReleasesHeader() {
                     icon={classNames('fas', {
                       'fa-search': !filtersVisible,
                       'fa-minus': filtersVisible,
+                      'has-text-primary': filtersApplied,
                     })}
                     onClick={toggleFilters}
                     disabled={working}
