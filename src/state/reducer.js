@@ -77,7 +77,7 @@ export const INITIAL_STATE = {
     displayPopularity: false,
     labelBlocklist: '',
     releasesOrder: ReleasesOrder.ARTIST,
-    autoHistoryUpdate: false,
+    trackHistory: true,
   },
   filters: {
     groups: [],
@@ -88,6 +88,7 @@ export const INITIAL_STATE = {
     excludeRemixes: false,
     excludeDuplicates: false,
     favoritesOnly: false,
+    newOnly: false,
   },
   seenFeatures: [],
   updateReady: false,

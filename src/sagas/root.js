@@ -1,6 +1,5 @@
 import { fork, take, takeEvery, takeLeading } from 'redux-saga/effects'
 import { REHYDRATE } from 'redux-persist'
-import * as history from 'history'
 import {
   authorize,
   authorizeError,
@@ -12,6 +11,7 @@ import {
   syncCancel,
 } from 'state/actions'
 import { deleteAuthData } from 'auth'
+import { albumsNew, albumsHistory } from 'albums'
 import { takeLeadingCancellable } from './helpers'
 import { themeUpdateSaga } from './theme'
 import { authorizeErrorSaga, authorizeSaga } from './auth'
@@ -30,7 +30,8 @@ export function* rootSaga() {
   yield takeEvery(setSettings.type, themeUpdateSaga)
   yield takeEvery(setSettings.type, firstDayOfWeekUpdateSaga)
   yield takeEvery(reset.type, deleteAuthData)
-  yield takeEvery(reset.type, history.clear)
+  yield takeEvery(reset.type, albumsNew.clear)
+  yield takeEvery(reset.type, albumsHistory.clear)
   yield takeEvery(authorizeError.type, authorizeErrorSaga)
   yield takeLeading(authorize.type, authorizeSaga)
   yield takeLeadingCancellable(sync.type, syncCancel.type, syncSaga)

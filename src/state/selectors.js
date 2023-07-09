@@ -9,6 +9,7 @@ import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge, hasVariousArtists } from 'helpers'
 import { buildReleases, buildReleasesMap } from 'helpers'
+import { albumsNew } from 'albums'
 import { INITIAL_STATE } from './reducer'
 
 /** @param {State} state */
@@ -95,6 +96,10 @@ export const getSettingsReleasesOrder = createSelector(
   getSettings,
   (settings) => settings.releasesOrder
 )
+export const getSettingsTrackHistory = createSelector(
+  getSettings,
+  (settings) => settings.trackHistory
+)
 
 // Individual filters selectors
 export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)
@@ -117,6 +122,7 @@ export const getFiltersFavoritesOnly = createSelector(
   getFilters,
   (filters) => filters.favoritesOnly
 )
+export const getFiltersNewOnly = createSelector(getFilters, (filters) => filters.newOnly)
 
 /**
  * Get relevant app data.
@@ -156,6 +162,7 @@ export const getFiltersApplied = createSelector(
   getFiltersExcludeRemixes,
   getFiltersExcludeDuplicates,
   getFiltersFavoritesOnly,
+  getFiltersNewOnly,
   (groups, ...rest) => Boolean(groups.length) || includesTruthy(rest)
 )
 
@@ -311,6 +318,11 @@ const getFavoriteAlbumIds = createSelector(getFavorites, (favorites) =>
 )
 
 /**
+ * Get new album ids
+ */
+const getNewAlbumIds = createSelector(getAlbums, () => albumsNew.toArray())
+
+/**
  * Get album IDs based on search filter
  */
 const getSearchFiltered = createSelector(
@@ -369,6 +381,14 @@ const getFavoritesFiltered = createSelector(
 )
 
 /**
+ * Get new album ids if new filter and history tracking are enabled
+ */
+const getNewFiltered = createSelector(
+  [getSettingsTrackHistory, getFiltersNewOnly, getNewAlbumIds],
+  (trackHistory, newOnly, ids) => trackHistory && newOnly && ids
+)
+
+/**
  * Intersect all filtered results and return albums as an array
  */
 export const getFilteredAlbumsArray = createSelector(
@@ -380,6 +400,7 @@ export const getFilteredAlbumsArray = createSelector(
   getRemixFiltered,
   getDuplicatesFiltered,
   getFavoritesFiltered,
+  getNewFiltered,
   (albums, ...filtered) => intersect(filtered.filter(Array.isArray)).map((id) => albums[id])
 )
 

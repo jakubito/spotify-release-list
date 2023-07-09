@@ -13,9 +13,10 @@ import {
 } from 'api'
 import { getAuthData, getSyncScopes } from 'auth'
 import { buildAlbumsMap, buildArtist, deleteLabels, mergeAlbumsRaw } from 'helpers'
-import * as history from 'history'
+import { albumsNew, albumsHistory } from 'albums'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
+  setFilters,
   setSyncingProgress,
   showErrorMessage,
   syncError,
@@ -84,10 +85,8 @@ function* syncMainSaga(action) {
 
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
-  /** @type {Await<ReturnType<typeof history.load>>} */
-  const albumsHistory = yield call(history.load)
   /** @type {ReturnType<typeof getSettings>} */
-  const { days, fullAlbumData, labelBlocklist, autoHistoryUpdate } = yield select(getSettings)
+  const { days, fullAlbumData, labelBlocklist, trackHistory } = yield select(getSettings)
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
@@ -113,17 +112,10 @@ function* syncMainSaga(action) {
   const artists = yield call(getArtists, requestChannel, responseChannel)
 
   /** @type {AlbumRaw[]} */
-  const albumsRaw = yield call(
-    syncBaseData,
-    artists,
-    minDate,
-    requestChannel,
-    responseChannel,
-    progress
-  )
+  const albumsRaw = yield call(syncBaseData, artists, requestChannel, responseChannel, progress)
 
   /** @type {Await<ReturnType<typeof mergeAlbumsRaw>>} */
-  const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate, albumsHistory)
+  const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate)
   /** @type {Await<ReturnType<typeof buildAlbumsMap>>} */
   const albums = yield call(buildAlbumsMap, mergedAlbums, artists)
 
@@ -132,9 +124,8 @@ function* syncMainSaga(action) {
     yield call(deleteLabels, albums, labelBlocklist)
   }
 
-  if (autoHistoryUpdate) {
-    for (const album of mergedAlbums) albumsHistory.add(album.id)
-    yield call(history.persist, albumsHistory)
+  if (trackHistory) {
+    yield call(updateHistory, mergedAlbums)
   }
 
   yield cancel(tasks)
@@ -188,18 +179,18 @@ function* getArtists(requestChannel, responseChannel) {
  * Fetch base album data
  *
  * @param {Artist[]} artists
- * @param {string} minDate
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
  * @param {Progress} progress
  */
-function* syncBaseData(artists, minDate, requestChannel, responseChannel, progress) {
+function* syncBaseData(artists, requestChannel, responseChannel, progress) {
   /** @type {AlbumRaw[]} */
   const albumsRaw = []
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
   const { groups, fullAlbumData } = yield select(getSettings)
+  const minDate = moment().subtract(1, 'year').format(ISO_DATE)
 
   for (const artist of artists)
     yield putRequestMessage(requestChannel, [getArtistAlbums, token, artist.id, groups, minDate])
@@ -331,4 +322,22 @@ function* getUserSavedAlbumsArtists(requestChannel, responseChannel) {
   }
 
   return Object.values(artists).map(buildArtist)
+}
+
+/** @param {AlbumRaw[]} albums */
+function* updateHistory(albums) {
+  albumsHistory.append(albumsNew)
+  yield call(albumsNew.clear)
+
+  for (const album of albums) {
+    if (albumsHistory.has(album.id)) continue
+    albumsNew.add(album.id)
+  }
+
+  yield call(albumsNew.persist)
+  yield call(albumsHistory.persist)
+
+  if (albumsNew.size > 0 && albumsHistory.size > 0) {
+    yield put(setFilters({ newOnly: true }))
+  }
 }

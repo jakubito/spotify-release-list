@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
-import { getPreviousSyncMaxDate } from 'state/selectors'
+import { getPreviousSyncMaxDate, getSettings } from 'state/selectors'
 import Album from './Album'
 
 /**
@@ -10,12 +10,14 @@ import Album from './Album'
  * @param {{ date: string, albums: Album[] }} props
  */
 function ReleaseDay({ date, albums }) {
+  const { trackHistory } = useSelector(getSettings)
   const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate)
+  const showBullet = !trackHistory && previousSyncMaxDate && date > previousSyncMaxDate
 
   return (
     <div className="ReleaseDay columns is-gapless">
       <div className="ReleaseDay__date column">
-        {previousSyncMaxDate && date > previousSyncMaxDate && (
+        {showBullet && (
           <span className="ReleaseDay__bullet icon">
             <i className="fas fa-circle" />
           </span>

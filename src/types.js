@@ -65,7 +65,7 @@
  *   displayPopularity: boolean
  *   labelBlocklist: string
  *   releasesOrder: ReleasesOrder
- *   autoHistoryUpdate: boolean
+ *   trackHistory: boolean
  * }} Settings
  *
  * @typedef {{
@@ -77,6 +77,7 @@
  *   excludeRemixes: boolean
  *   excludeDuplicates: boolean
  *   favoritesOnly: boolean
+ *   newOnly: boolean
  * }} Filters
  *
  * @typedef {{
@@ -154,7 +155,6 @@
  * @typedef {JTDParser<Settings>} SettingsParser
  * @typedef {Record<string, unknown>} SentryContext
  * @typedef {Record<string, SentryContext>} SentryContexts
- * @typedef {Set<string>} AlbumsHistory
  */
 
 /**

@@ -8,7 +8,7 @@ const { DEMO, GITHUB, PRIVACY } = Address
  */
 function Intro() {
   return (
-    <div className="Intro has-background-black has-text-weight-semibold">
+    <div className="Intro">
       <p className="Intro__description has-text-light is-size-5 has-text-centered">
         Display releases from artists you follow
       </p>

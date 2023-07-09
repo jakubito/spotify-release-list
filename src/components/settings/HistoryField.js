@@ -1,57 +1,62 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import prettyBytes from 'pretty-bytes'
 import { getSettings } from 'state/selectors'
-import { setSettings } from 'state/actions'
+import { setFilters, setSettings } from 'state/actions'
 import { defer, sleep } from 'helpers'
-import * as history from 'history'
+import { albumsNew, albumsHistory } from 'albums'
 import { Button, Checkbox } from 'components/common'
 import HelpText from './HelpText'
 
 function HistoryField() {
-  const { autoHistoryUpdate } = useSelector(getSettings)
+  const { trackHistory } = useSelector(getSettings)
   const dispatch = useDispatch()
-  const [size, setSize] = useState(0)
   const [cleared, setCleared] = useState(false)
+  const size = albumsNew.size + albumsHistory.size
+  const clearTitle = cleared
+    ? 'Album history cleared'
+    : `Clear album history (${prettyBytes(size)} used)`
 
-  useEffect(() => {
-    history.size().then(setSize)
-  }, [])
+  /** @type {React.ChangeEventHandler<HTMLInputElement>} */
+  const onChange = (event) => {
+    defer(dispatch, setSettings({ trackHistory: event.target.checked }))
+    defer(dispatch, setFilters({ newOnly: false }))
+  }
 
   const clearHistory = () => {
-    history.clear()
+    albumsNew.clear()
+    albumsHistory.clear()
     setCleared(true)
-    setSize(0)
     sleep(1200).then(() => setCleared(false))
   }
 
   return (
     <div className="HistoryField Settings__field field">
-      <label className="label has-text-light" htmlFor="autoHistoryUpdate">
+      <label className="label has-text-light" htmlFor="trackHistory">
         Album history
       </label>
       <div className="Settings__help">
         <HelpText>
-          If enabled, all newly fetched albums will be automatically added to the local history
-          data. This will hide them on subsequent refreshes, making it easier to see what's new.
+          Tracking album history enables an additional{' '}
+          <strong>
+            <i className="fas fa-star fa-xs" style={{ marginRight: 4 }} />
+            New
+          </strong>{' '}
+          filter, which shows newly released albums since the last refresh.
         </HelpText>
       </div>
       <div className="control">
         <div className="field">
           <Checkbox
-            id="autoHistoryUpdate"
-            label="Update album history on refresh"
-            defaultChecked={autoHistoryUpdate}
-            onChange={(event) =>
-              defer(dispatch, setSettings({ autoHistoryUpdate: event.target.checked }))
-            }
+            id="trackHistory"
+            label="Track album history"
+            defaultChecked={trackHistory}
+            onChange={onChange}
           />
         </div>
       </div>
       <Button
-        title={
-          cleared ? 'Album history cleared' : `Clear album history (${prettyBytes(size)} used)`
-        }
+        title={clearTitle}
         icon={cleared && 'fas fa-check-circle'}
         disabled={cleared}
         onClick={clearHistory}
