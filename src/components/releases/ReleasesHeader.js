@@ -61,7 +61,7 @@ function ReleasesHeader() {
                     title="Edit favorites [D]"
                     icon={classNames({
                       'fas fa-heart': !editingFavorites,
-                      'far fa-heart': editingFavorites,
+                      'fas fa-minus': editingFavorites,
                     })}
                     onClick={toggleFavorites}
                     disabled={working}

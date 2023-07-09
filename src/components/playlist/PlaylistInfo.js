@@ -20,7 +20,7 @@ function PlaylistInfo({ closeModal }) {
     <>
       <div className="PlaylistInfo has-text-light">
         <span className="icon is-large">
-          <i className="far fa-check-circle fa-2x" />
+          <i className="fas fa-check-circle fa-2x" />
         </span>
         Playlist created
         <ButtonAnchor
