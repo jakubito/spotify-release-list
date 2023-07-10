@@ -17,7 +17,7 @@ function NewFilter() {
   return (
     <Button
       title="New"
-      icon="fas fa-star"
+      icon={classNames('fas fa-star', { 'has-text-warning': selected })}
       className={classNames('group', { active: selected })}
       onClick={() => setSelected(!selected)}
     />
