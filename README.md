@@ -32,7 +32,7 @@ Display list of Spotify releases from artists you follow
 
 The app has been developed and tested in Chrome, but it should work in any other modern browser. If something's not working, please try the following before you report a bug:
 
-- [Some privacy-oriented extensions](https://github.com/jakubito/spotify-release-list/issues/36) or browsers may block communication to Spotify servers. Try adding an exemption or use a different browser.
+- [Some privacy-oriented extensions](https://github.com/jakubito/spotify-release-list/issues/36) or browsers may block communication to Spotify servers. Try adding an exemption or using a different browser.
 - Delete app data (see [General settings screen](https://spotifyreleaselist.netlify.app/settings))
 - [Remove Spotify Release List app access](https://www.spotify.com/account/apps)
 - If everything else fails, you can try to [Sign out everywhere](https://www.spotify.com/account/overview)
