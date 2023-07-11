@@ -37,12 +37,13 @@ function HistoryField() {
       </label>
       <div className="Settings__help">
         <HelpText>
-          Tracking album history enables an additional{' '}
+          Tracking album history enables{' '}
           <strong>
             <i className="fas fa-star fa-xs" style={{ marginRight: 4 }} />
             New
           </strong>{' '}
-          filter, which shows newly released albums since the last refresh.
+          filter, which shows newly released albums since the last refresh. This filter will be
+          automatically turned on in case there are new albums to show.
         </HelpText>
       </div>
       <div className="control">
