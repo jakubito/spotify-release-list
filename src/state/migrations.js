@@ -33,6 +33,7 @@ const migrations = {
       labelBlocklist: state.settings.labelBlocklist.replaceAll('[VA]', '*VA*'),
     },
   }),
+  8: resetDataWithMessage,
 }
 
 /**
