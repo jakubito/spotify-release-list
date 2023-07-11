@@ -125,7 +125,7 @@ function* syncMainSaga(action) {
   }
 
   if (trackHistory) {
-    yield call(updateHistory, mergedAlbums)
+    yield call(updateHistory, albums)
   }
 
   yield cancel(tasks)
@@ -324,14 +324,14 @@ function* getUserSavedAlbumsArtists(requestChannel, responseChannel) {
   return Object.values(artists).map(buildArtist)
 }
 
-/** @param {AlbumRaw[]} albums */
+/** @param {AlbumsMap} albums */
 function* updateHistory(albums) {
   albumsHistory.append(albumsNew)
   yield call(albumsNew.clear)
 
-  for (const album of albums) {
-    if (albumsHistory.has(album.id)) continue
-    albumsNew.add(album.id)
+  for (const id of Object.keys(albums)) {
+    if (albumsHistory.has(id)) continue
+    albumsNew.add(id)
   }
 
   yield call(albumsNew.persist)
