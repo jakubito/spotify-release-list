@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
+import { albumsNew } from 'albums'
 import { AlbumGroup, ArtistSource, GroupColorSchemes, ReleasesOrder } from 'enums'
 import { deleteLabels } from 'helpers'
 import {
@@ -215,7 +216,10 @@ const rootReducer = createReducer(INITIAL_STATE, (builder) => {
     })
     .addCase(applyLabelBlocklist, (state) => {
       const deletedIds = deleteLabels(state.albums, state.settings.labelBlocklist)
-      for (const id of deletedIds) delete state.favorites[id]
+      for (const id of deletedIds) {
+        albumsNew.delete(id)
+        delete state.favorites[id]
+      }
     })
     .addCase(setLabelBlocklistHeight, (state, action) => {
       state.labelBlocklistHeight = action.payload

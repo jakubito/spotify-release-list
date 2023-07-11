@@ -1,6 +1,7 @@
 import { fork, take, takeEvery, takeLeading } from 'redux-saga/effects'
 import { REHYDRATE } from 'redux-persist'
 import {
+  applyLabelBlocklist,
   authorize,
   authorizeError,
   createPlaylist,
@@ -32,6 +33,7 @@ export function* rootSaga() {
   yield takeEvery(reset.type, deleteAuthData)
   yield takeEvery(reset.type, albumsNew.clear)
   yield takeEvery(reset.type, albumsHistory.clear)
+  yield takeEvery(applyLabelBlocklist.type, albumsNew.persist)
   yield takeEvery(authorizeError.type, authorizeErrorSaga)
   yield takeLeading(authorize.type, authorizeSaga)
   yield takeLeadingCancellable(sync.type, syncCancel.type, syncSaga)

@@ -55,6 +55,11 @@ class AlbumSet {
     this._set.add(id)
   }
 
+  /** @param {string} id */
+  delete(id) {
+    this._set.delete(id)
+  }
+
   /** @param {AlbumSet} albumSet */
   append(albumSet) {
     for (const id of albumSet._set) this._set.add(id)
