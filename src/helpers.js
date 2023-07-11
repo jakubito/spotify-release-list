@@ -119,8 +119,8 @@ export function getReleasesBetween(releasesMap, startDate, endDate) {
   const releases = []
 
   for (const date of dateRange(startDate, endDate)) {
-    if (releasesMap[date]) {
-      releases.push(...releasesMap[date].map(({ id }) => id))
+    if (date in releasesMap) {
+      for (const album of releasesMap[date]) releases.push(album.id)
     }
   }
 
@@ -276,18 +276,13 @@ export function captureException(error) {
 export function mergeAlbumsRaw(albumsRaw, minDate) {
   const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
   const albumsRawMap = albumsRaw.reduce((map, album) => {
-    if (album.releaseDate < minDate || album.releaseDate > maxDate) {
-      return map
-    }
+    const { id, releaseDate, artistIds } = album
 
-    const matched = map[album.id]
+    if (releaseDate < minDate || releaseDate > maxDate) return map
 
-    if (!matched) {
-      map[album.id] = album
-      return map
-    }
+    if (id in map) merge(map[id].artistIds, artistIds)
+    else map[id] = album
 
-    merge(matched.artistIds, album.artistIds)
     return map
   }, /** @type {{ [id: string]: AlbumRaw }} */ ({}))
 

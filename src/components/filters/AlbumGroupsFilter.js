@@ -4,9 +4,10 @@ import classNames from 'classnames'
 import xor from 'lodash/xor'
 import { deferred } from 'helpers'
 import { AlbumGroupLabels } from 'enums'
-import { getFiltersGroups, getReleasesGroupMap } from 'state/selectors'
+import { getFiltersGroups, getReleasesGroupMap, getSettings } from 'state/selectors'
 import { setFilters } from 'state/actions'
 import { Button } from 'components/common'
+import NewFilter from './NewFilter'
 import FavoritesFilter from './FavoritesFilter'
 
 /**
@@ -16,6 +17,7 @@ function AlbumGroupsFilter() {
   const dispatch = useDispatch()
   const releasesGroupMap = useSelector(getReleasesGroupMap)
   const filtersGroups = useSelector(getFiltersGroups)
+  const { trackHistory } = useSelector(getSettings)
   const [values, setValues] = useState(filtersGroups)
   const groupsToRender = AlbumGroupLabels.filter(([group]) => group in releasesGroupMap)
 
@@ -28,6 +30,7 @@ function AlbumGroupsFilter() {
 
   return (
     <div className="AlbumGroupsFilter Filters__filter">
+      {trackHistory && <NewFilter />}
       <FavoritesFilter />
       {groupsToRender.map(([group, label]) => (
         <Button

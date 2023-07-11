@@ -65,6 +65,7 @@
  *   displayPopularity: boolean
  *   labelBlocklist: string
  *   releasesOrder: ReleasesOrder
+ *   trackHistory: boolean
  * }} Settings
  *
  * @typedef {{
@@ -76,6 +77,7 @@
  *   excludeRemixes: boolean
  *   excludeDuplicates: boolean
  *   favoritesOnly: boolean
+ *   newOnly: boolean
  * }} Filters
  *
  * @typedef {{

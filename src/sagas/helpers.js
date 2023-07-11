@@ -173,8 +173,7 @@ export function* getAllCursorPaged(requestChannel, responseChannel, requestFn) {
     const { result } = yield take(responseChannel)
 
     if (result) {
-      items.push(...result.items)
-
+      for (const item of result.items) items.push(item)
       if (result.cursors.after) {
         yield putRequestMessage(requestChannel, [requestFn, token, limit, result.cursors.after])
         continue
@@ -213,8 +212,7 @@ export function* getAllPaged(requestChannel, responseChannel, workersCount, requ
     const { result } = yield take(responseChannel)
 
     if (result) {
-      items.push(...result.items)
-
+      for (const item of result.items) items.push(item)
       if (offset > result.total) {
         activeWorkers--
         continue

@@ -5,8 +5,8 @@ import LoadSettingsField from './LoadSettingsField'
 
 // extend schema to allow importing legacy backups
 const parserSchema = {
-  properties: {
-    ...schema.properties,
+  ...schema,
+  optionalProperties: {
     market: { type: 'string' },
   },
 }

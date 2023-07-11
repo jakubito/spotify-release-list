@@ -16,10 +16,10 @@ import HelpText from './HelpText'
 function LoadSettingsField({ parse }) {
   const dispatch = useDispatch()
   const [loaded, setLoaded] = useState(false)
-  const { register, handleSubmit, formState } = useForm()
+  const { register, handleSubmit, formState } = useForm({ defaultValues: { settingsJson: '' } })
   const error = formState.errors.settingsJson
 
-  /** @type {SubmitHandler<{ settingsJson: string }>} */
+  /** @param {{ settingsJson: string }} data */
   const onSubmit = (data) => {
     defer(dispatch, setSettings(parse(data.settingsJson)))
     setLoaded(true)

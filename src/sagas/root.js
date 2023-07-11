@@ -11,6 +11,7 @@ import {
   syncCancel,
 } from 'state/actions'
 import { deleteAuthData } from 'auth'
+import { albumsNew, albumsHistory } from 'albums'
 import { takeLeadingCancellable } from './helpers'
 import { themeUpdateSaga } from './theme'
 import { authorizeErrorSaga, authorizeSaga } from './auth'
@@ -29,19 +30,16 @@ export function* rootSaga() {
   yield takeEvery(setSettings.type, themeUpdateSaga)
   yield takeEvery(setSettings.type, firstDayOfWeekUpdateSaga)
   yield takeEvery(reset.type, deleteAuthData)
+  yield takeEvery(reset.type, albumsNew.clear)
+  yield takeEvery(reset.type, albumsHistory.clear)
   yield takeEvery(authorizeError.type, authorizeErrorSaga)
   yield takeLeading(authorize.type, authorizeSaga)
   yield takeLeadingCancellable(sync.type, syncCancel.type, syncSaga)
   yield takeLeadingCancellable(createPlaylist.type, createPlaylistCancel.type, createPlaylistSaga)
   yield fork(autoSyncSaga)
 
-  if (navigator.serviceWorker) {
-    yield fork(updateSaga)
-  }
-
-  if (window.Notification) {
-    yield fork(notificationSaga)
-  }
+  if (navigator.serviceWorker) yield fork(updateSaga)
+  if (window.Notification) yield fork(notificationSaga)
 }
 
 export default rootSaga

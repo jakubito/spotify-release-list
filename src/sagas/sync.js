@@ -12,8 +12,11 @@ import {
   getUserSavedTracksPage,
 } from 'api'
 import { getAuthData, getSyncScopes } from 'auth'
+import { buildAlbumsMap, buildArtist, deleteLabels, mergeAlbumsRaw } from 'helpers'
+import { albumsNew, albumsHistory } from 'albums'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
+  setFilters,
   setSyncingProgress,
   showErrorMessage,
   syncError,
@@ -29,7 +32,6 @@ import {
   getAllCursorPaged,
   getAllPaged,
 } from './helpers'
-import { buildAlbumsMap, buildArtist, deleteLabels, mergeAlbumsRaw } from 'helpers'
 
 const { ISO_DATE } = MomentFormat
 const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS } = ArtistSource
@@ -84,7 +86,7 @@ function* syncMainSaga(action) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
-  const { days, fullAlbumData, labelBlocklist } = yield select(getSettings)
+  const { days, fullAlbumData, labelBlocklist, trackHistory } = yield select(getSettings)
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
@@ -110,14 +112,7 @@ function* syncMainSaga(action) {
   const artists = yield call(getArtists, requestChannel, responseChannel)
 
   /** @type {AlbumRaw[]} */
-  const albumsRaw = yield call(
-    syncBaseData,
-    artists,
-    minDate,
-    requestChannel,
-    responseChannel,
-    progress
-  )
+  const albumsRaw = yield call(syncBaseData, artists, requestChannel, responseChannel, progress)
 
   /** @type {Await<ReturnType<typeof mergeAlbumsRaw>>} */
   const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate)
@@ -127,6 +122,10 @@ function* syncMainSaga(action) {
   if (fullAlbumData) {
     yield call(syncExtraData, mergedAlbums, albums, requestChannel, responseChannel, progress)
     yield call(deleteLabels, albums, labelBlocklist)
+  }
+
+  if (trackHistory) {
+    yield call(updateHistory, mergedAlbums)
   }
 
   yield cancel(tasks)
@@ -153,19 +152,19 @@ function* getArtists(requestChannel, responseChannel) {
   if (artistSources.includes(FOLLOWED)) {
     /** @type {Artist[]} */
     const artists = yield call(getUserFollowedArtists, requestChannel, responseChannel)
-    allArtists.push(...artists)
+    for (const artist of artists) allArtists.push(artist)
   }
 
   if (artistSources.includes(SAVED_TRACKS)) {
     /** @type {Artist[]} */
     const artists = yield call(getUserSavedTracksArtists, requestChannel, responseChannel)
-    allArtists.push(...artists)
+    for (const artist of artists) allArtists.push(artist)
   }
 
   if (artistSources.includes(SAVED_ALBUMS)) {
     /** @type {Artist[]} */
     const artists = yield call(getUserSavedAlbumsArtists, requestChannel, responseChannel)
-    allArtists.push(...artists)
+    for (const artist of artists) allArtists.push(artist)
   }
 
   for (const artist of allArtists) {
@@ -180,18 +179,18 @@ function* getArtists(requestChannel, responseChannel) {
  * Fetch base album data
  *
  * @param {Artist[]} artists
- * @param {string} minDate
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
  * @param {Progress} progress
  */
-function* syncBaseData(artists, minDate, requestChannel, responseChannel, progress) {
+function* syncBaseData(artists, requestChannel, responseChannel, progress) {
   /** @type {AlbumRaw[]} */
   const albumsRaw = []
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
   const { groups, fullAlbumData } = yield select(getSettings)
+  const minDate = moment().subtract(1, 'year').format(ISO_DATE)
 
   for (const artist of artists)
     yield putRequestMessage(requestChannel, [getArtistAlbums, token, artist.id, groups, minDate])
@@ -205,8 +204,7 @@ function* syncBaseData(artists, minDate, requestChannel, responseChannel, progre
     progress.value = newProgress
 
     if (response.error) continue
-
-    albumsRaw.push(...response.result)
+    for (const album of response.result) albumsRaw.push(album)
   }
 
   return albumsRaw
@@ -324,4 +322,22 @@ function* getUserSavedAlbumsArtists(requestChannel, responseChannel) {
   }
 
   return Object.values(artists).map(buildArtist)
+}
+
+/** @param {AlbumRaw[]} albums */
+function* updateHistory(albums) {
+  albumsHistory.append(albumsNew)
+  yield call(albumsNew.clear)
+
+  for (const album of albums) {
+    if (albumsHistory.has(album.id)) continue
+    albumsNew.add(album.id)
+  }
+
+  yield call(albumsNew.persist)
+  yield call(albumsHistory.persist)
+
+  if (albumsNew.size > 0 && albumsHistory.size > 0) {
+    yield put(setFilters({ newOnly: true }))
+  }
 }

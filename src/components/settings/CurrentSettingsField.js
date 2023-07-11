@@ -15,9 +15,8 @@ function CurrentSettingsField({ serialize }) {
   const settings = useSelector(getSettings)
   const [copied, setCopied] = useState(false)
 
-  const copy = () => {
-    textareaRef.current?.select()
-    document.execCommand('copy')
+  const copy = async () => {
+    await navigator.clipboard.writeText(textareaRef.current?.value)
     setCopied(true)
     sleep(1200).then(() => setCopied(false))
   }
