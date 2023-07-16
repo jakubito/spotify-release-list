@@ -69,7 +69,7 @@ function ProgressBar() {
 
   const onTransitionEnd = () => {
     if (value === 100) dispatch(syncAnimationFinished())
-    if (syncingProgress === 100 && value !== 100) setValue(100)
+    else if (syncingProgress === 100) setValue(100)
     animating.current = false
   }
 
