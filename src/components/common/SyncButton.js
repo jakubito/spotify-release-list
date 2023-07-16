@@ -5,7 +5,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
 import { defer, modalsClosed } from 'helpers'
 import { getSyncing, getWorking, getSyncingProgress } from 'state/selectors'
-import { sync } from 'state/actions'
+import { sync, syncAnimationFinished } from 'state/actions'
 import { Button } from 'components/common'
 
 /**
@@ -62,9 +62,16 @@ function SyncButton({ title, icon, medium, compact }) {
  * Render progress bar
  */
 function ProgressBar() {
+  const dispatch = useDispatch()
   const syncingProgress = useSelector(getSyncingProgress)
   const [value, setValue] = useState(0)
   const animating = useRef(false)
+
+  const onTransitionEnd = () => {
+    if (value === 100) dispatch(syncAnimationFinished())
+    if (syncingProgress === 100 && value !== 100) setValue(100)
+    animating.current = false
+  }
 
   useEffect(() => {
     if (animating.current) return
@@ -77,7 +84,7 @@ function ProgressBar() {
     <span
       className="progress-bar"
       style={{ transform: `translateX(${value - 100}%)` }}
-      onTransitionEnd={() => (animating.current = false)}
+      onTransitionEnd={onTransitionEnd}
     />
   )
 }

@@ -19,6 +19,7 @@ import {
   setFilters,
   setSyncingProgress,
   showErrorMessage,
+  syncAnimationFinished,
   syncError,
   syncFinished,
   syncStart,
@@ -121,6 +122,7 @@ function* syncMainSaga(action) {
   yield cancel(workers)
   yield call(requestChannel.close)
   yield call(responseChannel.close)
+  yield take(syncAnimationFinished.type)
   yield put(syncFinished({ albums, user, previousSyncMaxDate, auto: action.payload?.auto }))
 }
 
