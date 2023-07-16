@@ -366,6 +366,7 @@
  * @typedef {import('redux-saga').Task} Task
  * @typedef {import('react-dates').DayOfWeekShape} DayOfWeekShape
  * @typedef {moment.Moment} Moment
+ * @typedef {import('@reduxjs/toolkit').ActionReducerMapBuilder<State>} ActionReducerMapBuilder
  */
 
 /**

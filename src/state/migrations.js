@@ -1,6 +1,6 @@
 import { AlbumGroup } from 'enums'
 import { getFiltersVisible, getHasOriginalReleases } from 'state/selectors'
-import { INITIAL_STATE } from './reducer'
+import { initialState } from './reducer'
 
 /** @type {{ [version: number]: (state: PersistedState) => PersistedState }} */
 const migrations = {
@@ -44,7 +44,7 @@ const migrations = {
 function resetDataWithMessage(state) {
   return /** @type {PersistedState} */ ({
     ...state,
-    ...INITIAL_STATE,
+    ...initialState,
     settings: state.settings,
     message: {
       text: 'Please log in again to continue.',
