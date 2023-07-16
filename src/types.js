@@ -143,7 +143,6 @@
  * @typedef {{ date: string, albums: Album[] }[]} Releases
  * @typedef {{ [key in AlbumGroup]?: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
- * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
  * @typedef {{ [key in AlbumGroup]: string }} GroupColorScheme

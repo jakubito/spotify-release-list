@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -42,7 +42,7 @@ function SyncButton({ title, icon, medium, compact }) {
     <Button
       title={`${title} [R]`}
       className={classNames('SyncButton', {
-        'SyncButton--syncing': syncing,
+        'SyncButton--syncing': disabled,
         'SyncButton--compact': compact,
       })}
       disabled={disabled}
@@ -52,12 +52,8 @@ function SyncButton({ title, icon, medium, compact }) {
       primary
     >
       {displayTitle && <span>{title}</span>}
-      {syncing && (
-        <>
-          <ProgressBar />
-          <span className="spinner" />
-        </>
-      )}
+      {syncing && <ProgressBar />}
+      {disabled && <span className="spinner" />}
     </Button>
   )
 }
@@ -67,9 +63,23 @@ function SyncButton({ title, icon, medium, compact }) {
  */
 function ProgressBar() {
   const syncingProgress = useSelector(getSyncingProgress)
-  const style = { transform: `translateX(${syncingProgress - 100}%)` }
+  const [value, setValue] = useState(0)
+  const animating = useRef(false)
 
-  return <span className="progress-bar" style={style} />
+  useEffect(() => {
+    if (animating.current) return
+    if (syncingProgress === value) return
+    setValue(syncingProgress)
+    animating.current = true
+  }, [syncingProgress])
+
+  return (
+    <span
+      className="progress-bar"
+      style={{ transform: `translateX(${value - 100}%)` }}
+      onTransitionEnd={() => (animating.current = false)}
+    />
+  )
 }
 
 export default SyncButton
