@@ -3,11 +3,10 @@ import schema from 'schemas/settings.jtd.json'
 import CurrentSettingsField from './CurrentSettingsField'
 import LoadSettingsField from './LoadSettingsField'
 
-// extend schema to allow importing legacy backups
 const parserSchema = {
-  ...schema,
   optionalProperties: {
-    market: { type: 'string' },
+    ...schema.properties,
+    market: { type: 'string' }, // legacy field
   },
 }
 
