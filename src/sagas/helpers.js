@@ -62,24 +62,6 @@ export function throttle(amount, unit, saga, ...args) {
 }
 
 /**
- * Worker saga that dispatches progress value to the store at specific interval
- *
- * @param {Progress} progress
- * @param {ActionCreatorWithPayload<number>} setProgressAction
- * @param {number} updateInterval - How often to dispatch progress value (milliseconds)
- */
-export function* progressWorker(progress, setProgressAction, updateInterval) {
-  try {
-    while (true) {
-      yield put(setProgressAction(progress.value))
-      yield delay(updateInterval)
-    }
-  } finally {
-    yield put(setProgressAction(progress.value))
-  }
-}
-
-/**
  * Worker saga that fulfills requests stored in the queue until manually stopped
  *
  * @template T

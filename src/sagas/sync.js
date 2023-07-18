@@ -1,7 +1,7 @@
 import moment from 'moment'
 import chunk from 'lodash/chunk'
 import { channel, buffers } from 'redux-saga'
-import { call, put, select, take, fork, cancel, delay } from 'redux-saga/effects'
+import { call, put, select, take, fork, cancel } from 'redux-saga/effects'
 import { ArtistSource, MomentFormat } from 'enums'
 import {
   getArtistAlbums,
@@ -12,13 +12,14 @@ import {
   getUserSavedTracksPage,
 } from 'api'
 import { getAuthData, getSyncScopes } from 'auth'
-import { buildAlbumsMap, buildArtist, deleteLabels, mergeAlbumsRaw } from 'helpers'
+import { buildAlbumsMap, buildArtist, deleteArtists, deleteLabels, mergeAlbumsRaw } from 'helpers'
 import { albumsNew, albumsHistory } from 'albums'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
   setFilters,
   setSyncingProgress,
   showErrorMessage,
+  syncAnimationFinished,
   syncError,
   syncFinished,
   syncStart,
@@ -26,7 +27,6 @@ import {
 import { authorize } from './auth'
 import {
   withTitle,
-  progressWorker,
   requestWorker,
   putRequestMessage,
   getAllCursorPaged,
@@ -39,12 +39,7 @@ const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS } = ArtistSource
 /**
  * Limit maximum number of concurrent requests
  */
-const REQUEST_WORKERS_COUNT = 6
-
-/**
- * Loading bar animation duration in milliseconds
- */
-const LOADING_ANIMATION = 400
+const WORKERS_COUNT = 6
 
 /**
  * How much percentage of overall progress is assigned to base sync when extra data fetch is enabled
@@ -86,25 +81,22 @@ function* syncMainSaga(action) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
-  const { days, fullAlbumData, labelBlocklist, trackHistory } = yield select(getSettings)
+  const settings = yield select(getSettings)
+  const { days, fullAlbumData, labelBlocklist, artistBlocklist, trackHistory } = settings
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
   /** @type {Task[]} */
-  const tasks = []
-  /** @type {Progress} */
-  const progress = { value: 0 }
+  const workers = []
   const minDate = moment().subtract(days, 'day').format(ISO_DATE)
 
   /** @type {RequestChannel} */
   const requestChannel = yield call(channel, buffers.expanding(1000))
   /** @type {ResponseChannel} */
-  const responseChannel = yield call(channel, buffers.expanding(REQUEST_WORKERS_COUNT))
+  const responseChannel = yield call(channel, buffers.expanding(WORKERS_COUNT))
 
-  for (let i = 0; i < REQUEST_WORKERS_COUNT; i += 1)
-    tasks.push(yield fork(requestWorker, requestChannel, responseChannel))
-
-  tasks.push(yield fork(progressWorker, progress, setSyncingProgress, LOADING_ANIMATION))
+  for (let i = 0; i < WORKERS_COUNT; i += 1)
+    workers.push(yield fork(requestWorker, requestChannel, responseChannel))
 
   /** @type {Await<ReturnType<typeof getUser>>} */
   const user = yield call(getUser, token)
@@ -112,15 +104,16 @@ function* syncMainSaga(action) {
   const artists = yield call(getArtists, requestChannel, responseChannel)
 
   /** @type {AlbumRaw[]} */
-  const albumsRaw = yield call(syncBaseData, artists, requestChannel, responseChannel, progress)
+  const albumsRaw = yield call(syncBaseData, artists, requestChannel, responseChannel)
 
   /** @type {Await<ReturnType<typeof mergeAlbumsRaw>>} */
   const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate)
   /** @type {Await<ReturnType<typeof buildAlbumsMap>>} */
   const albums = yield call(buildAlbumsMap, mergedAlbums, artists)
+  yield call(deleteArtists, albums, artistBlocklist)
 
   if (fullAlbumData) {
-    yield call(syncExtraData, mergedAlbums, albums, requestChannel, responseChannel, progress)
+    yield call(syncExtraData, mergedAlbums, albums, requestChannel, responseChannel)
     yield call(deleteLabels, albums, labelBlocklist)
   }
 
@@ -128,10 +121,10 @@ function* syncMainSaga(action) {
     yield call(updateHistory, albums)
   }
 
-  yield cancel(tasks)
+  yield cancel(workers)
   yield call(requestChannel.close)
   yield call(responseChannel.close)
-  yield delay(LOADING_ANIMATION)
+  yield take(syncAnimationFinished.type)
   yield put(syncFinished({ albums, user, previousSyncMaxDate, auto: action.payload?.auto }))
 }
 
@@ -181,9 +174,8 @@ function* getArtists(requestChannel, responseChannel) {
  * @param {Artist[]} artists
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
- * @param {Progress} progress
  */
-function* syncBaseData(artists, requestChannel, responseChannel, progress) {
+function* syncBaseData(artists, requestChannel, responseChannel) {
   /** @type {AlbumRaw[]} */
   const albumsRaw = []
   /** @type {ReturnType<typeof getAuthData>} */
@@ -201,7 +193,7 @@ function* syncBaseData(artists, requestChannel, responseChannel, progress) {
 
     let newProgress = ((fetched + 1) / artists.length) * 100
     if (fullAlbumData) newProgress *= BASE_SYNC_RATIO
-    progress.value = newProgress
+    yield put(setSyncingProgress(newProgress))
 
     if (response.error) continue
     for (const album of response.result) albumsRaw.push(album)
@@ -217,9 +209,8 @@ function* syncBaseData(artists, requestChannel, responseChannel, progress) {
  * @param {AlbumsMap} albums
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
- * @param {Progress} progress
  */
-function* syncExtraData(albumsRaw, albums, requestChannel, responseChannel, progress) {
+function* syncExtraData(albumsRaw, albums, requestChannel, responseChannel) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   const albumIds = albumsRaw.map((album) => album.id)
@@ -235,7 +226,7 @@ function* syncExtraData(albumsRaw, albums, requestChannel, responseChannel, prog
     let newProgress = ((fetched + 1) / albumIdsChunks.length) * 100
     newProgress *= 1 - BASE_SYNC_RATIO
     newProgress += BASE_SYNC_RATIO * 100
-    progress.value = newProgress
+    yield put(setSyncingProgress(newProgress))
 
     if (response.error) continue
 
@@ -277,7 +268,7 @@ function* getUserSavedTracksArtists(requestChannel, responseChannel) {
     getAllPaged,
     requestChannel,
     responseChannel,
-    REQUEST_WORKERS_COUNT,
+    WORKERS_COUNT,
     getUserSavedTracksPage
   )
 
@@ -310,7 +301,7 @@ function* getUserSavedAlbumsArtists(requestChannel, responseChannel) {
     getAllPaged,
     requestChannel,
     responseChannel,
-    REQUEST_WORKERS_COUNT,
+    WORKERS_COUNT,
     getUserSavedAlbumsPage
   )
 

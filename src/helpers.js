@@ -3,6 +3,7 @@ import orderBy from 'lodash/orderBy'
 import mergeWith from 'lodash/mergeWith'
 import random from 'lodash/random'
 import { colord } from 'colord'
+import intersect from 'fast_array_intersect'
 import * as Sentry from '@sentry/browser'
 import { AlbumGroup, AlbumGroupIndex, MomentFormat, ReleasesOrder } from 'enums'
 
@@ -409,13 +410,51 @@ export function deleteLabels(albumsMap, labelsList) {
   }
 
   /** @param {Album} album */
-  function shouldDelete(album) {
+  const shouldDelete = (album) => {
     if (album.label in labels) {
       if (labels[album.label] === undefined) return true
       if (labels[album.label].includes('VA') && hasVariousArtists(album)) return true
     }
 
     return false
+  }
+
+  for (const album of Object.values(albumsMap)) {
+    if (shouldDelete(album)) {
+      ids.push(album.id)
+      delete albumsMap[album.id]
+    }
+  }
+
+  return ids
+}
+
+/**
+ * Delete albums from specified artists and return deleted IDs. Mutates `albumsMap`.
+ *
+ * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
+ * @param {string} artistsList
+ */
+export function deleteArtists(albumsMap, artistsList) {
+  if (artistsList.trim().length === 0) return []
+
+  /** @type {string[]} */
+  const ids = []
+  /** @type {string[]} */
+  const artistIds = []
+  const entries = artistsList.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
+
+  for (const [, artistId] of entries) {
+    artistIds.push(artistId)
+  }
+
+  /** @param {Album} album */
+  const shouldDelete = (album) => {
+    const albumArtists = Object.values(album.artists)
+      .flat()
+      .map((artist) => artist.id)
+    const common = intersect([albumArtists, artistIds])
+    return common.length > 0
   }
 
   for (const album of Object.values(albumsMap)) {

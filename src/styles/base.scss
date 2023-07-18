@@ -83,6 +83,10 @@ body,
     box-shadow: 0 0 0 0.125em $black-bis;
     background-color: $black-ter;
   }
+
+  &::placeholder {
+    color: $grey;
+  }
 }
 
 .input.is-danger {

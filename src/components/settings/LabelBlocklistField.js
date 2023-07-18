@@ -54,6 +54,7 @@ function LabelBlocklistField() {
       <div className="control">
         <textarea
           className="textarea is-dark"
+          placeholder="Example:&#10;UME - Global Clearing House&#10;*VA* UME - Global Clearing House"
           rows={6}
           defaultValue={labelBlocklist}
           onChange={(event) => defer(dispatch, setSettings({ labelBlocklist: event.target.value }))}

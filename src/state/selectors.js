@@ -10,7 +10,7 @@ import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge, hasVariousArtists } from 'helpers'
 import { buildReleases, buildReleasesMap } from 'helpers'
 import { albumsNew } from 'albums'
-import { INITIAL_STATE } from './reducer'
+import { initialState } from './reducer'
 
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
@@ -139,7 +139,7 @@ const getAppData = createSelector(getLastSync, getSettings, (...values) => value
  */
 export const getHasAppData = createSelector(
   getAppData,
-  (appData) => !isEqual(appData, getAppData(INITIAL_STATE))
+  (appData) => !isEqual(appData, getAppData(initialState))
 )
 
 /**
@@ -320,7 +320,9 @@ const getFavoriteAlbumIds = createSelector(getFavorites, (favorites) =>
 /**
  * Get new album ids
  */
-const getNewAlbumIds = createSelector(getAlbums, () => albumsNew.toArray())
+const getNewAlbumIds = createSelector(getAlbumsArray, (albums) =>
+  albums.filter((album) => albumsNew.has(album.id)).map((album) => album.id)
+)
 
 /**
  * Get album IDs based on search filter

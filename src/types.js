@@ -64,6 +64,7 @@
  *   displayLabels: boolean
  *   displayPopularity: boolean
  *   labelBlocklist: string
+ *   artistBlocklist: string
  *   releasesOrder: ReleasesOrder
  *   trackHistory: boolean
  * }} Settings
@@ -143,7 +144,6 @@
  * @typedef {{ date: string, albums: Album[] }[]} Releases
  * @typedef {{ [key in AlbumGroup]?: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
- * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
  * @typedef {{ [key in AlbumGroup]: string }} GroupColorScheme
@@ -367,6 +367,7 @@
  * @typedef {import('redux-saga').Task} Task
  * @typedef {import('react-dates').DayOfWeekShape} DayOfWeekShape
  * @typedef {moment.Moment} Moment
+ * @typedef {import('@reduxjs/toolkit').ActionReducerMapBuilder<State>} ActionReducerMapBuilder
  */
 
 /**
