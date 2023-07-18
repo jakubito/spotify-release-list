@@ -12,7 +12,7 @@ import {
   getUserSavedTracksPage,
 } from 'api'
 import { getAuthData, getSyncScopes } from 'auth'
-import { buildAlbumsMap, buildArtist, deleteLabels, mergeAlbumsRaw } from 'helpers'
+import { buildAlbumsMap, buildArtist, deleteArtists, deleteLabels, mergeAlbumsRaw } from 'helpers'
 import { albumsNew, albumsHistory } from 'albums'
 import { getSettings, getReleasesMaxDate } from 'state/selectors'
 import {
@@ -81,7 +81,8 @@ function* syncMainSaga(action) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
-  const { days, fullAlbumData, labelBlocklist, trackHistory } = yield select(getSettings)
+  const settings = yield select(getSettings)
+  const { days, fullAlbumData, labelBlocklist, artistBlocklist, trackHistory } = settings
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
@@ -109,6 +110,7 @@ function* syncMainSaga(action) {
   const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate)
   /** @type {Await<ReturnType<typeof buildAlbumsMap>>} */
   const albums = yield call(buildAlbumsMap, mergedAlbums, artists)
+  yield call(deleteArtists, albums, artistBlocklist)
 
   if (fullAlbumData) {
     yield call(syncExtraData, mergedAlbums, albums, requestChannel, responseChannel)

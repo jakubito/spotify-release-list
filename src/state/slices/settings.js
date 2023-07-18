@@ -30,6 +30,7 @@ export const initialState = {
     displayLabels: false,
     displayPopularity: false,
     labelBlocklist: '',
+    artistBlocklist: '',
     releasesOrder: ReleasesOrder.ARTIST,
     trackHistory: true,
   },

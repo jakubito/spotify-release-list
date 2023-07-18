@@ -1,5 +1,6 @@
 import { AlbumGroup, ArtistSource, GroupColorSchemes, ReleasesOrder } from 'enums'
 
+/** @type {State} */
 const state = {
   albums: {
     '0trzLa33oRy05BwlJINuRG': {
@@ -401,7 +402,9 @@ const state = {
     displayLabels: false,
     displayPopularity: false,
     labelBlocklist: '',
+    artistBlocklist: '',
     releasesOrder: ReleasesOrder.ARTIST,
+    trackHistory: true,
   },
   filters: {
     groups: [],
@@ -412,6 +415,7 @@ const state = {
     excludeRemixes: false,
     excludeDuplicates: false,
     favoritesOnly: false,
+    newOnly: false,
   },
   seenFeatures: [],
   updateReady: false,

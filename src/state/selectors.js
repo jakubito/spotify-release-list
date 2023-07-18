@@ -320,7 +320,9 @@ const getFavoriteAlbumIds = createSelector(getFavorites, (favorites) =>
 /**
  * Get new album ids
  */
-const getNewAlbumIds = createSelector(getAlbums, () => albumsNew.toArray())
+const getNewAlbumIds = createSelector(getAlbumsArray, (albums) =>
+  albums.filter((album) => albumsNew.has(album.id)).map((album) => album.id)
+)
 
 /**
  * Get album IDs based on search filter

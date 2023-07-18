@@ -64,6 +64,7 @@
  *   displayLabels: boolean
  *   displayPopularity: boolean
  *   labelBlocklist: string
+ *   artistBlocklist: string
  *   releasesOrder: ReleasesOrder
  *   trackHistory: boolean
  * }} Settings
