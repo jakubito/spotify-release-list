@@ -34,8 +34,6 @@ export const createPlaylistFinished = createAction('createPlaylistFinished')
 export const createPlaylistError = createAction('createPlaylistError')
 export const createPlaylistCancel = createAction('createPlaylistCancel')
 export const resetPlaylist = createAction('resetPlaylist')
-/** @type {ActionCreatorWithPayload<string, 'addSeenFeature'>} */
-export const addSeenFeature = createAction('addSeenFeature')
 export const toggleFiltersVisible = createAction('toggleFiltersVisible')
 /** @type {ActionCreatorWithPayload<Partial<Filters>, 'setFilters'>} */
 export const setFilters = createAction('setFilters')

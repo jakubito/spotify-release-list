@@ -18,7 +18,6 @@
  *   filtersVisible: boolean
  *   settings: Settings
  *   filters: Filters
- *   seenFeatures: string[]
  *   updateReady: boolean
  *   favorites: Favorites
  *   editingFavorites: boolean
@@ -246,7 +245,6 @@
  * @typedef {ReturnType<typeof import('state/actions').createPlaylistError>} CreatePlaylistErrorAction
  * @typedef {ReturnType<typeof import('state/actions').createPlaylistCancel>} CreatePlaylistCancelAction
  * @typedef {ReturnType<typeof import('state/actions').resetPlaylist>} ResetPlaylistAction
- * @typedef {ReturnType<typeof import('state/actions').addSeenFeature>} AddSeenFeatureAction
  * @typedef {ReturnType<typeof import('state/actions').toggleFiltersVisible>} ToggleFiltersVisibleAction
  * @typedef {ReturnType<typeof import('state/actions').setFilters>} SetFiltersAction
  * @typedef {ReturnType<typeof import('state/actions').resetFilters>} ResetFiltersAction
@@ -284,7 +282,6 @@
  *   | CreatePlaylistErrorAction
  *   | CreatePlaylistCancelAction
  *   | ResetPlaylistAction
- *   | AddSeenFeatureAction
  *   | ToggleFiltersVisibleAction
  *   | SetFiltersAction
  *   | ResetFiltersAction
