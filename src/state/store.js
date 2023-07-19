@@ -37,12 +37,9 @@ const reducer = persistReducer(persistConfig, rootReducer)
 const sagaMiddleware = createSagaMiddleware({ onError: captureException })
 const store = configureStore({ reducer, middleware: [sagaMiddleware] })
 
-/** @type {import('redux-persist').Persistor} */
-export let persistor
-
 /** @type {Promise<void>} */
 export const hydrate = new Promise((resolve) => {
-  persistor = persistStore(store, null, resolve)
+  persistStore(store, null, resolve)
 })
 
 sagaMiddleware.run(rootSaga)
