@@ -58,9 +58,6 @@ export const getPlaylistId = (state) => state.playlistId
 export const getCreatingPlaylist = (state) => state.creatingPlaylist
 
 /** @param {State} state */
-export const getSeenFeatures = (state) => state.seenFeatures
-
-/** @param {State} state */
 export const getFilters = (state) => state.filters
 
 /** @param {State} state */

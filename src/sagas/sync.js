@@ -1,7 +1,7 @@
 import moment from 'moment'
 import chunk from 'lodash/chunk'
 import { channel, buffers } from 'redux-saga'
-import { call, put, select, take, fork, cancel } from 'redux-saga/effects'
+import { call, put, select, take, fork, cancel, race, delay } from 'redux-saga/effects'
 import { ArtistSource, MomentFormat } from 'enums'
 import {
   getArtistAlbums,
@@ -124,7 +124,9 @@ function* syncMainSaga(action) {
   yield cancel(workers)
   yield call(requestChannel.close)
   yield call(responseChannel.close)
-  yield take(syncAnimationFinished.type)
+
+  yield put(setSyncingProgress(100))
+  yield race([take(syncAnimationFinished.type), delay(1000)])
   yield put(syncFinished({ albums, user, previousSyncMaxDate, auto: action.payload?.auto }))
 }
 

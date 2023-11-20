@@ -1,9 +1,5 @@
 import { useEffect, useRef, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { addSeenFeature } from 'state/actions'
-import { getSeenFeatures } from 'state/selectors'
-import { deferred } from 'helpers'
 
 /**
  * Modal hook
@@ -20,24 +16,6 @@ export function useModal(closeModal) {
       document.documentElement.classList.remove('is-modal-open')
     }
   }, [])
-}
-
-/**
- * Feature hook
- *
- * @param {string} feature
- */
-export function useFeature(feature) {
-  const dispatch = useDispatch()
-  const seenFeatures = useSelector(getSeenFeatures)
-  const seen = seenFeatures.includes(feature)
-  const setSeen = deferred(() => {
-    if (!seen) {
-      dispatch(addSeenFeature(feature))
-    }
-  })
-
-  return { seen, setSeen }
 }
 
 /**

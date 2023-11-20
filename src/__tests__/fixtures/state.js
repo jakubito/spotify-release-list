@@ -417,7 +417,6 @@ const state = {
     favoritesOnly: false,
     newOnly: false,
   },
-  seenFeatures: [],
   updateReady: false,
   favorites: {},
   editingFavorites: false,
