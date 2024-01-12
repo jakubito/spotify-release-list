@@ -9,11 +9,9 @@ const today = '2022-05-10'
 
 /**
  * Date range filter shortcuts definition
- *
- * @returns {DateRangeShortcut[]}
  */
 function getShortcuts() {
-  return [
+  return /** @type {DateRangeShortcut[]} */ ([
     {
       title: 'Today',
       start: moment(today).startOf('day'),
@@ -44,7 +42,7 @@ function getShortcuts() {
       start: moment(today).subtract(1, 'month').startOf('month'),
       end: moment(today).subtract(1, 'month').endOf('month'),
     },
-  ]
+  ])
 }
 
 /**

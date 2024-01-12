@@ -21,8 +21,8 @@ function Settings() {
   }, [location])
 
   useHotkeys('esc, enter', deferred(navigate, '/'), {
-    filter: modalsClosed,
-    enableOnTags: ['INPUT', 'SELECT'],
+    enabled: modalsClosed,
+    enableOnFormTags: ['input', 'select'],
   })
 
   return (

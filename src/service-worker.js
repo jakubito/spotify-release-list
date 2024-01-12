@@ -12,7 +12,7 @@ import { clientsClaim } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
-import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'
+import { CacheFirst } from 'workbox-strategies'
 
 const worker = /** @type {ServiceWorkerGlobalScope} */ (/** @type {any} */ (self))
 
@@ -59,29 +59,8 @@ worker.addEventListener('message', (event) => {
 })
 
 worker.addEventListener('activate', (event) => {
-  event.waitUntil(Promise.all([caches.delete('images'), caches.delete('spotify-images')]))
+  event.waitUntil(caches.delete('images'))
 })
-
-// Cache font awesome assets
-registerRoute(
-  /https:\/\/kit\.fontawesome\.com\/.*\.js/,
-  new StaleWhileRevalidate({
-    cacheName: 'fontawesome-kits',
-  })
-)
-
-registerRoute(
-  /https:\/\/(?!kit\.).*fontawesome\.com\/.*/,
-  new CacheFirst({
-    cacheName: 'fontawesome-assets',
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 10,
-        maxAgeSeconds: 60 * 60 * 24 * 365,
-      }),
-    ],
-  })
-)
 
 // Cache app images
 registerRoute(

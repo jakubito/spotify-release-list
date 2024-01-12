@@ -1,1 +1,1 @@
-export { default as store, persistor, hydrate } from './store'
+export { default as store, hydrate } from './store'

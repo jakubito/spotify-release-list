@@ -20,7 +20,7 @@ function FavoritesFilter() {
   return (
     <Button
       title="Favorites"
-      icon="fas fa-heart"
+      icon={classNames('fas fa-heart', { 'has-text-danger': selected })}
       className={classNames('group', { active: selected })}
       onClick={() => setSelected(!selected)}
     />

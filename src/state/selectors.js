@@ -9,7 +9,8 @@ import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
 import { includesTruthy, getReleasesBetween, merge, hasVariousArtists } from 'helpers'
 import { buildReleases, buildReleasesMap } from 'helpers'
-import { INITIAL_STATE } from './reducer'
+import { albumsNew } from 'albums'
+import { initialState } from './reducer'
 
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
@@ -57,9 +58,6 @@ export const getPlaylistId = (state) => state.playlistId
 export const getCreatingPlaylist = (state) => state.creatingPlaylist
 
 /** @param {State} state */
-export const getSeenFeatures = (state) => state.seenFeatures
-
-/** @param {State} state */
 export const getFilters = (state) => state.filters
 
 /** @param {State} state */
@@ -88,13 +86,16 @@ export const getSettingsGroupColors = createSelector(
   (settings) => settings.groupColors
 )
 export const getSettingsDays = createSelector(getSettings, (settings) => settings.days)
-export const getSettingsMarket = createSelector(getSettings, (settings) => settings.market)
 export const getSettingsTheme = createSelector(getSettings, (settings) => settings.theme)
 export const getSettingsUriLinks = createSelector(getSettings, (settings) => settings.uriLinks)
 export const getSettingsCovers = createSelector(getSettings, (settings) => settings.covers)
 export const getSettingsReleasesOrder = createSelector(
   getSettings,
   (settings) => settings.releasesOrder
+)
+export const getSettingsTrackHistory = createSelector(
+  getSettings,
+  (settings) => settings.trackHistory
 )
 
 // Individual filters selectors
@@ -118,6 +119,7 @@ export const getFiltersFavoritesOnly = createSelector(
   getFilters,
   (filters) => filters.favoritesOnly
 )
+export const getFiltersNewOnly = createSelector(getFilters, (filters) => filters.newOnly)
 
 /**
  * Get relevant app data.
@@ -134,7 +136,7 @@ const getAppData = createSelector(getLastSync, getSettings, (...values) => value
  */
 export const getHasAppData = createSelector(
   getAppData,
-  (appData) => !isEqual(appData, getAppData(INITIAL_STATE))
+  (appData) => !isEqual(appData, getAppData(initialState))
 )
 
 /**
@@ -157,6 +159,7 @@ export const getFiltersApplied = createSelector(
   getFiltersExcludeRemixes,
   getFiltersExcludeDuplicates,
   getFiltersFavoritesOnly,
+  getFiltersNewOnly,
   (groups, ...rest) => Boolean(groups.length) || includesTruthy(rest)
 )
 
@@ -312,6 +315,13 @@ const getFavoriteAlbumIds = createSelector(getFavorites, (favorites) =>
 )
 
 /**
+ * Get new album ids
+ */
+const getNewAlbumIds = createSelector(getAlbumsArray, (albums) =>
+  albums.filter((album) => albumsNew.has(album.id)).map((album) => album.id)
+)
+
+/**
  * Get album IDs based on search filter
  */
 const getSearchFiltered = createSelector(
@@ -370,6 +380,14 @@ const getFavoritesFiltered = createSelector(
 )
 
 /**
+ * Get new album ids if new filter and history tracking are enabled
+ */
+const getNewFiltered = createSelector(
+  [getSettingsTrackHistory, getFiltersNewOnly, getNewAlbumIds],
+  (trackHistory, newOnly, ids) => trackHistory && newOnly && ids
+)
+
+/**
  * Intersect all filtered results and return albums as an array
  */
 export const getFilteredAlbumsArray = createSelector(
@@ -381,6 +399,7 @@ export const getFilteredAlbumsArray = createSelector(
   getRemixFiltered,
   getDuplicatesFiltered,
   getFavoritesFiltered,
+  getNewFiltered,
   (albums, ...filtered) => intersect(filtered.filter(Array.isArray)).map((id) => albums[id])
 )
 

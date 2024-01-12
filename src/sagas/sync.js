@@ -1,4 +1,4 @@
-import { call, put, fork, cancel, delay } from 'redux-saga/effects'
+import { call, put, delay } from 'redux-saga/effects'
 import { AuthError } from 'auth'
 import {
   setSyncingProgress,
@@ -7,7 +7,7 @@ import {
   syncError,
   syncStart,
 } from 'state/actions'
-import { withTitle, progressWorker } from './helpers'
+import { withTitle } from './helpers'
 
 /**
  * Loading bar animation duration in milliseconds
@@ -38,19 +38,11 @@ export function* syncSaga(action) {
 function* syncMainSaga(action) {
   yield put(syncStart())
 
-  /** @type {Task[]} */
-  const tasks = []
-  /** @type {Progress} */
-  const progress = { value: 0 }
-
-  tasks.push(yield fork(progressWorker, progress, setSyncingProgress, LOADING_ANIMATION))
-
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 4; i++) {
     yield delay(LOADING_ANIMATION)
-    progress.value = i * 20
+    yield put(setSyncingProgress(i * 25))
   }
 
-  yield cancel(tasks)
   yield delay(LOADING_ANIMATION)
   yield put(syncCancel())
 }

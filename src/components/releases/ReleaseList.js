@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Waypoint } from 'react-waypoint'
+import { InView } from 'react-intersection-observer'
 import { calculatePageSize } from 'helpers'
 import FavoritesToolbar from './FavoritesToolbar'
 import ReleaseDay from './ReleaseDay'
@@ -20,7 +20,7 @@ function ReleaseList({ releases }) {
       {slice.map(({ date, albums }) => (
         <ReleaseDay date={date} albums={albums} key={date} />
       ))}
-      {next && <Waypoint bottomOffset="-50%" onEnter={next} key={cursor} />}
+      {next && <InView onChange={(inView) => inView && next()} rootMargin="50%" key={cursor} />}
     </>
   )
 }
@@ -30,12 +30,6 @@ function ReleaseList({ releases }) {
  *
  * @param {Releases} releases
  * @param {number} pageSize - Page size threshold
- * @returns {{
- *   cursor: number
- *   slice: Releases
- *   next: () => void | null
- *   reset: () => void
- * }}
  */
 function usePaginate(releases, pageSize) {
   function nextCursor(currentCursor = 0) {

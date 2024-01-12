@@ -25377,7 +25377,9 @@
     "displayLabels": false,
     "displayPopularity": false,
     "labelBlocklist": "",
-    "releasesOrder": "album-group"
+    "releasesOrder": "album-group",
+    "artistBlocklist": "",
+    "trackHistory": false
   },
   "filters": {
     "groups": [],
@@ -25387,7 +25389,8 @@
     "excludeVariousArtists": false,
     "excludeRemixes": false,
     "excludeDuplicates": false,
-    "favoritesOnly": false
+    "favoritesOnly": false,
+    "newOnly": false
   },
   "seenFeatures": [],
   "updateReady": false,

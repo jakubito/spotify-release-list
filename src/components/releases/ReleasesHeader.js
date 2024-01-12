@@ -41,10 +41,11 @@ function ReleasesHeader() {
   const openPlaylistModal = deferred(dispatch, showPlaylistModal())
 
   useHotkeys('e', openPlaylistModal, { enabled: !syncing && lastSyncDate && hasReleases })
-  useHotkeys('d', toggleFavorites, { enabled: !syncing && lastSyncDate && hasReleases })
+  useHotkeys('d', toggleFavorites, {
+    enabled: () => !syncing && lastSyncDate && hasReleases && modalsClosed(),
+  })
   useHotkeys('f', toggleFilters, {
-    enabled: !syncing && lastSyncDate && hasOriginalReleases,
-    filter: modalsClosed,
+    enabled: () => !syncing && lastSyncDate && hasOriginalReleases && modalsClosed(),
   })
 
   return (
@@ -60,7 +61,7 @@ function ReleasesHeader() {
                     title="Edit favorites [D]"
                     icon={classNames({
                       'fas fa-heart': !editingFavorites,
-                      'far fa-heart': editingFavorites,
+                      'fas fa-minus': editingFavorites,
                     })}
                     onClick={toggleFavorites}
                     disabled={working}
@@ -74,6 +75,7 @@ function ReleasesHeader() {
                     icon={classNames('fas', {
                       'fa-search': !filtersVisible,
                       'fa-minus': filtersVisible,
+                      'has-text-primary': filtersApplied,
                     })}
                     onClick={toggleFilters}
                     disabled={working}

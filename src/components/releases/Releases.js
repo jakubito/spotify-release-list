@@ -10,7 +10,7 @@ import {
   getLastSettingsPath,
 } from 'state/selectors'
 import { useDynamicKey } from 'hooks'
-import { deferred } from 'helpers'
+import { deferred, modalsClosed } from 'helpers'
 import { VerticalLayout, Content, Centered } from 'components/common'
 import { Filters } from 'components/filters'
 import { PlaylistModalContainer } from 'components/modals'
@@ -32,7 +32,9 @@ function Releases() {
   const releases = useSelector(getReleases)
   const listKey = useDynamicKey([editingFavorites, releases])
 
-  useHotkeys('s', deferred(navigate, lastSettingsPath || '/settings'), { enabled: !working })
+  useHotkeys('s', deferred(navigate, lastSettingsPath || '/settings'), {
+    enabled: () => !working && modalsClosed(),
+  })
 
   const renderContent = () => {
     if (!user) {

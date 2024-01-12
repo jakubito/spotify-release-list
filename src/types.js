@@ -18,7 +18,6 @@
  *   filtersVisible: boolean
  *   settings: Settings
  *   filters: Filters
- *   seenFeatures: string[]
  *   updateReady: boolean
  *   favorites: Favorites
  *   editingFavorites: boolean
@@ -52,7 +51,6 @@
  *   groups: AlbumGroup[]
  *   groupColors: GroupColorScheme
  *   days: number
- *   market: Market
  *   theme: string
  *   uriLinks: boolean
  *   covers: boolean
@@ -65,7 +63,9 @@
  *   displayLabels: boolean
  *   displayPopularity: boolean
  *   labelBlocklist: string
+ *   artistBlocklist: string
  *   releasesOrder: ReleasesOrder
+ *   trackHistory: boolean
  * }} Settings
  *
  * @typedef {{
@@ -77,6 +77,7 @@
  *   excludeRemixes: boolean
  *   excludeDuplicates: boolean
  *   favoritesOnly: boolean
+ *   newOnly: boolean
  * }} Filters
  *
  * @typedef {{
@@ -142,12 +143,12 @@
  * @typedef {{ date: string, albums: Album[] }[]} Releases
  * @typedef {{ [key in AlbumGroup]?: string[] }} ReleasesGroupMap
  * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
- * @typedef {{ value: number }} Progress
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
  * @typedef {{ [key in AlbumGroup]: string }} GroupColorScheme
  * @typedef {(to: string) => Promise<void>} Navigate
- * @typedef {[Fn, ...any[]]} RequestChannelMessage
+ * @typedef {[Fn, ...any[]]} RequestChannelMessagePayload
+ * @typedef {{ payload: RequestChannelMessagePayload, callCount: number }} RequestChannelMessage
  * @typedef {Channel<RequestChannelMessage>} RequestChannel
  * @typedef {(data: Settings) => string} SettingsSerializer
  * @typedef {JTDParser<Settings>} SettingsParser
@@ -157,7 +158,7 @@
 
 /**
  * @template T
- * @typedef {{ result?: T, error?: import('api').FetchError }} ResponseChannelMessage<T>
+ * @typedef {{ result?: T, error?: Error }} ResponseChannelMessage<T>
  */
 
 /**
@@ -176,6 +177,16 @@
  */
 
 /**
+ * @template T
+ * @typedef {(token: string, limit: number, offset: number) => Promise<Paged<T>>} PagedRequest<T>
+ */
+
+/**
+ * @template T
+ * @typedef {(token: string, limit: number, after?: string) => Promise<CursorPaged<T>>} CursorPagedRequest<T>
+ */
+
+/**
  * Enums
  *
  * @typedef {import('./enums').Address} Address
@@ -183,7 +194,6 @@
  * @typedef {import('./enums').SpotifyEntity} SpotifyEntity
  * @typedef {import('./enums').MomentFormat} MomentFormat
  * @typedef {import('./enums').Theme} Theme
- * @typedef {import('./enums').Market} Market
  *
  * @typedef {{
  *   FOLLOWED: 'followed'
@@ -235,7 +245,6 @@
  * @typedef {ReturnType<typeof import('state/actions').createPlaylistError>} CreatePlaylistErrorAction
  * @typedef {ReturnType<typeof import('state/actions').createPlaylistCancel>} CreatePlaylistCancelAction
  * @typedef {ReturnType<typeof import('state/actions').resetPlaylist>} ResetPlaylistAction
- * @typedef {ReturnType<typeof import('state/actions').addSeenFeature>} AddSeenFeatureAction
  * @typedef {ReturnType<typeof import('state/actions').toggleFiltersVisible>} ToggleFiltersVisibleAction
  * @typedef {ReturnType<typeof import('state/actions').setFilters>} SetFiltersAction
  * @typedef {ReturnType<typeof import('state/actions').resetFilters>} ResetFiltersAction
@@ -273,7 +282,6 @@
  *   | CreatePlaylistErrorAction
  *   | CreatePlaylistCancelAction
  *   | ResetPlaylistAction
- *   | AddSeenFeatureAction
  *   | ToggleFiltersVisibleAction
  *   | SetFiltersAction
  *   | ResetFiltersAction
@@ -327,7 +335,26 @@
 
 /**
  * @template T
- * @typedef {{ items: T[], next: string | null }} Paged<T>
+ * @typedef {{
+ *   items: T[]
+ *   limit: number
+ *   offset: number
+ *   total: number
+ *   next: string | null
+ * }} Paged<T>
+ */
+
+/**
+ * @template T
+ * @typedef {{
+ *   items: T[]
+ *   limit: number
+ *   total: number
+ *   next: string | null
+ *   cursors: {
+ *     after: string | null
+ *   }
+ * }} CursorPaged<T>
  */
 
 /**
@@ -337,6 +364,7 @@
  * @typedef {import('redux-saga').Task} Task
  * @typedef {import('react-dates').DayOfWeekShape} DayOfWeekShape
  * @typedef {moment.Moment} Moment
+ * @typedef {import('@reduxjs/toolkit').ActionReducerMapBuilder<State>} ActionReducerMapBuilder
  */
 
 /**
@@ -360,12 +388,14 @@
  */
 
 /**
- * @template P,[T=string]
+ * @template P
+ * @template {string} [T=string]
  * @typedef {import('@reduxjs/toolkit').ActionCreatorWithPayload<P,T>} ActionCreatorWithPayload<P,T>
  */
 
 /**
- * @template P,[T=string]
+ * @template P
+ * @template {string} [T=string]
  * @typedef {import('@reduxjs/toolkit').ActionCreatorWithOptionalPayload<P,T>} ActionCreatorWithOptionalPayload<P,T>
  */
 

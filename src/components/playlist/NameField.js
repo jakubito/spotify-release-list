@@ -18,7 +18,7 @@ function NameField() {
   const nameField = register('name', { required: true, maxLength: 100 })
 
   useEffect(() => {
-    inputRef.current?.focus()
+    inputRef.current?.select()
   }, [])
 
   return (

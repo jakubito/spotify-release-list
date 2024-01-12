@@ -3,6 +3,7 @@ import orderBy from 'lodash/orderBy'
 import mergeWith from 'lodash/mergeWith'
 import random from 'lodash/random'
 import { colord } from 'colord'
+import intersect from 'fast_array_intersect'
 import * as Sentry from '@sentry/browser'
 import { AlbumGroup, AlbumGroupIndex, MomentFormat, ReleasesOrder } from 'enums'
 
@@ -15,7 +16,6 @@ const VARIOUS_ARTISTS_ID = '0LyfQWJT6nXafLPZqxe9Of'
  * Promisified setTimeout
  *
  * @param {number} ms
- * @returns {Promise<void>}
  */
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -26,7 +26,6 @@ export function sleep(ms) {
  *
  * @param {function} fn
  * @param {...any} [args] - Arguments to be passed to function
- * @returns {void}
  */
 export function defer(fn, ...args) {
   requestAnimationFrame(() => setTimeout(() => fn(...args), 0))
@@ -37,7 +36,6 @@ export function defer(fn, ...args) {
  *
  * @param {function} fn
  * @param {...any} [args] - Arguments to be passed to function
- * @returns {() => void}
  */
 export function deferred(fn, ...args) {
   return () => defer(fn, ...args)
@@ -61,7 +59,6 @@ export function merge(object, source) {
  * Check if value is string
  *
  * @param {any} value
- * @returns {boolean}
  */
 export function isString(value) {
   return typeof value === 'string'
@@ -71,7 +68,6 @@ export function isString(value) {
  * Check if array includes truthy value
  *
  * @param {any[]} array
- * @returns {boolean}
  */
 export function includesTruthy(array) {
   return array.some((value) => value)
@@ -82,7 +78,6 @@ export function includesTruthy(array) {
  *
  * @param {Moment} startDate
  * @param {Moment} endDate
- * @yields {string}
  */
 export function* dateRange(startDate, endDate) {
   const current = startDate.clone()
@@ -99,7 +94,6 @@ export function* dateRange(startDate, endDate) {
  *
  * @param {Moment} [startDate]
  * @param {Moment} [endDate]
- * @returns {string|null}
  */
 export function playlistName(startDate, endDate) {
   if (!startDate || !endDate) return 'New Releases'
@@ -120,15 +114,14 @@ export function playlistName(startDate, endDate) {
  * @param {ReleasesMap} releasesMap
  * @param {Moment} startDate
  * @param {Moment} endDate
- * @returns {string[]}
  */
 export function getReleasesBetween(releasesMap, startDate, endDate) {
   /** @type {string[]} */
   const releases = []
 
   for (const date of dateRange(startDate, endDate)) {
-    if (releasesMap[date]) {
-      releases.push(...releasesMap[date].map(({ id }) => id))
+    if (date in releasesMap) {
+      for (const album of releasesMap[date]) releases.push(album.id)
     }
   }
 
@@ -140,7 +133,6 @@ export function getReleasesBetween(releasesMap, startDate, endDate) {
  *
  * @param {string} id
  * @param {string} entity
- * @returns {string}
  */
 export function spotifyUri(id, entity) {
   return `spotify:${entity}:${id}`
@@ -151,7 +143,6 @@ export function spotifyUri(id, entity) {
  *
  * @param {string} id
  * @param {string} entity
- * @returns {string}
  */
 export function spotifyUrl(id, entity) {
   return `https://open.spotify.com/${entity}/${id}`
@@ -163,7 +154,6 @@ export function spotifyUrl(id, entity) {
  * @param {string} id
  * @param {string} entity
  * @param {boolean} [uri] - Return URI link if `true`
- * @returns {string}
  */
 export function spotifyLink(id, entity, uri = false) {
   return uri ? spotifyUri(id, entity) : spotifyUrl(id, entity)
@@ -173,15 +163,11 @@ export function spotifyLink(id, entity, uri = false) {
  * Pick image from array of images and return its URL
  *
  * @param {SpotifyImage[]} [images]
- * @returns {string|null}
+ * @returns {string | null}
  */
 export function getImage(images) {
-  if (!images?.length) {
-    return null
-  }
-
+  if (!images?.length) return null
   const image = images.find(({ width }) => width === 300)
-
   return image ? image.url : images[0].url
 }
 
@@ -189,24 +175,22 @@ export function getImage(images) {
  * Build User
  *
  * @param {SpotifyUser} source
- * @returns {User}
  */
 export function buildUser(source) {
-  return {
+  return /** @type {User} */ ({
     id: source.id,
     name: source.display_name,
     image: getImage(source.images),
-  }
+  })
 }
 
 /**
  * Build Artist
  *
  * @param {SpotifyArtist} source
- * @returns {Artist}
  */
 export function buildArtist(source) {
-  return { id: source.id, name: source.name }
+  return /** @type {Artist} */ ({ id: source.id, name: source.name })
 }
 
 /**
@@ -214,10 +198,9 @@ export function buildArtist(source) {
  *
  * @param {SpotifyAlbum} source
  * @param {string} artistId
- * @returns {AlbumRaw}
  */
 export function buildAlbumRaw(source, artistId) {
-  return {
+  return /** @type {AlbumRaw} */ ({
     id: source.id,
     name: source.name,
     image: getImage(source.images),
@@ -225,14 +208,13 @@ export function buildAlbumRaw(source, artistId) {
     releaseDate: source.release_date,
     artistIds: { [source.album_group]: [artistId] },
     totalTracks: source.total_tracks,
-  }
+  })
 }
 
 /**
  * Generate random color scheme
  *
  * @param {{ rotation: () => number, saturation: () => number, lightness: () => number }} options
- * @returns {GroupColorScheme}
  */
 export function randomColorScheme({ rotation, saturation, lightness }) {
   let hue = random(0, 359)
@@ -257,7 +239,6 @@ export function randomColorScheme({ rotation, saturation, lightness }) {
  *
  * @param {string} title
  * @param {string} [body]
- * @returns {Notification}
  */
 export function createNotification(title, body) {
   const notification = new Notification(title, { body, icon: NOTIFICATION_ICON })
@@ -272,8 +253,6 @@ export function createNotification(title, body) {
 
 /**
  * Check if all modals are closed
- *
- * @returns {boolean}
  */
 export function modalsClosed() {
   return !document.documentElement.classList.contains('is-modal-open')
@@ -285,6 +264,7 @@ export function modalsClosed() {
  * @param {Error & { contexts?: SentryContexts }} error
  */
 export function captureException(error) {
+  console.error(error)
   Sentry.captureException(error, { contexts: error.contexts })
 }
 
@@ -293,23 +273,17 @@ export function captureException(error) {
  *
  * @param {AlbumRaw[]} albumsRaw
  * @param {string} minDate
- * @returns {AlbumRaw[]}
  */
 export function mergeAlbumsRaw(albumsRaw, minDate) {
   const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
   const albumsRawMap = albumsRaw.reduce((map, album) => {
-    if (album.releaseDate < minDate || album.releaseDate > maxDate) {
-      return map
-    }
+    const { id, releaseDate, artistIds } = album
 
-    const matched = map[album.id]
+    if (releaseDate < minDate || releaseDate > maxDate) return map
 
-    if (!matched) {
-      map[album.id] = album
-      return map
-    }
+    if (id in map) merge(map[id].artistIds, artistIds)
+    else map[id] = album
 
-    merge(matched.artistIds, album.artistIds)
     return map
   }, /** @type {{ [id: string]: AlbumRaw }} */ ({}))
 
@@ -321,7 +295,6 @@ export function mergeAlbumsRaw(albumsRaw, minDate) {
  *
  * @param {AlbumRaw[]} albumsRaw
  * @param {Artist[]} artists
- * @returns {AlbumsMap}
  */
 export function buildAlbumsMap(albumsRaw, artists) {
   const artistsMap = artists.reduce((map, artist) => {
@@ -342,7 +315,6 @@ export function buildAlbumsMap(albumsRaw, artists) {
  *
  * @param {AlbumRaw} albumRaw
  * @param {ArtistsMap} artistsMap
- * @returns {Album}
  */
 export function buildAlbum(albumRaw, artistsMap) {
   const { artistIds, albumArtists, ...albumBase } = albumRaw
@@ -361,14 +333,13 @@ export function buildAlbum(albumRaw, artistsMap) {
   const artists = Object.fromEntries(artistsEntries)
   const otherArtists = albumArtists.filter((artist) => !artistIdsArray.includes(artist.id))
 
-  return { ...albumBase, artists, otherArtists }
+  return /** @type {Album} */ ({ ...albumBase, artists, otherArtists })
 }
 
 /**
  * Build ReleasesMap
  *
  * @param {Album[]} albums
- * @returns {ReleasesMap}
  */
 export function buildReleasesMap(albums) {
   return albums.reduce(
@@ -382,12 +353,12 @@ export function buildReleasesMap(albums) {
  *
  * @param {ReleasesMap} releasesMap
  * @param {ReleasesOrder} releasesOrder
- * @returns {Releases}
  */
 export function buildReleases(releasesMap, releasesOrder) {
   const releasesUnordered = Object.entries(releasesMap).map(([date, albums]) => ({ date, albums }))
   const releasesOrderedByDate = orderBy(releasesUnordered, 'date', 'desc')
 
+  /** @type {Releases} */
   const releases = releasesOrderedByDate.map((releaseDay) => {
     /** @param {Album} album */
     const orderByAlbumGroup = (album) => AlbumGroupIndex[Object.keys(album.artists).shift()]
@@ -411,7 +382,6 @@ export function buildReleases(releasesMap, releasesOrder) {
  * Check if album contains Various Artists
  *
  * @param {Album} album
- * @returns {boolean}
  */
 export function hasVariousArtists(album) {
   return Object.values(album.artists)
@@ -425,7 +395,6 @@ export function hasVariousArtists(album) {
  *
  * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
  * @param {string} labelsList
- * @returns {string[]}
  */
 export function deleteLabels(albumsMap, labelsList) {
   if (labelsList.trim().length === 0) return []
@@ -441,13 +410,51 @@ export function deleteLabels(albumsMap, labelsList) {
   }
 
   /** @param {Album} album */
-  function shouldDelete(album) {
+  const shouldDelete = (album) => {
     if (album.label in labels) {
       if (labels[album.label] === undefined) return true
       if (labels[album.label].includes('VA') && hasVariousArtists(album)) return true
     }
 
     return false
+  }
+
+  for (const album of Object.values(albumsMap)) {
+    if (shouldDelete(album)) {
+      ids.push(album.id)
+      delete albumsMap[album.id]
+    }
+  }
+
+  return ids
+}
+
+/**
+ * Delete albums from specified artists and return deleted IDs. Mutates `albumsMap`.
+ *
+ * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
+ * @param {string} artistsList
+ */
+export function deleteArtists(albumsMap, artistsList) {
+  if (artistsList.trim().length === 0) return []
+
+  /** @type {string[]} */
+  const ids = []
+  /** @type {string[]} */
+  const artistIds = []
+  const entries = artistsList.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
+
+  for (const [, artistId] of entries) {
+    artistIds.push(artistId)
+  }
+
+  /** @param {Album} album */
+  const shouldDelete = (album) => {
+    const albumArtists = Object.values(album.artists)
+      .flat()
+      .map((artist) => artist.id)
+    const common = intersect([albumArtists, artistIds])
+    return common.length > 0
   }
 
   for (const album of Object.values(albumsMap)) {

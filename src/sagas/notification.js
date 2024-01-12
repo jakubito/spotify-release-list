@@ -1,5 +1,6 @@
 import { call, delay, race, select, take } from 'redux-saga/effects'
 import { createNotification } from 'helpers'
+import { albumsHistory, albumsNew } from 'albums'
 import { syncFinished } from 'state/actions'
 import { getPreviousSyncMaxDate, getReleasesMaxDate, getSettings } from 'state/selectors'
 import { windowEventChannel } from './helpers'
@@ -27,9 +28,8 @@ function* notificationWorker() {
 
   while (true) {
     yield take(syncFinished.type)
-
     /** @type {ReturnType<typeof getSettings>} */
-    const { notifications } = yield select(getSettings)
+    const { notifications, trackHistory } = yield select(getSettings)
     /** @type {ReturnType<typeof getPreviousSyncMaxDate>} */
     const previousMaxDate = yield select(getPreviousSyncMaxDate)
     /** @type {ReturnType<typeof getReleasesMaxDate>} */
@@ -37,8 +37,10 @@ function* notificationWorker() {
 
     if (Notification.permission !== 'granted') continue
     if (!notifications) continue
-    if (!previousMaxDate) continue
-    if (currentMaxDate === previousMaxDate) continue
+    if (trackHistory && albumsNew.size === 0) continue
+    if (trackHistory && albumsHistory.size === 0) continue
+    if (!trackHistory && !previousMaxDate) continue
+    if (!trackHistory && currentMaxDate === previousMaxDate) continue
 
     yield call(createNotification, 'New music has been released')
   }

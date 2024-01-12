@@ -1,6 +1,6 @@
 import { AlbumGroup } from 'enums'
 import { getFiltersVisible, getHasOriginalReleases } from 'state/selectors'
-import { INITIAL_STATE } from './reducer'
+import { initialState } from './reducer'
 
 /** @type {{ [version: number]: (state: PersistedState) => PersistedState }} */
 const migrations = {
@@ -33,24 +33,24 @@ const migrations = {
       labelBlocklist: state.settings.labelBlocklist.replaceAll('[VA]', '*VA*'),
     },
   }),
+  8: resetDataWithMessage,
 }
 
 /**
  * Reset all data except settings and show message
  *
  * @param {PersistedState} state
- * @returns {PersistedState}
  */
 function resetDataWithMessage(state) {
-  return {
+  return /** @type {PersistedState} */ ({
     ...state,
-    ...INITIAL_STATE,
+    ...initialState,
     settings: state.settings,
     message: {
       text: 'Please log in again to continue.',
       type: 'info',
     },
-  }
+  })
 }
 
 export default migrations

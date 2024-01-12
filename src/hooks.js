@@ -1,9 +1,5 @@
 import { useEffect, useRef, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { addSeenFeature } from 'state/actions'
-import { getSeenFeatures } from 'state/selectors'
-import { deferred } from 'helpers'
 
 /**
  * Modal hook
@@ -11,7 +7,7 @@ import { deferred } from 'helpers'
  * @param {() => void} closeModal
  */
 export function useModal(closeModal) {
-  useHotkeys('esc', closeModal, { enableOnTags: ['INPUT'] })
+  useHotkeys('esc', closeModal, { enableOnFormTags: ['input'] })
 
   useEffect(() => {
     document.documentElement.classList.add('is-modal-open')
@@ -23,29 +19,9 @@ export function useModal(closeModal) {
 }
 
 /**
- * Feature hook
- *
- * @param {string} feature
- * @returns {{ seen: boolean, setSeen: () => void }}
- */
-export function useFeature(feature) {
-  const dispatch = useDispatch()
-  const seenFeatures = useSelector(getSeenFeatures)
-  const seen = seenFeatures.includes(feature)
-  const setSeen = deferred(() => {
-    if (!seen) {
-      dispatch(addSeenFeature(feature))
-    }
-  })
-
-  return { seen, setSeen }
-}
-
-/**
  * Returns a dynamic key that changes on every dependency change
  *
  * @param {import('react').DependencyList} dependencyList
- * @returns {number}
  */
 export function useDynamicKey(dependencyList) {
   const keyRef = useRef(0)

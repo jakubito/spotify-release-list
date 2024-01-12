@@ -28,7 +28,7 @@ html,
 body,
 #root {
   height: 100%;
-  background-color: $black;
+  background-color: #000000;
   color: $white-ter;
 }
 
@@ -95,6 +95,10 @@ body,
   &:focus {
     box-shadow: 0 0 0 0.125em $black-bis;
     background-color: $black-ter;
+  }
+
+  &::placeholder {
+    color: $grey;
   }
 }
 
