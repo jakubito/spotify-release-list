@@ -14,7 +14,7 @@ import {
 import { getAuthData, getSyncScopes } from 'auth'
 import { buildAlbumsMap, buildArtist, deleteArtists, deleteLabels, mergeAlbumsRaw } from 'helpers'
 import { albumsNew, albumsHistory } from 'albums'
-import { getSettings, getReleasesMaxDate } from 'state/selectors'
+import { getSettings, getReleasesMaxDate, getSettingsBlockedArtists } from 'state/selectors'
 import {
   setFilters,
   setSyncingProgress,
@@ -82,7 +82,9 @@ function* syncMainSaga(action) {
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
   const settings = yield select(getSettings)
-  const { days, fullAlbumData, labelBlocklist, artistBlocklist, trackHistory } = settings
+  const { days, fullAlbumData, labelBlocklist, trackHistory } = settings
+  /** @type {ReturnType<typeof getSettingsBlockedArtists>} */
+  const blockedArtists = yield select(getSettingsBlockedArtists)
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
 
@@ -110,10 +112,10 @@ function* syncMainSaga(action) {
   const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate)
   /** @type {Await<ReturnType<typeof buildAlbumsMap>>} */
   const albums = yield call(buildAlbumsMap, mergedAlbums, artists)
-  yield call(deleteArtists, albums, artistBlocklist)
+  yield call(deleteArtists, albums, blockedArtists)
 
   if (fullAlbumData) {
-    yield call(syncExtraData, mergedAlbums, albums, requestChannel, responseChannel)
+    yield call(syncExtraData, albums, requestChannel, responseChannel)
     yield call(deleteLabels, albums, labelBlocklist)
   }
 
@@ -139,6 +141,8 @@ function* syncMainSaga(action) {
 function* getArtists(requestChannel, responseChannel) {
   /** @type {ReturnType<typeof getSettings>} */
   const { artistSources } = yield select(getSettings)
+  /** @type {ReturnType<typeof getSettingsBlockedArtists>} */
+  const blockedArtists = yield select(getSettingsBlockedArtists)
   /** @type {Artist[]} */
   const allArtists = []
   /** @type {Record<string, Artist>} */
@@ -164,6 +168,7 @@ function* getArtists(requestChannel, responseChannel) {
 
   for (const artist of allArtists) {
     if (artist.id in artists) continue
+    if (blockedArtists.includes(artist.id)) continue
     artists[artist.id] = artist
   }
 
@@ -207,16 +212,14 @@ function* syncBaseData(artists, requestChannel, responseChannel) {
 /**
  * Fetch extra album data
  *
- * @param {AlbumRaw[]} albumsRaw
  * @param {AlbumsMap} albums
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
  */
-function* syncExtraData(albumsRaw, albums, requestChannel, responseChannel) {
+function* syncExtraData(albums, requestChannel, responseChannel) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
-  const albumIds = albumsRaw.map((album) => album.id)
-  const albumIdsChunks = chunk(albumIds, 20)
+  const albumIdsChunks = chunk(Object.keys(albums), 20)
 
   for (const albumIdsChunk of albumIdsChunks)
     yield putRequestMessage(requestChannel, [getFullAlbums, token, albumIdsChunk])

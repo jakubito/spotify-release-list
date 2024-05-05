@@ -97,6 +97,18 @@ export const getSettingsTrackHistory = createSelector(
   getSettings,
   (settings) => settings.trackHistory
 )
+export const getSettingsArtistBlocklist = createSelector(
+  getSettings,
+  (settings) => settings.artistBlocklist
+)
+
+export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlocklist, (blocklist) => {
+  /** @type {string[]} */
+  const artistIds = []
+  const matches = blocklist.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
+  for (const match of matches) artistIds.push(match[1])
+  return artistIds
+})
 
 // Individual filters selectors
 export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)
