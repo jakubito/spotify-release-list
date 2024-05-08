@@ -14,7 +14,12 @@ import {
 import { getAuthData, getSyncScopes } from 'auth'
 import { buildAlbumsMap, buildArtist, deleteArtists, deleteLabels, mergeAlbumsRaw } from 'helpers'
 import { albumsNew, albumsHistory } from 'albums'
-import { getSettings, getReleasesMaxDate, getSettingsBlockedArtists } from 'state/selectors'
+import {
+  getSettings,
+  getReleasesMaxDate,
+  getSettingsBlockedArtists,
+  getSettingsBlockedLabels,
+} from 'state/selectors'
 import {
   setFilters,
   setSyncingProgress,
@@ -81,8 +86,9 @@ function* syncMainSaga(action) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
-  const settings = yield select(getSettings)
-  const { days, fullAlbumData, labelBlocklist, trackHistory } = settings
+  const { days, fullAlbumData, trackHistory } = yield select(getSettings)
+  /** @type {ReturnType<typeof getSettingsBlockedLabels>} */
+  const blockedLabels = yield select(getSettingsBlockedLabels)
   /** @type {ReturnType<typeof getSettingsBlockedArtists>} */
   const blockedArtists = yield select(getSettingsBlockedArtists)
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
@@ -116,7 +122,7 @@ function* syncMainSaga(action) {
 
   if (fullAlbumData) {
     yield call(syncExtraData, albums, requestChannel, responseChannel)
-    yield call(deleteLabels, albums, labelBlocklist)
+    yield call(deleteLabels, albums, blockedLabels)
   }
 
   if (trackHistory) {

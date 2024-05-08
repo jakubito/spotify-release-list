@@ -97,6 +97,22 @@ export const getSettingsTrackHistory = createSelector(
   getSettings,
   (settings) => settings.trackHistory
 )
+
+export const getSettingsLabelBlocklist = createSelector(
+  getSettings,
+  (settings) => settings.labelBlocklist
+)
+
+export const getSettingsBlockedLabels = createSelector(getSettingsLabelBlocklist, (blocklist) => {
+  /** @type {BlockedLabels} */
+  const labels = {}
+  const matches = blocklist.matchAll(/^\s*(?:\*(\S*)\*)?\s*(.*?)\s*$/gm)
+  for (const [, flags, label] of matches) {
+    labels[label] = flags?.split(',')
+  }
+  return labels
+})
+
 export const getSettingsArtistBlocklist = createSelector(
   getSettings,
   (settings) => settings.artistBlocklist
