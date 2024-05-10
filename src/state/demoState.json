@@ -25358,10 +25358,10 @@
     "minimumSavedTracks": 1,
     "groups": ["album", "single", "compilation", "appears_on"],
     "groupColors": {
-      "album": "#e04c71",
-      "single": "#a779c5",
-      "compilation": "#dcad4f",
-      "appears_on": "#19a34a"
+      "album": "#e0b766",
+      "single": "#bc8edd",
+      "compilation": "#e86f8d",
+      "appears_on": "#65c587"
     },
     "days": 180,
     "market": "",
