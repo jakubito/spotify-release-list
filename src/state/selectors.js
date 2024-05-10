@@ -354,7 +354,7 @@ const getNewAlbumIds = createSelector(getAlbumsArray, (albums) =>
  */
 const getSearchFiltered = createSelector(
   [getFiltersSearch, getFuseInstance],
-  (searchQuery, fuse) => searchQuery && fuse.search(searchQuery).map((result) => result.item.id)
+  (query, fuse) => query && fuse.search(query.trim()).map((result) => result.item.id)
 )
 
 /**
