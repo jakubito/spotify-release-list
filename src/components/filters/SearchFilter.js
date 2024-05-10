@@ -28,7 +28,7 @@ function SearchFilter() {
   /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChange = (event) => {
     setValue(event.target.value)
-    debouncedDispatch(event.target.value.trim())
+    debouncedDispatch(event.target.value)
   }
 
   const reset = () => {

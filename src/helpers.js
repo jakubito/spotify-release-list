@@ -394,26 +394,19 @@ export function hasVariousArtists(album) {
  * Delete albums from specified labels and return deleted IDs. Mutates `albumsMap`.
  *
  * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
- * @param {string} labelsList
+ * @param {BlockedLabels} blockedLabels
  */
-export function deleteLabels(albumsMap, labelsList) {
-  if (labelsList.trim().length === 0) return []
+export function deleteLabels(albumsMap, blockedLabels) {
+  if (Object.keys(blockedLabels).length === 0) return []
 
   /** @type {string[]} */
-  const ids = []
-  /** @type {Record<string, string[]>} */
-  const labels = {}
-  const entries = labelsList.matchAll(/^\s*(?:\*(\S*)\*)?\s*(.*?)\s*$/gm)
-
-  for (const [, flags, label] of entries) {
-    labels[label] = flags?.split(',')
-  }
+  const deletedIds = []
 
   /** @param {Album} album */
   const shouldDelete = (album) => {
-    if (album.label in labels) {
-      if (labels[album.label] === undefined) return true
-      if (labels[album.label].includes('VA') && hasVariousArtists(album)) return true
+    if (album.label in blockedLabels) {
+      if (blockedLabels[album.label] === undefined) return true
+      if (blockedLabels[album.label].includes('VA') && hasVariousArtists(album)) return true
     }
 
     return false
@@ -421,50 +414,44 @@ export function deleteLabels(albumsMap, labelsList) {
 
   for (const album of Object.values(albumsMap)) {
     if (shouldDelete(album)) {
-      ids.push(album.id)
+      deletedIds.push(album.id)
       delete albumsMap[album.id]
     }
   }
 
-  return ids
+  return deletedIds
 }
 
 /**
  * Delete albums from specified artists and return deleted IDs. Mutates `albumsMap`.
  *
  * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
- * @param {string} artistsList
+ * @param {string[]} blockedArtists
  */
-export function deleteArtists(albumsMap, artistsList) {
-  if (artistsList.trim().length === 0) return []
+export function deleteArtists(albumsMap, blockedArtists) {
+  if (blockedArtists.length === 0) return []
 
   /** @type {string[]} */
-  const ids = []
-  /** @type {string[]} */
-  const artistIds = []
-  const entries = artistsList.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
-
-  for (const [, artistId] of entries) {
-    artistIds.push(artistId)
-  }
+  const deletedIds = []
 
   /** @param {Album} album */
   const shouldDelete = (album) => {
     const albumArtists = Object.values(album.artists)
       .flat()
+      .concat(album.otherArtists)
       .map((artist) => artist.id)
-    const common = intersect([albumArtists, artistIds])
+    const common = intersect([albumArtists, blockedArtists])
     return common.length > 0
   }
 
   for (const album of Object.values(albumsMap)) {
     if (shouldDelete(album)) {
-      ids.push(album.id)
+      deletedIds.push(album.id)
       delete albumsMap[album.id]
     }
   }
 
-  return ids
+  return deletedIds
 }
 
 /**
