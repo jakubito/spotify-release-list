@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { defer } from 'helpers'
-import { getSettings } from 'state/selectors'
+import { getSettingsArtistBlocklist } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import HelpText from './HelpText'
 
 function ArtistBlocklistField() {
-  const { artistBlocklist } = useSelector(getSettings)
+  const artistBlocklist = useSelector(getSettingsArtistBlocklist)
   const dispatch = useDispatch()
 
   return (

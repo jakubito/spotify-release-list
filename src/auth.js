@@ -39,7 +39,7 @@ export function getSyncScopes(artistSources) {
 
   for (const source of artistSources) {
     if (source === FOLLOWED) scopes.push(USER_FOLLOW_READ)
-    if (source === SAVED_ALBUMS || source === SAVED_TRACKS) scopes.push(USER_LIBRARY_READ)
+    else if (source === SAVED_ALBUMS || source === SAVED_TRACKS) scopes.push(USER_LIBRARY_READ)
   }
 
   return scopes

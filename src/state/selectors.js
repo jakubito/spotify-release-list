@@ -98,6 +98,34 @@ export const getSettingsTrackHistory = createSelector(
   (settings) => settings.trackHistory
 )
 
+export const getSettingsLabelBlocklist = createSelector(
+  getSettings,
+  (settings) => settings.labelBlocklist
+)
+
+export const getSettingsBlockedLabels = createSelector(getSettingsLabelBlocklist, (blocklist) => {
+  /** @type {BlockedLabels} */
+  const labels = {}
+  const matches = blocklist.matchAll(/^\s*(?:\*(\S*)\*)?\s*(.*?)\s*$/gm)
+  for (const [, flags, label] of matches) {
+    labels[label] = flags?.split(',')
+  }
+  return labels
+})
+
+export const getSettingsArtistBlocklist = createSelector(
+  getSettings,
+  (settings) => settings.artistBlocklist
+)
+
+export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlocklist, (blocklist) => {
+  /** @type {string[]} */
+  const artistIds = []
+  const matches = blocklist.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
+  for (const match of matches) artistIds.push(match[1])
+  return artistIds
+})
+
 // Individual filters selectors
 export const getFiltersGroups = createSelector(getFilters, (filters) => filters.groups)
 export const getFiltersSearch = createSelector(getFilters, (filters) => filters.search)
@@ -326,7 +354,7 @@ const getNewAlbumIds = createSelector(getAlbumsArray, (albums) =>
  */
 const getSearchFiltered = createSelector(
   [getFiltersSearch, getFuseInstance],
-  (searchQuery, fuse) => searchQuery && fuse.search(searchQuery).map((result) => result.item.id)
+  (query, fuse) => query && fuse.search(query.trim()).map((result) => result.item.id)
 )
 
 /**

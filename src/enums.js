@@ -91,10 +91,10 @@ export const AlbumGroupLabels = [
 /** @enum {GroupColorScheme} */
 export const GroupColorSchemes = {
   DEFAULT: {
-    [ALBUM]: '#e04c71',
-    [SINGLE]: '#a779c5',
-    [COMPILATION]: '#dcad4f',
-    [APPEARS_ON]: '#19a34a',
+    [ALBUM]: '#e0b766',
+    [SINGLE]: '#bc8edd',
+    [COMPILATION]: '#e86f8d',
+    [APPEARS_ON]: '#65c587',
   },
   ORIGINAL: {
     [ALBUM]: '#19a34a',
