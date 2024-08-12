@@ -10,14 +10,12 @@ const HTTP_TOO_MANY_REQUESTS = 429
 export class FetchError extends Error {
   /**
    * @param {number} status
-   * @param {string} statusText
    * @param {string} [message]
    */
-  constructor(status, statusText, message) {
+  constructor(status, message) {
     super(message)
     this.name = 'FetchError'
     this.status = status
-    this.statusText = statusText
   }
 }
 
@@ -241,14 +239,12 @@ async function request(endpoint, token, method, headers = {}, body) {
     return request(endpoint, token, method, headers, body)
   }
 
-  if (response.status >= 400 && response.status < 500) {
-    const json = await response.json()
-    throw new FetchError(response.status, response.statusText, json.error.message)
-  }
+  let message = `HTTP Error ${response.status}`
 
-  throw new FetchError(
-    response.status,
-    response.statusText,
-    `${response.status} ${response.statusText} error encountered while fetching`
-  )
+  try {
+    const json = await response.json()
+    message += ` ${json.error.message}`
+  } catch {}
+
+  throw new FetchError(response.status, message)
 }
