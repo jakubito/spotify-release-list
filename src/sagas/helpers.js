@@ -68,8 +68,9 @@ export function throttle(amount, unit, saga, ...args) {
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel<T>} responseChannel
  * @param {number} [retryLimit]
+ * @param {number} [retryDelay]
  */
-export function* requestWorker(requestChannel, responseChannel, retryLimit = 2) {
+export function* requestWorker(requestChannel, responseChannel, retryLimit = 2, retryDelay = 5000) {
   while (true) {
     /** @type {RequestChannelMessage} */
     const request = yield take(requestChannel)
@@ -80,7 +81,7 @@ export function* requestWorker(requestChannel, responseChannel, retryLimit = 2) 
     } catch (error) {
       console.error(error)
       if (error instanceof FetchError && request.callCount < retryLimit) {
-        yield delay(5000)
+        yield delay(retryDelay)
         yield put(requestChannel, request)
       } else {
         yield put(responseChannel, { error })

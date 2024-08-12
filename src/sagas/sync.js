@@ -104,7 +104,7 @@ function* syncMainSaga(action) {
   const responseChannel = yield call(channel, buffers.expanding(WORKERS_COUNT))
 
   for (let i = 0; i < WORKERS_COUNT; i += 1)
-    workers.push(yield fork(requestWorker, requestChannel, responseChannel))
+    workers.push(yield fork(requestWorker, requestChannel, responseChannel, 9, 4000))
 
   /** @type {Await<ReturnType<typeof getUser>>} */
   const user = yield call(getUser, token)
