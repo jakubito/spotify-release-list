@@ -81,19 +81,7 @@ export async function getArtistAlbums(token, artistId, groups, minDate) {
     /** @type {Paged<SpotifyAlbum>} */
     const response = await get(next, token)
     for (const item of response.items) albums.push(buildAlbumRaw(item, artistId))
-
-    if (!response.next) return albums
-    if (last(albums).releaseDate < minDate) break
-
     next = response.next
-  }
-
-  const [lastGroup] = /** @type {[AlbumGroup]} */ (Object.keys(last(albums).artistIds))
-  const restGroups = groups.slice(groups.indexOf(lastGroup) + 1)
-
-  if (restGroups.length > 0) {
-    const restAlbums = await getArtistAlbums(token, artistId, restGroups, minDate)
-    for (const album of restAlbums) albums.push(album)
   }
 
   return albums
