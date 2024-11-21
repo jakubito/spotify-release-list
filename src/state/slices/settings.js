@@ -1,6 +1,6 @@
 import { albumsNew } from 'albums'
 import { deleteLabels } from 'helpers'
-import { AlbumGroup, ArtistSource, GroupColorSchemes, ReleasesOrder } from 'enums'
+import { AlbumGroup, ArtistSource, GroupColorSchemes, ReleasesOrder, Theme } from 'enums'
 import { getSettingsBlockedLabels } from 'state/selectors'
 import {
   applyLabelBlocklist,
@@ -19,7 +19,7 @@ export const initialState = {
     groups: Object.values(AlbumGroup),
     groupColors: GroupColorSchemes.DEFAULT,
     days: 30,
-    theme: '',
+    theme: Theme.COMPACT,
     uriLinks: false,
     covers: true,
     autoSync: false,
