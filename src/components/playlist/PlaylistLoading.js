@@ -1,3 +1,4 @@
+import { useHotkeys } from 'react-hotkeys-hook'
 import { Button } from 'components/common'
 
 /**
@@ -6,6 +7,8 @@ import { Button } from 'components/common'
  * @param {{ title: string, cancel: () => void }} props
  */
 function PlaylistLoading({ title, cancel }) {
+  useHotkeys('esc', cancel)
+
   return (
     <>
       <div className="PlaylistLoading">

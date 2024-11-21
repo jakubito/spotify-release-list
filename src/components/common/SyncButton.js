@@ -42,7 +42,7 @@ function SyncButton({ title, icon, medium, compact }) {
     <Button
       title={`${title} [R]`}
       className={classNames('SyncButton', {
-        'SyncButton--syncing': disabled,
+        'SyncButton--syncing': syncing,
         'SyncButton--compact': compact,
       })}
       disabled={disabled}
@@ -52,8 +52,12 @@ function SyncButton({ title, icon, medium, compact }) {
       primary
     >
       {displayTitle && <span>{title}</span>}
-      {syncing && <ProgressBar />}
-      {disabled && <span className="spinner" />}
+      {syncing && (
+        <>
+          <ProgressBar />
+          <span className="spinner" />
+        </>
+      )}
     </Button>
   )
 }
