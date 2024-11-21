@@ -1,6 +1,7 @@
 import { albumsNew } from 'albums'
 import { deleteLabels } from 'helpers'
 import { AlbumGroup, ArtistSource, GroupColorSchemes, ReleasesOrder } from 'enums'
+import { getSettingsBlockedLabels } from 'state/selectors'
 import {
   applyLabelBlocklist,
   setLabelBlocklistHeight,
@@ -46,7 +47,8 @@ export function bind(builder) {
       state.lastSettingsPath = action.payload
     })
     .addCase(applyLabelBlocklist, (state) => {
-      const deletedIds = deleteLabels(state.albums, state.settings.labelBlocklist)
+      const blockedLabels = getSettingsBlockedLabels(state)
+      const deletedIds = deleteLabels(state.albums, blockedLabels)
       for (const id of deletedIds) {
         albumsNew.delete(id)
         delete state.favorites[id]

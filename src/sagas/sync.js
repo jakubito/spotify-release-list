@@ -1,7 +1,6 @@
 import moment from 'moment'
 import chunk from 'lodash/chunk'
-import { channel, buffers } from 'redux-saga'
-import { call, put, select, take, fork, cancel, race, delay } from 'redux-saga/effects'
+import { call, put, select, take, race, delay, fork, cancel } from 'redux-saga/effects'
 import { ArtistSource, MomentFormat } from 'enums'
 import {
   getArtistAlbums,
@@ -30,21 +29,11 @@ import {
   syncStart,
 } from 'state/actions'
 import { authorize } from './auth'
-import {
-  withTitle,
-  requestWorker,
-  putRequestMessage,
-  getAllCursorPaged,
-  getAllPaged,
-} from './helpers'
+import { withTitle } from './helpers'
+import { getAllCursorPaged, getAllPaged, putRequestMessage, setupWorkers } from './request'
 
 const { ISO_DATE } = MomentFormat
 const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS } = ArtistSource
-
-/**
- * Limit maximum number of concurrent requests
- */
-const WORKERS_COUNT = 6
 
 /**
  * How much percentage of overall progress is assigned to base sync when extra data fetch is enabled
@@ -93,27 +82,19 @@ function* syncMainSaga(action) {
   const blockedArtists = yield select(getSettingsBlockedArtists)
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
-
-  /** @type {Task[]} */
-  const workers = []
   const minDate = moment().subtract(days, 'day').format(ISO_DATE)
 
-  /** @type {RequestChannel} */
-  const requestChannel = yield call(channel, buffers.expanding(1000))
-  /** @type {ResponseChannel} */
-  const responseChannel = yield call(channel, buffers.expanding(WORKERS_COUNT))
-
-  for (let i = 0; i < WORKERS_COUNT; i += 1)
-    workers.push(yield fork(requestWorker, requestChannel, responseChannel, 9, 4000))
+  /** @type {RequestWorkers} */
+  const { workers, requestChannel, responseChannel, workersFork } = yield call(setupWorkers)
+  yield fork(workersFork)
 
   /** @type {Await<ReturnType<typeof getUser>>} */
   const user = yield call(getUser, token)
   /** @type {Artist[]} */
-  const artists = yield call(getArtists, requestChannel, responseChannel)
+  const artists = yield call(getArtists, requestChannel, responseChannel, workers.length)
 
   /** @type {AlbumRaw[]} */
   const albumsRaw = yield call(syncBaseData, artists, requestChannel, responseChannel)
-
   /** @type {Await<ReturnType<typeof mergeAlbumsRaw>>} */
   const mergedAlbums = yield call(mergeAlbumsRaw, albumsRaw, minDate)
   /** @type {Await<ReturnType<typeof buildAlbumsMap>>} */
@@ -130,9 +111,6 @@ function* syncMainSaga(action) {
   }
 
   yield cancel(workers)
-  yield call(requestChannel.close)
-  yield call(responseChannel.close)
-
   yield put(setSyncingProgress(100))
   yield race([take(syncAnimationFinished.type), delay(1000)])
   yield put(syncFinished({ albums, user, previousSyncMaxDate, auto: action.payload?.auto }))
@@ -143,8 +121,9 @@ function* syncMainSaga(action) {
  *
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
+ * @param {number} workersCount
  */
-function* getArtists(requestChannel, responseChannel) {
+function* getArtists(requestChannel, responseChannel, workersCount) {
   /** @type {ReturnType<typeof getSettings>} */
   const { artistSources } = yield select(getSettings)
   /** @type {ReturnType<typeof getSettingsBlockedArtists>} */
@@ -162,13 +141,23 @@ function* getArtists(requestChannel, responseChannel) {
 
   if (artistSources.includes(SAVED_TRACKS)) {
     /** @type {Artist[]} */
-    const artists = yield call(getUserSavedTracksArtists, requestChannel, responseChannel)
+    const artists = yield call(
+      getUserSavedTracksArtists,
+      requestChannel,
+      responseChannel,
+      workersCount
+    )
     for (const artist of artists) allArtists.push(artist)
   }
 
   if (artistSources.includes(SAVED_ALBUMS)) {
     /** @type {Artist[]} */
-    const artists = yield call(getUserSavedAlbumsArtists, requestChannel, responseChannel)
+    const artists = yield call(
+      getUserSavedAlbumsArtists,
+      requestChannel,
+      responseChannel,
+      workersCount
+    )
     for (const artist of artists) allArtists.push(artist)
   }
 
@@ -195,10 +184,9 @@ function* syncBaseData(artists, requestChannel, responseChannel) {
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getSettings>} */
   const { groups, fullAlbumData } = yield select(getSettings)
-  const minDate = moment().subtract(1, 'year').format(ISO_DATE)
 
   for (const artist of artists)
-    yield putRequestMessage(requestChannel, [getArtistAlbums, token, artist.id, groups, minDate])
+    yield putRequestMessage(requestChannel, [getArtistAlbums, token, artist.id, groups])
 
   for (let fetched = 0; fetched < artists.length; fetched += 1) {
     /** @type {ResponseChannelMessage<Await<ReturnType<typeof getArtistAlbums>>>} */
@@ -256,9 +244,9 @@ function* getUserFollowedArtists(requestChannel, responseChannel) {
   /** @type {SpotifyArtist[]} */
   const artists = yield call(
     getAllCursorPaged,
+    getUserFollowedArtistsPage,
     requestChannel,
-    responseChannel,
-    getUserFollowedArtistsPage
+    responseChannel
   )
 
   return artists.map(buildArtist)
@@ -267,8 +255,9 @@ function* getUserFollowedArtists(requestChannel, responseChannel) {
 /**
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
+ * @param {number} workersCount
  */
-function* getUserSavedTracksArtists(requestChannel, responseChannel) {
+function* getUserSavedTracksArtists(requestChannel, responseChannel, workersCount) {
   /** @type {ReturnType<typeof getSettings>} */
   const { minimumSavedTracks } = yield select(getSettings)
   /** @type {Record<string, { count: number; artist: Artist}>} */
@@ -277,10 +266,10 @@ function* getUserSavedTracksArtists(requestChannel, responseChannel) {
   /** @type {SpotifySavedTrack[]} */
   const tracks = yield call(
     getAllPaged,
+    getUserSavedTracksPage,
     requestChannel,
     responseChannel,
-    WORKERS_COUNT,
-    getUserSavedTracksPage
+    workersCount
   )
 
   for (const item of tracks) {
@@ -302,18 +291,19 @@ function* getUserSavedTracksArtists(requestChannel, responseChannel) {
 /**
  * @param {RequestChannel} requestChannel
  * @param {ResponseChannel} responseChannel
+ * @param {number} workersCount
  */
-function* getUserSavedAlbumsArtists(requestChannel, responseChannel) {
+function* getUserSavedAlbumsArtists(requestChannel, responseChannel, workersCount) {
   /** @type {Record<string, Artist>} */
   const artists = {}
 
   /** @type {SpotifySavedAlbum[]} */
   const albums = yield call(
     getAllPaged,
+    getUserSavedAlbumsPage,
     requestChannel,
     responseChannel,
-    WORKERS_COUNT,
-    getUserSavedAlbumsPage
+    workersCount
   )
 
   for (const item of albums) {

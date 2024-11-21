@@ -43,6 +43,9 @@ export const getSettings = (state) => state.settings
 export const getPlaylistModalVisible = (state) => state.playlistModalVisible
 
 /** @param {State} state */
+export const getUpdatePlaylistModalVisible = (state) => state.updatePlaylistModalVisible
+
+/** @param {State} state */
 export const getFiltersVisible = (state) => state.filtersVisible
 
 /** @param {State} state */
@@ -52,10 +55,25 @@ export const getMessage = (state) => state.message
 export const getPlaylistForm = (state) => state.playlistForm
 
 /** @param {State} state */
-export const getPlaylistId = (state) => state.playlistId
+export const getPlaylistResult = (state) => state.playlistResult
+
+/** @param {State} state */
+export const getLoadingPlaylists = (state) => state.loadingPlaylists
 
 /** @param {State} state */
 export const getCreatingPlaylist = (state) => state.creatingPlaylist
+
+/** @param {State} state */
+export const getUpdatingPlaylist = (state) => state.updatingPlaylist
+
+/** @param {State} state */
+export const getPlaylists = (state) => state.playlists
+
+/** @param {State} state */
+export const getSelectedPlaylistId = (state) => state.selectedPlaylistId
+
+/** @param {State} state */
+export const getLastPlaylistsRefresh = (state) => state.lastPlaylistsRefresh
 
 /** @param {State} state */
 export const getFilters = (state) => state.filters
@@ -470,4 +488,10 @@ export const getHasReleases = createSelector(getReleasesArray, (albums) => Boole
  */
 export const getReleasesTrackCount = createSelector(getReleasesArray, (albums) =>
   albums.reduce((count, album) => count + album.totalTracks, 0)
+)
+
+/** @param {State} state */
+export const getAnyModalVisible = createSelector(
+  [getPlaylistModalVisible, getUpdatePlaylistModalVisible],
+  (...values) => includesTruthy(values)
 )

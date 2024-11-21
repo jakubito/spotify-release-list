@@ -1,0 +1,18 @@
+.UpdatePlaylistModal {
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__spinner {
+    width: 16px;
+    height: 16px;
+  }
+
+  &__refresh {
+    padding: 0 !important;
+    margin-left: 6px;
+    height: auto;
+  }
+}

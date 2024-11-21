@@ -31,17 +31,8 @@
     }
 
     .actions {
-      margin-bottom: 0;
-
-      .column {
-        @include mobile {
-          margin-top: 20px;
-
-          &:first-child {
-            margin-top: 0;
-          }
-        }
-      }
+      display: flex;
+      gap: 16px;
 
       .button {
         @include mobile {

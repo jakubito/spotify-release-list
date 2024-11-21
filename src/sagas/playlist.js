@@ -1,18 +1,38 @@
-import { all, call, put, select } from 'redux-saga/effects'
+import { all, call, cancel, fork, put, select } from 'redux-saga/effects'
 import chunk from 'lodash/chunk'
+import moment from 'moment'
 import { spotifyUri } from 'helpers'
-import { SpotifyEntity } from 'enums'
-import { getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
+import { Scope, SpotifyEntity } from 'enums'
+import {
+  getAlbumsTrackIds,
+  createPlaylist,
+  addTracksToPlaylist,
+  getUserSavedPlaylistsPage,
+} from 'api'
 import { getAuthData, getPlaylistScope } from 'auth'
-import { getPlaylistForm, getReleases, getUser } from 'state/selectors'
+import {
+  getLastPlaylistsRefresh,
+  getPlaylistForm,
+  getPlaylists,
+  getReleases,
+  getUser,
+} from 'state/selectors'
 import {
   createPlaylistError,
   createPlaylistFinished,
   createPlaylistStart,
+  loadPlaylists,
+  loadPlaylistsError,
+  loadPlaylistsFinished,
+  loadPlaylistsStart,
   showErrorMessage,
+  updatePlaylistError,
+  updatePlaylistFinished,
+  updatePlaylistStart,
 } from 'state/actions'
 import { authorize } from './auth'
 import { withTitle } from './helpers'
+import { getAllPaged, setupWorkers } from './request'
 
 const { TRACK } = SpotifyEntity
 
@@ -52,21 +72,9 @@ function* createPlaylistMainSaga() {
   const user = yield select(getUser)
   /** @type {ReturnType<typeof getPlaylistForm>} */
   const { name, description, isPrivate } = yield select(getPlaylistForm)
-  /** @type {ReturnType<typeof getReleases>} */
-  const releases = yield select(getReleases)
+  /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
+  const trackUris = yield call(getReleasesTrackUris)
 
-  const albumIds = releases.reduce(
-    (ids, { albums }) => ids.concat(albums.map((album) => album.id)),
-    /** @type {string[]} */ ([])
-  )
-
-  const trackIdsCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
-    call(getAlbumsTrackIds, token, albumIdsChunk)
-  )
-
-  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
-  const trackIds = yield all(trackIdsCalls)
-  const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
   /** @type {SpotifyPlaylist} */
   let firstPlaylist
 
@@ -84,5 +92,158 @@ function* createPlaylistMainSaga() {
     }
   }
 
-  yield put(createPlaylistFinished({ id: firstPlaylist.id }))
+  yield put(createPlaylistFinished({ id: firstPlaylist.id, name: firstPlaylist.name }))
+}
+
+/**
+ * @param {UpdatePlaylistAction} action
+ */
+export function* updatePlaylistSaga(action) {
+  try {
+    /** @type {Scope[]} */
+    const scopes = [Scope.PLAYLIST_MODIFY_PRIVATE, Scope.PLAYLIST_MODIFY_PUBLIC]
+
+    /** @type {ReturnType<typeof withTitle>} */
+    const titled = yield call(withTitle, 'Updating playlist...', updatePlaylistMainSaga, action)
+    /** @type {ReturnType<typeof authorize>} */
+    const authorized = yield call(authorize, action, scopes, titled)
+
+    yield call(authorized)
+  } catch (error) {
+    yield put(showErrorMessage(error.message ?? error.toString()))
+    yield put(updatePlaylistError())
+  }
+}
+
+/**
+ * @param {UpdatePlaylistAction} action
+ */
+function* updatePlaylistMainSaga(action) {
+  yield put(updatePlaylistStart())
+
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield call(getAuthData)
+  /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
+  const trackUris = yield call(getReleasesTrackUris)
+
+  for (const trackUrisChunk of chunk(trackUris, 100)) {
+    yield call(addTracksToPlaylist, token, action.payload.id, trackUrisChunk)
+  }
+
+  yield put(updatePlaylistFinished(action.payload))
+}
+
+function* getReleasesTrackUris() {
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield call(getAuthData)
+  /** @type {ReturnType<typeof getReleases>} */
+  const releases = yield select(getReleases)
+
+  const albumIds = releases.reduce(
+    (ids, { albums }) => ids.concat(albums.map((album) => album.id)),
+    /** @type {string[]} */ ([])
+  )
+
+  const trackIdsCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
+    call(getAlbumsTrackIds, token, albumIdsChunk)
+  )
+
+  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
+  const trackIds = yield all(trackIdsCalls)
+  const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
+
+  return trackUris
+}
+
+export function* refreshPlaylistsSaga() {
+  /** @type {ReturnType<typeof getPlaylists>} */
+  const playlists = yield select(getPlaylists)
+  /** @type {ReturnType<typeof getLastPlaylistsRefresh>} */
+  const lastRefresh = yield select(getLastPlaylistsRefresh)
+
+  const shouldRefresh = () => {
+    if (playlists.length === 0) return true
+    if (!lastRefresh) return true
+    if (moment(lastRefresh).isBefore(moment().subtract(1, 'hour'))) return true
+    return false
+  }
+
+  if (shouldRefresh()) yield put(loadPlaylists())
+}
+
+/**
+ * @param {LoadPlaylistsAction} action
+ */
+export function* loadPlaylistsSaga(action) {
+  try {
+    // Technically, only PLAYLIST_READ_PRIVATE is needed here, but I'm choosing to ask
+    // for all playlist scopes in advance, within a single auth flow
+    /** @type {Scope[]} */
+    const scopes = [
+      Scope.PLAYLIST_READ_PRIVATE,
+      Scope.PLAYLIST_MODIFY_PRIVATE,
+      Scope.PLAYLIST_MODIFY_PUBLIC,
+    ]
+
+    /** @type {ReturnType<typeof authorize>} */
+    const authorized = yield call(authorize, action, scopes, loadPlaylistsMainSaga)
+
+    yield call(authorized)
+  } catch (error) {
+    yield put(showErrorMessage(error.message ?? error.toString()))
+    yield put(loadPlaylistsError())
+  }
+}
+
+function* loadPlaylistsMainSaga() {
+  yield put(loadPlaylistsStart())
+
+  /** @type {RequestWorkers} */
+  const { workers, requestChannel, responseChannel, workersFork } = yield call(setupWorkers)
+  yield fork(workersFork)
+
+  /** @type {Playlist[]} */
+  const playlists = yield call(
+    getUserSavedPlaylists,
+    requestChannel,
+    responseChannel,
+    workers.length
+  )
+
+  yield cancel(workers)
+  yield put(loadPlaylistsFinished(playlists))
+}
+
+/**
+ * @param {RequestChannel} requestChannel
+ * @param {ResponseChannel} responseChannel
+ * @param {number} workersCount
+ */
+function* getUserSavedPlaylists(requestChannel, responseChannel, workersCount) {
+  /** @type {ReturnType<typeof getUser>} */
+  const user = yield select(getUser)
+
+  /** @type {SpotifyPlaylist[]} */
+  const spotifyPlaylists = yield call(
+    getAllPaged,
+    getUserSavedPlaylistsPage,
+    requestChannel,
+    responseChannel,
+    workersCount
+  )
+
+  /** @type {Playlist[]} */
+  const playlists = []
+  /** @type {Set<string>} */
+  const ids = new Set()
+
+  for (const playlist of spotifyPlaylists) {
+    if (playlist.owner.id !== user.id) continue
+    if (ids.has(playlist.id)) continue
+
+    playlists.push({ id: playlist.id, name: playlist.name })
+    ids.add(playlist.id)
+  }
+
+  return playlists
 }

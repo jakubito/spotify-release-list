@@ -53,7 +53,7 @@ function* authorizeMainSaga({ payload }) {
  * Ensure valid authorized state before running saga
  *
  * @param {Action} action
- * @param {string[]} scopes
+ * @param {Scope[]} scopes
  * @param {Fn} saga
  * @param {...any} args
  */
@@ -64,9 +64,10 @@ export function authorize(action, scopes, saga, ...args) {
 
       /** @type {ReturnType<typeof getAuthData>} */
       const { tokenScope, refreshToken } = yield call(getAuthData)
-      const validScope = scopes.every((scope) => tokenScope?.includes(scope))
+      const currentScopes = tokenScope?.split(' ')
+      const scopesValid = scopes.every((scope) => currentScopes?.includes(scope))
 
-      if (refreshToken && validScope) {
+      if (refreshToken && scopesValid) {
         yield call(refreshTokenAndRun, saga, ...args)
       } else {
         yield call(triggerNewAuthFlow, action, scopes.join(' '))

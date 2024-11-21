@@ -1,7 +1,8 @@
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
 import classNames from 'classnames'
-import { deferred, modalsClosed } from 'helpers'
+import { deferred } from 'helpers'
 import {
   getLastSyncDate,
   getHasReleases,
@@ -12,14 +13,16 @@ import {
   getWorking,
   getEditingFavorites,
   getLastSettingsPath,
+  getAnyModalVisible,
 } from 'state/selectors'
 import {
-  showPlaylistModal,
-  toggleFiltersVisible,
   resetFilters,
+  showPlaylistModal,
+  showUpdatePlaylistModal,
   toggleEditingFavorites,
+  toggleFiltersVisible,
 } from 'state/actions'
-import { Header, SyncButton, Button, ButtonLink, LastSync } from 'components/common'
+import { Header, SyncButton, Button, ButtonLink, LastSync, Dropdown } from 'components/common'
 
 /**
  * Render main header
@@ -35,17 +38,34 @@ function ReleasesHeader() {
   const filtersApplied = useSelector(getFiltersApplied)
   const editingFavorites = useSelector(getEditingFavorites)
   const lastSettingsPath = useSelector(getLastSettingsPath)
+  const anyModalVisible = useSelector(getAnyModalVisible)
+  const [exportMenuActive, setExportMenuActive] = useState(false)
+  const shortcutsEnabled = !anyModalVisible && !syncing && lastSyncDate
 
   const toggleFilters = deferred(dispatch, toggleFiltersVisible())
   const toggleFavorites = deferred(dispatch, toggleEditingFavorites())
-  const openPlaylistModal = deferred(dispatch, showPlaylistModal())
 
-  useHotkeys('e', openPlaylistModal, { enabled: !syncing && lastSyncDate && hasReleases })
+  const openPlaylistModal = deferred(() => {
+    dispatch(showPlaylistModal())
+    setExportMenuActive(false)
+  })
+
+  const openUpdatePlaylistModal = deferred(() => {
+    dispatch(showUpdatePlaylistModal())
+    setExportMenuActive(false)
+  })
+
+  useHotkeys('e', openPlaylistModal, {
+    enabled: () => shortcutsEnabled && hasReleases,
+  })
+  useHotkeys('u', openUpdatePlaylistModal, {
+    enabled: () => shortcutsEnabled && hasReleases,
+  })
   useHotkeys('d', toggleFavorites, {
-    enabled: () => !syncing && lastSyncDate && hasReleases && modalsClosed(),
+    enabled: () => shortcutsEnabled && hasReleases,
   })
   useHotkeys('f', toggleFilters, {
-    enabled: () => !syncing && lastSyncDate && hasOriginalReleases && modalsClosed(),
+    enabled: () => shortcutsEnabled && hasOriginalReleases,
   })
 
   return (
@@ -110,15 +130,30 @@ function ReleasesHeader() {
           🇺🇦
         </a>
         {lastSyncDate && hasReleases && !syncing && (
-          <Button
-            title="Export to playlist [E]"
-            icon="fas fa-upload"
-            onClick={openPlaylistModal}
-            disabled={working}
-            compact
+          <Dropdown
+            active={exportMenuActive}
+            trigger={
+              <Button
+                title="Export to playlist [E]"
+                icon="fas fa-upload"
+                onClick={() => setExportMenuActive(!exportMenuActive)}
+                disabled={working}
+                compact
+              >
+                Export
+              </Button>
+            }
+            close={() => setExportMenuActive(false)}
+            dark
+            right
           >
-            Export
-          </Button>
+            <Button className="dropdown-item" onClick={openPlaylistModal}>
+              Create a new playlist
+            </Button>
+            <Button className="dropdown-item" onClick={openUpdatePlaylistModal}>
+              Update an existing playlist
+            </Button>
+          </Dropdown>
         )}
         <ButtonLink
           to={lastSettingsPath || '/settings'}

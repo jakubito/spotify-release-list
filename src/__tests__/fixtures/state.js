@@ -374,7 +374,9 @@ const state = {
   lastSync: '2020-12-24T10:09:32.229Z',
   previousSyncMaxDate: '2020-12-24',
   creatingPlaylist: false,
-  playlistId: null,
+  updatingPlaylist: false,
+  loadingPlaylists: false,
+  playlistResult: null,
   playlistForm: { name: null, description: null, isPrivate: null },
   user: {
     id: '11124298134',
@@ -383,6 +385,9 @@ const state = {
   },
   message: null,
   playlistModalVisible: false,
+  updatePlaylistModalVisible: false,
+  playlists: [],
+  selectedPlaylistId: null,
   filtersVisible: false,
   settings: {
     artistSources: [ArtistSource.FOLLOWED],
