@@ -70,3 +70,4 @@ export const applyLabelBlocklist = createAction('applyLabelBlocklist')
 /** @type {ActionCreatorWithPayload<number, 'setLabelBlocklistHeight'>} */
 export const setLabelBlocklistHeight = createAction('setLabelBlocklistHeight')
 export const syncAnimationFinished = createAction('syncAnimationFinished')
+export const downloadAlbumsCsv = createAction('downloadAlbumsCsv')

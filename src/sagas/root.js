@@ -6,6 +6,7 @@ import {
   authorizeError,
   createPlaylist,
   createPlaylistCancel,
+  downloadAlbumsCsv,
   loadPlaylists,
   reset,
   showUpdatePlaylistModal,
@@ -29,6 +30,7 @@ import { autoSyncSaga } from './automation'
 import { updateSaga } from './update'
 import { notificationSaga } from './notification'
 import { settingsSaga } from './settings'
+import { downloadAlbumsCsvSaga } from './csv'
 
 /**
  * Root saga
@@ -45,6 +47,7 @@ export function* rootSaga() {
 
   yield takeLeading(authorize.type, authorizeSaga)
   yield takeLeading(loadPlaylists.type, loadPlaylistsSaga)
+  yield takeLeading(downloadAlbumsCsv.type, downloadAlbumsCsvSaga)
 
   yield takeLeadingCancellable(sync.type, syncCancel.type, syncSaga)
   yield takeLeadingCancellable(createPlaylist.type, createPlaylistCancel.type, createPlaylistSaga)

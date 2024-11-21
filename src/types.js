@@ -278,6 +278,7 @@
  * @typedef {ReturnType<typeof import('state/actions').setFavoriteAll>} SetFavoriteAllAction
  * @typedef {ReturnType<typeof import('state/actions').toggleEditingFavorites>} ToggleEditingFavoritesAction
  * @typedef {ReturnType<typeof import('state/actions').setLastSettingsPath>} SetLastSettingsPathAction
+ * @typedef {ReturnType<typeof import('state/actions').downloadAlbumsCsv>} DownloadAlbumsCsvAction
  *
  * @typedef {AuthorizeAction
  *   | AuthorizeStartAction
@@ -326,7 +327,8 @@
  *   | SetFavoriteAction
  *   | SetFavoriteAllAction
  *   | ToggleEditingFavoritesAction
- *   | SetLastSettingsPathAction} Action
+ *   | SetLastSettingsPathAction
+ *   | DownloadAlbumsCsvAction} Action
  */
 
 /**

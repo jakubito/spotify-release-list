@@ -464,3 +464,25 @@ export function calculatePageSize(width, height) {
   const estimate = Math.round((width * height) / 20_000)
   return Math.max(20, Math.min(100, estimate))
 }
+
+/**
+ * @param {string | null | undefined} value
+ */
+export function sanitizeCsvValue(value) {
+  if (value?.match(/[\s,"]/)) return `"${value.replace(/"/g, '""')}"`
+  return value ?? ''
+}
+
+/**
+ * @param {Blob} blob
+ * @param {string} name
+ */
+export function download(blob, name) {
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = name
+  anchor.rel = 'noopener'
+  anchor.click()
+  setTimeout(() => URL.revokeObjectURL(url), 5000)
+}

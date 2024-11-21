@@ -16,6 +16,7 @@ import {
   getAnyModalVisible,
 } from 'state/selectors'
 import {
+  downloadAlbumsCsv,
   resetFilters,
   showPlaylistModal,
   showUpdatePlaylistModal,
@@ -52,6 +53,11 @@ function ReleasesHeader() {
 
   const openUpdatePlaylistModal = deferred(() => {
     dispatch(showUpdatePlaylistModal())
+    setExportMenuActive(false)
+  })
+
+  const downloadCsvFile = deferred(() => {
+    dispatch(downloadAlbumsCsv())
     setExportMenuActive(false)
   })
 
@@ -152,6 +158,9 @@ function ReleasesHeader() {
             </Button>
             <Button className="dropdown-item" onClick={openUpdatePlaylistModal}>
               Update an existing playlist
+            </Button>
+            <Button className="dropdown-item" onClick={downloadCsvFile}>
+              Download as CSV file
             </Button>
           </Dropdown>
         )}
