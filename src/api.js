@@ -131,7 +131,7 @@ export async function getAlbumsTrackIds(token, albumIds, signal) {
 
     while (next) {
       /** @type {Paged<SpotifyTrack>} */
-      const response = await get(next, token)
+      const response = await get(next, token, signal)
       for (const track of response.items) albumTrackIds.push(track.id)
       next = response.next
     }
@@ -147,17 +147,15 @@ export async function getAlbumsTrackIds(token, albumIds, signal) {
  *
  * @param {string} token
  * @param {string} userId
- * @param {string} name
- * @param {string} description
- * @param {boolean} isPrivate
+ * @param {PlaylistForm} form
  * @param {AbortSignal} [signal]
  * @returns {Promise<SpotifyPlaylist>}
  */
-export function createPlaylist(token, userId, name, description, isPrivate, signal) {
+export function createPlaylist(token, userId, form, signal) {
   return post(
     apiUrl(`users/${userId}/playlists`),
     token,
-    { name, description, public: !isPrivate },
+    { name: form.name, description: form.description, public: !form.isPrivate },
     signal
   )
 }
@@ -255,7 +253,7 @@ async function request(payload) {
 
   try {
     const json = await response.json()
-    message += ` ${json.error.message}`
+    if (json.error?.message) message = json.error.message
   } catch {}
 
   throw new FetchError(response.status, message)

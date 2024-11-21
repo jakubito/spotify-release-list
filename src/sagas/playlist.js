@@ -1,4 +1,4 @@
-import { all, call, cancel, fork, put, select } from 'redux-saga/effects'
+import { all, call, cancel, cancelled, fork, put, select } from 'redux-saga/effects'
 import chunk from 'lodash/chunk'
 import moment from 'moment'
 import { spotifyUri } from 'helpers'
@@ -42,6 +42,8 @@ const { TRACK } = SpotifyEntity
  * @param {CreatePlaylistAction} action
  */
 export function* createPlaylistSaga(action) {
+  const abortController = new AbortController()
+
   try {
     /** @type {ReturnType<typeof getPlaylistForm>} */
     const { isPrivate } = yield select(getPlaylistForm)
@@ -49,7 +51,12 @@ export function* createPlaylistSaga(action) {
     const scope = yield call(getPlaylistScope, isPrivate)
 
     /** @type {ReturnType<typeof withTitle>} */
-    const titled = yield call(withTitle, 'Creating playlist...', createPlaylistMainSaga)
+    const titled = yield call(
+      withTitle,
+      'Creating playlist...',
+      createPlaylistMainSaga,
+      abortController.signal
+    )
     /** @type {ReturnType<typeof authorize>} */
     const authorized = yield call(authorize, action, [scope], titled)
 
@@ -57,13 +64,17 @@ export function* createPlaylistSaga(action) {
   } catch (error) {
     yield put(showErrorMessage(error.message ?? error.toString()))
     yield put(createPlaylistError())
+  } finally {
+    if (yield cancelled()) abortController.abort()
   }
 }
 
 /**
  * Playlist creation main saga
+ *
+ * @param {AbortSignal} signal
  */
-function* createPlaylistMainSaga() {
+function* createPlaylistMainSaga(signal) {
   yield put(createPlaylistStart())
 
   /** @type {ReturnType<typeof getAuthData>} */
@@ -71,24 +82,22 @@ function* createPlaylistMainSaga() {
   /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
   /** @type {ReturnType<typeof getPlaylistForm>} */
-  const { name, description, isPrivate } = yield select(getPlaylistForm)
+  const form = yield select(getPlaylistForm)
   /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
-  const trackUris = yield call(getReleasesTrackUris)
+  const trackUris = yield call(getReleasesTrackUris, signal)
 
   /** @type {SpotifyPlaylist} */
   let firstPlaylist
 
   for (const [part, playlistTrackUrisChunk] of chunk(trackUris, 9500).entries()) {
-    const fullName = part > 0 ? `${name} (${part + 1})` : name
+    const name = part > 0 ? `${form.name} (${part + 1})` : form.name
     /** @type {Await<ReturnType<typeof createPlaylist>>} */
-    const playlist = yield call(createPlaylist, token, user.id, fullName, description, isPrivate)
+    const playlist = yield call(createPlaylist, token, user.id, { ...form, name }, signal)
 
-    if (!firstPlaylist) {
-      firstPlaylist = playlist
-    }
+    if (!firstPlaylist) firstPlaylist = playlist
 
     for (const trackUrisChunk of chunk(playlistTrackUrisChunk, 100)) {
-      yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk)
+      yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk, signal)
     }
   }
 
@@ -99,12 +108,20 @@ function* createPlaylistMainSaga() {
  * @param {UpdatePlaylistAction} action
  */
 export function* updatePlaylistSaga(action) {
+  const abortController = new AbortController()
+
   try {
     /** @type {Scope[]} */
     const scopes = [Scope.PLAYLIST_MODIFY_PRIVATE, Scope.PLAYLIST_MODIFY_PUBLIC]
 
     /** @type {ReturnType<typeof withTitle>} */
-    const titled = yield call(withTitle, 'Updating playlist...', updatePlaylistMainSaga, action)
+    const titled = yield call(
+      withTitle,
+      'Updating playlist...',
+      updatePlaylistMainSaga,
+      action,
+      abortController.signal
+    )
     /** @type {ReturnType<typeof authorize>} */
     const authorized = yield call(authorize, action, scopes, titled)
 
@@ -112,28 +129,34 @@ export function* updatePlaylistSaga(action) {
   } catch (error) {
     yield put(showErrorMessage(error.message ?? error.toString()))
     yield put(updatePlaylistError())
+  } finally {
+    if (yield cancelled()) abortController.abort()
   }
 }
 
 /**
  * @param {UpdatePlaylistAction} action
+ * @param {AbortSignal} signal
  */
-function* updatePlaylistMainSaga(action) {
+function* updatePlaylistMainSaga(action, signal) {
   yield put(updatePlaylistStart())
 
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
-  const trackUris = yield call(getReleasesTrackUris)
+  const trackUris = yield call(getReleasesTrackUris, signal)
 
   for (const trackUrisChunk of chunk(trackUris, 100)) {
-    yield call(addTracksToPlaylist, token, action.payload.id, trackUrisChunk)
+    yield call(addTracksToPlaylist, token, action.payload.id, trackUrisChunk, signal)
   }
 
   yield put(updatePlaylistFinished(action.payload))
 }
 
-function* getReleasesTrackUris() {
+/**
+ * @param {AbortSignal} signal
+ */
+function* getReleasesTrackUris(signal) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getReleases>} */
@@ -145,7 +168,7 @@ function* getReleasesTrackUris() {
   )
 
   const trackIdsCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
-    call(getAlbumsTrackIds, token, albumIdsChunk)
+    call(getAlbumsTrackIds, token, albumIdsChunk, signal)
   )
 
   /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
