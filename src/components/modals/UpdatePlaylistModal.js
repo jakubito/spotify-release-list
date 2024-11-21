@@ -69,6 +69,12 @@ function UpdatePlaylistModal({ closeModal }) {
 
     return (
       <>
+        <article className="message is-dark">
+          <div className="message-body">
+            This will **NOT** replace or remove any existing playlist data. All tracks will be
+            appended to the selected playlist.
+          </div>
+        </article>
         <div className="field">
           <label className="UpdatePlaylistModal__label label has-text-light" htmlFor="name">
             Select playlist

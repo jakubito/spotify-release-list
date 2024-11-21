@@ -176,14 +176,8 @@ export function* refreshPlaylistsSaga() {
  */
 export function* loadPlaylistsSaga(action) {
   try {
-    // Technically, only PLAYLIST_READ_PRIVATE is needed here, but I'm choosing to ask
-    // for all playlist scopes in advance, within a single auth flow
     /** @type {Scope[]} */
-    const scopes = [
-      Scope.PLAYLIST_READ_PRIVATE,
-      Scope.PLAYLIST_MODIFY_PRIVATE,
-      Scope.PLAYLIST_MODIFY_PUBLIC,
-    ]
+    const scopes = [Scope.PLAYLIST_READ_PRIVATE]
 
     /** @type {ReturnType<typeof authorize>} */
     const authorized = yield call(authorize, action, scopes, loadPlaylistsMainSaga)
