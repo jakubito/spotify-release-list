@@ -6,7 +6,7 @@ import { getAuthData } from 'auth'
 /**
  * Limit maximum number of concurrent requests
  */
-const DEFAULT_WORKERS_COUNT = 8
+const DEFAULT_WORKERS_COUNT = 10
 
 /**
  * @param {number} count
