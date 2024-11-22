@@ -20,19 +20,35 @@ export const reset = createAction('reset')
 export const setSettings = createAction('setSettings')
 export const showPlaylistModal = createAction('showPlaylistModal')
 export const hidePlaylistModal = createAction('hidePlaylistModal')
+export const showUpdatePlaylistModal = createAction('showUpdatePlaylistModal')
+export const hideUpdatePlaylistModal = createAction('hideUpdatePlaylistModal')
 /** @type {ActionCreatorWithPayload<string, 'showMessage'>} */
 export const showMessage = createAction('showMessage')
 /** @type {ActionCreatorWithOptionalPayload<string, 'showErrorMessage'>} */
 export const showErrorMessage = createAction('showErrorMessage')
 export const hideMessage = createAction('hideMessage')
+export const loadPlaylists = createAction('loadPlaylists')
+export const loadPlaylistsStart = createAction('loadPlaylistsStart')
+/** @type {ActionCreatorWithPayload<Playlist[], 'loadPlaylistsFinished'>} */
+export const loadPlaylistsFinished = createAction('loadPlaylistsFinished')
+export const loadPlaylistsError = createAction('loadPlaylistsError')
 /** @type {ActionCreatorWithPayload<PlaylistForm, 'setPlaylistForm'>} */
 export const setPlaylistForm = createAction('setPlaylistForm')
 export const createPlaylist = createAction('createPlaylist')
 export const createPlaylistStart = createAction('createPlaylistStart')
-/** @type {ActionCreatorWithPayload<{ id: string }, 'createPlaylistFinished'>} */
+/** @type {ActionCreatorWithPayload<Playlist, 'createPlaylistFinished'>} */
 export const createPlaylistFinished = createAction('createPlaylistFinished')
 export const createPlaylistError = createAction('createPlaylistError')
 export const createPlaylistCancel = createAction('createPlaylistCancel')
+/** @type {ActionCreatorWithPayload<{ playlist: Playlist, strategy: PlaylistUpdateStrategy }, 'updatePlaylist'>} */
+export const updatePlaylist = createAction('updatePlaylist')
+export const updatePlaylistStart = createAction('updatePlaylistStart')
+/** @type {ActionCreatorWithPayload<Playlist, 'updatePlaylistFinished'>} */
+export const updatePlaylistFinished = createAction('updatePlaylistFinished')
+export const updatePlaylistError = createAction('updatePlaylistError')
+export const updatePlaylistCancel = createAction('updatePlaylistCancel')
+/** @type {ActionCreatorWithPayload<string, 'setSelectedPlaylistId'>} */
+export const setSelectedPlaylistId = createAction('setSelectedPlaylistId')
 export const resetPlaylist = createAction('resetPlaylist')
 export const toggleFiltersVisible = createAction('toggleFiltersVisible')
 /** @type {ActionCreatorWithPayload<Partial<Filters>, 'setFilters'>} */
@@ -54,3 +70,4 @@ export const applyLabelBlocklist = createAction('applyLabelBlocklist')
 /** @type {ActionCreatorWithPayload<number, 'setLabelBlocklistHeight'>} */
 export const setLabelBlocklistHeight = createAction('setLabelBlocklistHeight')
 export const syncAnimationFinished = createAction('syncAnimationFinished')
+export const downloadAlbumsCsv = createAction('downloadAlbumsCsv')

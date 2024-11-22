@@ -21,26 +21,15 @@ function PlaylistForm({ submitTriggered, closeModal }) {
         <VisibilityField />
       </div>
 
-      <div className="actions columns is-gapless">
-        <div className="column">
-          <Button
-            type="submit"
-            title="Create"
-            icon="fas fa-asterisk"
-            disabled={working || submitTriggered}
-            key="submit"
-            primary
-          />
-        </div>
-
-        <div className="column has-text-right">
-          <Button
-            title="Close"
-            icon="fas fa-times"
-            onClick={closeModal}
-            disabled={submitTriggered}
-          />
-        </div>
+      <div className="actions">
+        <Button
+          type="submit"
+          title="Create"
+          disabled={working || submitTriggered}
+          key="submit"
+          primary
+        />
+        <Button title="Close" onClick={closeModal} disabled={submitTriggered} />
       </div>
     </>
   )

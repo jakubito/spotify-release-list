@@ -1,5 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { persistStore, persistReducer, createMigrate } from 'redux-persist'
+import {
+  persistStore,
+  persistReducer,
+  createMigrate,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import localForage from 'localforage'
 import createSagaMiddleware from 'redux-saga'
@@ -24,6 +34,9 @@ const persistConfig = {
     'lastAutoSync',
     'previousSyncMaxDate',
     'playlistForm',
+    'playlists',
+    'selectedPlaylistId',
+    'lastPlaylistsRefresh',
     'user',
     'settings',
     'filters',
@@ -34,7 +47,13 @@ const persistConfig = {
 
 const reducer = persistReducer(persistConfig, rootReducer)
 const sagaMiddleware = createSagaMiddleware({ onError: captureException })
-const store = configureStore({ reducer, middleware: [sagaMiddleware] })
+const store = configureStore({
+  reducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] },
+    }).concat(sagaMiddleware),
+})
 
 /** @type {Promise<void>} */
 export const hydrate = new Promise((resolve) => {

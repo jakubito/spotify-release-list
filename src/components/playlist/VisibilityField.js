@@ -8,7 +8,7 @@ function VisibilityField() {
 
   return (
     <div className="field">
-      <label className="label has-text-light">Visibility</label>
+      <label className="label has-text-light">Add to profile</label>
       <div className="control">
         <div className="field">
           <input
@@ -19,7 +19,7 @@ function VisibilityField() {
             defaultChecked
             {...register('visibility')}
           />
-          <label htmlFor="visibilityPrivate">Private</label>
+          <label htmlFor="visibilityPrivate">No</label>
         </div>
         <div className="field">
           <input
@@ -29,7 +29,7 @@ function VisibilityField() {
             value="public"
             {...register('visibility')}
           />
-          <label htmlFor="visibilityPublic">Public</label>
+          <label htmlFor="visibilityPublic">Yes</label>
         </div>
       </div>
     </div>

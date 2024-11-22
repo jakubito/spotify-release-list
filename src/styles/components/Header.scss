@@ -24,13 +24,10 @@
   &__left {
     display: flex;
     align-items: center;
+    gap: 15px;
 
-    .button {
-      margin-right: 15px;
-
-      @include mobile {
-        margin-right: 10px;
-      }
+    @include mobile {
+      gap: 10px;
     }
   }
 
@@ -39,17 +36,10 @@
     margin-left: auto;
     display: flex;
     align-items: center;
+    gap: 15px;
 
-    .button {
-      margin-right: 15px;
-
-      @include mobile {
-        margin-right: 10px;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
+    @include mobile {
+      gap: 10px;
     }
   }
 }

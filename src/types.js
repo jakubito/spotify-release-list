@@ -10,11 +10,17 @@
  *   lastAutoSync?: string
  *   previousSyncMaxDate?: string
  *   creatingPlaylist: boolean
- *   playlistId?: string
+ *   updatingPlaylist: boolean
+ *   loadingPlaylists: boolean
+ *   playlistResult?: Playlist
  *   playlistForm: PlaylistForm
+ *   playlists: Playlist[]
+ *   selectedPlaylistId?: string
+ *   lastPlaylistsRefresh?: string
  *   user?: User
  *   message?: Message
  *   playlistModalVisible: boolean
+ *   updatePlaylistModalVisible: boolean
  *   filtersVisible: boolean
  *   settings: Settings
  *   filters: Filters
@@ -37,7 +43,7 @@
  * @typedef {{
  *   name?: string
  *   description?: string
- *   isPrivate?: boolean
+ *   isPublic?: boolean
  * }} PlaylistForm
  *
  * @typedef {{
@@ -136,6 +142,7 @@
  *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
+ * @typedef {{ id: string, name: string }} Playlist
  * @typedef {{ [id: string]: Artist }} ArtistsMap
  * @typedef {{ [id: string]: Album }} AlbumsMap
  * @typedef {{ [date: string]: Album[] }} ReleasesMap
@@ -155,11 +162,13 @@
  * @typedef {Record<string, unknown>} SentryContext
  * @typedef {Record<string, SentryContext>} SentryContexts
  * @typedef {Record<string, string[]>} BlockedLabels
+ * @typedef {ReturnType<typeof import('./sagas/request').setupWorkers>} RequestWorkers
+ * @typedef {'append' | 'replace'} PlaylistUpdateStrategy
  */
 
 /**
  * @template T
- * @typedef {{ result?: T, error?: Error }} ResponseChannelMessage<T>
+ * @typedef {{ result?: T, error?: Error, requestPayload: RequestChannelMessagePayload }} ResponseChannelMessage<T>
  */
 
 /**
@@ -179,12 +188,12 @@
 
 /**
  * @template T
- * @typedef {(token: string, limit: number, offset: number) => Promise<Paged<T>>} PagedRequest<T>
+ * @typedef {(token: string, limit: number, offset: number, signal?: AbortSignal) => Promise<Paged<T>>} PagedRequest<T>
  */
 
 /**
  * @template T
- * @typedef {(token: string, limit: number, after?: string) => Promise<CursorPaged<T>>} CursorPagedRequest<T>
+ * @typedef {(token: string, limit: number, after?: string, signal?: AbortSignal) => Promise<CursorPaged<T>>} CursorPagedRequest<T>
  */
 
 /**
@@ -236,15 +245,27 @@
  * @typedef {ReturnType<typeof import('state/actions').setSettings>} SetSettingsAction
  * @typedef {ReturnType<typeof import('state/actions').showPlaylistModal>} ShowPlaylistModalAction
  * @typedef {ReturnType<typeof import('state/actions').hidePlaylistModal>} HidePlaylistModalAction
+ * @typedef {ReturnType<typeof import('state/actions').showUpdatePlaylistModal>} ShowUpdatePlaylistModalAction
+ * @typedef {ReturnType<typeof import('state/actions').hideUpdatePlaylistModal>} HideUpdatePlaylistModalAction
  * @typedef {ReturnType<typeof import('state/actions').showMessage>} ShowMessageAction
  * @typedef {ReturnType<typeof import('state/actions').showErrorMessage>} ShowErrorMessageAction
  * @typedef {ReturnType<typeof import('state/actions').hideMessage>} HideMessageAction
+ * @typedef {ReturnType<typeof import('state/actions').loadPlaylists>} LoadPlaylistsAction
+ * @typedef {ReturnType<typeof import('state/actions').loadPlaylistsStart>} LoadPlaylistsStartAction
+ * @typedef {ReturnType<typeof import('state/actions').loadPlaylistsFinished>} LoadPlaylistsFinishedAction
+ * @typedef {ReturnType<typeof import('state/actions').loadPlaylistsError>} LoadPlaylistsErrorAction
  * @typedef {ReturnType<typeof import('state/actions').setPlaylistForm>} SetPlaylistFormAction
  * @typedef {ReturnType<typeof import('state/actions').createPlaylist>} CreatePlaylistAction
  * @typedef {ReturnType<typeof import('state/actions').createPlaylistStart>} CreatePlaylistStartAction
  * @typedef {ReturnType<typeof import('state/actions').createPlaylistFinished>} CreatePlaylistFinishedAction
  * @typedef {ReturnType<typeof import('state/actions').createPlaylistError>} CreatePlaylistErrorAction
  * @typedef {ReturnType<typeof import('state/actions').createPlaylistCancel>} CreatePlaylistCancelAction
+ * @typedef {ReturnType<typeof import('state/actions').updatePlaylist>} UpdatePlaylistAction
+ * @typedef {ReturnType<typeof import('state/actions').updatePlaylistStart>} UpdatePlaylistStartAction
+ * @typedef {ReturnType<typeof import('state/actions').updatePlaylistFinished>} UpdatePlaylistFinishedAction
+ * @typedef {ReturnType<typeof import('state/actions').updatePlaylistError>} UpdatePlaylistErrorAction
+ * @typedef {ReturnType<typeof import('state/actions').updatePlaylistCancel>} UpdatePlaylistCancelAction
+ * @typedef {ReturnType<typeof import('state/actions').setSelectedPlaylistId>} SetSelectedPlaylistIdAction
  * @typedef {ReturnType<typeof import('state/actions').resetPlaylist>} ResetPlaylistAction
  * @typedef {ReturnType<typeof import('state/actions').toggleFiltersVisible>} ToggleFiltersVisibleAction
  * @typedef {ReturnType<typeof import('state/actions').setFilters>} SetFiltersAction
@@ -258,6 +279,7 @@
  * @typedef {ReturnType<typeof import('state/actions').setFavoriteAll>} SetFavoriteAllAction
  * @typedef {ReturnType<typeof import('state/actions').toggleEditingFavorites>} ToggleEditingFavoritesAction
  * @typedef {ReturnType<typeof import('state/actions').setLastSettingsPath>} SetLastSettingsPathAction
+ * @typedef {ReturnType<typeof import('state/actions').downloadAlbumsCsv>} DownloadAlbumsCsvAction
  *
  * @typedef {AuthorizeAction
  *   | AuthorizeStartAction
@@ -273,15 +295,27 @@
  *   | SetSettingsAction
  *   | ShowPlaylistModalAction
  *   | HidePlaylistModalAction
+ *   | ShowUpdatePlaylistModalAction
+ *   | HideUpdatePlaylistModalAction
  *   | ShowMessageAction
  *   | ShowErrorMessageAction
  *   | HideMessageAction
+ *   | LoadPlaylistsAction
+ *   | LoadPlaylistsStartAction
+ *   | LoadPlaylistsFinishedAction
+ *   | LoadPlaylistsErrorAction
  *   | SetPlaylistFormAction
  *   | CreatePlaylistAction
  *   | CreatePlaylistStartAction
  *   | CreatePlaylistFinishedAction
  *   | CreatePlaylistErrorAction
  *   | CreatePlaylistCancelAction
+ *   | UpdatePlaylistAction
+ *   | UpdatePlaylistStartAction
+ *   | UpdatePlaylistFinishedAction
+ *   | UpdatePlaylistErrorAction
+ *   | UpdatePlaylistCancelAction
+ *   | SetSelectedPlaylistIdAction
  *   | ResetPlaylistAction
  *   | ToggleFiltersVisibleAction
  *   | SetFiltersAction
@@ -294,7 +328,8 @@
  *   | SetFavoriteAction
  *   | SetFavoriteAllAction
  *   | ToggleEditingFavoritesAction
- *   | SetLastSettingsPathAction} Action
+ *   | SetLastSettingsPathAction
+ *   | DownloadAlbumsCsvAction} Action
  */
 
 /**
@@ -320,7 +355,7 @@
  * @typedef {{ width: number, height: number, url: string }} SpotifyImage
  * @typedef {{ id: string, display_name: string, images: SpotifyImage[] }} SpotifyUser
  * @typedef {{ id: string, name: string }} SpotifyArtist
- * @typedef {{ id: string, name: string }} SpotifyPlaylist
+ * @typedef {{ id: string, name: string, owner: { id: string } }} SpotifyPlaylist
  * @typedef {{ id: string, artists: SpotifyArtist[] }} SpotifyTrack
  * @typedef {{ added_at: string, track: SpotifyTrack }} SpotifySavedTrack
  * @typedef {{ added_at: string, album: SpotifyAlbumFull }} SpotifySavedAlbum
@@ -408,4 +443,9 @@
 /**
  * @template T
  * @typedef {import('redux-saga/effects').CallEffect<T>} CallEffect<T>
+ */
+
+/**
+ * @template {Generator} T
+ * @typedef {T extends Generator<any, infer R, any> ? R : never} GeneratorReturnType<T>
  */
