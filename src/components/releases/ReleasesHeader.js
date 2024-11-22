@@ -160,7 +160,7 @@ function ReleasesHeader() {
               Update an existing playlist
             </Button>
             <Button className="dropdown-item" onClick={downloadCsvFile}>
-              Download as CSV file
+              Export to CSV file
             </Button>
           </Dropdown>
         )}
