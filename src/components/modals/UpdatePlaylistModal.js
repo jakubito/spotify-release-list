@@ -36,6 +36,7 @@ function UpdatePlaylistModal({ closeModal }) {
   const playlistResult = useSelector(getPlaylistResult)
   const uriLinks = useSelector(getSettingsUriLinks)
   const [submitTriggered, setSubmitTriggered] = useState(false)
+  const [strategy, setStrategy] = useState(/** @type {PlaylistUpdateStrategy} */ ('append'))
 
   useModal(closeModal)
   useEffect(() => setSubmitTriggered(updatingPlaylist), [updatingPlaylist])
@@ -104,7 +105,44 @@ function UpdatePlaylistModal({ closeModal }) {
               </div>
             )}
           </div>
+          <div className="field">
+            <label className="label has-text-light">Choose update strategy</label>
+            <div className="control">
+              <div className="field">
+                <input
+                  name="strategy"
+                  className="is-checkradio has-background-color is-white"
+                  id="strategyUpdate"
+                  type="radio"
+                  value="append"
+                  defaultChecked={strategy === 'append'}
+                  onChange={() => setStrategy('append')}
+                />
+                <label htmlFor="strategyUpdate">Append</label>
+              </div>
+              <div className="field">
+                <input
+                  name="strategy"
+                  className="is-checkradio has-background-color is-white"
+                  id="strategyReplace"
+                  type="radio"
+                  value="replace"
+                  checked={strategy === 'replace'}
+                  onChange={() => setStrategy('replace')}
+                />
+                <label htmlFor="strategyReplace">Replace (removes existing tracks!)</label>
+              </div>
+            </div>
+          </div>
         </div>
+        {strategy === 'replace' && (
+          <article className="message is-danger fade-in">
+            <div className="UpdatePlaylistModal__warning message-body">
+              <i className="fas fa-exclamation-triangle" />
+              This will remove all existing tracks from the selected playlist. Use with caution.
+            </div>
+          </article>
+        )}
         <div className="actions">
           <Button
             title="Update"
@@ -114,7 +152,7 @@ function UpdatePlaylistModal({ closeModal }) {
               const selectedPlaylist = playlists.find(
                 (playlist) => playlist.id === selectedPlaylistId
               )
-              defer(dispatch, updatePlaylist(selectedPlaylist))
+              defer(dispatch, updatePlaylist({ playlist: selectedPlaylist, strategy }))
             }}
             primary
           />

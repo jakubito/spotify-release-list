@@ -15,4 +15,15 @@
     margin-left: 6px;
     height: auto;
   }
+
+  &__warning {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+
+    i {
+      font-size: 32px;
+    }
+  }
 }

@@ -174,6 +174,23 @@ export function addTracksToPlaylist(token, playlistId, trackUris, signal) {
 }
 
 /**
+ * Clears all tracks from playlist
+ *
+ * @param {string} token
+ * @param {string} playlistId
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<SpotifyPlaylistSnapshot>}
+ */
+export function clearPlaylist(token, playlistId, signal) {
+  return put(
+    apiUrl(`playlists/${playlistId}/tracks`),
+    token,
+    { uris: [], range_start: 0, range_length: 99999 },
+    signal
+  )
+}
+
+/**
  * Create full API url
  *
  * @param {string} endpoint
@@ -211,6 +228,27 @@ function post(endpoint, token, body, signal) {
     token,
     signal,
     method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}
+
+/**
+ * Fire PUT request
+ *
+ * @template T
+ * @param {string} endpoint
+ * @param {string} token
+ * @param {Record<string, unknown>} body
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<T>}
+ */
+function put(endpoint, token, body, signal) {
+  return request({
+    endpoint,
+    token,
+    signal,
+    method: 'PUT',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
   })

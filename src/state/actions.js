@@ -40,7 +40,7 @@ export const createPlaylistStart = createAction('createPlaylistStart')
 export const createPlaylistFinished = createAction('createPlaylistFinished')
 export const createPlaylistError = createAction('createPlaylistError')
 export const createPlaylistCancel = createAction('createPlaylistCancel')
-/** @type {ActionCreatorWithPayload<Playlist, 'updatePlaylist'>} */
+/** @type {ActionCreatorWithPayload<{ playlist: Playlist, strategy: PlaylistUpdateStrategy }, 'updatePlaylist'>} */
 export const updatePlaylist = createAction('updatePlaylist')
 export const updatePlaylistStart = createAction('updatePlaylistStart')
 /** @type {ActionCreatorWithPayload<Playlist, 'updatePlaylistFinished'>} */

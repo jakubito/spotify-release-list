@@ -8,6 +8,7 @@ import {
   createPlaylist,
   addTracksToPlaylist,
   getUserSavedPlaylistsPage,
+  clearPlaylist,
 } from 'api'
 import { getAuthData, getPlaylistScope } from 'auth'
 import {
@@ -141,16 +142,21 @@ export function* updatePlaylistSaga(action) {
 function* updatePlaylistMainSaga(action, signal) {
   yield put(updatePlaylistStart())
 
+  const { playlist, strategy } = action.payload
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
   const trackUris = yield call(getReleasesTrackUris, signal)
 
-  for (const trackUrisChunk of chunk(trackUris, 100)) {
-    yield call(addTracksToPlaylist, token, action.payload.id, trackUrisChunk, signal)
+  if (strategy === 'replace') {
+    yield call(clearPlaylist, token, playlist.id, signal)
   }
 
-  yield put(updatePlaylistFinished(action.payload))
+  for (const trackUrisChunk of chunk(trackUris, 100)) {
+    yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk, signal)
+  }
+
+  yield put(updatePlaylistFinished(playlist))
 }
 
 /**

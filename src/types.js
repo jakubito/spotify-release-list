@@ -163,6 +163,7 @@
  * @typedef {Record<string, SentryContext>} SentryContexts
  * @typedef {Record<string, string[]>} BlockedLabels
  * @typedef {ReturnType<typeof import('./sagas/request').setupWorkers>} RequestWorkers
+ * @typedef {'append' | 'replace'} PlaylistUpdateStrategy
  */
 
 /**
