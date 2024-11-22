@@ -143,7 +143,6 @@ function ReleasesHeader() {
             active={exportMenuActive}
             trigger={
               <Button
-                title="Export to playlist [E]"
                 icon="fas fa-upload"
                 onClick={() => setExportMenuActive(!exportMenuActive)}
                 disabled={working}
