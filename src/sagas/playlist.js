@@ -47,9 +47,9 @@ export function* createPlaylistSaga(action) {
 
   try {
     /** @type {ReturnType<typeof getPlaylistForm>} */
-    const { isPrivate } = yield select(getPlaylistForm)
+    const { isPublic } = yield select(getPlaylistForm)
     /** @type {ReturnType<typeof getPlaylistScope>} */
-    const scope = yield call(getPlaylistScope, isPrivate)
+    const scope = yield call(getPlaylistScope, isPublic)
 
     /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(

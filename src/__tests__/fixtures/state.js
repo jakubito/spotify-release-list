@@ -377,7 +377,7 @@ const state = {
   updatingPlaylist: false,
   loadingPlaylists: false,
   playlistResult: null,
-  playlistForm: { name: null, description: null, isPrivate: null },
+  playlistForm: { name: null, description: null, isPublic: null },
   user: {
     id: '11124298134',
     name: 'Jakub Dobes',

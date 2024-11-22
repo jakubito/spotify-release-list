@@ -43,7 +43,7 @@
  * @typedef {{
  *   name?: string
  *   description?: string
- *   isPrivate?: boolean
+ *   isPublic?: boolean
  * }} PlaylistForm
  *
  * @typedef {{

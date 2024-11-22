@@ -33,7 +33,7 @@ export const initialState = {
   playlistForm: {
     name: null,
     description: null,
-    isPrivate: null,
+    isPublic: null,
   },
 }
 

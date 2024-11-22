@@ -48,10 +48,10 @@ export function getSyncScopes(artistSources) {
 /**
  * Get the Spotify auth scope for playlist creation
  *
- * @param {boolean} isPrivate
+ * @param {boolean} isPublic
  */
-export function getPlaylistScope(isPrivate) {
-  return isPrivate ? PLAYLIST_MODIFY_PRIVATE : PLAYLIST_MODIFY_PUBLIC
+export function getPlaylistScope(isPublic) {
+  return isPublic ? PLAYLIST_MODIFY_PUBLIC : PLAYLIST_MODIFY_PRIVATE
 }
 
 /**

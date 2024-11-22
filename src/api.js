@@ -155,7 +155,7 @@ export function createPlaylist(token, userId, form, signal) {
   return post(
     apiUrl(`users/${userId}/playlists`),
     token,
-    { name: form.name, description: form.description, public: !form.isPrivate },
+    { name: form.name, description: form.description, public: form.isPublic },
     signal
   )
 }
