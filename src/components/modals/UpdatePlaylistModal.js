@@ -118,7 +118,7 @@ function UpdatePlaylistModal({ closeModal }) {
                   defaultChecked={strategy === 'append'}
                   onChange={() => setStrategy('append')}
                 />
-                <label htmlFor="strategyUpdate">Append</label>
+                <label htmlFor="strategyUpdate">Add to the end</label>
               </div>
               <div className="field">
                 <input
@@ -130,7 +130,7 @@ function UpdatePlaylistModal({ closeModal }) {
                   checked={strategy === 'replace'}
                   onChange={() => setStrategy('replace')}
                 />
-                <label htmlFor="strategyReplace">Replace</label>
+                <label htmlFor="strategyReplace">Replace existing tracks</label>
               </div>
             </div>
           </div>
