@@ -67,6 +67,9 @@ function ReleasesHeader() {
   useHotkeys('u', openUpdatePlaylistModal, {
     enabled: () => shortcutsEnabled && hasReleases,
   })
+  useHotkeys('c', downloadCsvFile, {
+    enabled: () => shortcutsEnabled && hasReleases,
+  })
   useHotkeys('d', toggleFavorites, {
     enabled: () => shortcutsEnabled && hasReleases,
   })
@@ -153,13 +156,25 @@ function ReleasesHeader() {
             dark
             right
           >
-            <Button className="dropdown-item" onClick={openPlaylistModal}>
+            <Button
+              title="Create a new playlist [E]"
+              className="dropdown-item"
+              onClick={openPlaylistModal}
+            >
               Create a new playlist
             </Button>
-            <Button className="dropdown-item" onClick={openUpdatePlaylistModal}>
+            <Button
+              title="Update an existing playlist [U]"
+              className="dropdown-item"
+              onClick={openUpdatePlaylistModal}
+            >
               Update an existing playlist
             </Button>
-            <Button className="dropdown-item" onClick={downloadCsvFile}>
+            <Button
+              title="Export to CSV file [C]"
+              className="dropdown-item"
+              onClick={downloadCsvFile}
+            >
               Export to CSV file
             </Button>
           </Dropdown>
