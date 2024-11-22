@@ -130,7 +130,7 @@ function UpdatePlaylistModal({ closeModal }) {
                   checked={strategy === 'replace'}
                   onChange={() => setStrategy('replace')}
                 />
-                <label htmlFor="strategyReplace">Replace (removes existing tracks!)</label>
+                <label htmlFor="strategyReplace">Replace</label>
               </div>
             </div>
           </div>
