@@ -1,4 +1,4 @@
-import { buildUser, buildAlbumRaw } from 'helpers'
+import { buildUser, buildAlbumRaw, sleep } from 'helpers'
 
 const API_URL = 'https://api.spotify.com/v1'
 const HTTP_TOO_MANY_REQUESTS = 429

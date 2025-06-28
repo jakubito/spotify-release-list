@@ -19,7 +19,12 @@ export const initialState = {
 export function bind(builder) {
   builder
     .addCase(setFollowedArtists, (state, action) => {
-      state.followedArtists = action.payload
+      // Deduplicate artists by ID using a Map
+      const artistsMap = new Map()
+      action.payload.forEach(artist => {
+        artistsMap.set(artist.id, artist)
+      })
+      state.followedArtists = Array.from(artistsMap.values())
     })
     .addCase(followArtistsStart, (state) => {
       state.followingArtists = true
