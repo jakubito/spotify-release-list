@@ -89,6 +89,13 @@ function FollowedArtistsManager() {
     }
   }
 
+  const handleFollowSelected = () => {
+    if (selectedArtists.size > 0) {
+      dispatch(followArtists(Array.from(selectedArtists)))
+      setSelectedArtists(new Set())
+    }
+  }
+
   const handleUnfollowSelected = () => {
     if (selectedArtists.size > 0) {
       dispatch(unfollowArtists(Array.from(selectedArtists)))
@@ -178,6 +185,16 @@ function FollowedArtistsManager() {
 
       {selectedCount > 0 && (
         <div className="FollowedArtistsManager__actions">
+          <Button
+            title={`Follow ${selectedCount} artist${selectedCount > 1 ? 's' : ''}`}
+            icon="fas fa-user-plus"
+            onClick={handleFollowSelected}
+            disabled={working}
+            primary
+            small
+          >
+            Follow Selected
+          </Button>
           <Button
             title={`Unfollow ${selectedCount} artist${selectedCount > 1 ? 's' : ''}`}
             icon="fas fa-user-minus"

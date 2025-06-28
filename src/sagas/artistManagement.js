@@ -1,4 +1,4 @@
-import { call, put, select, takeLeading } from 'redux-saga/effects'
+import { call, put, takeLeading } from 'redux-saga/effects'
 import { Scope } from 'enums'
 import { followArtists as followArtistsApi, unfollowArtists as unfollowArtistsApi } from 'api'
 import { getAuthData } from 'auth'
