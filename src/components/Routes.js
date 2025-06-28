@@ -8,6 +8,7 @@ import {
   AboutSettings,
   AutomationSettings,
   BackupSettings,
+  FollowedArtistsManager,
 } from 'components/settings'
 
 function Routes() {
@@ -18,6 +19,7 @@ function Routes() {
         <Route path="settings" element={<Settings />}>
           <Route index element={<GeneralSettings />} />
           <Route path="appearance" element={<AppearanceSettings />} />
+          <Route path="artists" element={<FollowedArtistsManager />} />
           <Route path="automation" element={<AutomationSettings />} />
           <Route path="backup" element={<BackupSettings />} />
           <Route path="about" element={<AboutSettings />} />

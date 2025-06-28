@@ -1,4 +1,4 @@
-import { buildUser, buildAlbumRaw, sleep } from 'helpers'
+import { buildUser, buildAlbumRaw, buildArtist, sleep } from 'helpers'
 
 const API_URL = 'https://api.spotify.com/v1'
 const HTTP_TOO_MANY_REQUESTS = 429
@@ -143,6 +143,30 @@ export async function getAlbumsTrackIds(token, albumIds, signal) {
 }
 
 /**
+ * Follow artists on Spotify
+ *
+ * @param {string} token
+ * @param {string[]} artistIds
+ * @param {AbortSignal} [signal]
+ */
+export function followArtists(token, artistIds, signal) {
+  const params = new URLSearchParams({ type: 'artist', ids: artistIds.join(',') })
+  return put(apiUrl(`me/following?${params}`), token, {}, signal)
+}
+
+/**
+ * Unfollow artists on Spotify
+ *
+ * @param {string} token
+ * @param {string[]} artistIds
+ * @param {AbortSignal} [signal]
+ */
+export function unfollowArtists(token, artistIds, signal) {
+  const params = new URLSearchParams({ type: 'artist', ids: artistIds.join(',') })
+  return deleteRequest(apiUrl(`me/following?${params}`), token, signal)
+}
+
+/**
  * Create a new playlist
  *
  * @param {string} token
@@ -251,6 +275,24 @@ function put(endpoint, token, body, signal) {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
+  })
+}
+
+/**
+ * Fire DELETE request
+ *
+ * @template T
+ * @param {string} endpoint
+ * @param {string} token
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<T>}
+ */
+function deleteRequest(endpoint, token, signal) {
+  return request({
+    endpoint,
+    token,
+    signal,
+    method: 'DELETE',
   })
 }
 

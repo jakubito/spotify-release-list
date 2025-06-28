@@ -93,6 +93,16 @@ export const getLastSettingsPath = (state) => state.lastSettingsPath
 /** @param {State} state */
 export const getLabelBlocklistHeight = (state) => state.labelBlocklistHeight
 
+// Followed Artists selectors
+/** @param {State} state */
+export const getFollowedArtists = (state) => state.followedArtists
+
+/** @param {State} state */
+export const getFollowingArtists = (state) => state.followingArtists
+
+/** @param {State} state */
+export const getUnfollowingArtists = (state) => state.unfollowingArtists
+
 // Individual settings selectors
 export const getSettingsArtistSources = createSelector(
   getSettings,
@@ -137,6 +147,11 @@ export const getSettingsArtistBlocklist = createSelector(
 )
 
 export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlocklist, (blocklist) => {
+  // Handle both array and string formats for backward compatibility
+  if (Array.isArray(blocklist)) {
+    return blocklist
+  }
+  
   /** @type {string[]} */
   const artistIds = []
   const matches = blocklist.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
@@ -191,7 +206,7 @@ export const getHasAppData = createSelector(
  * Check if there is any async work being done
  */
 export const getWorking = createSelector(
-  [getSyncing, getCreatingPlaylist, getAuthorizing],
+  [getSyncing, getCreatingPlaylist, getAuthorizing, getFollowingArtists, getUnfollowingArtists],
   (...values) => includesTruthy(values)
 )
 
@@ -340,7 +355,6 @@ const getNonRemixAlbumIds = createSelector(getAlbumsArray, (albums) =>
  */
 const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) => {
   const charsMap = { '[': '(', ']': ')', ''': "'" }
-  }
   const escapedChars = escapeRegExp(Object.keys(charsMap).join(''))
   const charsRegex = new RegExp(`[${escapedChars}]`, 'g')
 

@@ -27,6 +27,7 @@ import {
   syncError,
   syncFinished,
   syncStart,
+  setFollowedArtists,
 } from 'state/actions'
 import { authorize } from './auth'
 import { withTitle } from './helpers'
@@ -135,8 +136,10 @@ function* getArtists(requestChannel, responseChannel, workersCount) {
 
   if (artistSources.includes(FOLLOWED)) {
     /** @type {Artist[]} */
-    const artists = yield call(getUserFollowedArtists, requestChannel, responseChannel)
-    for (const artist of artists) allArtists.push(artist)
+    const followedArtists = yield call(getUserFollowedArtists, requestChannel, responseChannel)
+    // Store followed artists in Redux state
+    yield put(setFollowedArtists(followedArtists))
+    for (const artist of followedArtists) allArtists.push(artist)
   }
 
   if (artistSources.includes(SAVED_TRACKS)) {

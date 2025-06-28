@@ -1,0 +1,141 @@
+.FollowedArtistsManager {
+  &__header {
+    margin-bottom: 20px;
+  }
+
+  &__search {
+    margin-bottom: 15px;
+  }
+
+  &__search-input {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  &__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    @include mobile {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  &__filters {
+    display: flex;
+    gap: 10px;
+
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  &__select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid $grey-darker;
+    background-color: $darkest;
+    color: $white-ter;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+    }
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+
+  &__selection {
+    @include mobile {
+      align-self: flex-start;
+    }
+  }
+
+  &__stats {
+    color: $grey-light;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  &__list {
+    border: 1px solid $grey-darker;
+    border-radius: 6px;
+    background-color: $darkest;
+    margin-bottom: 20px;
+  }
+
+  &__empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: $grey-light;
+    font-style: italic;
+  }
+
+  &__row {
+    border-bottom: 1px solid $grey-darker;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__row-content {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    gap: 15px;
+
+    &:hover {
+      background-color: $black-ter;
+    }
+  }
+
+  &__artist-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+
+  &__artist-name {
+    color: $white-ter;
+    font-weight: 500;
+  }
+
+  &__blocked-badge {
+    background-color: $red;
+    color: $white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  &__loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $grey-light;
+    font-style: italic;
+    justify-content: center;
+    padding: 20px;
+  }
+}

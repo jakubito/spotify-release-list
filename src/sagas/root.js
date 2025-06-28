@@ -31,6 +31,7 @@ import { updateSaga } from './update'
 import { notificationSaga } from './notification'
 import { settingsSaga } from './settings'
 import { downloadAlbumsCsvSaga } from './csv'
+import { artistManagementSaga } from './artistManagement'
 
 /**
  * Root saga
@@ -55,6 +56,7 @@ export function* rootSaga() {
 
   yield fork(autoSyncSaga)
   yield fork(settingsSaga)
+  yield fork(artistManagementSaga)
 
   if (navigator.serviceWorker) yield fork(updateSaga)
   if (window.Notification) yield fork(notificationSaga)
