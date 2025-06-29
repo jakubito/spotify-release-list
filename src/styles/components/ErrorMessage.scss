@@ -1,0 +1,90 @@
+.ErrorMessage {
+  &__content {
+    padding: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  &__icon {
+    margin-right: 8px;
+    font-size: 1.2rem;
+  }
+
+  &__title {
+    font-size: 1.1rem;
+  }
+
+  &__message {
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  &__suggestions {
+    margin: 16px 0;
+    
+    details {
+      summary {
+        cursor: pointer;
+        font-weight: 500;
+        margin-bottom: 8px;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      
+      ul {
+        margin-top: 8px;
+        padding-left: 20px;
+        
+        li {
+          margin-bottom: 4px;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    
+    @include mobile {
+      flex-direction: column;
+      
+      .button {
+        width: 100%;
+      }
+    }
+  }
+
+  &__debug {
+    margin-top: 16px;
+    
+    summary {
+      cursor: pointer;
+      font-size: 0.85rem;
+      opacity: 0.7;
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
+    
+    pre {
+      margin-top: 8px;
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  }
+}

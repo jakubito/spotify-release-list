@@ -1,0 +1,108 @@
+.ErrorBoundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 40px 20px;
+  background-color: $black-bis;
+  border-radius: 8px;
+  margin: 20px;
+
+  &__content {
+    max-width: 600px;
+    text-align: center;
+    color: $white-ter;
+  }
+
+  &__icon {
+    font-size: 4rem;
+    color: $yellow;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: $white-ter;
+  }
+
+  &__message {
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+    color: $grey-light;
+    line-height: 1.5;
+  }
+
+  &__details {
+    margin: 20px 0;
+    text-align: left;
+    
+    summary {
+      cursor: pointer;
+      color: $grey-light;
+      margin-bottom: 10px;
+      
+      &:hover {
+        color: $white-ter;
+      }
+    }
+  }
+
+  &__error {
+    background-color: $darkest;
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: $grey-lighter;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  &__suggestions {
+    margin: 24px 0;
+    text-align: left;
+    
+    h3 {
+      color: $white-ter;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+    
+    ul {
+      color: $grey-light;
+      padding-left: 20px;
+      
+      li {
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 24px 0;
+    
+    @include mobile {
+      flex-direction: column;
+      
+      .button {
+        width: 100%;
+      }
+    }
+  }
+
+  &__critical {
+    margin-top: 24px;
+    padding: 16px;
+    background-color: rgba($red, 0.1);
+    border: 1px solid rgba($red, 0.3);
+    border-radius: 4px;
+    color: $red-light;
+    font-size: 0.9rem;
+  }
+}

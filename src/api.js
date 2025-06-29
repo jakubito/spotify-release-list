@@ -1,10 +1,12 @@
 import { buildUser, buildAlbumRaw, sleep } from 'helpers'
+import { NetworkError, SpotifyAPIError } from 'errors'
 
 const API_URL = 'https://api.spotify.com/v1'
 const HTTP_TOO_MANY_REQUESTS = 429
 
 /**
  * Represents an error encountered during data fetching
+ * @deprecated Use SpotifyAPIError instead
  */
 export class FetchError extends Error {
   /**
@@ -25,9 +27,19 @@ export class FetchError extends Error {
  * @param {AbortSignal} [signal]
  */
 export async function getUser(token, signal) {
-  /** @type {SpotifyUser} */
-  const userResponse = await get(apiUrl('me'), token, signal)
-  return buildUser(userResponse)
+  try {
+    /** @type {SpotifyUser} */
+    const userResponse = await get(apiUrl('me'), token, signal)
+    return buildUser(userResponse)
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to fetch user profile',
+      error.status || 500,
+      'me',
+      error,
+      { operation: 'getUser' }
+    )
+  }
 }
 
 /**
@@ -36,11 +48,21 @@ export async function getUser(token, signal) {
  * @type {CursorPagedRequest<SpotifyArtist>}
  */
 export async function getUserFollowedArtistsPage(token, limit, after, signal) {
-  const params = new URLSearchParams({ type: 'artist', limit: limit.toString() })
-  if (after) params.set('after', after)
-  /** @type {{ artists: CursorPaged<SpotifyArtist> }} */
-  const response = await get(apiUrl(`me/following?${params}`), token, signal)
-  return response.artists
+  try {
+    const params = new URLSearchParams({ type: 'artist', limit: limit.toString() })
+    if (after) params.set('after', after)
+    /** @type {{ artists: CursorPaged<SpotifyArtist> }} */
+    const response = await get(apiUrl(`me/following?${params}`), token, signal)
+    return response.artists
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to fetch followed artists',
+      error.status || 500,
+      'me/following',
+      error,
+      { operation: 'getUserFollowedArtistsPage', limit, after }
+    )
+  }
 }
 
 /**
@@ -49,8 +71,18 @@ export async function getUserFollowedArtistsPage(token, limit, after, signal) {
  * @type {PagedRequest<SpotifySavedTrack>}
  */
 export function getUserSavedTracksPage(token, limit, offset, signal) {
-  const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-  return get(apiUrl(`me/tracks?${params}`), token, signal)
+  try {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    return get(apiUrl(`me/tracks?${params}`), token, signal)
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to fetch saved tracks',
+      error.status || 500,
+      'me/tracks',
+      error,
+      { operation: 'getUserSavedTracksPage', limit, offset }
+    )
+  }
 }
 
 /**
@@ -59,8 +91,18 @@ export function getUserSavedTracksPage(token, limit, offset, signal) {
  * @type {PagedRequest<SpotifySavedAlbum>}
  */
 export function getUserSavedAlbumsPage(token, limit, offset, signal) {
-  const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-  return get(apiUrl(`me/albums?${params}`), token, signal)
+  try {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    return get(apiUrl(`me/albums?${params}`), token, signal)
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to fetch saved albums',
+      error.status || 500,
+      'me/albums',
+      error,
+      { operation: 'getUserSavedAlbumsPage', limit, offset }
+    )
+  }
 }
 
 /**
@@ -69,8 +111,18 @@ export function getUserSavedAlbumsPage(token, limit, offset, signal) {
  * @type {PagedRequest<SpotifyPlaylist>}
  */
 export function getUserSavedPlaylistsPage(token, limit, offset, signal) {
-  const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-  return get(apiUrl(`me/playlists?${params}`), token, signal)
+  try {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    return get(apiUrl(`me/playlists?${params}`), token, signal)
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to fetch playlists',
+      error.status || 500,
+      'me/playlists',
+      error,
+      { operation: 'getUserSavedPlaylistsPage', limit, offset }
+    )
+  }
 }
 
 /**
@@ -82,19 +134,29 @@ export function getUserSavedPlaylistsPage(token, limit, offset, signal) {
  * @param {AbortSignal} [signal]
  */
 export async function getArtistAlbums(token, artistId, groups, signal) {
-  /** @type {AlbumRaw[]} */
-  const albums = []
-  const params = new URLSearchParams({ limit: '50', include_groups: groups.join(',') })
-  let next = apiUrl(`artists/${artistId}/albums?${params}`)
+  try {
+    /** @type {AlbumRaw[]} */
+    const albums = []
+    const params = new URLSearchParams({ limit: '50', include_groups: groups.join(',') })
+    let next = apiUrl(`artists/${artistId}/albums?${params}`)
 
-  while (next) {
-    /** @type {Paged<SpotifyAlbum>} */
-    const response = await get(next, token, signal)
-    for (const item of response.items) albums.push(buildAlbumRaw(item, artistId))
-    next = response.next
+    while (next) {
+      /** @type {Paged<SpotifyAlbum>} */
+      const response = await get(next, token, signal)
+      for (const item of response.items) albums.push(buildAlbumRaw(item, artistId))
+      next = response.next
+    }
+
+    return albums
+  } catch (error) {
+    throw new SpotifyAPIError(
+      `Failed to fetch albums for artist ${artistId}`,
+      error.status || 500,
+      `artists/${artistId}/albums`,
+      error,
+      { operation: 'getArtistAlbums', artistId, groups }
+    )
   }
-
-  return albums
 }
 
 /**
@@ -105,10 +167,20 @@ export async function getArtistAlbums(token, artistId, groups, signal) {
  * @param {AbortSignal} [signal]
  */
 export async function getFullAlbums(token, albumIds, signal) {
-  const params = new URLSearchParams({ ids: albumIds.join(',') })
-  /** @type {{ albums: SpotifyAlbumFull[] }} */
-  const response = await get(apiUrl(`albums?${params}`), token, signal)
-  return response.albums
+  try {
+    const params = new URLSearchParams({ ids: albumIds.join(',') })
+    /** @type {{ albums: SpotifyAlbumFull[] }} */
+    const response = await get(apiUrl(`albums?${params}`), token, signal)
+    return response.albums
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to fetch full album data',
+      error.status || 500,
+      'albums',
+      error,
+      { operation: 'getFullAlbums', albumIds: albumIds.length }
+    )
+  }
 }
 
 /**
@@ -119,27 +191,37 @@ export async function getFullAlbums(token, albumIds, signal) {
  * @param {AbortSignal} [signal]
  */
 export async function getAlbumsTrackIds(token, albumIds, signal) {
-  /** @type {string[]} */
-  const trackIds = []
-  const albums = await getFullAlbums(token, albumIds, signal)
+  try {
+    /** @type {string[]} */
+    const trackIds = []
+    const albums = await getFullAlbums(token, albumIds, signal)
 
-  for (const album of albums) {
-    if (!album) continue
+    for (const album of albums) {
+      if (!album) continue
 
-    const albumTrackIds = album.tracks.items.map((track) => track.id)
-    let next = album.tracks.next
+      const albumTrackIds = album.tracks.items.map((track) => track.id)
+      let next = album.tracks.next
 
-    while (next) {
-      /** @type {Paged<SpotifyTrack>} */
-      const response = await get(next, token, signal)
-      for (const track of response.items) albumTrackIds.push(track.id)
-      next = response.next
+      while (next) {
+        /** @type {Paged<SpotifyTrack>} */
+        const response = await get(next, token, signal)
+        for (const track of response.items) albumTrackIds.push(track.id)
+        next = response.next
+      }
+
+      for (const id of albumTrackIds) trackIds.push(id)
     }
 
-    for (const id of albumTrackIds) trackIds.push(id)
+    return trackIds
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to fetch album track IDs',
+      error.status || 500,
+      'albums/tracks',
+      error,
+      { operation: 'getAlbumsTrackIds', albumIds: albumIds.length }
+    )
   }
-
-  return trackIds
 }
 
 /**
@@ -152,12 +234,22 @@ export async function getAlbumsTrackIds(token, albumIds, signal) {
  * @returns {Promise<SpotifyPlaylist>}
  */
 export function createPlaylist(token, userId, form, signal) {
-  return post(
-    apiUrl(`users/${userId}/playlists`),
-    token,
-    { name: form.name, description: form.description, public: form.isPublic },
-    signal
-  )
+  try {
+    return post(
+      apiUrl(`users/${userId}/playlists`),
+      token,
+      { name: form.name, description: form.description, public: form.isPublic },
+      signal
+    )
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to create playlist',
+      error.status || 500,
+      `users/${userId}/playlists`,
+      error,
+      { operation: 'createPlaylist', userId, playlistName: form.name }
+    )
+  }
 }
 
 /**
@@ -170,7 +262,17 @@ export function createPlaylist(token, userId, form, signal) {
  * @returns {Promise<SpotifyPlaylistSnapshot>}
  */
 export function addTracksToPlaylist(token, playlistId, trackUris, signal) {
-  return post(apiUrl(`playlists/${playlistId}/tracks`), token, { uris: trackUris }, signal)
+  try {
+    return post(apiUrl(`playlists/${playlistId}/tracks`), token, { uris: trackUris }, signal)
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to add tracks to playlist',
+      error.status || 500,
+      `playlists/${playlistId}/tracks`,
+      error,
+      { operation: 'addTracksToPlaylist', playlistId, trackCount: trackUris.length }
+    )
+  }
 }
 
 /**
@@ -182,12 +284,22 @@ export function addTracksToPlaylist(token, playlistId, trackUris, signal) {
  * @returns {Promise<SpotifyPlaylistSnapshot>}
  */
 export function clearPlaylist(token, playlistId, signal) {
-  return put(
-    apiUrl(`playlists/${playlistId}/tracks`),
-    token,
-    { uris: [], range_start: 0, range_length: 99999 },
-    signal
-  )
+  try {
+    return put(
+      apiUrl(`playlists/${playlistId}/tracks`),
+      token,
+      { uris: [], range_start: 0, range_length: 99999 },
+      signal
+    )
+  } catch (error) {
+    throw new SpotifyAPIError(
+      'Failed to clear playlist',
+      error.status || 500,
+      `playlists/${playlistId}/tracks`,
+      error,
+      { operation: 'clearPlaylist', playlistId }
+    )
+  }
 }
 
 /**
@@ -272,27 +384,92 @@ async function request(payload) {
   const { endpoint, token, method, headers = {}, body, signal } = payload
   const defaultHeaders = { authorization: `Bearer ${token}`, accept: 'application/json' }
 
-  const response = await fetch(endpoint, {
-    headers: { ...defaultHeaders, ...headers },
-    method,
-    body,
-    signal,
-  })
-
-  if (response.ok) return response.json()
-
-  if (response.status === HTTP_TOO_MANY_REQUESTS) {
-    const retryAfter = Number(response.headers.get('Retry-After'))
-    await sleep((retryAfter + 1) * 1000)
-    return request(payload)
-  }
-
-  let message = `HTTP Error ${response.status}`
-
   try {
-    const json = await response.json()
-    if (json.error?.message) message = json.error.message
-  } catch {}
+    const response = await fetch(endpoint, {
+      headers: { ...defaultHeaders, ...headers },
+      method,
+      body,
+      signal,
+    })
 
-  throw new FetchError(response.status, message)
+    if (response.ok) return response.json()
+
+    if (response.status === HTTP_TOO_MANY_REQUESTS) {
+      const retryAfter = Number(response.headers.get('Retry-After'))
+      await sleep((retryAfter + 1) * 1000)
+      return request(payload)
+    }
+
+    let message = `HTTP Error ${response.status}`
+    let spotifyError = null
+
+    try {
+      const json = await response.json()
+      if (json.error?.message) {
+        message = json.error.message
+        spotifyError = json.error
+      }
+    } catch {}
+
+    // Handle specific error cases
+    if (response.status === 401) {
+      throw new SpotifyAPIError(
+        'Authentication failed - please log in again',
+        response.status,
+        endpoint,
+        spotifyError,
+        { requiresReauth: true }
+      )
+    }
+
+    if (response.status === 403) {
+      throw new SpotifyAPIError(
+        'Access forbidden - insufficient permissions',
+        response.status,
+        endpoint,
+        spotifyError,
+        { requiresPermissions: true }
+      )
+    }
+
+    if (response.status >= 500) {
+      throw new SpotifyAPIError(
+        'Spotify service temporarily unavailable',
+        response.status,
+        endpoint,
+        spotifyError,
+        { isTemporary: true }
+      )
+    }
+
+    throw new SpotifyAPIError(message, response.status, endpoint, spotifyError)
+
+  } catch (error) {
+    // Handle network errors
+    if (error.name === 'AbortError') {
+      throw new NetworkError('Request was cancelled', 0, endpoint, { aborted: true })
+    }
+
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new NetworkError(
+        'Network connection failed',
+        0,
+        endpoint,
+        { offline: !navigator.onLine }
+      )
+    }
+
+    // Re-throw our custom errors
+    if (error instanceof SpotifyAPIError || error instanceof NetworkError) {
+      throw error
+    }
+
+    // Wrap unknown errors
+    throw new NetworkError(
+      error.message || 'Unknown network error',
+      0,
+      endpoint,
+      { originalError: error.name }
+    )
+  }
 }
