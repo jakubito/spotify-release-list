@@ -38,6 +38,28 @@ import { getAllPaged, setupWorkers } from './request'
 const { TRACK } = SpotifyEntity
 
 /**
+ * Get track URIs from album objects (works with both Album[] and SpotifyAlbum[])
+ *
+ * @param {Array<{id: string}>} albums - Array of album objects with id property
+ * @param {AbortSignal} signal
+ */
+function* getTrackUrisFromAlbumObjects(albums, signal) {
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield call(getAuthData)
+
+  const albumIds = albums.map((album) => album.id)
+  const trackIdsCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
+    call(getAlbumsTrackIds, token, albumIdsChunk, signal)
+  )
+
+  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
+  const trackIds = yield all(trackIdsCalls)
+  const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
+
+  return trackUris
+}
+
+/**
  * Playlist creation saga
  *
  * @param {CreatePlaylistAction} action
@@ -160,26 +182,21 @@ function* updatePlaylistMainSaga(action, signal) {
 }
 
 /**
+ * Get track URIs from current releases
+ *
  * @param {AbortSignal} signal
  */
 function* getReleasesTrackUris(signal) {
-  /** @type {ReturnType<typeof getAuthData>} */
-  const { token } = yield call(getAuthData)
   /** @type {ReturnType<typeof getReleases>} */
   const releases = yield select(getReleases)
 
-  const albumIds = releases.reduce(
-    (ids, { albums }) => ids.concat(albums.map((album) => album.id)),
-    /** @type {string[]} */ ([])
+  const albums = releases.reduce(
+    (allAlbums, { albums }) => allAlbums.concat(albums),
+    /** @type {Album[]} */ ([])
   )
 
-  const trackIdsCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
-    call(getAlbumsTrackIds, token, albumIdsChunk, signal)
-  )
-
-  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
-  const trackIds = yield all(trackIdsCalls)
-  const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
+  /** @type {GeneratorReturnType<ReturnType<typeof getTrackUrisFromAlbumObjects>>} */
+  const trackUris = yield call(getTrackUrisFromAlbumObjects, albums, signal)
 
   return trackUris
 }
@@ -270,3 +287,6 @@ function* getUserSavedPlaylists(requestChannel, responseChannel, workersCount) {
 
   return playlists
 }
+
+// Export the reusable function for use in other sagas
+export { getTrackUrisFromAlbumObjects }

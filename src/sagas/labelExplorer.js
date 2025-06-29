@@ -1,10 +1,8 @@
 import { call, put, takeLeading, select } from 'redux-saga/effects'
 import chunk from 'lodash/chunk'
 import { Scope } from 'enums'
-import { searchAlbumsByLabel, getAlbumsTrackIds, createPlaylist, addTracksToPlaylist, FetchError } from 'api'
+import { searchAlbumsByLabel, createPlaylist, addTracksToPlaylist, FetchError } from 'api'
 import { getAuthData } from 'auth'
-import { spotifyUri } from 'helpers'
-import { SpotifyEntity } from 'enums'
 import {
   searchLabel,
   searchLabelStart,
@@ -23,8 +21,7 @@ import {
 } from 'state/selectors'
 import { authorize } from './auth'
 import { withTitle } from './helpers'
-
-const { TRACK } = SpotifyEntity
+import { getTrackUrisFromAlbumObjects } from './playlist'
 
 /**
  * Main label explorer saga
@@ -62,12 +59,15 @@ function* searchLabelSaga(action) {
  * @param {ReturnType<typeof createLabelPlaylist>} action
  */
 function* createLabelPlaylistSaga(action) {
+  const abortController = new AbortController()
+
   try {
     /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(
       withTitle,
       'Creating label playlist...',
-      createLabelPlaylistMainSaga
+      createLabelPlaylistMainSaga,
+      abortController.signal
     )
     /** @type {ReturnType<typeof authorize>} */
     const authorized = yield call(authorize, action, [Scope.PLAYLIST_MODIFY_PRIVATE, Scope.PLAYLIST_MODIFY_PUBLIC], titled)
@@ -76,13 +76,17 @@ function* createLabelPlaylistSaga(action) {
   } catch (error) {
     yield put(showErrorMessage(error.message ?? error.toString()))
     yield put(createLabelPlaylistError())
+  } finally {
+    if (yield cancelled()) abortController.abort()
   }
 }
 
 /**
  * Main label playlist creation saga
+ *
+ * @param {AbortSignal} signal
  */
-function* createLabelPlaylistMainSaga() {
+function* createLabelPlaylistMainSaga(signal) {
   yield put(createLabelPlaylistStart())
 
   try {
@@ -95,20 +99,17 @@ function* createLabelPlaylistMainSaga() {
     /** @type {ReturnType<typeof getLabelSelectedReleases>} */
     const selectedReleases = yield select(getLabelSelectedReleases)
 
-    // Get track IDs from selected releases
-    const albumIds = selectedReleases.map(release => release.id)
-    
-    /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>} */
-    const trackIds = yield call(getAlbumsTrackIds, token, albumIds)
-    const trackUris = trackIds.map(trackId => spotifyUri(trackId, TRACK))
+    // Use the reusable track URI fetching saga
+    /** @type {GeneratorReturnType<ReturnType<typeof getTrackUrisFromAlbumObjects>>} */
+    const trackUris = yield call(getTrackUrisFromAlbumObjects, selectedReleases, signal)
 
     // Create playlist
     /** @type {Await<ReturnType<typeof createPlaylist>>} */
-    const playlist = yield call(createPlaylist, token, user.id, form)
+    const playlist = yield call(createPlaylist, token, user.id, form, signal)
 
     // Add tracks to playlist in chunks of 100
     for (const trackUrisChunk of chunk(trackUris, 100)) {
-      yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk)
+      yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk, signal)
     }
 
     yield put(createLabelPlaylistFinished({ id: playlist.id, name: playlist.name }))
