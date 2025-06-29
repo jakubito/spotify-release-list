@@ -17,7 +17,7 @@
     align-items: center;
     background-color: $grey-darker;
     border-radius: 20px;
-    padding: 5px 5px 5px 15px;
+    overflow: hidden;
     transition: background-color 0.2s ease;
 
     &:hover {
@@ -26,28 +26,49 @@
   }
 
   &__button {
-    color: $white-ter !important;
-    padding: 0 !important;
+    background: none;
+    border: none;
+    color: $white-ter;
+    padding: 8px 15px;
     font-size: 14px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    font-family: inherit;
 
     &:hover {
-      color: $primary !important;
+      color: $primary;
+    }
+
+    &:focus {
+      outline: none;
+      color: $primary;
     }
   }
 
   &__remove {
-    margin-left: 8px;
-    padding: 4px !important;
-    color: $grey !important;
+    background: none;
+    border: none;
+    color: $grey;
+    padding: 8px;
+    cursor: pointer;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 4px;
+    transition: all 0.2s ease;
+    font-family: inherit;
 
     &:hover {
-      color: $red !important;
+      color: $red;
+      background-color: rgba($red, 0.1);
+    }
+
+    &:focus {
+      outline: none;
+      color: $red;
       background-color: rgba($red, 0.1);
     }
   }

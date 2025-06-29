@@ -24,7 +24,7 @@ import {
   getWorking
 } from 'state/selectors'
 import { deferred, modalsClosed } from 'helpers'
-import { VerticalLayout, Content, Header, Button, Input, Select } from 'components/common'
+import { VerticalLayout, Content, Header, Button, ButtonLink, Input, Select } from 'components/common'
 import LabelSearchResults from './LabelSearchResults'
 import LabelFilters from './LabelFilters'
 import FavoriteLabels from './FavoriteLabels'
@@ -103,11 +103,10 @@ function LabelExplorer() {
   return (
     <VerticalLayout className="LabelExplorer">
       <Header title="Label Explorer">
-        <Button
-          title="Back to Releases"
+        <ButtonLink
           to="/"
+          title="Back to Releases"
           icon="fas fa-arrow-left"
-          onClick={deferred(navigate, '/')}
           disabled={working}
         />
       </Header>

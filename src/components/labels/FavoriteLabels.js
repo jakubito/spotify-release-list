@@ -15,6 +15,10 @@ function FavoriteLabels({ onLabelSelect }) {
     dispatch(removeFavoriteLabel(labelName))
   }
 
+  const handleLabelClick = (labelName) => {
+    onLabelSelect(labelName)
+  }
+
   if (favoriteLabels.length === 0) {
     return null
   }
@@ -25,22 +29,21 @@ function FavoriteLabels({ onLabelSelect }) {
       <div className="FavoriteLabels__list">
         {favoriteLabels.map((labelName) => (
           <div key={labelName} className="FavoriteLabels__item">
-            <Button
-              title={labelName}
-              onClick={() => onLabelSelect(labelName)}
+            <button
               className="FavoriteLabels__button"
-              text
+              onClick={() => handleLabelClick(labelName)}
+              type="button"
             >
               {labelName}
-            </Button>
-            <Button
-              title="Remove from favorites"
-              icon="fas fa-times"
-              onClick={(event) => handleRemoveFavorite(labelName, event)}
+            </button>
+            <button
               className="FavoriteLabels__remove"
-              text
-              small
-            />
+              onClick={(event) => handleRemoveFavorite(labelName, event)}
+              title="Remove from favorites"
+              type="button"
+            >
+              <i className="fas fa-times" />
+            </button>
           </div>
         ))}
       </div>
