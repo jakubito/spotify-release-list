@@ -1,7 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { getFavoriteLabels } from 'state/selectors'
 import { removeFavoriteLabel } from 'state/actions'
-import { Button } from 'components/common'
 
 /**
  * Display and manage favorite labels

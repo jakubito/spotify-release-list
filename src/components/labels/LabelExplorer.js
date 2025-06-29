@@ -6,25 +6,20 @@ import debounce from 'lodash/debounce'
 import { 
   searchLabel, 
   clearLabelSearch,
-  setLabelFilters,
-  resetLabelFilters,
   showLabelPlaylistModal,
   setSelectedLabelReleases,
-  toggleLabelRelease,
   toggleAllLabelReleases,
   addFavoriteLabel,
-  removeFavoriteLabel
 } from 'state/actions'
 import {
   getLabelSearchResults,
   getLabelSearching,
-  getLabelFilters,
   getLabelSelectedReleases,
   getFavoriteLabels,
   getWorking
 } from 'state/selectors'
 import { deferred, modalsClosed } from 'helpers'
-import { VerticalLayout, Content, Header, Button, ButtonLink, Input, Select } from 'components/common'
+import { VerticalLayout, Content, Header, Button, ButtonLink, Input } from 'components/common'
 import LabelSearchResults from './LabelSearchResults'
 import LabelFilters from './LabelFilters'
 import FavoriteLabels from './FavoriteLabels'
