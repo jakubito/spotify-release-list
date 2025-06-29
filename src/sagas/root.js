@@ -57,7 +57,6 @@ export function* rootSaga() {
   yield takeLeadingCancellable(sync.type, syncCancel.type, syncSaga)
   yield takeLeadingCancellable(createPlaylist.type, createPlaylistCancel.type, createPlaylistSaga)
   yield takeLeadingCancellable(updatePlaylist.type, updatePlaylistCancel.type, updatePlaylistSaga)
-  yield takeLeadingCancellable(createLabelPlaylist.type, createLabelPlaylistCancel.type, createLabelPlaylistSaga)
 
   yield fork(autoSyncSaga)
   yield fork(settingsSaga)
