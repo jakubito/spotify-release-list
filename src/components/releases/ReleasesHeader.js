@@ -138,15 +138,6 @@ function ReleasesHeader() {
         >
           🇺🇦
         </a>
-        <ButtonLink
-          to="/labels"
-          title="Label Explorer"
-          icon="fas fa-tags"
-          disabled={working}
-          compact
-        >
-          Labels
-        </ButtonLink>
         {lastSyncDate && hasReleases && !syncing && (
           <Dropdown
             active={exportMenuActive}

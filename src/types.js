@@ -29,17 +29,6 @@
  *   editingFavorites: boolean
  *   lastSettingsPath?: string
  *   labelBlocklistHeight?: number
- *   followedArtists: Artist[]
- *   unfollowingArtists: boolean
- *   labelSearchResults?: SpotifyAlbum[]
- *   labelSearching: boolean
- *   labelFilters: LabelFilters
- *   labelSelectedReleases: SpotifyAlbum[]
- *   labelPlaylistModalVisible: boolean
- *   labelPlaylistForm: PlaylistForm
- *   labelPlaylistResult?: Playlist
- *   creatingLabelPlaylist: boolean
- *   favoriteLabels: string[]
  * }} State
  *
  * @typedef {{
@@ -100,11 +89,6 @@
  * }} Filters
  *
  * @typedef {{
- *   year?: string
- *   sortBy: 'newest' | 'oldest'
- * }} LabelFilters
- *
- * @typedef {{
  *   id: string
  *   name: string
  *   image: string
@@ -159,7 +143,7 @@
  * }} TokenApiResult
  *
  * @typedef {{ id: string, name: string, image: string }} User
- * @typedef {{ id: string, name: string, image?: string }} Artist
+ * @typedef {{ id: string, name: string }} Artist
  * @typedef {{ id: string, name: string }} Playlist
  * @typedef {{ [id: string]: Artist }} ArtistsMap
  * @typedef {{ [id: string]: Album }} AlbumsMap
@@ -298,36 +282,6 @@
  * @typedef {ReturnType<typeof import('state/actions').toggleEditingFavorites>} ToggleEditingFavoritesAction
  * @typedef {ReturnType<typeof import('state/actions').setLastSettingsPath>} SetLastSettingsPathAction
  * @typedef {ReturnType<typeof import('state/actions').downloadAlbumsCsv>} DownloadAlbumsCsvAction
- * @typedef {ReturnType<typeof import('state/actions').setFollowedArtists>} SetFollowedArtistsAction
- * @typedef {ReturnType<typeof import('state/actions').unfollowArtists>} UnfollowArtistsAction
- * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsStart>} UnfollowArtistsStartAction
- * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsFinished>} UnfollowArtistsFinishedAction
- * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsError>} UnfollowArtistsErrorAction
- * @typedef {ReturnType<typeof import('state/actions').followArtists>} FollowArtistsAction
- * @typedef {ReturnType<typeof import('state/actions').followArtistsStart>} FollowArtistsStartAction
- * @typedef {ReturnType<typeof import('state/actions').followArtistsFinished>} FollowArtistsFinishedAction
- * @typedef {ReturnType<typeof import('state/actions').followArtistsError>} FollowArtistsErrorAction
- * @typedef {ReturnType<typeof import('state/actions').addArtistsToBlocklist>} AddArtistsToBlocklistAction
- * @typedef {ReturnType<typeof import('state/actions').searchLabel>} SearchLabelAction
- * @typedef {ReturnType<typeof import('state/actions').searchLabelStart>} SearchLabelStartAction
- * @typedef {ReturnType<typeof import('state/actions').searchLabelFinished>} SearchLabelFinishedAction
- * @typedef {ReturnType<typeof import('state/actions').searchLabelError>} SearchLabelErrorAction
- * @typedef {ReturnType<typeof import('state/actions').clearLabelSearch>} ClearLabelSearchAction
- * @typedef {ReturnType<typeof import('state/actions').setLabelFilters>} SetLabelFiltersAction
- * @typedef {ReturnType<typeof import('state/actions').resetLabelFilters>} ResetLabelFiltersAction
- * @typedef {ReturnType<typeof import('state/actions').setSelectedLabelReleases>} SetSelectedLabelReleasesAction
- * @typedef {ReturnType<typeof import('state/actions').toggleLabelRelease>} ToggleLabelReleaseAction
- * @typedef {ReturnType<typeof import('state/actions').toggleAllLabelReleases>} ToggleAllLabelReleasesAction
- * @typedef {ReturnType<typeof import('state/actions').showLabelPlaylistModal>} ShowLabelPlaylistModalAction
- * @typedef {ReturnType<typeof import('state/actions').hideLabelPlaylistModal>} HideLabelPlaylistModalAction
- * @typedef {ReturnType<typeof import('state/actions').setLabelPlaylistForm>} SetLabelPlaylistFormAction
- * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylist>} CreateLabelPlaylistAction
- * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylistStart>} CreateLabelPlaylistStartAction
- * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylistFinished>} CreateLabelPlaylistFinishedAction
- * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylistError>} CreateLabelPlaylistErrorAction
- * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylistCancel>} CreateLabelPlaylistCancelAction
- * @typedef {ReturnType<typeof import('state/actions').addFavoriteLabel>} AddFavoriteLabelAction
- * @typedef {ReturnType<typeof import('state/actions').removeFavoriteLabel>} RemoveFavoriteLabelAction
  *
  * @typedef {AuthorizeAction
  *   | AuthorizeStartAction
@@ -377,37 +331,7 @@
  *   | SetFavoriteAllAction
  *   | ToggleEditingFavoritesAction
  *   | SetLastSettingsPathAction
- *   | DownloadAlbumsCsvAction
- *   | SetFollowedArtistsAction
- *   | UnfollowArtistsAction
- *   | UnfollowArtistsStartAction
- *   | UnfollowArtistsFinishedAction
- *   | UnfollowArtistsErrorAction
- *   | FollowArtistsAction
- *   | FollowArtistsStartAction
- *   | FollowArtistsFinishedAction
- *   | FollowArtistsErrorAction
- *   | AddArtistsToBlocklistAction
- *   | SearchLabelAction
- *   | SearchLabelStartAction
- *   | SearchLabelFinishedAction
- *   | SearchLabelErrorAction
- *   | ClearLabelSearchAction
- *   | SetLabelFiltersAction
- *   | ResetLabelFiltersAction
- *   | SetSelectedLabelReleasesAction
- *   | ToggleLabelReleaseAction
- *   | ToggleAllLabelReleasesAction
- *   | ShowLabelPlaylistModalAction
- *   | HideLabelPlaylistModalAction
- *   | SetLabelPlaylistFormAction
- *   | CreateLabelPlaylistAction
- *   | CreateLabelPlaylistStartAction
- *   | CreateLabelPlaylistFinishedAction
- *   | CreateLabelPlaylistErrorAction
- *   | CreateLabelPlaylistCancelAction
- *   | AddFavoriteLabelAction
- *   | RemoveFavoriteLabelAction} Action
+ *   | DownloadAlbumsCsvAction} Action
  */
 
 /**

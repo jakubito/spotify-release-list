@@ -2,9 +2,6 @@ import { buildUser, buildAlbumRaw, sleep } from 'helpers'
 
 const API_URL = 'https://api.spotify.com/v1'
 const HTTP_TOO_MANY_REQUESTS = 429
-const DEFAULT_MAX_RETRY_DELAY = 240 // seconds
-const DEFAULT_MAX_RETRIES = 3
-const DEFAULT_TIMEOUT = 30000 // ms
 
 /**
  * Represents an error encountered during data fetching
@@ -77,26 +74,6 @@ export function getUserSavedPlaylistsPage(token, limit, offset, signal) {
 }
 
 /**
- * Search for albums by label
- *
- * @param {string} token
- * @param {string} labelName
- * @param {AbortSignal} [signal]
- */
-export async function searchAlbumsByLabel(token, labelName, signal) {
-  const query = `label:"${labelName}"`
-  const params = new URLSearchParams({ 
-    q: query, 
-    type: 'album', 
-    limit: '50' 
-  })
-  
-  /** @type {{ albums: Paged<SpotifyAlbum> }} */
-  const response = await get(apiUrl(`search?${params}`), token, signal)
-  return response.albums.items
-}
-
-/**
  * Return an artist's albums
  *
  * @param {string} token
@@ -163,30 +140,6 @@ export async function getAlbumsTrackIds(token, albumIds, signal) {
   }
 
   return trackIds
-}
-
-/**
- * Follow artists on Spotify
- *
- * @param {string} token
- * @param {string[]} artistIds
- * @param {AbortSignal} [signal]
- */
-export function followArtists(token, artistIds, signal) {
-  const params = new URLSearchParams({ type: 'artist', ids: artistIds.join(',') })
-  return put(apiUrl(`me/following?${params}`), token, {}, signal)
-}
-
-/**
- * Unfollow artists on Spotify
- *
- * @param {string} token
- * @param {string[]} artistIds
- * @param {AbortSignal} [signal]
- */
-export function unfollowArtists(token, artistIds, signal) {
-  const params = new URLSearchParams({ type: 'artist', ids: artistIds.join(',') })
-  return deleteRequest(apiUrl(`me/following?${params}`), token, signal)
 }
 
 /**
@@ -302,25 +255,7 @@ function put(endpoint, token, body, signal) {
 }
 
 /**
- * Fire DELETE request
- *
- * @template T
- * @param {string} endpoint
- * @param {string} token
- * @param {AbortSignal} [signal]
- * @returns {Promise<T>}
- */
-function deleteRequest(endpoint, token, signal) {
-  return request({
-    endpoint,
-    token,
-    signal,
-    method: 'DELETE',
-  })
-}
-
-/**
- * Spotify API request wrapper with exponential backoff and improved error handling
+ * Spotify API request wrapper
  *
  * @template T
  * @param {{
@@ -330,110 +265,34 @@ function deleteRequest(endpoint, token, signal) {
  *   headers?: Record<string, string>
  *   body?: string
  *   signal?: AbortSignal
- *   maxRetryDelay?: number
- *   maxRetries?: number
- *   timeout?: number
  * }} payload
- * @param {number} [retryCount]
  * @returns {Promise<T>}
  */
-async function request(payload, retryCount = 0) {
-  const {
-    endpoint,
-    token,
-    method,
-    headers = {},
-    body,
-    signal,
-    maxRetryDelay = DEFAULT_MAX_RETRY_DELAY,
-    maxRetries = DEFAULT_MAX_RETRIES,
-    timeout = DEFAULT_TIMEOUT,
-  } = payload
+async function request(payload) {
+  const { endpoint, token, method, headers = {}, body, signal } = payload
   const defaultHeaders = { authorization: `Bearer ${token}`, accept: 'application/json' }
 
-  // Timeout wrapper
-  const controller = !signal ? new AbortController() : null
-  const timeoutId = !signal ? setTimeout(() => controller.abort(), timeout) : null
-  const effectiveSignal = signal || (controller && controller.signal)
+  const response = await fetch(endpoint, {
+    headers: { ...defaultHeaders, ...headers },
+    method,
+    body,
+    signal,
+  })
+
+  if (response.ok) return response.json()
+
+  if (response.status === HTTP_TOO_MANY_REQUESTS) {
+    const retryAfter = Number(response.headers.get('Retry-After'))
+    await sleep((retryAfter + 1) * 1000)
+    return request(payload)
+  }
+
+  let message = `HTTP Error ${response.status}`
 
   try {
-    const response = await fetch(endpoint, {
-      headers: { ...defaultHeaders, ...headers },
-      method,
-      body,
-      signal: effectiveSignal,
-    })
+    const json = await response.json()
+    if (json.error?.message) message = json.error.message
+  } catch {}
 
-    if (timeoutId) clearTimeout(timeoutId)
-
-    if (response.ok) {
-      // Handle empty responses (like DELETE requests)
-      const contentType = response.headers.get('content-type')
-      if (contentType && contentType.includes('application/json')) {
-        return response.json()
-      }
-      return null
-    }
-
-    // Retry logic for rate limit and transient errors
-    const RETRYABLE_STATUSES = [HTTP_TOO_MANY_REQUESTS, 500, 502, 503, 504]
-    if (RETRYABLE_STATUSES.includes(response.status)) {
-      let retryAfter = Number(response.headers.get('Retry-After'))
-      if (!retryAfter || isNaN(retryAfter)) {
-        retryAfter = Math.pow(2, retryCount) // exponential backoff
-      }
-      if (retryAfter > maxRetryDelay) {
-        throw new FetchError(
-          response.status,
-          `Spotify is rate-limiting requests with a ${retryAfter} second delay. Please try again later.`
-        )
-      }
-      if (retryCount < maxRetries) {
-        await sleep((retryAfter + 1) * 1000)
-        return request(payload, retryCount + 1)
-      }
-    }
-
-    let message = `HTTP Error ${response.status}`
-    try {
-      const json = await response.json()
-      if (json.error?.message) message = json.error.message
-    } catch {}
-
-    // Optional: log error for debugging
-    if (typeof window !== 'undefined' && window.console) {
-      console.error('Spotify API error:', { endpoint, status: response.status, message })
-    }
-
-    throw new FetchError(response.status, message)
-  } catch (err) {
-    if (timeoutId) clearTimeout(timeoutId)
-    if (err.name === 'AbortError') {
-      throw new FetchError(0, 'Request was aborted or timed out')
-    }
-    // Optional: log error for debugging
-    if (typeof window !== 'undefined' && window.console) {
-      console.error('Spotify API request failed:', { endpoint, error: err })
-    }
-    throw err
-  }
-}
-
-// Generic pagination helper
-/**
- * Fetch all pages from a Spotify paginated endpoint
- * @template T
- * @param {function(string): Promise<{ items: T[], next: string|null }>} fetchPageFn
- * @param {string} firstUrl
- * @returns {Promise<T[]>}
- */
-export async function fetchAllPages(fetchPageFn, firstUrl) {
-  const results = []
-  let next = firstUrl
-  while (next) {
-    const page = await fetchPageFn(next)
-    results.push(...page.items)
-    next = page.next
-  }
-  return results
+  throw new FetchError(response.status, message)
 }

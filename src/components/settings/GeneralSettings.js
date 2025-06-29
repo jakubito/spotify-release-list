@@ -9,6 +9,7 @@ import DataReset from './DataReset'
 import FirstDayOfWeekField from './FirstDayOfWeekField'
 import FetchExtraDataField from './FetchExtraDataField'
 import LabelBlocklistField from './LabelBlocklistField'
+import ArtistBlocklistField from './ArtistBlocklistField'
 import MinimumSavedTracksField from './MinimumSavedTracksField'
 import HistoryField from './HistoryField'
 
@@ -30,6 +31,7 @@ function GeneralSettings() {
       <UriLinksField />
       <HistoryField />
       <LabelBlocklistField />
+      <ArtistBlocklistField />
       {user && <DataInfo />}
       {hasAppData && <DataReset />}
     </div>
