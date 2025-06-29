@@ -1,6 +1,7 @@
 import { call, put, takeLeading, select } from 'redux-saga/effects'
+import chunk from 'lodash/chunk'
 import { Scope } from 'enums'
-import { searchAlbumsByLabel, getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
+import { searchAlbumsByLabel, getAlbumsTrackIds, createPlaylist, addTracksToPlaylist, FetchError } from 'api'
 import { getAuthData } from 'auth'
 import { spotifyUri } from 'helpers'
 import { SpotifyEntity } from 'enums'
@@ -84,31 +85,40 @@ function* createLabelPlaylistSaga(action) {
 function* createLabelPlaylistMainSaga() {
   yield put(createLabelPlaylistStart())
 
-  /** @type {ReturnType<typeof getAuthData>} */
-  const { token } = yield call(getAuthData)
-  /** @type {ReturnType<typeof getUser>} */
-  const user = yield select(getUser)
-  /** @type {ReturnType<typeof getLabelPlaylistForm>} */
-  const form = yield select(getLabelPlaylistForm)
-  /** @type {ReturnType<typeof getLabelSelectedReleases>} */
-  const selectedReleases = yield select(getLabelSelectedReleases)
+  try {
+    /** @type {ReturnType<typeof getAuthData>} */
+    const { token } = yield call(getAuthData)
+    /** @type {ReturnType<typeof getUser>} */
+    const user = yield select(getUser)
+    /** @type {ReturnType<typeof getLabelPlaylistForm>} */
+    const form = yield select(getLabelPlaylistForm)
+    /** @type {ReturnType<typeof getLabelSelectedReleases>} */
+    const selectedReleases = yield select(getLabelSelectedReleases)
 
-  // Get track IDs from selected releases
-  const albumIds = selectedReleases.map(release => release.id)
-  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>} */
-  const trackIds = yield call(getAlbumsTrackIds, token, albumIds)
-  const trackUris = trackIds.map(trackId => spotifyUri(trackId, TRACK))
+    // Get track IDs from selected releases
+    const albumIds = selectedReleases.map(release => release.id)
+    
+    /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>} */
+    const trackIds = yield call(getAlbumsTrackIds, token, albumIds)
+    const trackUris = trackIds.map(trackId => spotifyUri(trackId, TRACK))
 
-  // Create playlist
-  /** @type {Await<ReturnType<typeof createPlaylist>>} */
-  const playlist = yield call(createPlaylist, token, user.id, form)
+    // Create playlist
+    /** @type {Await<ReturnType<typeof createPlaylist>>} */
+    const playlist = yield call(createPlaylist, token, user.id, form)
 
-  // Add tracks to playlist in chunks of 100
-  const chunkSize = 100
-  for (let i = 0; i < trackUris.length; i += chunkSize) {
-    const chunk = trackUris.slice(i, i + chunkSize)
-    yield call(addTracksToPlaylist, token, playlist.id, chunk)
+    // Add tracks to playlist in chunks of 100
+    for (const trackUrisChunk of chunk(trackUris, 100)) {
+      yield call(addTracksToPlaylist, token, playlist.id, trackUrisChunk)
+    }
+
+    yield put(createLabelPlaylistFinished({ id: playlist.id, name: playlist.name }))
+  } catch (error) {
+    // Handle rate limit errors specifically
+    if (error instanceof FetchError && error.status === 429) {
+      yield put(showErrorMessage(error.message))
+    } else {
+      yield put(showErrorMessage(error.message ?? error.toString()))
+    }
+    yield put(createLabelPlaylistError())
   }
-
-  yield put(createLabelPlaylistFinished({ id: playlist.id, name: playlist.name }))
 }

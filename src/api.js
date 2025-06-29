@@ -2,6 +2,7 @@ import { buildUser, buildAlbumRaw, sleep } from 'helpers'
 
 const API_URL = 'https://api.spotify.com/v1'
 const HTTP_TOO_MANY_REQUESTS = 429
+const MAX_RETRY_DELAY = 60 // Maximum seconds to wait for rate limit retry
 
 /**
  * Represents an error encountered during data fetching
@@ -352,6 +353,15 @@ async function request(payload) {
 
   if (response.status === HTTP_TOO_MANY_REQUESTS) {
     const retryAfter = Number(response.headers.get('Retry-After'))
+    
+    // If Spotify requests a wait longer than our maximum, fail immediately
+    if (retryAfter > MAX_RETRY_DELAY) {
+      throw new FetchError(
+        response.status, 
+        `Spotify is rate-limiting requests with a ${retryAfter} second delay. Please try again later.`
+      )
+    }
+    
     await sleep((retryAfter + 1) * 1000)
     return request(payload)
   }
