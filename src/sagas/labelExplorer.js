@@ -1,4 +1,5 @@
-import { call, put, takeLeading, select } from 'redux-saga/effects'
+import { call, put, takeLeading, select, fork, cancel } from 'redux-saga/effects'
+import chunk from 'lodash/chunk'
 import { Scope } from 'enums'
 import { searchAlbumsByLabel, getAlbumsTrackIds, createPlaylist, addTracksToPlaylist } from 'api'
 import { getAuthData } from 'auth'
@@ -13,6 +14,7 @@ import {
   createLabelPlaylistStart,
   createLabelPlaylistFinished,
   createLabelPlaylistError,
+  createLabelPlaylistCancel,
   showErrorMessage,
 } from 'state/actions'
 import {
@@ -21,7 +23,8 @@ import {
   getUser,
 } from 'state/selectors'
 import { authorize } from './auth'
-import { withTitle } from './helpers'
+import { withTitle, takeLeadingCancellable } from './helpers'
+import { setupWorkers } from './request'
 
 const { TRACK } = SpotifyEntity
 
@@ -30,7 +33,7 @@ const { TRACK } = SpotifyEntity
  */
 export function* labelExplorerSaga() {
   yield takeLeading(searchLabel.type, searchLabelSaga)
-  yield takeLeading(createLabelPlaylist.type, createLabelPlaylistSaga)
+  yield takeLeadingCancellable(createLabelPlaylist.type, createLabelPlaylistCancel.type, createLabelPlaylistSaga)
 }
 
 /**
@@ -61,27 +64,38 @@ function* searchLabelSaga(action) {
  * @param {ReturnType<typeof createLabelPlaylist>} action
  */
 function* createLabelPlaylistSaga(action) {
+  const abortController = new AbortController()
+
   try {
+    /** @type {ReturnType<typeof getLabelPlaylistForm>} */
+    const { isPublic } = yield select(getLabelPlaylistForm)
+    const scope = isPublic ? Scope.PLAYLIST_MODIFY_PUBLIC : Scope.PLAYLIST_MODIFY_PRIVATE
+
     /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(
       withTitle,
       'Creating label playlist...',
-      createLabelPlaylistMainSaga
+      createLabelPlaylistMainSaga,
+      abortController.signal
     )
     /** @type {ReturnType<typeof authorize>} */
-    const authorized = yield call(authorize, action, [Scope.PLAYLIST_MODIFY_PRIVATE, Scope.PLAYLIST_MODIFY_PUBLIC], titled)
+    const authorized = yield call(authorize, action, [scope], titled)
 
     yield call(authorized)
   } catch (error) {
     yield put(showErrorMessage(error.message ?? error.toString()))
     yield put(createLabelPlaylistError())
+  } finally {
+    if (yield cancelled()) abortController.abort()
   }
 }
 
 /**
  * Main label playlist creation saga
+ *
+ * @param {AbortSignal} signal
  */
-function* createLabelPlaylistMainSaga() {
+function* createLabelPlaylistMainSaga(signal) {
   yield put(createLabelPlaylistStart())
 
   /** @type {ReturnType<typeof getAuthData>} */
@@ -93,22 +107,39 @@ function* createLabelPlaylistMainSaga() {
   /** @type {ReturnType<typeof getLabelSelectedReleases>} */
   const selectedReleases = yield select(getLabelSelectedReleases)
 
-  // Get track IDs from selected releases
-  const albumIds = selectedReleases.map(release => release.id)
-  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>} */
-  const trackIds = yield call(getAlbumsTrackIds, token, albumIds)
-  const trackUris = trackIds.map(trackId => spotifyUri(trackId, TRACK))
+  // Set up request workers for concurrent processing
+  /** @type {RequestWorkers} */
+  const { workers, requestChannel, responseChannel, workersFork } = yield call(setupWorkers, 5)
+  yield fork(workersFork)
 
-  // Create playlist
-  /** @type {Await<ReturnType<typeof createPlaylist>>} */
-  const playlist = yield call(createPlaylist, token, user.id, form)
+  try {
+    // Get track IDs from selected releases using the request management system
+    const albumIds = selectedReleases.map(release => release.id)
+    const albumIdChunks = chunk(albumIds, 20) // Process in smaller chunks to avoid rate limits
 
-  // Add tracks to playlist in chunks of 100
-  const chunkSize = 100
-  for (let i = 0; i < trackUris.length; i += chunkSize) {
-    const chunk = trackUris.slice(i, i + chunkSize)
-    yield call(addTracksToPlaylist, token, playlist.id, chunk)
+    /** @type {string[]} */
+    const allTrackIds = []
+
+    for (const albumIdsChunk of albumIdChunks) {
+      /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>} */
+      const trackIds = yield call(getAlbumsTrackIds, token, albumIdsChunk, signal)
+      allTrackIds.push(...trackIds)
+    }
+
+    const trackUris = allTrackIds.map(trackId => spotifyUri(trackId, TRACK))
+
+    // Create playlist
+    /** @type {Await<ReturnType<typeof createPlaylist>>} */
+    const playlist = yield call(createPlaylist, token, user.id, form, signal)
+
+    // Add tracks to playlist in chunks of 100
+    const trackUriChunks = chunk(trackUris, 100)
+    for (const trackUriChunk of trackUriChunks) {
+      yield call(addTracksToPlaylist, token, playlist.id, trackUriChunk, signal)
+    }
+
+    yield put(createLabelPlaylistFinished({ id: playlist.id, name: playlist.name }))
+  } finally {
+    yield cancel(workers)
   }
-
-  yield put(createLabelPlaylistFinished({ id: playlist.id, name: playlist.name }))
 }
