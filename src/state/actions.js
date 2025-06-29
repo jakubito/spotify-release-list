@@ -93,3 +93,34 @@ export const followArtistsError = createAction('followArtistsError')
 // Artist Blocklist actions
 /** @type {ActionCreatorWithPayload<string[], 'addArtistsToBlocklist'>} */
 export const addArtistsToBlocklist = createAction('addArtistsToBlocklist')
+
+// Label Explorer actions
+/** @type {ActionCreatorWithPayload<string, 'searchLabel'>} */
+export const searchLabel = createAction('searchLabel')
+export const searchLabelStart = createAction('searchLabelStart')
+/** @type {ActionCreatorWithPayload<SpotifyAlbum[], 'searchLabelFinished'>} */
+export const searchLabelFinished = createAction('searchLabelFinished')
+export const searchLabelError = createAction('searchLabelError')
+export const clearLabelSearch = createAction('clearLabelSearch')
+/** @type {ActionCreatorWithPayload<Partial<LabelFilters>, 'setLabelFilters'>} */
+export const setLabelFilters = createAction('setLabelFilters')
+export const resetLabelFilters = createAction('resetLabelFilters')
+/** @type {ActionCreatorWithPayload<SpotifyAlbum[], 'setSelectedLabelReleases'>} */
+export const setSelectedLabelReleases = createAction('setSelectedLabelReleases')
+/** @type {ActionCreatorWithPayload<SpotifyAlbum, 'toggleLabelRelease'>} */
+export const toggleLabelRelease = createAction('toggleLabelRelease')
+export const toggleAllLabelReleases = createAction('toggleAllLabelReleases')
+export const showLabelPlaylistModal = createAction('showLabelPlaylistModal')
+export const hideLabelPlaylistModal = createAction('hideLabelPlaylistModal')
+/** @type {ActionCreatorWithPayload<PlaylistForm, 'setLabelPlaylistForm'>} */
+export const setLabelPlaylistForm = createAction('setLabelPlaylistForm')
+export const createLabelPlaylist = createAction('createLabelPlaylist')
+export const createLabelPlaylistStart = createAction('createLabelPlaylistStart')
+/** @type {ActionCreatorWithPayload<Playlist, 'createLabelPlaylistFinished'>} */
+export const createLabelPlaylistFinished = createAction('createLabelPlaylistFinished')
+export const createLabelPlaylistError = createAction('createLabelPlaylistError')
+export const createLabelPlaylistCancel = createAction('createLabelPlaylistCancel')
+/** @type {ActionCreatorWithPayload<string, 'addFavoriteLabel'>} */
+export const addFavoriteLabel = createAction('addFavoriteLabel')
+/** @type {ActionCreatorWithPayload<string, 'removeFavoriteLabel'>} */
+export const removeFavoriteLabel = createAction('removeFavoriteLabel')

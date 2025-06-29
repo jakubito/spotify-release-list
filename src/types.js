@@ -31,6 +31,15 @@
  *   labelBlocklistHeight?: number
  *   followedArtists: Artist[]
  *   unfollowingArtists: boolean
+ *   labelSearchResults?: SpotifyAlbum[]
+ *   labelSearching: boolean
+ *   labelFilters: LabelFilters
+ *   labelSelectedReleases: SpotifyAlbum[]
+ *   labelPlaylistModalVisible: boolean
+ *   labelPlaylistForm: PlaylistForm
+ *   labelPlaylistResult?: Playlist
+ *   creatingLabelPlaylist: boolean
+ *   favoriteLabels: string[]
  * }} State
  *
  * @typedef {{
@@ -89,6 +98,11 @@
  *   minTracks?: number
  *   maxTracks?: number
  * }} Filters
+ *
+ * @typedef {{
+ *   year?: string
+ *   sortBy: 'newest' | 'oldest'
+ * }} LabelFilters
  *
  * @typedef {{
  *   id: string
@@ -294,6 +308,26 @@
  * @typedef {ReturnType<typeof import('state/actions').followArtistsFinished>} FollowArtistsFinishedAction
  * @typedef {ReturnType<typeof import('state/actions').followArtistsError>} FollowArtistsErrorAction
  * @typedef {ReturnType<typeof import('state/actions').addArtistsToBlocklist>} AddArtistsToBlocklistAction
+ * @typedef {ReturnType<typeof import('state/actions').searchLabel>} SearchLabelAction
+ * @typedef {ReturnType<typeof import('state/actions').searchLabelStart>} SearchLabelStartAction
+ * @typedef {ReturnType<typeof import('state/actions').searchLabelFinished>} SearchLabelFinishedAction
+ * @typedef {ReturnType<typeof import('state/actions').searchLabelError>} SearchLabelErrorAction
+ * @typedef {ReturnType<typeof import('state/actions').clearLabelSearch>} ClearLabelSearchAction
+ * @typedef {ReturnType<typeof import('state/actions').setLabelFilters>} SetLabelFiltersAction
+ * @typedef {ReturnType<typeof import('state/actions').resetLabelFilters>} ResetLabelFiltersAction
+ * @typedef {ReturnType<typeof import('state/actions').setSelectedLabelReleases>} SetSelectedLabelReleasesAction
+ * @typedef {ReturnType<typeof import('state/actions').toggleLabelRelease>} ToggleLabelReleaseAction
+ * @typedef {ReturnType<typeof import('state/actions').toggleAllLabelReleases>} ToggleAllLabelReleasesAction
+ * @typedef {ReturnType<typeof import('state/actions').showLabelPlaylistModal>} ShowLabelPlaylistModalAction
+ * @typedef {ReturnType<typeof import('state/actions').hideLabelPlaylistModal>} HideLabelPlaylistModalAction
+ * @typedef {ReturnType<typeof import('state/actions').setLabelPlaylistForm>} SetLabelPlaylistFormAction
+ * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylist>} CreateLabelPlaylistAction
+ * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylistStart>} CreateLabelPlaylistStartAction
+ * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylistFinished>} CreateLabelPlaylistFinishedAction
+ * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylistError>} CreateLabelPlaylistErrorAction
+ * @typedef {ReturnType<typeof import('state/actions').createLabelPlaylistCancel>} CreateLabelPlaylistCancelAction
+ * @typedef {ReturnType<typeof import('state/actions').addFavoriteLabel>} AddFavoriteLabelAction
+ * @typedef {ReturnType<typeof import('state/actions').removeFavoriteLabel>} RemoveFavoriteLabelAction
  *
  * @typedef {AuthorizeAction
  *   | AuthorizeStartAction
@@ -353,7 +387,27 @@
  *   | FollowArtistsStartAction
  *   | FollowArtistsFinishedAction
  *   | FollowArtistsErrorAction
- *   | AddArtistsToBlocklistAction} Action
+ *   | AddArtistsToBlocklistAction
+ *   | SearchLabelAction
+ *   | SearchLabelStartAction
+ *   | SearchLabelFinishedAction
+ *   | SearchLabelErrorAction
+ *   | ClearLabelSearchAction
+ *   | SetLabelFiltersAction
+ *   | ResetLabelFiltersAction
+ *   | SetSelectedLabelReleasesAction
+ *   | ToggleLabelReleaseAction
+ *   | ToggleAllLabelReleasesAction
+ *   | ShowLabelPlaylistModalAction
+ *   | HideLabelPlaylistModalAction
+ *   | SetLabelPlaylistFormAction
+ *   | CreateLabelPlaylistAction
+ *   | CreateLabelPlaylistStartAction
+ *   | CreateLabelPlaylistFinishedAction
+ *   | CreateLabelPlaylistErrorAction
+ *   | CreateLabelPlaylistCancelAction
+ *   | AddFavoriteLabelAction
+ *   | RemoveFavoriteLabelAction} Action
  */
 
 /**

@@ -1,0 +1,38 @@
+.LabelFilters {
+  margin-bottom: 25px;
+  padding: 20px;
+  background-color: $black-bis;
+  border-radius: 8px;
+
+  &__controls {
+    display: flex;
+    gap: 20px;
+    align-items: end;
+
+    @include mobile {
+      flex-direction: column;
+      gap: 15px;
+      align-items: stretch;
+    }
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__label {
+    color: $white-ter;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__select {
+    min-width: 150px;
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+}

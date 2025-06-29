@@ -1,0 +1,54 @@
+.FavoriteLabels {
+  &__title {
+    color: $white-ter;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    background-color: $grey-darker;
+    border-radius: 20px;
+    padding: 5px 5px 5px 15px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: $grey-dark;
+    }
+  }
+
+  &__button {
+    color: $white-ter !important;
+    padding: 0 !important;
+    font-size: 14px;
+
+    &:hover {
+      color: $primary !important;
+    }
+  }
+
+  &__remove {
+    margin-left: 8px;
+    padding: 4px !important;
+    color: $grey !important;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: $red !important;
+      background-color: rgba($red, 0.1);
+    }
+  }
+}

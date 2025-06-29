@@ -10,12 +10,14 @@ import {
   BackupSettings,
   FollowedArtistsManager,
 } from 'components/settings'
+import { LabelExplorer } from 'components/labels'
 
 function Routes() {
   return (
     <RouterRoutes>
       <Route path="/" element={<App />}>
         <Route index element={<Releases />} />
+        <Route path="labels" element={<LabelExplorer />} />
         <Route path="settings" element={<Settings />}>
           <Route index element={<GeneralSettings />} />
           <Route path="appearance" element={<AppearanceSettings />} />

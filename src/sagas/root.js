@@ -14,6 +14,9 @@ import {
   syncCancel,
   updatePlaylist,
   updatePlaylistCancel,
+  searchLabel,
+  createLabelPlaylist,
+  createLabelPlaylistCancel,
 } from 'state/actions'
 import { deleteAuthData } from 'auth'
 import { albumsNew, albumsHistory } from 'albums'
@@ -32,6 +35,7 @@ import { notificationSaga } from './notification'
 import { settingsSaga } from './settings'
 import { downloadAlbumsCsvSaga } from './csv'
 import { artistManagementSaga } from './artistManagement'
+import { labelExplorerSaga } from './labelExplorer'
 
 /**
  * Root saga
@@ -53,10 +57,12 @@ export function* rootSaga() {
   yield takeLeadingCancellable(sync.type, syncCancel.type, syncSaga)
   yield takeLeadingCancellable(createPlaylist.type, createPlaylistCancel.type, createPlaylistSaga)
   yield takeLeadingCancellable(updatePlaylist.type, updatePlaylistCancel.type, updatePlaylistSaga)
+  yield takeLeadingCancellable(createLabelPlaylist.type, createLabelPlaylistCancel.type, createLabelPlaylistSaga)
 
   yield fork(autoSyncSaga)
   yield fork(settingsSaga)
   yield fork(artistManagementSaga)
+  yield fork(labelExplorerSaga)
 
   if (navigator.serviceWorker) yield fork(updateSaga)
   if (window.Notification) yield fork(notificationSaga)

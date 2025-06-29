@@ -43,6 +43,7 @@ const persistConfig = {
     'filtersVisible',
     'favorites',
     'followedArtists',
+    'favoriteLabels',
   ],
 }
 

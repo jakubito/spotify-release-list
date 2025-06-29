@@ -1,0 +1,103 @@
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useForm, FormProvider } from 'react-hook-form'
+import { useModal } from 'hooks'
+import { 
+  createLabelPlaylist, 
+  createLabelPlaylistCancel, 
+  setLabelPlaylistForm 
+} from 'state/actions'
+import {
+  getCreatingLabelPlaylist,
+  getLabelPlaylistResult,
+  getLabelSelectedReleases
+} from 'state/selectors'
+import { LabelPlaylistForm, PlaylistInfo, PlaylistLoading } from 'components/playlist'
+
+/**
+ * Modal for creating playlists from label releases
+ */
+function LabelPlaylistModal({ closeModal }) {
+  const dispatch = useDispatch()
+  const selectedReleases = useSelector(getLabelSelectedReleases)
+  const creatingPlaylist = useSelector(getCreatingLabelPlaylist)
+  const playlistResult = useSelector(getLabelPlaylistResult)
+  const [submitTriggered, setSubmitTriggered] = useState(false)
+  const onSubmit = useOnSubmit(setSubmitTriggered)
+  const form = useForm()
+
+  useModal(closeModal)
+  useEffect(() => setSubmitTriggered(creatingPlaylist), [creatingPlaylist])
+
+  const totalTracks = selectedReleases.reduce((sum, release) => sum + release.total_tracks, 0)
+
+  const renderContent = () => {
+    if (creatingPlaylist) {
+      return (
+        <PlaylistLoading
+          title="Creating playlist, please wait..."
+          cancel={() => {
+            form.reset({})
+            dispatch(createLabelPlaylistCancel())
+          }}
+        />
+      )
+    }
+
+    if (playlistResult) {
+      return (
+        <PlaylistInfo
+          title="Playlist has been successfully created"
+          playlist={playlistResult}
+          close={closeModal}
+        />
+      )
+    }
+
+    return <LabelPlaylistForm submitTriggered={submitTriggered} closeModal={closeModal} />
+  }
+
+  return (
+    <FormProvider {...form}>
+      <form className="LabelPlaylistModal modal is-active" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="modal-background" onClick={closeModal} />
+        <div className="modal-content has-background-black-bis has-text-light fade-in">
+          <h4 className="title is-4 has-text-light has-text-centered">
+            Creating playlist from <span className="has-text-primary">{selectedReleases.length}</span>{' '}
+            {selectedReleases.length > 1 ? 'releases' : 'release'} (
+            <span className="has-text-primary">{totalTracks}</span>&nbsp;
+            {totalTracks > 1 ? 'tracks' : 'track'})
+          </h4>
+          {renderContent()}
+        </div>
+      </form>
+    </FormProvider>
+  )
+}
+
+/** @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitTriggered */
+function useOnSubmit(setSubmitTriggered) {
+  const dispatch = useDispatch()
+  /**
+   * @param {{
+   *   name: string
+   *   description: string
+   *   visibility: 'private' | 'public'
+   * }} formData
+   * @returns {Promise<void>}
+   */
+  const onSubmit = async (formData) => {
+    setSubmitTriggered(true)
+
+    const name = formData.name.trim()
+    const description = formData.description.trim()
+    const isPublic = formData.visibility === 'public'
+
+    dispatch(setLabelPlaylistForm({ name, description, isPublic }))
+    dispatch(createLabelPlaylist())
+  }
+
+  return onSubmit
+}
+
+export default LabelPlaylistModal

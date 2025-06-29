@@ -100,6 +100,34 @@ export const getFollowedArtists = (state) => state.followedArtists
 /** @param {State} state */
 export const getUnfollowingArtists = (state) => state.unfollowingArtists
 
+// Label Explorer selectors
+/** @param {State} state */
+export const getLabelSearchResults = (state) => state.labelSearchResults
+
+/** @param {State} state */
+export const getLabelSearching = (state) => state.labelSearching
+
+/** @param {State} state */
+export const getLabelFilters = (state) => state.labelFilters
+
+/** @param {State} state */
+export const getLabelSelectedReleases = (state) => state.labelSelectedReleases
+
+/** @param {State} state */
+export const getLabelPlaylistModalVisible = (state) => state.labelPlaylistModalVisible
+
+/** @param {State} state */
+export const getLabelPlaylistForm = (state) => state.labelPlaylistForm
+
+/** @param {State} state */
+export const getLabelPlaylistResult = (state) => state.labelPlaylistResult
+
+/** @param {State} state */
+export const getCreatingLabelPlaylist = (state) => state.creatingLabelPlaylist
+
+/** @param {State} state */
+export const getFavoriteLabels = (state) => state.favoriteLabels
+
 // Individual settings selectors
 export const getSettingsArtistSources = createSelector(
   getSettings,
@@ -198,7 +226,7 @@ export const getHasAppData = createSelector(
  * Check if there is any async work being done
  */
 export const getWorking = createSelector(
-  [getSyncing, getCreatingPlaylist, getAuthorizing, getUnfollowingArtists],
+  [getSyncing, getCreatingPlaylist, getAuthorizing, getUnfollowingArtists, getLabelSearching, getCreatingLabelPlaylist],
   (...values) => includesTruthy(values)
 )
 
@@ -529,6 +557,6 @@ export const getReleasesTrackCount = createSelector(getReleasesArray, (albums) =
 
 /** @param {State} state */
 export const getAnyModalVisible = createSelector(
-  [getPlaylistModalVisible, getUpdatePlaylistModalVisible],
+  [getPlaylistModalVisible, getUpdatePlaylistModalVisible, getLabelPlaylistModalVisible],
   (...values) => includesTruthy(values)
 )

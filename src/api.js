@@ -74,6 +74,26 @@ export function getUserSavedPlaylistsPage(token, limit, offset, signal) {
 }
 
 /**
+ * Search for albums by label
+ *
+ * @param {string} token
+ * @param {string} labelName
+ * @param {AbortSignal} [signal]
+ */
+export async function searchAlbumsByLabel(token, labelName, signal) {
+  const query = `label:"${labelName}"`
+  const params = new URLSearchParams({ 
+    q: query, 
+    type: 'album', 
+    limit: '50' 
+  })
+  
+  /** @type {{ albums: Paged<SpotifyAlbum> }} */
+  const response = await get(apiUrl(`search?${params}`), token, signal)
+  return response.albums.items
+}
+
+/**
  * Return an artist's albums
  *
  * @param {string} token
