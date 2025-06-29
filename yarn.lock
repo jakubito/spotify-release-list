@@ -7975,7 +7975,7 @@ react-scripts@^5.0.1:
   optionalDependencies:
     fsevents "^2.3.2"
 
-react-window@^1.8.8:
+react-window@^1.8.11:
   version "1.8.11"
   resolved "https://registry.npmjs.org/react-window/-/react-window-1.8.11.tgz"
   integrity sha512-+SRbUVT2scadgFSWx+R1P754xHPEqvcfSfVX10QYg6POOz+WNgkN48pS+BtZNIMGiL1HYrSEiCkwsMS15QogEQ==
