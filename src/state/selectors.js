@@ -98,9 +98,6 @@ export const getLabelBlocklistHeight = (state) => state.labelBlocklistHeight
 export const getFollowedArtists = (state) => state.followedArtists
 
 /** @param {State} state */
-export const getFollowingArtists = (state) => state.followingArtists
-
-/** @param {State} state */
 export const getUnfollowingArtists = (state) => state.unfollowingArtists
 
 // Individual settings selectors
@@ -147,11 +144,6 @@ export const getSettingsArtistBlocklist = createSelector(
 )
 
 export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlocklist, (blocklist) => {
-  // Handle both array and string formats for backward compatibility
-  if (Array.isArray(blocklist)) {
-    return blocklist
-  }
-  
   /** @type {string[]} */
   const artistIds = []
   const matches = blocklist.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
@@ -206,7 +198,7 @@ export const getHasAppData = createSelector(
  * Check if there is any async work being done
  */
 export const getWorking = createSelector(
-  [getSyncing, getCreatingPlaylist, getAuthorizing, getFollowingArtists, getUnfollowingArtists],
+  [getSyncing, getCreatingPlaylist, getAuthorizing, getUnfollowingArtists],
   (...values) => includesTruthy(values)
 )
 

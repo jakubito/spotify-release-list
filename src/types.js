@@ -30,7 +30,6 @@
  *   lastSettingsPath?: string
  *   labelBlocklistHeight?: number
  *   followedArtists: Artist[]
- *   followingArtists: boolean
  *   unfollowingArtists: boolean
  * }} State
  *
@@ -72,7 +71,7 @@
  *   displayLabels: boolean
  *   displayPopularity: boolean
  *   labelBlocklist: string
- *   artistBlocklist: string[]
+ *   artistBlocklist: string
  *   releasesOrder: ReleasesOrder
  *   trackHistory: boolean
  * }} Settings
@@ -286,16 +285,10 @@
  * @typedef {ReturnType<typeof import('state/actions').setLastSettingsPath>} SetLastSettingsPathAction
  * @typedef {ReturnType<typeof import('state/actions').downloadAlbumsCsv>} DownloadAlbumsCsvAction
  * @typedef {ReturnType<typeof import('state/actions').setFollowedArtists>} SetFollowedArtistsAction
- * @typedef {ReturnType<typeof import('state/actions').followArtists>} FollowArtistsAction
- * @typedef {ReturnType<typeof import('state/actions').followArtistsStart>} FollowArtistsStartAction
- * @typedef {ReturnType<typeof import('state/actions').followArtistsFinished>} FollowArtistsFinishedAction
- * @typedef {ReturnType<typeof import('state/actions').followArtistsError>} FollowArtistsErrorAction
  * @typedef {ReturnType<typeof import('state/actions').unfollowArtists>} UnfollowArtistsAction
  * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsStart>} UnfollowArtistsStartAction
  * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsFinished>} UnfollowArtistsFinishedAction
  * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsError>} UnfollowArtistsErrorAction
- * @typedef {ReturnType<typeof import('state/actions').addArtistsToBlocklist>} AddArtistsToBlocklistAction
- * @typedef {ReturnType<typeof import('state/actions').removeArtistsFromBlocklist>} RemoveArtistsFromBlocklistAction
  *
  * @typedef {AuthorizeAction
  *   | AuthorizeStartAction
@@ -347,16 +340,10 @@
  *   | SetLastSettingsPathAction
  *   | DownloadAlbumsCsvAction
  *   | SetFollowedArtistsAction
- *   | FollowArtistsAction
- *   | FollowArtistsStartAction
- *   | FollowArtistsFinishedAction
- *   | FollowArtistsErrorAction
  *   | UnfollowArtistsAction
  *   | UnfollowArtistsStartAction
  *   | UnfollowArtistsFinishedAction
- *   | UnfollowArtistsErrorAction
- *   | AddArtistsToBlocklistAction
- *   | RemoveArtistsFromBlocklistAction} Action
+ *   | UnfollowArtistsErrorAction} Action
  */
 
 /**

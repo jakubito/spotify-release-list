@@ -1,17 +1,13 @@
 import {
   setFollowedArtists,
-  followArtistsStart,
-  followArtistsFinished,
-  followArtistsError,
   unfollowArtistsStart,
   unfollowArtistsFinished,
   unfollowArtistsError,
 } from 'state/actions'
 
-/** @type {Pick<State, 'followedArtists' | 'followingArtists' | 'unfollowingArtists'>} */
+/** @type {Pick<State, 'followedArtists' | 'unfollowingArtists'>} */
 export const initialState = {
   followedArtists: [],
-  followingArtists: false,
   unfollowingArtists: false,
 }
 
@@ -25,20 +21,6 @@ export function bind(builder) {
         artistsMap.set(artist.id, artist)
       })
       state.followedArtists = Array.from(artistsMap.values())
-    })
-    .addCase(followArtistsStart, (state) => {
-      state.followingArtists = true
-    })
-    .addCase(followArtistsFinished, (state, action) => {
-      state.followingArtists = false
-      // Add the followed artists to the list if they're not already there
-      const existingIds = new Set(state.followedArtists.map(artist => artist.id))
-      const newArtists = action.payload.map(id => ({ id, name: 'Unknown Artist' }))
-        .filter(artist => !existingIds.has(artist.id))
-      state.followedArtists.push(...newArtists)
-    })
-    .addCase(followArtistsError, (state) => {
-      state.followingArtists = false
     })
     .addCase(unfollowArtistsStart, (state) => {
       state.unfollowingArtists = true

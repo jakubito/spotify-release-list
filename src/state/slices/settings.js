@@ -7,8 +7,6 @@ import {
   setLabelBlocklistHeight,
   setLastSettingsPath,
   setSettings,
-  addArtistsToBlocklist,
-  removeArtistsFromBlocklist,
 } from 'state/actions'
 
 /** @type {Pick<State, 'lastSettingsPath' | 'labelBlocklistHeight' | 'settings'>} */
@@ -33,7 +31,7 @@ export const initialState = {
     displayLabels: false,
     displayPopularity: false,
     labelBlocklist: '',
-    artistBlocklist: [],
+    artistBlocklist: '',
     releasesOrder: ReleasesOrder.ARTIST,
     trackHistory: true,
   },
@@ -58,16 +56,5 @@ export function bind(builder) {
     })
     .addCase(setLabelBlocklistHeight, (state, action) => {
       state.labelBlocklistHeight = action.payload
-    })
-    .addCase(addArtistsToBlocklist, (state, action) => {
-      const existingIds = new Set(state.settings.artistBlocklist)
-      const newIds = action.payload.filter(id => !existingIds.has(id))
-      state.settings.artistBlocklist.push(...newIds)
-    })
-    .addCase(removeArtistsFromBlocklist, (state, action) => {
-      const idsToRemove = new Set(action.payload)
-      state.settings.artistBlocklist = state.settings.artistBlocklist.filter(
-        id => !idsToRemove.has(id)
-      )
     })
 }

@@ -321,7 +321,14 @@ async function request(payload) {
     signal,
   })
 
-  if (response.ok) return response.json()
+  if (response.ok) {
+    // Handle empty responses (like DELETE requests)
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.includes('application/json')) {
+      return response.json()
+    }
+    return null
+  }
 
   if (response.status === HTTP_TOO_MANY_REQUESTS) {
     const retryAfter = Number(response.headers.get('Retry-After'))
