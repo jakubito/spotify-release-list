@@ -2,7 +2,7 @@ import { buildUser, buildAlbumRaw, sleep } from 'helpers'
 
 const API_URL = 'https://api.spotify.com/v1'
 const HTTP_TOO_MANY_REQUESTS = 429
-const MAX_RETRY_DELAY = 60 // Maximum seconds to wait for rate limit retry
+const MAX_RETRY_DELAY = 300 // Maximum seconds to wait for rate limit retry (increased from 60 to 300)
 
 /**
  * Represents an error encountered during data fetching
