@@ -4,7 +4,6 @@ import { FixedSizeList as List } from 'react-window'
 import debounce from 'lodash/debounce'
 import {
   getFollowedArtists,
-  getFollowingArtists,
   getUnfollowingArtists,
   getWorking,
 } from 'state/selectors'

@@ -1,4 +1,4 @@
-import { call, put, takeLeading, select } from 'redux-saga/effects'
+import { call, put, takeLeading, select, cancelled } from 'redux-saga/effects'
 import chunk from 'lodash/chunk'
 import { Scope } from 'enums'
 import { searchAlbumsByLabel, createPlaylist, addTracksToPlaylist, FetchError } from 'api'
