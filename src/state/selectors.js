@@ -339,8 +339,7 @@ const getNonRemixAlbumIds = createSelector(getAlbumsArray, (albums) =>
  * Get album IDs with duplicates removed
  */
 const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) => {
-  const charsMap = { '[': '(', ']': ')', ''': "'" }
-  }
+  const charsMap = { '[': '(', ']': ')', "'": "'" }
   const escapedChars = escapeRegExp(Object.keys(charsMap).join(''))
   const charsRegex = new RegExp(`[${escapedChars}]`, 'g')
 
