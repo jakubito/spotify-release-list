@@ -81,3 +81,15 @@ export const unfollowArtistsStart = createAction('unfollowArtistsStart')
 /** @type {ActionCreatorWithPayload<string[], 'unfollowArtistsFinished'>} */
 export const unfollowArtistsFinished = createAction('unfollowArtistsFinished')
 export const unfollowArtistsError = createAction('unfollowArtistsError')
+
+// Follow Artists actions
+/** @type {ActionCreatorWithPayload<string[], 'followArtists'>} */
+export const followArtists = createAction('followArtists')
+export const followArtistsStart = createAction('followArtistsStart')
+/** @type {ActionCreatorWithPayload<string[], 'followArtistsFinished'>} */
+export const followArtistsFinished = createAction('followArtistsFinished')
+export const followArtistsError = createAction('followArtistsError')
+
+// Artist Blocklist actions
+/** @type {ActionCreatorWithPayload<string[], 'addArtistsToBlocklist'>} */
+export const addArtistsToBlocklist = createAction('addArtistsToBlocklist')

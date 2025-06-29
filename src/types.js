@@ -289,6 +289,11 @@
  * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsStart>} UnfollowArtistsStartAction
  * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsFinished>} UnfollowArtistsFinishedAction
  * @typedef {ReturnType<typeof import('state/actions').unfollowArtistsError>} UnfollowArtistsErrorAction
+ * @typedef {ReturnType<typeof import('state/actions').followArtists>} FollowArtistsAction
+ * @typedef {ReturnType<typeof import('state/actions').followArtistsStart>} FollowArtistsStartAction
+ * @typedef {ReturnType<typeof import('state/actions').followArtistsFinished>} FollowArtistsFinishedAction
+ * @typedef {ReturnType<typeof import('state/actions').followArtistsError>} FollowArtistsErrorAction
+ * @typedef {ReturnType<typeof import('state/actions').addArtistsToBlocklist>} AddArtistsToBlocklistAction
  *
  * @typedef {AuthorizeAction
  *   | AuthorizeStartAction
@@ -343,7 +348,12 @@
  *   | UnfollowArtistsAction
  *   | UnfollowArtistsStartAction
  *   | UnfollowArtistsFinishedAction
- *   | UnfollowArtistsErrorAction} Action
+ *   | UnfollowArtistsErrorAction
+ *   | FollowArtistsAction
+ *   | FollowArtistsStartAction
+ *   | FollowArtistsFinishedAction
+ *   | FollowArtistsErrorAction
+ *   | AddArtistsToBlocklistAction} Action
  */
 
 /**
