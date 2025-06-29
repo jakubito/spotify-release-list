@@ -2,7 +2,7 @@
 
 ## Overview
 
-Spotify Release List is a React-based web application that helps users track new music releases from artists they follow on Spotify. The app uses the Spotify Web API to fetch artist data and displays releases in an organized, filterable interface.
+Spotify Release List is a React-based web application that helps users track new music releases from artists they follow on Spotify. The app uses the Spotify Web API to fetch artist data and displays releases in an organized, filterable interface with advanced features like label exploration and artist management.
 
 ## Architecture
 
@@ -22,6 +22,7 @@ src/
 ├── components/          # React components organized by feature
 │   ├── common/         # Reusable UI components
 │   ├── filters/        # Filter-related components
+│   ├── labels/         # Label Explorer components (NEW)
 │   ├── modals/         # Modal dialogs
 │   ├── playlist/       # Playlist creation components
 │   ├── releases/       # Release display components
@@ -78,6 +79,64 @@ The app uses Redux with several slices:
 - `playlist`: Handles playlist creation and management
 - `settings`: User preferences and configuration
 - `favorites`: User's favorite albums
+- `followedArtists`: Artist management functionality (NEW)
+- `labelExplorer`: Label search and exploration (NEW)
+
+## New Features (v3.7.0+)
+
+### Label Explorer
+
+The Label Explorer allows users to search for releases by record label and create playlists from the results.
+
+#### Key Components:
+- **LabelExplorer**: Main container component
+- **LabelSearchResults**: Displays search results in a grid
+- **LabelAlbum**: Individual album display for label results
+- **LabelFilters**: Year and sort filtering
+- **FavoriteLabels**: Manage favorite labels
+
+#### State Management:
+```javascript
+// Label Explorer state slice
+{
+  labelSearchResults: SpotifyAlbum[] | null,
+  labelSearching: boolean,
+  labelFilters: { year: string | null, sortBy: 'newest' | 'oldest' },
+  labelSelectedReleases: SpotifyAlbum[],
+  labelPlaylistModalVisible: boolean,
+  favoriteLabels: string[]
+}
+```
+
+#### API Integration:
+```javascript
+// Search albums by label
+const albums = await searchAlbumsByLabel(token, labelName, signal)
+```
+
+### Artist Management
+
+Enhanced artist management allows users to view and manage their followed artists.
+
+#### Key Components:
+- **FollowedArtistsManager**: Main artist management interface
+- **ArtistRow**: Individual artist row with selection
+
+#### Features:
+- Search and filter followed artists
+- Bulk unfollow operations
+- Sortable artist list
+- Real-time updates
+
+### Enhanced Filtering
+
+New filtering options provide more granular control over displayed releases.
+
+#### New Filters:
+- **Track Count Filter**: Filter by minimum/maximum number of tracks
+- **New Releases Filter**: Show only newly released albums (requires history tracking)
+- **Improved Various Artists Filter**: Better detection and filtering
+- **Enhanced Remix Filter**: More accurate remix detection
 
 ## Component Architecture
 
@@ -89,6 +148,7 @@ Located in `src/components/common/`, these are reusable UI building blocks:
 - **Input**: Styled input fields
 - **Select**: Dropdown select component
 - **Checkbox**: Custom checkbox with dark theme support
+- **Dropdown**: Reusable dropdown component (NEW)
 
 ### Feature Components
 
@@ -97,18 +157,29 @@ Located in `src/components/common/`, these are reusable UI building blocks:
 - **ReleaseList**: Virtualized list of releases
 - **ReleaseDay**: Groups albums by release date
 - **Album**: Individual album display
+- **LabelDropdown**: Label interaction dropdown (NEW)
 
 #### Filters (`src/components/filters/`)
 - **Filters**: Container for all filter components
 - **SearchFilter**: Text search functionality
 - **DateRangeFilter**: Date range picker
-- **AlbumGroupsFilter**: Filter by album type (album, single, etc.)
+- **AlbumGroupsFilter**: Filter by album type
+- **TracksFilter**: Filter by track count (NEW)
+- **NewFilter**: Filter for new releases (NEW)
+
+#### Labels (`src/components/labels/`) - NEW
+- **LabelExplorer**: Main label exploration interface
+- **LabelSearchResults**: Grid display of label search results
+- **LabelAlbum**: Individual album component for label results
+- **LabelFilters**: Filtering controls for label results
+- **FavoriteLabels**: Favorite labels management
 
 #### Settings (`src/components/settings/`)
 - **Settings**: Main settings container
 - **GeneralSettings**: Basic app configuration
 - **AppearanceSettings**: Theme and display options
 - **AutomationSettings**: Auto-sync and notifications
+- **FollowedArtistsManager**: Artist management interface (NEW)
 
 ## API Integration
 
@@ -122,12 +193,19 @@ const artists = await getUserFollowedArtistsPage(token, limit, after, signal)
 
 // Example: Getting artist's albums
 const albums = await getArtistAlbums(token, artistId, groups, signal)
+
+// NEW: Search albums by label
+const albums = await searchAlbumsByLabel(token, labelName, signal)
+
+// NEW: Unfollow artists
+await unfollowArtists(token, artistIds, signal)
 ```
 
 Key features:
 - **Rate limiting**: Automatic retry with exponential backoff
 - **Error handling**: Consistent error types and messages
 - **Cancellation**: AbortSignal support for request cancellation
+- **Batch operations**: Support for bulk operations (NEW)
 
 ### Request Management (`src/sagas/request.js`)
 
@@ -153,6 +231,12 @@ export const getReleases = createSelector(
   [getFiltersApplied, getFilteredReleases, getOriginalReleases],
   (filtersApplied, filtered, original) => (filtersApplied ? filtered : original)
 )
+
+// NEW: Get label search results
+export const getLabelSearchResults = (state) => state.labelSearchResults
+
+// NEW: Get followed artists
+export const getFollowedArtists = (state) => state.followedArtists
 ```
 
 ### Sagas (`src/sagas/`)
@@ -163,6 +247,8 @@ Redux Sagas handle complex async flows:
 - **auth.js**: Authentication flows
 - **playlist.js**: Playlist creation and management
 - **automation.js**: Background auto-sync
+- **artistManagement.js**: Artist management operations (NEW)
+- **labelExplorer.js**: Label search and playlist creation (NEW)
 
 Example saga pattern:
 ```javascript
@@ -215,6 +301,16 @@ $darkest: #212121;        // Dark backgrounds
 $grey-light: #b5b5b5;     // Secondary text
 ```
 
+### New Component Styles
+
+New components have dedicated SCSS files:
+
+- `LabelExplorer.scss`: Label exploration interface
+- `LabelSearchResults.scss`: Search results grid
+- `LabelAlbum.scss`: Individual label album display
+- `FollowedArtistsManager.scss`: Artist management interface
+- `TracksFilter.scss`: Track count filtering
+
 ## Data Persistence
 
 ### LocalForage Integration
@@ -245,7 +341,8 @@ const persistConfig = {
   key: 'root',
   storage: localForage,
   whitelist: [
-    'albums', 'user', 'settings', 'filters', 'favorites'
+    'albums', 'user', 'settings', 'filters', 'favorites',
+    'followedArtists', 'favoriteLabels' // NEW
   ],
   migrate: createMigrate(migrations)
 }
@@ -304,7 +401,7 @@ if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
 2. **Set up environment variables**:
    ```bash
    cp .env.example .env
-   # Add your Spotify Client ID
+   # Add your Spotify Client ID and other configuration
    ```
 
 3. **Start development server**:
@@ -333,6 +430,15 @@ The project uses Prettier for consistent formatting:
   "tabWidth": 2,
   "semi": false
 }
+```
+
+### ESLint Configuration
+
+The project includes ESLint rules with some customizations:
+
+```javascript
+// Disabled for .js files to allow flexible hook dependencies
+"react-hooks/exhaustive-deps": "off"
 ```
 
 ## Testing
@@ -419,6 +525,22 @@ if (!releases.length) return <EmptyState />
 return <ReleaseList releases={releases} />
 ```
 
+### 4. Modal Management (NEW)
+
+```javascript
+// Modal hook for consistent behavior
+function useModal(closeModal) {
+  useHotkeys('esc', closeModal, { enableOnFormTags: ['input'] })
+  
+  useEffect(() => {
+    document.documentElement.classList.add('is-modal-open')
+    return () => {
+      document.documentElement.classList.remove('is-modal-open')
+    }
+  }, [])
+}
+```
+
 ## Troubleshooting
 
 ### Common Issues
@@ -427,6 +549,8 @@ return <ReleaseList releases={releases} />
 2. **API Rate Limits**: The app handles these automatically with retry logic
 3. **Storage Quota**: Large datasets may hit browser storage limits
 4. **CORS Issues**: Ensure proper Spotify app domain configuration
+5. **Build Warnings**: CSS autoprefixer warnings about `end` values are non-breaking
+6. **ESLint Warnings**: Some unused imports may appear during development
 
 ### Debug Tools
 
@@ -434,6 +558,12 @@ return <ReleaseList releases={releases} />
 - React Developer Tools for component debugging
 - Network tab for API request monitoring
 - Console logs with Sentry error tracking
+
+### Performance Monitoring
+
+- Bundle analyzer for size optimization
+- React Profiler for component performance
+- Lighthouse for PWA and performance audits
 
 ## Contributing
 
@@ -445,6 +575,7 @@ return <ReleaseList releases={releases} />
 4. **Build components** following existing patterns
 5. **Add styles** using the established theme system
 6. **Write tests** for new functionality
+7. **Update documentation** as needed
 
 ### Code Organization
 
@@ -453,5 +584,15 @@ return <ReleaseList releases={releases} />
 - Follow the established file naming conventions
 - Add JSDoc comments for complex functions
 - Update type definitions in `types.js`
+- Maintain consistent styling patterns
 
-This documentation should help junior developers understand the codebase structure and common patterns used throughout the application.
+### Best Practices
+
+- Use TypeScript-style JSDoc comments for better IDE support
+- Implement proper error boundaries for robust error handling
+- Follow the established Redux patterns for state management
+- Use memoization appropriately to prevent unnecessary re-renders
+- Maintain accessibility standards (ARIA labels, keyboard navigation)
+- Test across different browsers and devices
+
+This documentation should help developers understand the codebase structure, new features, and common patterns used throughout the application.
