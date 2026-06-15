@@ -272,14 +272,15 @@ export function captureException(error) {
  * Merge album artists and filter out old albums
  *
  * @param {AlbumRaw[]} albumsRaw
- * @param {string} minDate
+ * @param {string} [minDate]
  */
 export function mergeAlbumsRaw(albumsRaw, minDate) {
   const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
   const albumsRawMap = albumsRaw.reduce((map, album) => {
     const { id, releaseDate, artistIds } = album
 
-    if (releaseDate < minDate || releaseDate > maxDate) return map
+    if (minDate && releaseDate < minDate) return map
+    if (releaseDate > maxDate) return map
 
     if (id in map) merge(map[id].artistIds, artistIds)
     else map[id] = album

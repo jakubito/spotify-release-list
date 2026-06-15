@@ -82,7 +82,7 @@ function* syncMainSaga(action) {
   const blockedArtists = yield select(getSettingsBlockedArtists)
   /** @type {ReturnType<typeof getReleasesMaxDate>} */
   const previousSyncMaxDate = yield select(getReleasesMaxDate)
-  const minDate = moment().subtract(days, 'day').format(ISO_DATE)
+  const minDate = days >= 0 ? moment().subtract(days, 'day').format(ISO_DATE) : undefined
 
   /** @type {RequestWorkers} */
   const { workers, requestChannel, responseChannel, workersFork } = yield call(setupWorkers)
