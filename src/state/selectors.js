@@ -125,7 +125,9 @@ export const getSettingsBlockedLabels = createSelector(getSettingsLabelBlocklist
   /** @type {BlockedLabels} */
   const labels = {}
   const matches = blocklist.matchAll(/^\s*(?:\*(\S*)\*)?\s*(.*?)\s*$/gm)
-  for (const [, flags, label] of matches) {
+  for (const [, flags, line] of matches) {
+    const label = line.trim()
+    if (!label) continue
     labels[label] = flags?.split(',')
   }
   return labels
@@ -142,6 +144,24 @@ export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlockli
   const matches = blocklist.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
   for (const match of matches) artistIds.push(match[1])
   return artistIds
+})
+
+export const getSettingsAlbumBlocklist = createSelector(
+  getSettings,
+  (settings) => settings.albumBlocklist
+)
+
+export const getSettingsBlockedAlbums = createSelector(getSettingsAlbumBlocklist, (blocklist) => {
+  /** @type {RegExp[]} */
+  const patterns = []
+  for (const line of blocklist.split('\n')) {
+    const pattern = line.trim()
+    if (!pattern) continue
+    try {
+      patterns.push(new RegExp(pattern, 'i'))
+    } catch {}
+  }
+  return patterns
 })
 
 // Individual filters selectors

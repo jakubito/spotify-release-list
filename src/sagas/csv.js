@@ -13,14 +13,26 @@ export function* downloadAlbumsCsvSaga() {
     content += `\r\n`
   }
 
-  addRow(['Date', 'ID', 'Title', 'Type', 'Artists', 'Other artists', 'Label'])
+  addRow([
+    'Date',
+    'ID',
+    'Title',
+    'Type',
+    'Artists',
+    'Artist IDs',
+    'Other artists',
+    'Other artist IDs',
+    'Label',
+  ])
 
   for (const { albums } of releases) {
     for (const album of albums) {
-      const artists = Object.values(album.artists)
-        .flat()
-        .map((artist) => artist.name)
+      const artistsArray = Object.values(album.artists).flat()
+      const artists = artistsArray.map((artist) => artist.name)
+      const artistIds = artistsArray.map((artist) => artist.id)
+
       const otherArtists = album.otherArtists.map((artist) => artist.name)
+      const otherArtistIds = album.otherArtists.map((artist) => artist.id)
 
       addRow([
         album.releaseDate,
@@ -28,7 +40,9 @@ export function* downloadAlbumsCsvSaga() {
         album.name,
         Object.keys(album.artists).join(','),
         artists.join(','),
+        artistIds.join(','),
         otherArtists.join(','),
+        otherArtistIds.join(','),
         album.label,
       ])
     }

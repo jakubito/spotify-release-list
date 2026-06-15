@@ -272,14 +272,15 @@ export function captureException(error) {
  * Merge album artists and filter out old albums
  *
  * @param {AlbumRaw[]} albumsRaw
- * @param {string} minDate
+ * @param {string} [minDate]
  */
 export function mergeAlbumsRaw(albumsRaw, minDate) {
   const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
   const albumsRawMap = albumsRaw.reduce((map, album) => {
     const { id, releaseDate, artistIds } = album
 
-    if (releaseDate < minDate || releaseDate > maxDate) return map
+    if (minDate && releaseDate < minDate) return map
+    if (releaseDate > maxDate) return map
 
     if (id in map) merge(map[id].artistIds, artistIds)
     else map[id] = album
@@ -443,6 +444,31 @@ export function deleteArtists(albumsMap, blockedArtists) {
     const common = intersect([albumArtists, blockedArtists])
     return common.length > 0
   }
+
+  for (const album of Object.values(albumsMap)) {
+    if (shouldDelete(album)) {
+      deletedIds.push(album.id)
+      delete albumsMap[album.id]
+    }
+  }
+
+  return deletedIds
+}
+
+/**
+ * Delete albums whose name matches any blocked pattern and return deleted IDs. Mutates `albumsMap`.
+ *
+ * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
+ * @param {RegExp[]} blockedAlbums
+ */
+export function deleteAlbums(albumsMap, blockedAlbums) {
+  if (blockedAlbums.length === 0) return []
+
+  /** @type {string[]} */
+  const deletedIds = []
+
+  /** @param {Album} album */
+  const shouldDelete = (album) => blockedAlbums.some((pattern) => pattern.test(album.name))
 
   for (const album of Object.values(albumsMap)) {
     if (shouldDelete(album)) {

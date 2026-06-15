@@ -10,6 +10,7 @@ import FirstDayOfWeekField from './FirstDayOfWeekField'
 import FetchExtraDataField from './FetchExtraDataField'
 import LabelBlocklistField from './LabelBlocklistField'
 import ArtistBlocklistField from './ArtistBlocklistField'
+import AlbumBlocklistField from './AlbumBlocklistField'
 import MinimumSavedTracksField from './MinimumSavedTracksField'
 import HistoryField from './HistoryField'
 
@@ -32,6 +33,7 @@ function GeneralSettings() {
       <HistoryField />
       <LabelBlocklistField />
       <ArtistBlocklistField />
+      <AlbumBlocklistField />
       {user && <DataInfo />}
       {hasAppData && <DataReset />}
     </div>
