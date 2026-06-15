@@ -29,6 +29,7 @@
     "displayPopularity": { "type": "boolean" },
     "labelBlocklist": { "type": "string" },
     "artistBlocklist": { "type": "string" },
+    "albumBlocklist": { "type": "string" },
     "releasesOrder": { "enum": ["artist", "album-group"] },
     "trackHistory": { "type": "boolean" }
   }

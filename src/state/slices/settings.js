@@ -32,6 +32,7 @@ export const initialState = {
     displayPopularity: false,
     labelBlocklist: '',
     artistBlocklist: '',
+    albumBlocklist: '',
     releasesOrder: ReleasesOrder.ARTIST,
     trackHistory: true,
   },

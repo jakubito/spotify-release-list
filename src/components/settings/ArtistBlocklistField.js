@@ -1,16 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { defer } from 'helpers'
-import { getSettingsArtistBlocklist } from 'state/selectors'
+import { getSettingsArtistBlocklist, getSettingsBlockedArtists } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import HelpText from './HelpText'
 
 function ArtistBlocklistField() {
   const artistBlocklist = useSelector(getSettingsArtistBlocklist)
+  const entries = useSelector(getSettingsBlockedArtists)
   const dispatch = useDispatch()
 
   return (
     <div className="ArtistBlocklistField Settings__field field">
-      <label className="label has-text-light">Artist blocklist</label>
+      <label className="label has-text-light">
+        Artist blocklist {entries.length > 0 ? `(${entries.length})` : ''}
+      </label>
       <div className="Settings__help">
         <HelpText>
           Enter one{' '}

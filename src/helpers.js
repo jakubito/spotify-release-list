@@ -456,6 +456,31 @@ export function deleteArtists(albumsMap, blockedArtists) {
 }
 
 /**
+ * Delete albums whose name matches any blocked pattern and return deleted IDs. Mutates `albumsMap`.
+ *
+ * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
+ * @param {RegExp[]} blockedAlbums
+ */
+export function deleteAlbums(albumsMap, blockedAlbums) {
+  if (blockedAlbums.length === 0) return []
+
+  /** @type {string[]} */
+  const deletedIds = []
+
+  /** @param {Album} album */
+  const shouldDelete = (album) => blockedAlbums.some((pattern) => pattern.test(album.name))
+
+  for (const album of Object.values(albumsMap)) {
+    if (shouldDelete(album)) {
+      deletedIds.push(album.id)
+      delete albumsMap[album.id]
+    }
+  }
+
+  return deletedIds
+}
+
+/**
  * Calculate approximate page size based on viewport size
  *
  * @param {number} width

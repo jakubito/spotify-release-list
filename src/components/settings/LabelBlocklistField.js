@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { defer, sleep } from 'helpers'
-import { getLabelBlocklistHeight, getSettings } from 'state/selectors'
+import { getLabelBlocklistHeight, getSettings, getSettingsBlockedLabels } from 'state/selectors'
 import { applyLabelBlocklist, setLabelBlocklistHeight, setSettings } from 'state/actions'
 import { Button } from 'components/common'
 import HelpText from './HelpText'
@@ -12,6 +12,8 @@ import HelpText from './HelpText'
  */
 function LabelBlocklistField() {
   const { fullAlbumData, labelBlocklist } = useSelector(getSettings)
+  const entries = useSelector(getSettingsBlockedLabels)
+  const entriesLength = Object.keys(entries).length
   const height = useSelector(getLabelBlocklistHeight)
   const dispatch = useDispatch()
   const [applied, setApplied] = useState(false)
@@ -41,7 +43,7 @@ function LabelBlocklistField() {
   return (
     <div className="LabelBlocklistField Settings__field field">
       <label className="label has-text-light">
-        Label blocklist
+        Label blocklist {entriesLength > 0 ? `(${entriesLength})` : ''}
         {!fullAlbumData && <span className="tag is-warning">Label data required</span>}
       </label>
       <div className="Settings__help">
