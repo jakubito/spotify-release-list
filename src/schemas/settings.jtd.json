@@ -15,7 +15,7 @@
         "appears_on": { "type": "string" }
       }
     },
-    "days": { "type": "uint16" },
+    "days": { "type": "int16" },
     "theme": { "type": "string" },
     "uriLinks": { "type": "boolean" },
     "covers": { "type": "boolean" },
