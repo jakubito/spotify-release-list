@@ -11,6 +11,7 @@ import {
   buildUser,
   buildArtist,
   buildAlbumRaw,
+  addCsvRow,
 } from 'helpers'
 import { AlbumGroup } from 'enums'
 import { getOriginalReleasesMap } from 'state/selectors'
@@ -253,5 +254,32 @@ describe('buildAlbumRaw', () => {
     }
 
     expect(actual).toEqual(expected)
+  })
+})
+
+describe('addCsvRow', () => {
+  it('appends row with CRLF line ending', () => {
+    const actual = addCsvRow('', ['a', 'b', 'c'])
+    expect(actual).toEqual('a,b,c\r\n')
+  })
+
+  it('appends to existing content', () => {
+    const actual = addCsvRow('a,b,c\r\n', ['d', 'e', 'f'])
+    expect(actual).toEqual('a,b,c\r\nd,e,f\r\n')
+  })
+
+  it('quotes values containing commas, quotes or whitespace', () => {
+    const actual = addCsvRow('', ['a,b', 'c d', 'quote"here'])
+    expect(actual).toEqual('"a,b","c d","quote""here"\r\n')
+  })
+
+  it('replaces null and undefined values with empty string', () => {
+    const actual = addCsvRow('', ['a', null, undefined])
+    expect(actual).toEqual('a,,\r\n')
+  })
+
+  it('handles empty data array', () => {
+    const actual = addCsvRow('', [])
+    expect(actual).toEqual('\r\n')
   })
 })

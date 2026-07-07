@@ -502,6 +502,17 @@ export function sanitizeCsvValue(value) {
 }
 
 /**
+ * @param {string} content
+ * @param {Array<string | null | undefined>} data
+ * @returns {string}
+ */
+export function addCsvRow(content, data) {
+  content += data.map(sanitizeCsvValue).join(',')
+  content += `\r\n`
+  return content
+}
+
+/**
  * @param {Blob} blob
  * @param {string} name
  */
