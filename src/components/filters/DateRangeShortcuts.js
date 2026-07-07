@@ -50,10 +50,14 @@ function getShortcuts() {
  * @param {{ setValues: React.Dispatch<React.SetStateAction<StartEndDates>> }} props
  */
 function DateRangeShortcuts({ setValues }) {
-  const { minDate, maxDate } = useSelector(getReleasesMinMaxDates)
+  const { minDate, maxDate } = useSelector(getReleasesMinMaxDates) ?? {}
   const validShortcuts = getShortcuts().filter(
     ({ start, end }) => start.isSameOrBefore(maxDate) && end.isAfter(minDate)
   )
+
+  if (!minDate || !maxDate || validShortcuts.length === 0) {
+    return null
+  }
 
   return (
     <div className="DateRangeShortcuts">

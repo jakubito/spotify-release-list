@@ -18,14 +18,16 @@ const { ISO_DATE } = MomentFormat
 function DateRangeFilter() {
   const dispatch = useDispatch()
   const filtersDates = useSelector(getFiltersDates)
-  const { minDate, maxDate } = useSelector(getReleasesMinMaxDates)
+  const { minDate, maxDate } = useSelector(getReleasesMinMaxDates) ?? {}
   const { firstDayOfWeek } = useSelector(getSettings)
   const isPhone = useMediaQuery({ maxWidth: 425 })
 
-  const [focus, setFocus] = useState(null)
+  const [focus, setFocus] = useState(
+    /** @type {import('react-dates').FocusedInputShape | null} */ (null)
+  )
   const [values, setValues] = useState({
-    startDate: filtersDates?.startDate,
-    endDate: filtersDates?.endDate,
+    startDate: filtersDates?.startDate ?? null,
+    endDate: filtersDates?.endDate ?? null,
   })
 
   /** @param {Moment} day */

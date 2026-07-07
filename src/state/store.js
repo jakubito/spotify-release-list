@@ -26,7 +26,7 @@ const persistConfig = {
   version: 8,
   storage: localForage,
   stateReconciler: autoMergeLevel2,
-  migrate: createMigrate(migrations),
+  migrate: createMigrate(/** @type {MigrationManifest} */ (/** @type {unknown} */ (migrations))),
   writeFailHandler: captureException,
   whitelist: [
     'albums',

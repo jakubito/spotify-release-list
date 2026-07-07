@@ -93,11 +93,7 @@ export function validateAuthRequest(locationSearch, originalNonce) {
   const { code, state, error } = queryString.parse(locationSearch)
 
   if (error) {
-    if (error === 'access_denied') {
-      throw new AuthError('Access denied')
-    }
-
-    throw new AuthError('Authorization failed', { extra: { error } })
+    throw new AuthError(`Authorization failed (${error})`, { extra: { error } })
   }
 
   if (!code || !state) {
@@ -125,7 +121,7 @@ export function validateAuthRequest(locationSearch, originalNonce) {
 export function startAuthFlow(action, scope, codeChallenge, nonce) {
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
+    client_id: /** @type {string} */ (process.env.REACT_APP_SPOTIFY_CLIENT_ID),
     redirect_uri: AUTH_REDIRECT_URL,
     code_challenge_method: 'S256',
     code_challenge: codeChallenge,
@@ -145,7 +141,7 @@ export function startAuthFlow(action, scope, codeChallenge, nonce) {
 export function exchangeCode(code, codeVerifier) {
   return tokenRequest({
     grant_type: 'authorization_code',
-    client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
+    client_id: /** @type {string} */ (process.env.REACT_APP_SPOTIFY_CLIENT_ID),
     redirect_uri: AUTH_REDIRECT_URL,
     code_verifier: codeVerifier,
     code,
@@ -160,7 +156,7 @@ export function exchangeCode(code, codeVerifier) {
 export function getRefreshedToken(refreshToken) {
   return tokenRequest({
     grant_type: 'refresh_token',
-    client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
+    client_id: /** @type {string} */ (process.env.REACT_APP_SPOTIFY_CLIENT_ID),
     refresh_token: refreshToken,
   })
 }

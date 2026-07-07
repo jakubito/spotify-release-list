@@ -41,6 +41,21 @@ function UpdatePlaylistModal({ closeModal }) {
   useModal(closeModal)
   useEffect(() => setSubmitTriggered(updatingPlaylist), [updatingPlaylist])
 
+  /** @returns {SelectOptions} */
+  const getOptions = () => {
+    if (loadingPlaylists) return [['', 'Loading playlists...']]
+    if (playlists.length === 0) return [['', 'No playlists found']]
+    return playlists.map(({ id, name }) => [id, name])
+  }
+
+  const handleSubmit = () => {
+    setSubmitTriggered(true)
+    const selectedPlaylist = playlists.find((playlist) => playlist.id === selectedPlaylistId)
+    if (selectedPlaylist) {
+      defer(dispatch, updatePlaylist({ playlist: selectedPlaylist, strategy }))
+    }
+  }
+
   const renderContent = () => {
     if (updatingPlaylist) {
       return (
@@ -59,13 +74,6 @@ function UpdatePlaylistModal({ closeModal }) {
           close={closeModal}
         />
       )
-    }
-
-    /** @returns {SelectOptions} */
-    const getOptions = () => {
-      if (loadingPlaylists) return [['', 'Loading playlists...']]
-      if (playlists.length === 0) return [['', 'No playlists found']]
-      return playlists.map(({ id, name }) => [id, name])
     }
 
     return (
@@ -147,13 +155,7 @@ function UpdatePlaylistModal({ closeModal }) {
           <Button
             title="Update"
             disabled={submitTriggered || loadingPlaylists || !selectedPlaylistId}
-            onClick={() => {
-              setSubmitTriggered(true)
-              const selectedPlaylist = playlists.find(
-                (playlist) => playlist.id === selectedPlaylistId
-              )
-              defer(dispatch, updatePlaylist({ playlist: selectedPlaylist, strategy }))
-            }}
+            onClick={handleSubmit}
             primary
           />
           <Button title="Close" disabled={submitTriggered} onClick={closeModal} />

@@ -53,6 +53,7 @@ function* requestWorker(requestChannel, responseChannel, retryLimit = 2, retryDe
       const request = yield take(requestChannel)
 
       try {
+        /** @type {T} */
         const result = yield call(...request.payload, abortController.signal)
         yield put(responseChannel, { result, requestPayload: request.payload })
       } catch (error) {
@@ -72,6 +73,7 @@ function* requestWorker(requestChannel, responseChannel, retryLimit = 2, retryDe
       }
     }
   } finally {
+    // @ts-expect-error
     if (yield cancelled()) abortController.abort()
   }
 }

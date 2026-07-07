@@ -3,7 +3,6 @@ import { createDraftSafeSelector } from '@reduxjs/toolkit'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
-import last from 'lodash/last'
 import isEqual from 'lodash/isEqual'
 import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
@@ -237,7 +236,7 @@ export const getLastSyncDate = createSelector(
   (lastSync, lastAutoSync) => {
     if (lastSync || lastAutoSync) {
       const newer = (lastSync || '') > (lastAutoSync || '') ? lastSync : lastAutoSync
-      return new Date(newer)
+      if (newer) return new Date(newer)
     }
 
     return null
@@ -272,15 +271,17 @@ export const getHasOriginalReleases = createSelector(getOriginalReleases, (relea
 /**
  * Get earliest date in current releases collection
  */
-export const getReleasesMinDate = createSelector(getOriginalReleases, (releases) =>
-  releases.length ? last(releases).date : null
+export const getReleasesMinDate = createSelector(
+  getOriginalReleases,
+  (releases) => releases[releases.length - 1]?.date ?? null
 )
 
 /**
  * Get latest date in current releases collection
  */
-export const getReleasesMaxDate = createSelector(getOriginalReleases, (releases) =>
-  releases.length ? releases[0].date : null
+export const getReleasesMaxDate = createSelector(
+  getOriginalReleases,
+  (releases) => releases[0]?.date ?? null
 )
 
 /**
@@ -288,7 +289,8 @@ export const getReleasesMaxDate = createSelector(getOriginalReleases, (releases)
  */
 export const getReleasesMinMaxDates = createSelector(
   [getReleasesMinDate, getReleasesMaxDate],
-  (minDate, maxDate) => minDate && maxDate && { minDate: moment(minDate), maxDate: moment(maxDate) }
+  (minDate, maxDate) =>
+    minDate && maxDate ? { minDate: moment(minDate), maxDate: moment(maxDate) } : null
 )
 
 /**
@@ -297,7 +299,7 @@ export const getReleasesMinMaxDates = createSelector(
 export const getFiltersDates = createSelector(
   [getFiltersStartDate, getFiltersEndDate],
   (startDate, endDate) =>
-    startDate && endDate && { startDate: moment(startDate), endDate: moment(endDate) }
+    startDate && endDate ? { startDate: moment(startDate), endDate: moment(endDate) } : null
 )
 
 /**
@@ -305,10 +307,13 @@ export const getFiltersDates = createSelector(
  */
 export const getReleasesGroupMap = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((map, album) => {
-    const albumMap = Object.keys(album.artists).reduce((albumMap, group) => {
-      albumMap[group] = [album.id]
-      return albumMap
-    }, /** @type {ReleasesGroupMap} */ ({}))
+    const albumMap = /** @type {AlbumGroup[]} */ (Object.keys(album.artists)).reduce(
+      (albumMap, group) => {
+        albumMap[group] = [album.id]
+        return albumMap
+      },
+      /** @type {ReleasesGroupMap} */ ({})
+    )
 
     return merge(map, albumMap)
   }, /** @type {ReleasesGroupMap} */ ({}))
@@ -361,7 +366,9 @@ const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) =
     const namesMap = {}
 
     for (const album of albums) {
-      const unifiedName = album.name.replace(charsRegex, (key) => charsMap[key]).toLowerCase()
+      const unifiedName = album.name
+        .replace(charsRegex, (key) => charsMap[/** @type {keyof typeof charsMap} */ (key)])
+        .toLowerCase()
       if (unifiedName in namesMap) continue
       namesMap[unifiedName] = album.id
     }
@@ -377,7 +384,7 @@ const getFavoriteAlbumIds = createSelector(getFavorites, (favorites) =>
   Object.entries(favorites).reduce((ids, [id, selected]) => {
     if (selected) ids.push(id)
     return ids
-  }, [])
+  }, /** @type {string[]} */ ([]))
 )
 
 /**
@@ -410,7 +417,7 @@ const getAlbumGroupsFiltered = createSelector(
   [getFiltersGroups, getReleasesGroupMap],
   (groups, groupMap) =>
     groups.length &&
-    groups.reduce((ids, group) => ids.concat(groupMap[group]), /** @type {string[]} */ ([]))
+    groups.reduce((ids, group) => ids.concat(groupMap[group] ?? []), /** @type {string[]} */ ([]))
 )
 
 /**

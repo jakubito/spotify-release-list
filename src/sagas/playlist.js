@@ -10,7 +10,7 @@ import {
   getUserSavedPlaylistsPage,
   clearPlaylist,
 } from 'api'
-import { getAuthData, getPlaylistScope } from 'auth'
+import { AuthError, getAuthData, getPlaylistScope } from 'auth'
 import {
   getLastPlaylistsRefresh,
   getPlaylistForm,
@@ -49,7 +49,7 @@ export function* createPlaylistSaga(action) {
     /** @type {ReturnType<typeof getPlaylistForm>} */
     const { isPublic } = yield select(getPlaylistForm)
     /** @type {ReturnType<typeof getPlaylistScope>} */
-    const scope = yield call(getPlaylistScope, isPublic)
+    const scope = yield call(getPlaylistScope, Boolean(isPublic))
 
     /** @type {ReturnType<typeof withTitle>} */
     const titled = yield call(
@@ -63,9 +63,12 @@ export function* createPlaylistSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error.message ?? error.toString()))
+    if (error instanceof Error) {
+      yield put(showErrorMessage(error.message))
+    }
     yield put(createPlaylistError())
   } finally {
+    // @ts-expect-error
     if (yield cancelled()) abortController.abort()
   }
 }
@@ -80,15 +83,19 @@ function* createPlaylistMainSaga(signal) {
 
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
+  if (!token) throw new AuthError('Missing token')
+
   /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
+  if (!user) throw new AuthError('Missing user')
+
   /** @type {ReturnType<typeof getPlaylistForm>} */
   const form = yield select(getPlaylistForm)
   /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
   const trackUris = yield call(getReleasesTrackUris, signal)
 
-  /** @type {SpotifyPlaylist} */
-  let firstPlaylist
+  /** @type {SpotifyPlaylist | null} */
+  let firstPlaylist = null
 
   for (const [part, playlistTrackUrisChunk] of chunk(trackUris, 9500).entries()) {
     const name = part > 0 ? `${form.name} (${part + 1})` : form.name
@@ -102,7 +109,9 @@ function* createPlaylistMainSaga(signal) {
     }
   }
 
-  yield put(createPlaylistFinished({ id: firstPlaylist.id, name: firstPlaylist.name }))
+  if (firstPlaylist) {
+    yield put(createPlaylistFinished({ id: firstPlaylist.id, name: firstPlaylist.name }))
+  }
 }
 
 /**
@@ -128,9 +137,12 @@ export function* updatePlaylistSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error.message ?? error.toString()))
+    if (error instanceof AuthError) {
+      yield put(showErrorMessage(error.message))
+    }
     yield put(updatePlaylistError())
   } finally {
+    // @ts-expect-error
     if (yield cancelled()) abortController.abort()
   }
 }
@@ -145,6 +157,8 @@ function* updatePlaylistMainSaga(action, signal) {
   const { playlist, strategy } = action.payload
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
+  if (!token) throw new AuthError('Missing token')
+
   /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
   const trackUris = yield call(getReleasesTrackUris, signal)
 
@@ -165,6 +179,8 @@ function* updatePlaylistMainSaga(action, signal) {
 function* getReleasesTrackUris(signal) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
+  if (!token) throw new AuthError('Missing token')
+
   /** @type {ReturnType<typeof getReleases>} */
   const releases = yield select(getReleases)
 
@@ -213,7 +229,9 @@ export function* loadPlaylistsSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error.message ?? error.toString()))
+    if (error instanceof Error) {
+      yield put(showErrorMessage(error.message))
+    }
     yield put(loadPlaylistsError())
   }
 }
@@ -245,6 +263,7 @@ function* loadPlaylistsMainSaga() {
 function* getUserSavedPlaylists(requestChannel, responseChannel, workersCount) {
   /** @type {ReturnType<typeof getUser>} */
   const user = yield select(getUser)
+  if (!user) throw new AuthError('Missing user')
 
   /** @type {SpotifyPlaylist[]} */
   const spotifyPlaylists = yield call(

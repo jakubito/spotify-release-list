@@ -14,14 +14,14 @@ import GroupColorsShortcuts from './GroupColorsShortcuts'
 function GroupColorsField() {
   const groupColors = useSelector(getSettingsGroupColors)
   const dispatch = useDispatch()
-  const refs = useRef(/** @type {Record<AlbumGroup, HTMLDivElement>} */ ({}))
+  const refs = useRef(/** @type {Record<AlbumGroup, HTMLDivElement | null>} */ ({}))
 
   /** @type {(group: AlbumGroup, color: string) => void} */
   const saveColor = (group, color) => {
     dispatch(setSettings({ groupColors: { ...groupColors, [group]: color } }))
   }
 
-  /** @type {(group: AlbumGroup, ref: HTMLDivElement) => void} */
+  /** @type {(group: AlbumGroup, ref: HTMLDivElement | null) => void} */
   const saveRef = (group, ref) => {
     refs.current[group] = ref
   }
@@ -39,7 +39,7 @@ function GroupColorsField() {
             className="GroupColorsField__label"
             style={{ color: groupColors[group] }}
             // Can't use input ref directly https://github.com/omgovich/react-colorful/issues/60
-            onClick={deferred(() => refs.current[group]?.querySelector('input').focus())}
+            onClick={deferred(() => refs.current[group]?.querySelector('input')?.focus())}
           />
           <ColorInput
             color={groupColors[group]}

@@ -58,7 +58,7 @@ function HistoryField() {
       </div>
       <Button
         title={clearTitle}
-        icon={cleared && 'fas fa-check-circle'}
+        icon={cleared ? 'fas fa-check-circle' : undefined}
         disabled={cleared}
         onClick={clearHistory}
         small

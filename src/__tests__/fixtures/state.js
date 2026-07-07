@@ -428,6 +428,8 @@ const state = {
   editingFavorites: false,
   lastSettingsPath: null,
   labelBlocklistHeight: null,
+  lastAutoSync: null,
+  lastPlaylistsRefresh: null,
 }
 
 export default state

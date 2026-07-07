@@ -24,7 +24,7 @@ function PlaylistModal({ closeModal }) {
   const playlistResult = useSelector(getPlaylistResult)
   const [submitTriggered, setSubmitTriggered] = useState(false)
   const onSubmit = useOnSubmit(setSubmitTriggered)
-  const form = useForm()
+  const form = useForm({ values: /** @type {PlaylistFormData} */ ({}) })
 
   useModal(closeModal)
   useEffect(() => setSubmitTriggered(creatingPlaylist), [creatingPlaylist])
@@ -77,11 +77,7 @@ function PlaylistModal({ closeModal }) {
 function useOnSubmit(setSubmitTriggered) {
   const dispatch = useDispatch()
   /**
-   * @param {{
-   *   name: string
-   *   description: string
-   *   visibility: 'private' | 'public'
-   * }} formData
+   * @param {PlaylistFormData} formData
    * @returns {Promise<void>}
    */
   const onSubmit = async (formData) => {

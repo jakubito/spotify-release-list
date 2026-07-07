@@ -43,7 +43,7 @@ export function* downloadAlbumsCsvSaga() {
         artistIds.join(','),
         otherArtists.join(','),
         otherArtistIds.join(','),
-        album.label,
+        album.label ?? '',
       ])
     }
   }

@@ -16,8 +16,10 @@ import 'styles/index.scss'
 Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN })
 serviceWorkerRegistration.register({ onUpdate: () => store.dispatch(updateReady()) })
 
-const init = Promise.all([hydrate, albumsNew.load(), albumsHistory.load()])
 const container = document.getElementById('root')
+if (!container) throw new Error('Root element missing')
+
+const init = Promise.all([hydrate, albumsNew.load(), albumsHistory.load()])
 const root = createRoot(container)
 
 init.then(() => {

@@ -10,7 +10,7 @@ import {
   getUserSavedAlbumsPage,
   getUserSavedTracksPage,
 } from 'api'
-import { getAuthData, getSyncScopes } from 'auth'
+import { AuthError, getAuthData, getSyncScopes } from 'auth'
 import {
   buildAlbumsMap,
   buildArtist,
@@ -67,7 +67,9 @@ export function* syncSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    yield put(showErrorMessage(error.message ?? error.toString()))
+    if (error instanceof AuthError) {
+      yield put(showErrorMessage(error.message ?? error.toString()))
+    }
     yield put(syncError())
   }
 }
@@ -82,6 +84,8 @@ function* syncMainSaga(action) {
 
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
+  if (!token) throw new AuthError('Missing token')
+
   /** @type {ReturnType<typeof getSettings>} */
   const { days, fullAlbumData, trackHistory } = yield select(getSettings)
   /** @type {ReturnType<typeof getSettingsBlockedLabels>} */
@@ -100,6 +104,8 @@ function* syncMainSaga(action) {
 
   /** @type {Await<ReturnType<typeof getUser>>} */
   const user = yield call(getUser, token)
+  if (!user) throw new AuthError('Missing user')
+
   /** @type {Artist[]} */
   const artists = yield call(getArtists, requestChannel, responseChannel, workers.length)
 
@@ -207,8 +213,9 @@ function* syncBaseData(artists, requestChannel, responseChannel) {
     if (fullAlbumData) newProgress *= BASE_SYNC_RATIO
     yield put(setSyncingProgress(newProgress))
 
-    if (response.error) continue
-    for (const album of response.result) albumsRaw.push(album)
+    if (response.result) {
+      for (const album of response.result) albumsRaw.push(album)
+    }
   }
 
   return albumsRaw
@@ -238,11 +245,11 @@ function* syncExtraData(albums, requestChannel, responseChannel) {
     newProgress += BASE_SYNC_RATIO * 100
     yield put(setSyncingProgress(newProgress))
 
-    if (response.error) continue
-
-    for (const albumFull of response.result) {
-      const { id, label, popularity } = albumFull
-      Object.assign(albums[id], { label, popularity })
+    if (response.result) {
+      for (const albumFull of response.result) {
+        const { id, label, popularity } = albumFull
+        Object.assign(albums[id], { label, popularity })
+      }
     }
   }
 }

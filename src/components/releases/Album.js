@@ -24,7 +24,7 @@ function Album({ album }) {
   const editingFavorites = useSelector(getEditingFavorites)
   const [favoriteLocal, setFavoriteLocal] = useState(Boolean(favorites[id]))
   const link = spotifyLink(id, ALBUM, uriLinks)
-  const mainGroup = Object.keys(artists).shift()
+  const mainGroup = /** @type {AlbumGroup} */ (Object.keys(artists)[0])
 
   /** @type {React.MouseEventHandler<HTMLDivElement>} */
   function favoriteClickHandler(event) {

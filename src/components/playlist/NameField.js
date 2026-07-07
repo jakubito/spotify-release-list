@@ -13,8 +13,8 @@ function NameField() {
   const filtersDates = useSelector(getFiltersDates)
   const { register, formState } = useFormContext()
   const { errors } = formState
-  /** @type {React.MutableRefObject<HTMLInputElement>} */
-  const inputRef = useRef()
+  /** @type {React.RefObject<HTMLInputElement | null>} */
+  const inputRef = useRef(null)
   const nameField = register('name', { required: true, maxLength: 100 })
 
   useEffect(() => {

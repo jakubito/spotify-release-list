@@ -6,19 +6,19 @@
  *   albums: AlbumsMap
  *   syncing: boolean
  *   syncingProgress: number
- *   lastSync?: string
- *   lastAutoSync?: string
- *   previousSyncMaxDate?: string
+ *   lastSync: string | null
+ *   lastAutoSync: string | null
+ *   previousSyncMaxDate: string | null
  *   creatingPlaylist: boolean
  *   updatingPlaylist: boolean
  *   loadingPlaylists: boolean
- *   playlistResult?: Playlist
+ *   playlistResult: Playlist | null
  *   playlistForm: PlaylistForm
  *   playlists: Playlist[]
- *   selectedPlaylistId?: string
- *   lastPlaylistsRefresh?: string
- *   user?: User
- *   message?: Message
+ *   selectedPlaylistId: string | null
+ *   lastPlaylistsRefresh: string | null
+ *   user: User | null
+ *   message: Message | null
  *   playlistModalVisible: boolean
  *   updatePlaylistModalVisible: boolean
  *   filtersVisible: boolean
@@ -27,8 +27,8 @@
  *   updateReady: boolean
  *   favorites: Favorites
  *   editingFavorites: boolean
- *   lastSettingsPath?: string
- *   labelBlocklistHeight?: number
+ *   lastSettingsPath: string | null
+ *   labelBlocklistHeight: number | null
  * }} State
  *
  * @typedef {{
@@ -41,9 +41,9 @@
  * }} AuthData
  *
  * @typedef {{
- *   name?: string
- *   description?: string
- *   isPublic?: boolean
+ *   name: string | null
+ *   description: string | null
+ *   isPublic: boolean | null
  * }} PlaylistForm
  *
  * @typedef {{
@@ -78,8 +78,8 @@
  * @typedef {{
  *   groups: AlbumGroup[]
  *   search: string
- *   startDate?: string
- *   endDate?: string
+ *   startDate: string | null
+ *   endDate: string | null
  *   excludeVariousArtists: boolean
  *   excludeRemixes: boolean
  *   excludeDuplicates: boolean
@@ -141,6 +141,12 @@
  *   refreshToken: string
  * }} TokenApiResult
  *
+ * @typedef {{
+ *   name: string
+ *   description: string
+ *   visibility: 'private' | 'public'
+ * }} PlaylistFormData
+ *
  * @typedef {{ id: string, name: string, image: string }} User
  * @typedef {{ id: string, name: string }} Artist
  * @typedef {{ id: string, name: string }} Playlist
@@ -150,7 +156,7 @@
  * @typedef {{ [id: string]: boolean }} Favorites
  * @typedef {{ date: string, albums: Album[] }[]} Releases
  * @typedef {{ [key in AlbumGroup]?: string[] }} ReleasesGroupMap
- * @typedef {{ startDate?: Moment, endDate?: Moment }} StartEndDates
+ * @typedef {{ startDate: Moment | null, endDate: Moment | null }} StartEndDates
  * @typedef {(...args: any[]) => any} Fn
  * @typedef {[value: string, label: string][]} SelectOptions
  * @typedef {{ [key in AlbumGroup]: string }} GroupColorScheme
@@ -397,6 +403,7 @@
 /**
  * Imported types
  *
+ * @typedef {import('redux-persist').MigrationManifest} MigrationManifest
  * @typedef {import('redux-persist').PersistedState & State} PersistedState
  * @typedef {import('redux-saga').Task} Task
  * @typedef {import('react-dates').DayOfWeekShape} DayOfWeekShape
@@ -405,12 +412,12 @@
  */
 
 /**
- * @template T
+ * @template {{} | null} T
  * @typedef {import('redux-saga').Channel<T>} Channel<T>
  */
 
 /**
- * @template T
+ * @template {{} | null} T
  * @typedef {import('redux-saga').EventChannel<T>} EventChannel<T>
  */
 

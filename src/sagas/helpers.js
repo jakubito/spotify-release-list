@@ -13,6 +13,7 @@ import moment from 'moment'
 export function takeLeadingCancellable(triggerAction, cancelAction, saga, ...args) {
   return fork(function* () {
     while (true) {
+      /** @type {import('redux-saga').UnknownAction} */
       const action = yield take(triggerAction)
       yield race([call(saga, ...args.concat(action)), take(cancelAction)])
     }

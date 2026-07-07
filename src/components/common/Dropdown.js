@@ -17,8 +17,8 @@ import { useRef } from 'react'
  * }} props
  */
 function Dropdown({ active, right, className, contentClassName, dark, trigger, children, close }) {
-  /** @type {React.MutableRefObject<HTMLDivElement>} */
-  const ref = useRef()
+  /** @type {React.RefObject<HTMLDivElement | null>} */
+  const ref = useRef(null)
 
   return (
     <div
@@ -42,7 +42,7 @@ function Dropdown({ active, right, className, contentClassName, dark, trigger, c
 /**
  * @param {{
  *   className?: string
- *   containerRef: React.MutableRefObject<HTMLDivElement>
+ *   containerRef: React.RefObject<HTMLDivElement | null>
  *   children: React.ReactNode
  *   close: Fn
  * }} props

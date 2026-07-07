@@ -41,7 +41,7 @@ function ReleasesHeader() {
   const lastSettingsPath = useSelector(getLastSettingsPath)
   const anyModalVisible = useSelector(getAnyModalVisible)
   const [exportMenuActive, setExportMenuActive] = useState(false)
-  const shortcutsEnabled = !anyModalVisible && !syncing && lastSyncDate
+  const shortcutsEnabled = Boolean(!anyModalVisible && !syncing && lastSyncDate)
 
   const toggleFilters = deferred(dispatch, toggleFiltersVisible())
   const toggleFavorites = deferred(dispatch, toggleEditingFavorites())

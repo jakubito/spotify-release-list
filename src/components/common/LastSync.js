@@ -31,7 +31,7 @@ function LastSync({ className }) {
   return (
     <div
       className={classNames('LastSync', 'has-text-grey', className)}
-      title={lastSyncDate.toString()}
+      title={lastSyncDate?.toString()}
     >
       <span className="icon">
         <i className="fas fa-clock"></i>

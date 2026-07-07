@@ -31,7 +31,7 @@ export function useDynamicKey(dependencyList) {
 /**
  * Call `handler` when clicked outside of `ref`
  *
- * @param {React.MutableRefObject} ref
+ * @param {React.RefObject<HTMLElement | null>} ref
  * @param {(event: MouseEvent) => void} handler
  */
 export function useClickOutside(ref, handler) {
@@ -40,13 +40,13 @@ export function useClickOutside(ref, handler) {
 
     /** @type {(event: MouseEvent | TouchEvent) => void} */
     const interactionListener = (event) => {
-      startedInside = ref.current?.contains(event.target)
+      startedInside = Boolean(ref.current?.contains(/** @type {Node} */ (event.target)))
     }
 
     /** @type {(event: MouseEvent) => void} */
     const clickListener = (event) => {
       if (!ref.current) return
-      if (ref.current.contains(event.target)) return
+      if (ref.current.contains(/** @type {Node} */ (event.target))) return
       if (startedInside) return
 
       handler(event)
@@ -67,7 +67,7 @@ export function useClickOutside(ref, handler) {
 /**
  * Call `handler` when focused outside of `ref`
  *
- * @param {React.MutableRefObject} ref
+ * @param {React.RefObject<HTMLElement | null>} ref
  * @param {(event: FocusEvent) => void} handler
  */
 export function useFocusOutside(ref, handler) {
@@ -75,7 +75,7 @@ export function useFocusOutside(ref, handler) {
     /** @type {(event: FocusEvent) => void} */
     const focusListener = (event) => {
       if (!ref.current) return
-      if (ref.current.contains(event.target)) return
+      if (ref.current.contains(/** @type {Node} */ (event.target))) return
 
       handler(event)
     }

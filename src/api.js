@@ -85,6 +85,7 @@ export async function getArtistAlbums(token, artistId, groups, signal) {
   /** @type {AlbumRaw[]} */
   const albums = []
   const params = new URLSearchParams({ limit: '50', include_groups: groups.join(',') })
+  /** @type {string | null} */
   let next = apiUrl(`artists/${artistId}/albums?${params}`)
 
   while (next) {

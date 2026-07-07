@@ -180,7 +180,7 @@ describe('getImage', () => {
 
   it('returns null', () => {
     expect(getImage()).toBeNull()
-    expect(getImage(null)).toBeNull()
+    expect(getImage(undefined)).toBeNull()
     expect(getImage([])).toBeNull()
   })
 })

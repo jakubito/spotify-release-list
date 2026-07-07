@@ -15,7 +15,7 @@ function DataInfo() {
         <span className="icon">
           <i className="fas fa-user-circle"></i>
         </span>{' '}
-        Logged in as {user.name}
+        Logged in as {user?.name}
       </div>
     </div>
   )

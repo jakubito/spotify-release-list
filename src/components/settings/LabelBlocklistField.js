@@ -17,8 +17,8 @@ function LabelBlocklistField() {
   const height = useSelector(getLabelBlocklistHeight)
   const dispatch = useDispatch()
   const [applied, setApplied] = useState(false)
-  /** @type {React.MutableRefObject<HTMLTextAreaElement>} */
-  const textareaRef = useRef()
+  /** @type {React.RefObject<HTMLTextAreaElement | null>} */
+  const textareaRef = useRef(null)
 
   const apply = () => {
     defer(dispatch, applyLabelBlocklist())
@@ -35,7 +35,7 @@ function LabelBlocklistField() {
     }, 300)
 
     const observer = new ResizeObserver(callback)
-    observer.observe(textareaRef.current)
+    if (textareaRef.current) observer.observe(textareaRef.current)
 
     return () => observer.disconnect()
   }, [])
@@ -60,13 +60,13 @@ function LabelBlocklistField() {
           rows={6}
           defaultValue={labelBlocklist}
           onChange={(event) => defer(dispatch, setSettings({ labelBlocklist: event.target.value }))}
-          style={{ height }}
+          style={{ height: height ?? undefined }}
           ref={textareaRef}
         />
       </div>
       <Button
         title={applied ? 'Labels blocked' : 'Block labels now'}
-        icon={applied && 'fas fa-check-circle'}
+        icon={applied ? 'fas fa-check-circle' : undefined}
         disabled={applied}
         onClick={apply}
         small

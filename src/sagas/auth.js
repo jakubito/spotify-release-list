@@ -23,9 +23,13 @@ export function* authorizeSaga(action) {
   try {
     yield call(authorizeMainSaga, action)
   } catch (error) {
-    yield put(showErrorMessage(error.message ?? error.toString()))
-    yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
-    yield call(captureException, error)
+    if (error instanceof Error) {
+      yield put(showErrorMessage(error.message))
+      yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
+      yield call(captureException, error)
+    } else {
+      console.error('Unknown error in authorizeSaga', error)
+    }
   }
 }
 
@@ -39,6 +43,11 @@ function* authorizeMainSaga({ payload }) {
 
   /** @type {ReturnType<typeof getAuthData>} */
   const { nonce, codeVerifier } = yield call(getAuthData)
+
+  if (!nonce || !codeVerifier) {
+    throw new AuthError('Authorization failed')
+  }
+
   /** @type {ReturnType<typeof validateAuthRequest>} */
   const { code, action } = yield call(validateAuthRequest, payload.locationSearch, nonce)
   /** @type {Await<ReturnType<typeof exchangeCode>>} */
@@ -46,7 +55,7 @@ function* authorizeMainSaga({ payload }) {
 
   yield call(setAuthData, tokenResult)
   yield put(authorizeFinished())
-  yield put(action)
+  if (action) yield put(action)
 }
 
 /**
@@ -73,9 +82,10 @@ export function authorize(action, scopes, saga, ...args) {
         yield call(triggerNewAuthFlow, action, scopes.join(' '))
       }
     } catch (error) {
-      yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
-      yield call(captureException, error)
-
+      if (error instanceof Error) {
+        yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
+        yield call(captureException, error)
+      }
       throw error
     }
   }
@@ -90,6 +100,11 @@ export function authorize(action, scopes, saga, ...args) {
 function* refreshTokenAndRun(saga, ...args) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { refreshToken } = yield call(getAuthData)
+
+  if (!refreshToken) {
+    throw new AuthError('Missing refresh token')
+  }
+
   /** @type {Await<ReturnType<typeof getRefreshedToken>>} */
   const tokenResult = yield call(getRefreshedToken, refreshToken)
 

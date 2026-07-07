@@ -25,7 +25,7 @@ export function sleep(ms) {
  * Delay function execution until UI is done updating
  *
  * @param {function} fn
- * @param {...any} [args] - Arguments to be passed to function
+ * @param {...any} args - Arguments to be passed to function
  */
 export function defer(fn, ...args) {
   requestAnimationFrame(() => setTimeout(() => fn(...args), 0))
@@ -35,7 +35,7 @@ export function defer(fn, ...args) {
  * Callback wrapper for `defer()`
  *
  * @param {function} fn
- * @param {...any} [args] - Arguments to be passed to function
+ * @param {...any} args - Arguments to be passed to function
  */
 export function deferred(fn, ...args) {
   return () => defer(fn, ...args)
@@ -321,7 +321,10 @@ export function buildAlbum(albumRaw, artistsMap) {
   const { artistIds, albumArtists, ...albumBase } = albumRaw
 
   const artistIdsArray = Object.values(artistIds).flat()
-  const artistIdsEntries = orderBy(Object.entries(artistIds), ([group]) => AlbumGroupIndex[group])
+  const artistIdsEntries = orderBy(
+    /** @type {[AlbumGroup, string[]][]} */ (Object.entries(artistIds)),
+    ([group]) => AlbumGroupIndex[group]
+  )
   const artistsEntries = artistIdsEntries.map(([group, artistIds]) => {
     const artists = orderBy(
       artistIds.map((id) => artistsMap[id]),
@@ -359,20 +362,19 @@ export function buildReleases(releasesMap, releasesOrder) {
   const releasesUnordered = Object.entries(releasesMap).map(([date, albums]) => ({ date, albums }))
   const releasesOrderedByDate = orderBy(releasesUnordered, 'date', 'desc')
 
+  /** @param {Album} album */
+  const orderByAlbumGroup = (album) =>
+    AlbumGroupIndex[/** @type {AlbumGroup} */ (Object.keys(album.artists)[0])]
+
+  /** @param {Album} album */
+  const orderByArtistName = (album) => Object.values(album.artists)[0][0].name.toLowerCase()
+
   /** @type {Releases} */
   const releases = releasesOrderedByDate.map((releaseDay) => {
-    /** @param {Album} album */
-    const orderByAlbumGroup = (album) => AlbumGroupIndex[Object.keys(album.artists).shift()]
-    /** @param {Album} album */
-    const orderByArtistName = (album) =>
-      Object.values(album.artists).flat().shift().name.toLowerCase()
-
     /** @type {Array<((album: Album) => string | number) | string>} */
     const orders = [orderByArtistName, 'name']
     if (releasesOrder === ReleasesOrder.ALBUM_GROUP) orders.unshift(orderByAlbumGroup)
-
     releaseDay.albums = orderBy(releaseDay.albums, orders)
-
     return releaseDay
   })
 
@@ -405,7 +407,7 @@ export function deleteLabels(albumsMap, blockedLabels) {
 
   /** @param {Album} album */
   const shouldDelete = (album) => {
-    if (album.label in blockedLabels) {
+    if (album.label && album.label in blockedLabels) {
       if (blockedLabels[album.label] === undefined) return true
       if (blockedLabels[album.label].includes('VA') && hasVariousArtists(album)) return true
     }

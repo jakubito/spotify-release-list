@@ -4,12 +4,12 @@ import { createAction } from '@reduxjs/toolkit'
 export const authorize = createAction('authorize')
 export const authorizeStart = createAction('authorizeStart')
 export const authorizeFinished = createAction('authorizeFinished')
-/** @type {ActionCreatorWithOptionalPayload<{ resetAuthData?: boolean }, 'authorizeError'>} */
+/** @type {ActionCreatorWithOptionalPayload<{ resetAuthData?: boolean } | undefined, 'authorizeError'>} */
 export const authorizeError = createAction('authorizeError')
-/** @type {ActionCreatorWithOptionalPayload<{ auto?: boolean }, 'sync'>} */
+/** @type {ActionCreatorWithOptionalPayload<{ auto?: boolean } | undefined, 'sync'>} */
 export const sync = createAction('sync')
 export const syncStart = createAction('syncStart')
-/** @type {ActionCreatorWithPayload<{ albums: AlbumsMap, user: User, previousSyncMaxDate: string, auto?: boolean }, 'syncFinished'>} */
+/** @type {ActionCreatorWithPayload<{ albums: AlbumsMap, user: User, previousSyncMaxDate: string | null, auto?: boolean }, 'syncFinished'>} */
 export const syncFinished = createAction('syncFinished')
 export const syncError = createAction('syncError')
 export const syncCancel = createAction('syncCancel')
@@ -24,7 +24,7 @@ export const showUpdatePlaylistModal = createAction('showUpdatePlaylistModal')
 export const hideUpdatePlaylistModal = createAction('hideUpdatePlaylistModal')
 /** @type {ActionCreatorWithPayload<string, 'showMessage'>} */
 export const showMessage = createAction('showMessage')
-/** @type {ActionCreatorWithOptionalPayload<string, 'showErrorMessage'>} */
+/** @type {ActionCreatorWithOptionalPayload<string | undefined, 'showErrorMessage'>} */
 export const showErrorMessage = createAction('showErrorMessage')
 export const hideMessage = createAction('hideMessage')
 export const loadPlaylists = createAction('loadPlaylists')
