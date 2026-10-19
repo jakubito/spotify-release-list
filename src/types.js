@@ -138,8 +138,11 @@
  *   token: string
  *   tokenScope: string
  *   tokenExpires: string
- *   refreshToken: string
  * }} TokenApiResult
+ *
+ * @typedef {TokenApiResult & {
+ *   refreshToken: string
+ * }} AuthApiResult
  *
  * @typedef {{
  *   name: string
@@ -372,8 +375,13 @@
  *   access_token: string
  *   scope: string
  *   expires_in: number
- *   refresh_token: string
+ *   refresh_token?: string
  * }} TokenApiResponse
+ *
+ * @typedef {{
+ *   error?: string
+ *   error_description?: string
+ * }} TokenApiErrorResponse
  */
 
 /**

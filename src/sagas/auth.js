@@ -2,6 +2,7 @@ import { call, put } from 'redux-saga/effects'
 import { captureException } from 'helpers'
 import {
   AuthError,
+  InvalidGrantError,
   createCodeChallenge,
   deleteAuthData,
   exchangeCode,
@@ -77,7 +78,7 @@ export function authorize(action, scopes, saga, ...args) {
       const scopesValid = scopes.every((scope) => currentScopes?.includes(scope))
 
       if (refreshToken && scopesValid) {
-        yield call(refreshTokenAndRun, saga, ...args)
+        yield call(refreshTokenAndRun, action, scopes, saga, ...args)
       } else {
         yield call(triggerNewAuthFlow, action, scopes.join(' '))
       }
@@ -94,10 +95,12 @@ export function authorize(action, scopes, saga, ...args) {
 /**
  * Refresh token and call saga
  *
+ * @param {Action} action
+ * @param {Scope[]} scopes
  * @param {Fn} saga
  * @param {...any} args
  */
-function* refreshTokenAndRun(saga, ...args) {
+function* refreshTokenAndRun(action, scopes, saga, ...args) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { refreshToken } = yield call(getAuthData)
 
@@ -106,7 +109,18 @@ function* refreshTokenAndRun(saga, ...args) {
   }
 
   /** @type {Await<ReturnType<typeof getRefreshedToken>>} */
-  const tokenResult = yield call(getRefreshedToken, refreshToken)
+  let tokenResult
+
+  try {
+    tokenResult = yield call(getRefreshedToken, refreshToken)
+  } catch (error) {
+    if (error instanceof InvalidGrantError) {
+      yield call(deleteAuthData)
+      yield call(triggerNewAuthFlow, action, scopes.join(' '))
+      return
+    }
+    throw error
+  }
 
   yield call(setAuthData, tokenResult)
   yield put(authorizeFinished())

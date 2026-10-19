@@ -1,6 +1,7 @@
 import { Base64 } from 'js-base64'
 import queryString from 'query-string'
 import moment from 'moment'
+import pickBy from 'lodash/pickBy'
 import { ArtistSource, Scope } from 'enums'
 
 const CODE_CHARSET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~'
@@ -17,15 +18,20 @@ const { USER_FOLLOW_READ, USER_LIBRARY_READ, PLAYLIST_MODIFY_PRIVATE, PLAYLIST_M
  * Represents an error encountered during authorization
  */
 export class AuthError extends Error {
+  name = 'AuthError'
+
   /**
    * @param {string} [message]
    * @param {SentryContexts} [contexts]
    */
   constructor(message, contexts) {
     super(message)
-    this.name = 'AuthError'
     this.contexts = contexts
   }
+}
+
+export class InvalidGrantError extends AuthError {
+  name = 'InvalidGrantError'
 }
 
 /**
@@ -92,6 +98,8 @@ export function validateAuthRequest(locationSearch, originalNonce) {
   /** @type {{ code?: string, state?: string, error?: string }} */
   const { code, state, error } = queryString.parse(locationSearch)
 
+  if (error === 'access_denied') throw new AuthError('Access denied')
+
   if (error) {
     throw new AuthError(`Authorization failed (${error})`, { extra: { error } })
   }
@@ -139,32 +147,38 @@ export function startAuthFlow(action, scope, codeChallenge, nonce) {
  * @param {string} codeVerifier
  */
 export function exchangeCode(code, codeVerifier) {
-  return tokenRequest({
-    grant_type: 'authorization_code',
-    client_id: /** @type {string} */ (process.env.REACT_APP_SPOTIFY_CLIENT_ID),
-    redirect_uri: AUTH_REDIRECT_URL,
-    code_verifier: codeVerifier,
-    code,
-  })
+  return /** @type {Promise<AuthApiResult>} */ (
+    tokenRequest({
+      grant_type: 'authorization_code',
+      client_id: /** @type {string} */ (process.env.REACT_APP_SPOTIFY_CLIENT_ID),
+      redirect_uri: AUTH_REDIRECT_URL,
+      code_verifier: codeVerifier,
+      code,
+    })
+  )
 }
 
 /**
- * Request new token
+ * Request new token.
+ * This is to refresh the access token, not to refresh the refresh token itself.
  *
  * @param {string} refreshToken
  */
 export function getRefreshedToken(refreshToken) {
-  return tokenRequest({
-    grant_type: 'refresh_token',
-    client_id: /** @type {string} */ (process.env.REACT_APP_SPOTIFY_CLIENT_ID),
-    refresh_token: refreshToken,
-  })
+  return /** @type {Promise<TokenApiResult>} */ (
+    tokenRequest({
+      grant_type: 'refresh_token',
+      client_id: /** @type {string} */ (process.env.REACT_APP_SPOTIFY_CLIENT_ID),
+      refresh_token: refreshToken,
+    })
+  )
 }
 
 /**
  * Spotify token endpoint request wrapper
  *
  * @param {Record<string, string>} body
+ * @returns {Promise<AuthApiResult | TokenApiResult>}
  */
 async function tokenRequest(body) {
   const response = await fetch(TOKEN_API_URL, {
@@ -177,15 +191,21 @@ async function tokenRequest(body) {
     /** @type {TokenApiResponse} */
     const json = await response.json()
 
-    return /** @type {TokenApiResult} */ ({
+    return {
       token: json.access_token,
       tokenScope: json.scope,
       tokenExpires: moment().add(Number(json.expires_in), 'seconds').toISOString(),
       refreshToken: json.refresh_token,
-    })
+    }
   }
 
-  throw new AuthError(response.statusText)
+  /** @type {TokenApiErrorResponse | undefined} */
+  const json = await response.json().catch(() => {})
+  const message = json?.error_description ?? 'Authorization failed'
+
+  if (json?.error === 'invalid_grant') throw new InvalidGrantError(message)
+
+  throw new AuthError(message)
 }
 
 /**
@@ -202,7 +222,11 @@ export function getAuthData() {
  * @param {AuthData} authData
  */
 export function setAuthData(authData) {
-  localStorage.setItem(AUTH_DATA_KEY, JSON.stringify({ ...getAuthData(), ...authData }))
+  const newData = {
+    ...getAuthData(),
+    ...pickBy(authData), // Skip falsy props
+  }
+  localStorage.setItem(AUTH_DATA_KEY, JSON.stringify(newData))
 }
 
 /**
