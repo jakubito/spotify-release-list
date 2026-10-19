@@ -1,7 +1,8 @@
 import { Address } from 'enums'
 import { Anchor, ButtonAnchor, Emoji, VerticalLayout } from 'components/common'
 
-const { GITHUB_PROFILE, DONATE, EMAIL, GITHUB, PRIVACY, CREDITS, CHANGELOG } = Address
+const { GITHUB_PROFILE, DONATE_KOFI, DONATE_PAYPAL, EMAIL, GITHUB, PRIVACY, CREDITS, CHANGELOG } =
+  Address
 
 /**
  * Render about section
@@ -21,40 +22,55 @@ function AboutSettings() {
           title="GitHub repository"
           icon="fab fa-github"
           className="AboutSettings__button"
+          text
         >
           GitHub
         </ButtonAnchor>
         <ButtonAnchor
-          href={DONATE}
-          title="Contribute via PayPal"
+          href={DONATE_KOFI}
+          title="Contribute via Ko-fi"
           icon="fas fa-mug-hot"
           className="AboutSettings__button"
+          text
         >
-          Donate
+          Donate (Ko-fi)
+        </ButtonAnchor>
+        <ButtonAnchor
+          href={DONATE_PAYPAL}
+          title="Contribute via PayPal"
+          icon="fab fa-paypal"
+          className="AboutSettings__button"
+          text
+        >
+          Donate (PayPal)
         </ButtonAnchor>
         <ButtonAnchor
           href={EMAIL}
           title="E-mail"
           icon="fas fa-envelope"
           className="AboutSettings__button"
+          text
         />
         <ButtonAnchor
           href={PRIVACY}
           title="Privacy Policy"
           icon="fas fa-user-shield"
           className="AboutSettings__button"
+          text
         />
         <ButtonAnchor
           href={CREDITS}
           title="Credits"
           icon="fas fa-magic"
           className="AboutSettings__button"
+          text
         />
         <ButtonAnchor
           href={CHANGELOG}
           title="Changelog"
           icon="fas fa-star"
           className="AboutSettings__button"
+          text
         />
       </div>
       <div className="AboutSettings__item">
