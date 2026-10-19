@@ -80,6 +80,8 @@
  *   search: string
  *   startDate: string | null
  *   endDate: string | null
+ *   minTracks: number | null
+ *   maxTracks: number | null
  *   excludeVariousArtists: boolean
  *   excludeRemixes: boolean
  *   excludeDuplicates: boolean

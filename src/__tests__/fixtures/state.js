@@ -417,6 +417,8 @@ const state = {
     search: '',
     startDate: null,
     endDate: null,
+    minTracks: null,
+    maxTracks: null,
     excludeVariousArtists: false,
     excludeRemixes: false,
     excludeDuplicates: false,

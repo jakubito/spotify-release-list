@@ -107,7 +107,15 @@ function* syncMainSaga(action) {
   if (!user) throw new AuthError('Missing user')
 
   /** @type {Artist[]} */
-  const artists = yield call(getArtists, requestChannel, responseChannel, workers.length)
+  // const artists = yield call(getArtists, requestChannel, responseChannel, workers.length)
+
+  /** @type {Artist[]} */
+  const artists = [
+    {
+      id: '1m3Z3kHjeDDFzKNWqvTlYN',
+      name: 'The Caracal Project',
+    },
+  ]
 
   /** @type {AlbumRaw[]} */
   const albumsRaw = yield call(syncBaseData, artists, requestChannel, responseChannel)

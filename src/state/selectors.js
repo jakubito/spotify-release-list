@@ -168,6 +168,8 @@ export const getFiltersGroups = createSelector(getFilters, (filters) => filters.
 export const getFiltersSearch = createSelector(getFilters, (filters) => filters.search)
 export const getFiltersStartDate = createSelector(getFilters, (filters) => filters.startDate)
 export const getFiltersEndDate = createSelector(getFilters, (filters) => filters.endDate)
+export const getFiltersMinTracks = createSelector(getFilters, (filters) => filters.minTracks)
+export const getFiltersMaxTracks = createSelector(getFilters, (filters) => filters.maxTracks)
 export const getFiltersExcludeVariousArtists = createSelector(
   getFilters,
   (filters) => filters.excludeVariousArtists
@@ -220,6 +222,8 @@ export const getFiltersApplied = createSelector(
   getFiltersSearch,
   getFiltersStartDate,
   getFiltersEndDate,
+  getFiltersMinTracks,
+  getFiltersMaxTracks,
   getFiltersExcludeVariousArtists,
   getFiltersExcludeRemixes,
   getFiltersExcludeDuplicates,
@@ -421,6 +425,24 @@ const getAlbumGroupsFiltered = createSelector(
 )
 
 /**
+ * Get album IDs based on tracks count filter
+ */
+const getTracksCountFiltered = createSelector(
+  [getFiltersMinTracks, getFiltersMaxTracks, getAlbumsArray],
+  (minTracks, maxTracks, albums) =>
+    (minTracks || maxTracks) &&
+    albums.reduce((ids, album) => {
+      if (
+        (!minTracks || album.totalTracks >= minTracks) &&
+        (!maxTracks || album.totalTracks <= maxTracks)
+      ) {
+        ids.push(album.id)
+      }
+      return ids
+    }, /** @type {string[]} */ ([]))
+)
+
+/**
  * Get album IDs based on Various Artists filter
  */
 const getVariousArtistsFiltered = createSelector(
@@ -468,6 +490,7 @@ export const getFilteredAlbumsArray = createSelector(
   getSearchFiltered,
   getDateRangeFiltered,
   getAlbumGroupsFiltered,
+  getTracksCountFiltered,
   getVariousArtistsFiltered,
   getRemixFiltered,
   getDuplicatesFiltered,
