@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 import { defer, sleep } from 'helpers'
 import { getLabelBlocklistHeight, getSettings, getSettingsBlockedLabels } from 'state/selectors'
 import { applyLabelBlocklist, setLabelBlocklistHeight, setSettings } from 'state/actions'
