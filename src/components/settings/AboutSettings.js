@@ -19,7 +19,6 @@ function AboutSettings() {
         <ButtonAnchor
           href={GITHUB}
           title="GitHub repository"
-          icon="fab fa-github"
           className="AboutSettings__button"
           text
         >
@@ -28,40 +27,20 @@ function AboutSettings() {
         <ButtonAnchor
           href={DONATE}
           title="Contribute via Ko-fi"
-          icon="fas fa-mug-hot"
           className="AboutSettings__button"
           text
         >
           Donate
         </ButtonAnchor>
-        <ButtonAnchor
-          href={EMAIL}
-          title="E-mail"
-          icon="fas fa-envelope"
-          className="AboutSettings__button"
-          text
-        />
+        <ButtonAnchor href={EMAIL} title="E-mail" className="AboutSettings__button" text />
         <ButtonAnchor
           href={PRIVACY}
           title="Privacy Policy"
-          icon="fas fa-user-shield"
           className="AboutSettings__button"
           text
         />
-        <ButtonAnchor
-          href={CREDITS}
-          title="Credits"
-          icon="fas fa-magic"
-          className="AboutSettings__button"
-          text
-        />
-        <ButtonAnchor
-          href={CHANGELOG}
-          title="Changelog"
-          icon="fas fa-star"
-          className="AboutSettings__button"
-          text
-        />
+        <ButtonAnchor href={CREDITS} title="Credits" className="AboutSettings__button" text />
+        <ButtonAnchor href={CHANGELOG} title="Changelog" className="AboutSettings__button" text />
       </div>
       <div className="AboutSettings__item">
         Spotify is a trademark of Spotify AB. This app is not affiliated with Spotify.
