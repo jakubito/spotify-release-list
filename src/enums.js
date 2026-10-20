@@ -7,8 +7,7 @@ export const Address = {
   PRIVACY: `${GITHUB}/blob/master/PRIVACY.md`,
   CREDITS: `${GITHUB}/blob/master/CREDITS.md`,
   CHANGELOG: `${GITHUB}/releases`,
-  DONATE_KOFI: 'https://ko-fi.com/jakubito',
-  DONATE_PAYPAL: 'https://paypal.me/jakubito',
+  DONATE: 'https://ko-fi.com/jakubito',
   EMAIL: 'mailto:dobes.jakub@gmail.com',
   DEMO: 'https://demo--spotifyreleaselist.netlify.app',
 }

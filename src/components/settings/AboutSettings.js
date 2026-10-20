@@ -1,8 +1,7 @@
 import { Address } from 'enums'
 import { Anchor, ButtonAnchor, Emoji, VerticalLayout } from 'components/common'
 
-const { GITHUB_PROFILE, DONATE_KOFI, DONATE_PAYPAL, EMAIL, GITHUB, PRIVACY, CREDITS, CHANGELOG } =
-  Address
+const { GITHUB_PROFILE, DONATE, EMAIL, GITHUB, PRIVACY, CREDITS, CHANGELOG } = Address
 
 /**
  * Render about section
@@ -27,22 +26,13 @@ function AboutSettings() {
           GitHub
         </ButtonAnchor>
         <ButtonAnchor
-          href={DONATE_KOFI}
+          href={DONATE}
           title="Contribute via Ko-fi"
           icon="fas fa-mug-hot"
           className="AboutSettings__button"
           text
         >
-          Donate (Ko-fi)
-        </ButtonAnchor>
-        <ButtonAnchor
-          href={DONATE_PAYPAL}
-          title="Contribute via PayPal"
-          icon="fab fa-paypal"
-          className="AboutSettings__button"
-          text
-        >
-          Donate (PayPal)
+          Donate
         </ButtonAnchor>
         <ButtonAnchor
           href={EMAIL}
