@@ -6,6 +6,7 @@ import { getLabelBlocklistHeight, getSettings, getSettingsBlockedLabels } from '
 import { applyLabelBlocklist, setLabelBlocklistHeight, setSettings } from 'state/actions'
 import { Button } from 'components/common'
 import HelpText from './HelpText'
+import ExtraDataRequiredLink from './ExtraDataRequiredLink'
 
 /**
  * Render label blocklist field
@@ -44,7 +45,7 @@ function LabelBlocklistField() {
     <div className="LabelBlocklistField Settings__field field">
       <label className="label has-text-light">
         Label blocklist {entriesLength > 0 ? `(${entriesLength})` : ''}
-        {!fullAlbumData && <span className="tag is-warning">Label data required</span>}
+        {!fullAlbumData && <ExtraDataRequiredLink>Label data required</ExtraDataRequiredLink>}
       </label>
       <div className="Settings__help">
         <HelpText>
@@ -59,6 +60,7 @@ function LabelBlocklistField() {
           placeholder="Example:&#10;UME - Global Clearing House&#10;*VA* UME - Global Clearing House"
           rows={6}
           defaultValue={labelBlocklist}
+          disabled={!fullAlbumData}
           onChange={(event) => defer(dispatch, setSettings({ labelBlocklist: event.target.value }))}
           style={{ height: height ?? undefined }}
           ref={textareaRef}
@@ -67,7 +69,7 @@ function LabelBlocklistField() {
       <Button
         title={applied ? 'Labels blocked' : 'Block labels now'}
         icon={applied ? 'fas fa-check-circle' : undefined}
-        disabled={applied}
+        disabled={applied || !fullAlbumData}
         onClick={apply}
         small
       />

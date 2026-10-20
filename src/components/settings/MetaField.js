@@ -3,6 +3,7 @@ import { getSettings } from 'state/selectors'
 import { setSettings } from 'state/actions'
 import { defer } from 'helpers'
 import { Checkbox } from 'components/common'
+import ExtraDataRequiredLink from './ExtraDataRequiredLink'
 
 /**
  * Render album meta field
@@ -21,11 +22,12 @@ function MetaField() {
             id="displayLabels"
             label="Display label"
             defaultChecked={displayLabels}
+            disabled={!fullAlbumData}
             onChange={(event) =>
               defer(dispatch, setSettings({ displayLabels: event.target.checked }))
             }
           />
-          {!fullAlbumData && <span className="tag is-warning">Label data required</span>}
+          {!fullAlbumData && <ExtraDataRequiredLink>Label data required</ExtraDataRequiredLink>}
         </div>
       </div>
       <div className="control">
@@ -34,11 +36,14 @@ function MetaField() {
             id="displayPopularity"
             label="Display popularity value"
             defaultChecked={displayPopularity}
+            disabled={!fullAlbumData}
             onChange={(event) =>
               defer(dispatch, setSettings({ displayPopularity: event.target.checked }))
             }
           />
-          {!fullAlbumData && <span className="tag is-warning">Popularity data required</span>}
+          {!fullAlbumData && (
+            <ExtraDataRequiredLink>Popularity data required</ExtraDataRequiredLink>
+          )}
         </div>
       </div>
       <div className="control">
