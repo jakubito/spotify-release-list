@@ -6,13 +6,7 @@ import { ButtonLink, Header } from 'components/common'
 function SettingsHeader() {
   return (
     <Header title="Settings" className="SettingsHeader">
-      <ButtonLink
-        title="All good"
-        to="/"
-        icon="fas fa-check"
-        className="is-hidden-tablet"
-        primary
-      />
+      <ButtonLink title="All good" to="/" className="is-hidden-tablet" primary />
     </Header>
   )
 }

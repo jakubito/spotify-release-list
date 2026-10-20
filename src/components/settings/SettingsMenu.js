@@ -30,7 +30,6 @@ function SettingsMenu() {
         <ButtonLink
           title="All good"
           to="/"
-          icon="fas fa-check"
           className="SettingsMenu__close is-hidden-mobile"
           primary
         />
