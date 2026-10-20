@@ -17,6 +17,7 @@ import classNames from 'classnames'
  *   max?: string | number
  *   pattern?: string
  *   disabled?: boolean
+ *   inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode']
  *   onChange?: React.ChangeEventHandler<HTMLInputElement>
  *   onBlur?: React.FocusEventHandler<HTMLInputElement>
  * }} props
@@ -35,6 +36,7 @@ function Input(props, ref) {
     min,
     max,
     pattern,
+    inputMode,
     disabled,
     onChange,
   } = props
@@ -52,6 +54,7 @@ function Input(props, ref) {
       min={min}
       max={max}
       pattern={pattern}
+      inputMode={inputMode}
       disabled={disabled}
       onChange={onChange}
       ref={ref}

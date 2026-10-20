@@ -31,6 +31,7 @@ function MinimumSavedTracksField() {
             id="minimumSavedTracks"
             type="number"
             className="MinimumSavedTracksField__input"
+            inputMode="numeric"
             step="1"
             min="1"
             pattern="\d*"

@@ -68,7 +68,10 @@ function TracksCountFilter() {
         value={values.minTracks}
         onChange={onChange}
         placeholder="Min tracks #"
-        min={1}
+        inputMode="numeric"
+        min="1"
+        step="1"
+        pattern="\d*"
       />
       <Input
         type="number"
@@ -76,7 +79,10 @@ function TracksCountFilter() {
         value={values.maxTracks}
         onChange={onChange}
         placeholder="Max tracks #"
-        min={1}
+        inputMode="numeric"
+        min="1"
+        step="1"
+        pattern="\d*"
       />
       {(minTracks || maxTracks) && <Button title="Reset" className="reset" onClick={reset} text />}
     </div>
