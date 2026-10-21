@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { playlistName } from 'helpers'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm, FormProvider } from 'react-hook-form'
 import { useModal } from 'hooks'
 import { createPlaylist, createPlaylistCancel, setPlaylistForm } from 'state/actions'
 import {
   getCreatingPlaylist,
+  getFiltersDates,
   getPlaylistResult,
   getReleasesArray,
   getReleasesTrackCount,
@@ -20,11 +22,19 @@ function PlaylistModal({ closeModal }) {
   const dispatch = useDispatch()
   const albums = useSelector(getReleasesArray)
   const totalTrackCount = useSelector(getReleasesTrackCount)
+  const filtersDates = useSelector(getFiltersDates)
   const creatingPlaylist = useSelector(getCreatingPlaylist)
   const playlistResult = useSelector(getPlaylistResult)
   const [submitTriggered, setSubmitTriggered] = useState(false)
   const onSubmit = useOnSubmit(setSubmitTriggered)
-  const form = useForm({ values: /** @type {PlaylistFormData} */ ({}) })
+
+  /** @type {PlaylistFormData} */
+  const defaultFormValues = {
+    name: playlistName(filtersDates?.startDate, filtersDates?.endDate),
+    description: '',
+    visibility: 'private',
+  }
+  const form = useForm({ defaultValues: defaultFormValues })
 
   useModal(closeModal)
   useEffect(() => setSubmitTriggered(creatingPlaylist), [creatingPlaylist])
@@ -35,7 +45,7 @@ function PlaylistModal({ closeModal }) {
         <PlaylistLoading
           title="Creating playlist, please wait..."
           cancel={() => {
-            form.reset({})
+            form.reset()
             dispatch(createPlaylistCancel())
           }}
         />

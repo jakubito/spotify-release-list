@@ -16,7 +16,6 @@ function VisibilityField() {
             id="visibilityPrivate"
             type="radio"
             value="private"
-            defaultChecked
             {...register('visibility')}
           />
           <label htmlFor="visibilityPrivate">No</label>
