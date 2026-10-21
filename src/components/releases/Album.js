@@ -73,7 +73,7 @@ function Album({ album }) {
           {displayLabels && label && <LabelDropdown label={label} />}
           {displayPopularity && Number.isInteger(popularity) && (
             <div className="Album__meta " title="Popularity">
-              <i className="Album__popularity-icon fas fa-chart-line" />
+              <i className="Album__popularity-icon fas fa-fire" />
               {popularity}
             </div>
           )}

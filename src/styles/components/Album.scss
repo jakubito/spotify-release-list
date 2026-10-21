@@ -212,11 +212,13 @@
   }
 
   &__popularity-icon {
-    margin-right: 6px;
+    font-size: 14px;
+    margin-right: 4px;
     color: $grey;
 
     @include theme(compact) {
-      margin-right: 4px;
+      font-size: 10px;
+      margin-right: 2px;
     }
   }
 

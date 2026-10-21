@@ -47,7 +47,6 @@ function LabelDropdown({ label }) {
     <Dropdown active={active} trigger={trigger} close={() => setActive(false)} dark>
       <Button
         titleOnly="Filter by this label"
-        icon="fas fa-filter"
         className="dropdown-item"
         onClick={deferred(dispatch, setFilters({ search: label }))}
       >
@@ -55,7 +54,6 @@ function LabelDropdown({ label }) {
       </Button>
       <Button
         titleOnly="Block Various Artists releases from this label"
-        icon="fas fa-ban"
         className="dropdown-item"
         onClick={deferred(block, true)}
       >
@@ -63,7 +61,6 @@ function LabelDropdown({ label }) {
       </Button>
       <Button
         titleOnly="Block this label completely"
-        icon="fas fa-skull"
         className="dropdown-item"
         onClick={deferred(block)}
       >
