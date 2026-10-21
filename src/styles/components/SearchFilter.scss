@@ -1,6 +1,6 @@
 .SearchFilter {
   input {
-    max-width: 940px;
+    max-width: 600px;
 
     @include until-widescreen {
       max-width: none;
