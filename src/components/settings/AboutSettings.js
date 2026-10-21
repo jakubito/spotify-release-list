@@ -9,12 +9,6 @@ const { GITHUB_PROFILE, DONATE, EMAIL, GITHUB, PRIVACY, CREDITS, CHANGELOG } = A
 function AboutSettings() {
   return (
     <VerticalLayout className="AboutSettings fade-in">
-      <div className="AboutSettings__item">
-        Made with <Emoji value="💛" label="heart" /> by{' '}
-        <Anchor href={GITHUB_PROFILE} title="My GitHub profile" className="has-text-white">
-          Jakub Dobes
-        </Anchor>
-      </div>
       <div className="AboutSettings__item AboutSettings__buttons">
         <ButtonAnchor
           href={GITHUB}
@@ -46,10 +40,16 @@ function AboutSettings() {
         Spotify is a trademark of Spotify AB. This app is not affiliated with Spotify.
       </div>
       <div className="AboutSettings__item">
+        Made with <Emoji value="💛" label="heart" /> by{' '}
+        <Anchor href={GITHUB_PROFILE} title="My GitHub profile" className="has-text-white">
+          Jakub Dobes
+        </Anchor>
+      </div>
+      <div className="AboutSettings__item">
         <span className="icon">
           <i className="fas fa-code-branch" />
         </span>{' '}
-        Version {process.env.REACT_APP_VERSION} ({process.env.REACT_APP_GIT_SHA})
+        v{process.env.REACT_APP_VERSION} ({process.env.REACT_APP_GIT_SHA})
       </div>
     </VerticalLayout>
   )

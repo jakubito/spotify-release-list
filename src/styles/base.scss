@@ -97,6 +97,10 @@ body,
   }
 }
 
+.button .icon i {
+  font-size: 0.9em;
+}
+
 .button.is-darker {
   background-color: $darkest;
 }
