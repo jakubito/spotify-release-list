@@ -49,9 +49,9 @@ function LabelBlocklistField() {
       </label>
       <div className="Settings__help">
         <HelpText>
-          Enter one label per line. Prepend the label name with <strong>*VA*</strong> to block
-          Various Artists releases only. Labels will be automatically blocked on every refresh. You
-          can also apply the list manually.
+          Enter one label per line. Prefix a label with <strong>*VA*</strong> to block only its
+          Various Artists releases. Labels are blocked automatically on every refresh, or you can
+          apply the list manually.
         </HelpText>
       </div>
       <div className="control">

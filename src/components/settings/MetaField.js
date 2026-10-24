@@ -15,7 +15,7 @@ function MetaField() {
 
   return (
     <div className="MetaField Settings__field field">
-      <label className="label has-text-light">Album meta data</label>
+      <label className="label has-text-light">Album metadata</label>
       <div className="control">
         <div className="field">
           <Checkbox

@@ -61,20 +61,14 @@ function UpdatePlaylistModal({ closeModal }) {
     if (updatingPlaylist) {
       return (
         <PlaylistLoading
-          title="Updating playlist, please wait..."
+          title="Updating your playlist..."
           cancel={() => dispatch(updatePlaylistCancel())}
         />
       )
     }
 
     if (playlistResult) {
-      return (
-        <PlaylistInfo
-          title="Playlist has been successfully updated"
-          playlist={playlistResult}
-          close={closeModal}
-        />
-      )
+      return <PlaylistInfo title="Playlist updated!" playlist={playlistResult} close={closeModal} />
     }
 
     return (
@@ -119,7 +113,7 @@ function UpdatePlaylistModal({ closeModal }) {
             onChange={(event) => setFollowedArtistsOnly(event.target.checked)}
           />
           <div className="field">
-            <label className="label has-text-light">Choose update strategy</label>
+            <label className="label has-text-light">How to update</label>
             <div className="control">
               <div className="field">
                 <input
@@ -152,7 +146,7 @@ function UpdatePlaylistModal({ closeModal }) {
           <article className="message is-danger fade-in">
             <div className="UpdatePlaylistModal__warning message-body">
               <i className="fas fa-exclamation-triangle" />
-              This will remove all existing tracks from the selected playlist. Use with caution.
+              This removes all existing tracks from the selected playlist. Use with caution.
             </div>
           </article>
         )}

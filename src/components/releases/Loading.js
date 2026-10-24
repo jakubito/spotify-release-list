@@ -16,7 +16,7 @@ function Loading() {
   return (
     <div className="Loading">
       <div className="has-text-centered has-text-light has-text-weight-semibold is-size-5">
-        Loading, please wait...
+        Loading your releases...
       </div>
       <Button title="Cancel sync [ESC]" className="cancel" onClick={cancelSyncTrigger}>
         Cancel

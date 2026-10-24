@@ -100,7 +100,7 @@ function ReleasesHeader() {
                     Edit
                   </Button>
                   <Button
-                    title="Toggle Filters [F]"
+                    title="Toggle filters [F]"
                     icon={classNames('fas', {
                       'fa-search': !filtersVisible,
                       'fa-minus': filtersVisible,

@@ -44,7 +44,7 @@ function PlaylistModal({ closeModal }) {
     if (creatingPlaylist) {
       return (
         <PlaylistLoading
-          title="Creating playlist, please wait..."
+          title="Creating your playlist..."
           cancel={() => {
             form.reset()
             dispatch(createPlaylistCancel())
@@ -54,13 +54,7 @@ function PlaylistModal({ closeModal }) {
     }
 
     if (playlistResult) {
-      return (
-        <PlaylistInfo
-          title="Playlist has been successfully created"
-          playlist={playlistResult}
-          close={closeModal}
-        />
-      )
+      return <PlaylistInfo title="Playlist created!" playlist={playlistResult} close={closeModal} />
     }
 
     return <PlaylistForm submitTriggered={submitTriggered} closeModal={closeModal} />

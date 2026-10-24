@@ -25,7 +25,7 @@ function ArtistBlocklistField() {
           >
             Artist ID
           </a>{' '}
-          per line. Artists will be automatically blocked on every refresh.
+          per line. Artists are blocked automatically on every refresh.
         </HelpText>
       </div>
       <div className="control">
