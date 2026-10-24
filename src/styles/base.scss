@@ -2,25 +2,27 @@
   color-scheme: dark;
 }
 
-::-webkit-scrollbar {
-  height: 14px;
-  width: 14px;
-  background: transparent;
-
-  &-thumb {
-    width: 10px;
-    background-color: $grey-dark;
-    background-clip: padding-box;
-    border-radius: 10px;
-    border: 4px solid transparent;
-
-    &:hover {
-      background: $grey;
-    }
-  }
-
-  &-corner {
+@media (hover: hover) and (pointer: fine) and (min-width: $tablet) {
+  ::-webkit-scrollbar {
+    height: 14px;
+    width: 14px;
     background: transparent;
+
+    &-thumb {
+      width: 10px;
+      background-color: $grey-dark;
+      background-clip: padding-box;
+      border-radius: 10px;
+      border: 4px solid transparent;
+
+      &:hover {
+        background: $grey;
+      }
+    }
+
+    &-corner {
+      background: transparent;
+    }
   }
 }
 
