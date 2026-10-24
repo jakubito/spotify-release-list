@@ -16,8 +16,8 @@ function AlbumBlocklistField() {
       </label>
       <div className="Settings__help">
         <HelpText>
-          Enter one definition per line. Regular expressions work too, and matching is
-          case-insensitive. Albums with a matching name are blocked automatically on every refresh.
+          Enter one regular expression per line. Matching is case-insensitive. Albums with a
+          matching name are blocked automatically on every refresh.
         </HelpText>
       </div>
       <div className="control">
