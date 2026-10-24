@@ -113,34 +113,32 @@ export async function getFullAlbums(token, albumIds, signal) {
 }
 
 /**
- * Return an album's track IDs
+ * Return albums' tracks
  *
  * @param {string} token
  * @param {string[]} albumIds
  * @param {AbortSignal} [signal]
  */
-export async function getAlbumsTrackIds(token, albumIds, signal) {
-  /** @type {string[]} */
-  const trackIds = []
+export async function getAlbumsTracks(token, albumIds, signal) {
+  /** @type {SpotifyTrack[]} */
+  const tracks = []
   const albums = await getFullAlbums(token, albumIds, signal)
 
   for (const album of albums) {
     if (!album) continue
 
-    const albumTrackIds = album.tracks.items.map((track) => track.id)
+    for (const track of album.tracks.items) tracks.push(track)
     let next = album.tracks.next
 
     while (next) {
       /** @type {Paged<SpotifyTrack>} */
       const response = await get(next, token, signal)
-      for (const track of response.items) albumTrackIds.push(track.id)
+      for (const track of response.items) tracks.push(track)
       next = response.next
     }
-
-    for (const id of albumTrackIds) trackIds.push(id)
   }
 
-  return trackIds
+  return tracks
 }
 
 /**

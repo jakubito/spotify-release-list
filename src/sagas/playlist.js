@@ -4,7 +4,7 @@ import moment from 'moment'
 import { spotifyUri } from 'helpers'
 import { Scope, SpotifyEntity } from 'enums'
 import {
-  getAlbumsTrackIds,
+  getAlbumsTracks,
   createPlaylist,
   addTracksToPlaylist,
   getUserSavedPlaylistsPage,
@@ -12,6 +12,7 @@ import {
 } from 'api'
 import { AuthError, getAuthData, getPlaylistScope } from 'auth'
 import {
+  getFollowedArtistIds,
   getLastPlaylistsRefresh,
   getPlaylistForm,
   getPlaylists,
@@ -92,7 +93,8 @@ function* createPlaylistMainSaga(signal) {
   /** @type {ReturnType<typeof getPlaylistForm>} */
   const form = yield select(getPlaylistForm)
   /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
-  const trackUris = yield call(getReleasesTrackUris, signal)
+  const trackUris = yield call(getReleasesTrackUris, signal, Boolean(form.followedArtistsOnly))
+  if (trackUris.length === 0) throw new Error('No tracks to export')
 
   /** @type {SpotifyPlaylist | null} */
   let firstPlaylist = null
@@ -137,7 +139,7 @@ export function* updatePlaylistSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    if (error instanceof AuthError) {
+    if (error instanceof Error) {
       yield put(showErrorMessage(error.message))
     }
     yield put(updatePlaylistError())
@@ -154,13 +156,14 @@ export function* updatePlaylistSaga(action) {
 function* updatePlaylistMainSaga(action, signal) {
   yield put(updatePlaylistStart())
 
-  const { playlist, strategy } = action.payload
+  const { playlist, strategy, followedArtistsOnly } = action.payload
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   if (!token) throw new AuthError('Missing token')
 
   /** @type {GeneratorReturnType<ReturnType<typeof getReleasesTrackUris>>} */
-  const trackUris = yield call(getReleasesTrackUris, signal)
+  const trackUris = yield call(getReleasesTrackUris, signal, followedArtistsOnly)
+  if (trackUris.length === 0) throw new Error('No tracks to export')
 
   if (strategy === 'replace') {
     yield call(clearPlaylist, token, playlist.id, signal)
@@ -175,8 +178,9 @@ function* updatePlaylistMainSaga(action, signal) {
 
 /**
  * @param {AbortSignal} signal
+ * @param {boolean} followedArtistsOnly
  */
-function* getReleasesTrackUris(signal) {
+function* getReleasesTrackUris(signal, followedArtistsOnly) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { token } = yield call(getAuthData)
   if (!token) throw new AuthError('Missing token')
@@ -189,15 +193,23 @@ function* getReleasesTrackUris(signal) {
     /** @type {string[]} */ ([])
   )
 
-  const trackIdsCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
-    call(getAlbumsTrackIds, token, albumIdsChunk, signal)
+  const tracksCalls = chunk(albumIds, 20).map((albumIdsChunk) =>
+    call(getAlbumsTracks, token, albumIdsChunk, signal)
   )
 
-  /** @type {Await<ReturnType<typeof getAlbumsTrackIds>>[]} */
-  const trackIds = yield all(trackIdsCalls)
-  const trackUris = trackIds.flat().map((trackId) => spotifyUri(trackId, TRACK))
+  /** @type {Await<ReturnType<typeof getAlbumsTracks>>[]} */
+  const tracksChunks = yield all(tracksCalls)
+  let tracks = tracksChunks.flat()
 
-  return trackUris
+  if (followedArtistsOnly) {
+    /** @type {ReturnType<typeof getFollowedArtistIds>} */
+    const followedArtistIds = yield select(getFollowedArtistIds)
+    tracks = tracks.filter((track) =>
+      track.artists.some((artist) => followedArtistIds.has(artist.id))
+    )
+  }
+
+  return tracks.map((track) => spotifyUri(track.id, TRACK))
 }
 
 export function* refreshPlaylistsSaga() {

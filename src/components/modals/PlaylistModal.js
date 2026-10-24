@@ -33,6 +33,7 @@ function PlaylistModal({ closeModal }) {
     name: playlistName(filtersDates?.startDate, filtersDates?.endDate),
     description: '',
     visibility: 'private',
+    followedArtistsOnly: false,
   }
   const form = useForm({ defaultValues: defaultFormValues })
 
@@ -96,8 +97,9 @@ function useOnSubmit(setSubmitTriggered) {
     const name = formData.name.trim()
     const description = formData.description.trim()
     const isPublic = formData.visibility === 'public'
+    const { followedArtistsOnly } = formData
 
-    dispatch(setPlaylistForm({ name, description, isPublic }))
+    dispatch(setPlaylistForm({ name, description, isPublic, followedArtistsOnly }))
     dispatch(createPlaylist())
   }
 

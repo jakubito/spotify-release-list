@@ -34,6 +34,7 @@ export const initialState = {
     name: null,
     description: null,
     isPublic: null,
+    followedArtistsOnly: null,
   },
 }
 

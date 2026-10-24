@@ -253,6 +253,19 @@ export const getLastSyncDate = createSelector(
 export const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums))
 
 /**
+ * Get IDs of all followed artists that have releases
+ */
+export const getFollowedArtistIds = createSelector(
+  getAlbumsArray,
+  (albums) =>
+    new Set(
+      albums.flatMap((album) =>
+        Object.values(album.artists).flatMap((artists) => artists.map((artist) => artist.id))
+      )
+    )
+)
+
+/**
  * Get all releases as a map with release dates as keys
  */
 export const getOriginalReleasesMap = createSelector(getAlbumsArray, buildReleasesMap)

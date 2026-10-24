@@ -44,6 +44,7 @@
  *   name: string | null
  *   description: string | null
  *   isPublic: boolean | null
+ *   followedArtistsOnly: boolean | null
  * }} PlaylistForm
  *
  * @typedef {{
@@ -150,6 +151,7 @@
  *   name: string
  *   description: string
  *   visibility: 'private' | 'public'
+ *   followedArtistsOnly: boolean
  * }} PlaylistFormData
  *
  * @typedef {{ id: string, name: string, image: string }} User

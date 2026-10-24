@@ -19,7 +19,7 @@ import {
   getSettingsUriLinks,
   getUpdatingPlaylist,
 } from 'state/selectors'
-import { PlaylistInfo, PlaylistLoading } from 'components/playlist'
+import { FollowedArtistsOnlyField, PlaylistInfo, PlaylistLoading } from 'components/playlist'
 import { Button, ButtonAnchor, Select } from 'components/common'
 
 /**
@@ -37,6 +37,7 @@ function UpdatePlaylistModal({ closeModal }) {
   const uriLinks = useSelector(getSettingsUriLinks)
   const [submitTriggered, setSubmitTriggered] = useState(false)
   const [strategy, setStrategy] = useState(/** @type {PlaylistUpdateStrategy} */ ('append'))
+  const [followedArtistsOnly, setFollowedArtistsOnly] = useState(false)
 
   useModal(closeModal)
   useEffect(() => setSubmitTriggered(updatingPlaylist), [updatingPlaylist])
@@ -52,7 +53,7 @@ function UpdatePlaylistModal({ closeModal }) {
     setSubmitTriggered(true)
     const selectedPlaylist = playlists.find((playlist) => playlist.id === selectedPlaylistId)
     if (selectedPlaylist) {
-      defer(dispatch, updatePlaylist({ playlist: selectedPlaylist, strategy }))
+      defer(dispatch, updatePlaylist({ playlist: selectedPlaylist, strategy, followedArtistsOnly }))
     }
   }
 
@@ -113,6 +114,10 @@ function UpdatePlaylistModal({ closeModal }) {
               </div>
             )}
           </div>
+          <FollowedArtistsOnlyField
+            checked={followedArtistsOnly}
+            onChange={(event) => setFollowedArtistsOnly(event.target.checked)}
+          />
           <div className="field">
             <label className="label has-text-light">Choose update strategy</label>
             <div className="control">
