@@ -24,6 +24,7 @@ import {
   toggleFiltersVisible,
 } from 'state/actions'
 import { Header, SyncButton, Button, ButtonLink, LastSync, Dropdown } from 'components/common'
+import SpotifyAttribution from './SpotifyAttribution'
 
 /**
  * Render main header
@@ -123,12 +124,15 @@ function ReleasesHeader() {
                   text
                 />
               )}
-              <LastSync className="is-hidden-touch is-hidden-desktop-only" />
+              <LastSync className="is-hidden-mobile" />
             </>
           )}
         </div>
       )}
       <div className="Header__right">
+        {lastSyncDate && hasReleases && !syncing && (
+          <SpotifyAttribution className="is-hidden-touch" />
+        )}
         <a
           id="ua"
           title="Help Ukraine 🇺🇦"

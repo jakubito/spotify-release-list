@@ -15,7 +15,7 @@ function Header({ title = 'Spotify Release List', className, compact, children }
     <nav className={classNames('Header', className)}>
       <div
         className={classNames('Header__title title is-5 has-text-light', {
-          'is-hidden-touch': compact,
+          'is-hidden-touch is-hidden-desktop-only': compact,
         })}
       >
         {title}

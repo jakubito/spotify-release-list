@@ -1,3 +1,9 @@
 .LastSync {
   user-select: none;
+  font-size: 0.85rem;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
 }

@@ -25,6 +25,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    min-width: 0;
 
     @include mobile {
       gap: 10px;
