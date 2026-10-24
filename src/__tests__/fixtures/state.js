@@ -408,6 +408,7 @@ const state = {
     displayPopularity: false,
     labelBlocklist: '',
     artistBlocklist: '',
+    customArtists: '',
     albumBlocklist: '',
     releasesOrder: ReleasesOrder.ARTIST,
     trackHistory: true,

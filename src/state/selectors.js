@@ -11,6 +11,19 @@ import { buildReleases, buildReleasesMap } from 'helpers'
 import { albumsNew } from 'albums'
 import { initialState } from './reducer'
 
+/**
+ * Parse artist IDs entered one per line
+ *
+ * @param {string} text
+ */
+function parseArtistIds(text) {
+  /** @type {Set<string>} */
+  const artistIds = new Set()
+  const matches = text.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
+  for (const match of matches) artistIds.add(match[1])
+  return [...artistIds]
+}
+
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
 
@@ -137,13 +150,14 @@ export const getSettingsArtistBlocklist = createSelector(
   (settings) => settings.artistBlocklist
 )
 
-export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlocklist, (blocklist) => {
-  /** @type {string[]} */
-  const artistIds = []
-  const matches = blocklist.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
-  for (const match of matches) artistIds.push(match[1])
-  return artistIds
-})
+export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlocklist, parseArtistIds)
+
+export const getSettingsCustomArtists = createSelector(
+  getSettings,
+  (settings) => settings.customArtists
+)
+
+export const getSettingsCustomArtistIds = createSelector(getSettingsCustomArtists, parseArtistIds)
 
 export const getSettingsAlbumBlocklist = createSelector(
   getSettings,

@@ -9,6 +9,7 @@ import DataReset from './DataReset'
 import FirstDayOfWeekField from './FirstDayOfWeekField'
 import FetchExtraDataField from './FetchExtraDataField'
 import MinimumSavedTracksField from './MinimumSavedTracksField'
+import CustomArtistsField from './CustomArtistsField'
 import HistoryField from './HistoryField'
 
 /**
@@ -22,6 +23,7 @@ function GeneralSettings() {
     <div className="fade-in">
       <ArtistSourcesField />
       <MinimumSavedTracksField />
+      <CustomArtistsField />
       <AlbumGroupsField />
       <FetchExtraDataField />
       <TimePeriodField />

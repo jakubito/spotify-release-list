@@ -5,6 +5,7 @@ import { ArtistSource, MomentFormat } from 'enums'
 import {
   getArtistAlbums,
   getFullAlbums,
+  getSeveralArtists,
   getUser,
   getUserFollowedArtistsPage,
   getUserSavedAlbumsPage,
@@ -26,6 +27,7 @@ import {
   getSettingsBlockedArtists,
   getSettingsBlockedAlbums,
   getSettingsBlockedLabels,
+  getSettingsCustomArtistIds,
 } from 'state/selectors'
 import {
   setFilters,
@@ -41,7 +43,7 @@ import { withTitle } from './helpers'
 import { getAllCursorPaged, getAllPaged, putRequestMessage, setupWorkers } from './request'
 
 const { ISO_DATE } = MomentFormat
-const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS } = ArtistSource
+const { FOLLOWED, SAVED_ALBUMS, SAVED_TRACKS, CUSTOM } = ArtistSource
 
 /**
  * How much percentage of overall progress is assigned to base sync when extra data fetch is enabled
@@ -67,7 +69,7 @@ export function* syncSaga(action) {
 
     yield call(authorized)
   } catch (error) {
-    if (error instanceof AuthError) {
+    if (error instanceof Error) {
       yield put(showErrorMessage(error.message ?? error.toString()))
     }
     yield put(syncError())
@@ -108,6 +110,7 @@ function* syncMainSaga(action) {
 
   /** @type {Artist[]} */
   const artists = yield call(getArtists, requestChannel, responseChannel, workers.length)
+  if (artists.length === 0) throw new Error('No artists found')
 
   /** @type {AlbumRaw[]} */
   const albumsRaw = yield call(syncBaseData, artists, requestChannel, responseChannel)
@@ -175,6 +178,12 @@ function* getArtists(requestChannel, responseChannel, workersCount) {
       responseChannel,
       workersCount
     )
+    for (const artist of artists) allArtists.push(artist)
+  }
+
+  if (artistSources.includes(CUSTOM)) {
+    /** @type {Artist[]} */
+    const artists = yield call(getCustomArtists, requestChannel, responseChannel)
     for (const artist of artists) allArtists.push(artist)
   }
 
@@ -332,6 +341,36 @@ function* getUserSavedAlbumsArtists(requestChannel, responseChannel, workersCoun
   }
 
   return Object.values(artists).map(buildArtist)
+}
+
+/**
+ * @param {RequestChannel} requestChannel
+ * @param {ResponseChannel} responseChannel
+ */
+function* getCustomArtists(requestChannel, responseChannel) {
+  /** @type {ReturnType<typeof getAuthData>} */
+  const { token } = yield call(getAuthData)
+  /** @type {ReturnType<typeof getSettingsCustomArtistIds>} */
+  const artistIds = yield select(getSettingsCustomArtistIds)
+  const artistIdsChunks = chunk(artistIds, 50)
+  /** @type {Artist[]} */
+  const artists = []
+
+  for (const artistIdsChunk of artistIdsChunks)
+    yield putRequestMessage(requestChannel, [getSeveralArtists, token, artistIdsChunk])
+
+  for (let fetched = 0; fetched < artistIdsChunks.length; fetched += 1) {
+    /** @type {ResponseChannelMessage<Await<ReturnType<typeof getSeveralArtists>>>} */
+    const response = yield take(responseChannel)
+
+    if (response.result) {
+      for (const artist of response.result) {
+        if (artist) artists.push(buildArtist(artist))
+      }
+    }
+  }
+
+  return artists
 }
 
 /** @param {AlbumsMap} albums */

@@ -74,6 +74,20 @@ export function getUserSavedPlaylistsPage(token, limit, offset, signal) {
 }
 
 /**
+ * Return artists by IDs (max 50)
+ *
+ * @param {string} token
+ * @param {string[]} artistIds
+ * @param {AbortSignal} [signal]
+ */
+export async function getSeveralArtists(token, artistIds, signal) {
+  const params = new URLSearchParams({ ids: artistIds.join(',') })
+  /** @type {{ artists: (SpotifyArtist | null)[] }} */
+  const response = await get(apiUrl(`artists?${params}`), token, signal)
+  return response.artists
+}
+
+/**
  * Return an artist's albums
  *
  * @param {string} token

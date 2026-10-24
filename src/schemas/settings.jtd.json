@@ -1,7 +1,7 @@
 {
   "properties": {
     "artistSources": {
-      "elements": { "enum": ["followed", "saved-tracks", "saved-albums"] }
+      "elements": { "enum": ["followed", "saved-tracks", "saved-albums", "custom"] }
     },
     "minimumSavedTracks": { "type": "uint16" },
     "groups": {
@@ -29,6 +29,7 @@
     "displayPopularity": { "type": "boolean" },
     "labelBlocklist": { "type": "string" },
     "artistBlocklist": { "type": "string" },
+    "customArtists": { "type": "string" },
     "albumBlocklist": { "type": "string" },
     "releasesOrder": { "enum": ["artist", "album-group"] },
     "trackHistory": { "type": "boolean" }

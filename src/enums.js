@@ -40,15 +40,17 @@ export const ArtistSource = {
   FOLLOWED: 'followed',
   SAVED_TRACKS: 'saved-tracks',
   SAVED_ALBUMS: 'saved-albums',
+  CUSTOM: 'custom',
 }
 
-const { FOLLOWED, SAVED_TRACKS, SAVED_ALBUMS } = ArtistSource
+const { FOLLOWED, SAVED_TRACKS, SAVED_ALBUMS, CUSTOM } = ArtistSource
 
 /** @type {[group: ArtistSource, label: string][]} */
 export const ArtistSourceLabels = [
   [FOLLOWED, 'Followed artists'],
   [SAVED_ALBUMS, 'Saved albums'],
   [SAVED_TRACKS, 'Liked songs'],
+  [CUSTOM, 'Custom list'],
 ]
 
 /** @type {ReleasesOrderEnum} */

@@ -3,7 +3,7 @@
 
   &__content {
     width: 100%;
-    max-width: $tablet;
+    max-width: 840px;
   }
 
   &__layout {
@@ -46,6 +46,8 @@
 
       @include tablet {
         display: flex;
+        flex-wrap: wrap;
+        row-gap: 8px;
       }
 
       .field {

@@ -16,10 +16,7 @@ function ArtistSourcesField() {
   /** @type {React.ChangeEventHandler<HTMLInputElement>} */
   const onChange = (event) => {
     const newValue = xor(artistSources, [/**@type {ArtistSource} */ (event.target.value)])
-
-    if (newValue.length > 0) {
-      dispatch(setSettings({ artistSources: newValue }))
-    }
+    dispatch(setSettings({ artistSources: newValue }))
   }
 
   return (
@@ -40,6 +37,9 @@ function ArtistSourcesField() {
           </div>
         ))}
       </div>
+      {artistSources.length === 0 && (
+        <p className="help is-danger">Select at least one source to load releases.</p>
+      )}
     </div>
   )
 }

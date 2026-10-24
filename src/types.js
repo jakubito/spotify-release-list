@@ -71,6 +71,7 @@
  *   displayPopularity: boolean
  *   labelBlocklist: string
  *   artistBlocklist: string
+ *   customArtists: string
  *   albumBlocklist: string
  *   releasesOrder: ReleasesOrder
  *   trackHistory: boolean
@@ -223,6 +224,7 @@
  *   FOLLOWED: 'followed'
  *   SAVED_TRACKS: 'saved-tracks'
  *   SAVED_ALBUMS: 'saved-albums'
+ *   CUSTOM: 'custom'
  * }} ArtistSourceEnum
  * @typedef {Values<ArtistSourceEnum>} ArtistSource
  *
