@@ -25,7 +25,9 @@ Display list of Spotify releases from artists you follow
 <kbd>S</kbd> Show settings  
 <kbd>F</kbd> Toggle filters pane  
 <kbd>D</kbd> Toggle favorites edit mode  
-<kbd>E</kbd> Export  
+<kbd>E</kbd> Export to a new playlist  
+<kbd>U</kbd> Export to an existing playlist  
+<kbd>C</kbd> Export to CSV file  
 <kbd>ESC</kbd> Cancel / Close active modal
 
 ## Troubleshooting

@@ -374,8 +374,10 @@ const state = {
   lastSync: '2020-12-24T10:09:32.229Z',
   previousSyncMaxDate: '2020-12-24',
   creatingPlaylist: false,
-  playlistId: null,
-  playlistForm: { name: null, description: null, isPrivate: null },
+  updatingPlaylist: false,
+  loadingPlaylists: false,
+  playlistResult: null,
+  playlistForm: { name: null, description: null, isPublic: null, followedArtistsOnly: null },
   user: {
     id: '11124298134',
     name: 'Jakub Dobes',
@@ -383,6 +385,9 @@ const state = {
   },
   message: null,
   playlistModalVisible: false,
+  updatePlaylistModalVisible: false,
+  playlists: [],
+  selectedPlaylistId: null,
   filtersVisible: false,
   settings: {
     artistSources: [ArtistSource.FOLLOWED],
@@ -403,6 +408,8 @@ const state = {
     displayPopularity: false,
     labelBlocklist: '',
     artistBlocklist: '',
+    customArtists: '',
+    albumBlocklist: '',
     releasesOrder: ReleasesOrder.ARTIST,
     trackHistory: true,
   },
@@ -411,6 +418,8 @@ const state = {
     search: '',
     startDate: null,
     endDate: null,
+    minTracks: null,
+    maxTracks: null,
     excludeVariousArtists: false,
     excludeRemixes: false,
     excludeDuplicates: false,
@@ -422,6 +431,8 @@ const state = {
   editingFavorites: false,
   lastSettingsPath: null,
   labelBlocklistHeight: null,
+  lastAutoSync: null,
+  lastPlaylistsRefresh: null,
 }
 
 export default state

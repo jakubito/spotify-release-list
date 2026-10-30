@@ -13,6 +13,8 @@ import Album from './Album'
 function ReleaseDay({ date, albums }) {
   const { trackHistory } = useSelector(getSettings)
   const previousSyncMaxDate = useSelector(getPreviousSyncMaxDate)
+  const isOlderThanYear = moment(date).isBefore(moment().subtract(1, 'year'))
+  const dateFormat = isOlderThanYear ? 'MMM D, YYYY' : 'MMMM D'
 
   const showBullet = () => {
     if (trackHistory) {
@@ -29,13 +31,13 @@ function ReleaseDay({ date, albums }) {
 
   return (
     <div className="ReleaseDay columns is-gapless">
-      <div className="ReleaseDay__date column">
+      <div className="ReleaseDay__date column" title={date}>
         {showBullet() && (
           <span className="ReleaseDay__bullet icon">
             <i className="fas fa-circle" />
           </span>
         )}
-        {moment(date).format('MMMM D')}
+        {moment(date).format(dateFormat)}
       </div>
       <div className="ReleaseDay__albums column">
         {albums.map((album) => (

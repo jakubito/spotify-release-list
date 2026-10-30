@@ -1,10 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, Tuple } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from 'sagas'
 import rootReducer from './reducer'
 
 const sagaMiddleware = createSagaMiddleware()
-const store = configureStore({ reducer: rootReducer, middleware: [sagaMiddleware] })
+const store = configureStore({ reducer: rootReducer, middleware: () => new Tuple(sagaMiddleware) })
 
 /** @type {Promise<void>} */
 export const hydrate = Promise.resolve()

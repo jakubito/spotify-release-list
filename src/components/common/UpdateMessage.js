@@ -34,7 +34,7 @@ function UpdateMessage() {
           })}
           onClick={trigger}
         >
-          An update has been found. Click here to load the latest version.
+          A new version is available. Click here to update.
         </button>
       </div>
     </div>

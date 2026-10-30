@@ -1,5 +1,4 @@
 import { call, put, delay } from 'redux-saga/effects'
-import { AuthError } from 'auth'
 import {
   setSyncingProgress,
   showErrorMessage,
@@ -25,7 +24,9 @@ export function* syncSaga(action) {
     const titled = yield call(withTitle, 'Loading...', syncMainSaga, action)
     yield call(titled)
   } catch (error) {
-    yield put(showErrorMessage(error instanceof AuthError && error.message))
+    if (error instanceof Error) {
+      yield put(showErrorMessage(error.message ?? error.toString()))
+    }
     yield put(syncError())
   }
 }

@@ -1,20 +1,16 @@
 import { useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
 import classNames from 'classnames'
 import { useFormContext } from 'react-hook-form'
-import { playlistName } from 'helpers'
-import { getFiltersDates } from 'state/selectors'
 import { Input } from 'components/common'
 
 /**
  * Render playlist name form field
  */
 function NameField() {
-  const filtersDates = useSelector(getFiltersDates)
   const { register, formState } = useFormContext()
   const { errors } = formState
-  /** @type {React.MutableRefObject<HTMLInputElement>} */
-  const inputRef = useRef()
+  /** @type {React.RefObject<HTMLInputElement | null>} */
+  const inputRef = useRef(null)
   const nameField = register('name', { required: true, maxLength: 100 })
 
   useEffect(() => {
@@ -29,7 +25,6 @@ function NameField() {
       <div className="control">
         <Input
           id="name"
-          defaultValue={playlistName(filtersDates?.startDate, filtersDates?.endDate)}
           className={classNames({ 'is-danger': errors.name })}
           {...nameField}
           ref={(element) => {

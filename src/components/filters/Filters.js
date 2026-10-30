@@ -5,6 +5,7 @@ import { resetFilters, toggleFiltersVisible } from 'state/actions'
 import { getFiltersApplied, getFiltersVisible } from 'state/selectors'
 import { Button } from 'components/common'
 import AlbumGroupsFilter from './AlbumGroupsFilter'
+import TracksCountFilter from './TracksCountFilter'
 import DateRangeFilter from './DateRangeFilter'
 import SearchFilter from './SearchFilter'
 import VariousArtistsFilter from './VariousArtistsFilter'
@@ -32,6 +33,7 @@ function Filters() {
       <SearchFilter />
       <DateRangeFilter />
       <AlbumGroupsFilter />
+      <TracksCountFilter />
       <VariousArtistsFilter />
       <RemixesFilter />
       <DuplicatesFilter />

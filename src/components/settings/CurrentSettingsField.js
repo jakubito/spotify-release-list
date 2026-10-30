@@ -10,13 +10,15 @@ import { Button } from 'components/common'
  * @param {{ serialize: SettingsSerializer }} props
  */
 function CurrentSettingsField({ serialize }) {
-  /** @type {React.MutableRefObject<HTMLTextAreaElement>} */
-  const textareaRef = useRef()
+  /** @type {React.RefObject<HTMLTextAreaElement | null>} */
+  const textareaRef = useRef(null)
   const settings = useSelector(getSettings)
   const [copied, setCopied] = useState(false)
 
   const copy = async () => {
-    await navigator.clipboard.writeText(textareaRef.current?.value)
+    const text = textareaRef.current?.value
+    if (!text?.trim()) return
+    await navigator.clipboard.writeText(text)
     setCopied(true)
     sleep(1200).then(() => setCopied(false))
   }

@@ -21,7 +21,9 @@ function LoadSettingsField({ parse }) {
 
   /** @param {{ settingsJson: string }} data */
   const onSubmit = (data) => {
-    defer(dispatch, setSettings(parse(data.settingsJson)))
+    const parsed = parse(data.settingsJson)
+    if (!parsed) return
+    defer(dispatch, setSettings(parsed))
     setLoaded(true)
     sleep(1200).then(() => setLoaded(false))
   }

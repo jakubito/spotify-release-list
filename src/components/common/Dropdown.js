@@ -7,6 +7,7 @@ import { useRef } from 'react'
  *
  * @param {{
  *   active?: boolean
+ *   right?: boolean
  *   className?: string
  *   contentClassName?: string
  *   dark?: boolean
@@ -15,14 +16,15 @@ import { useRef } from 'react'
  *   close: Fn
  * }} props
  */
-function Dropdown({ active, className, contentClassName, dark, trigger, children, close }) {
-  /** @type {React.MutableRefObject<HTMLDivElement>} */
-  const ref = useRef()
+function Dropdown({ active, right, className, contentClassName, dark, trigger, children, close }) {
+  /** @type {React.RefObject<HTMLDivElement | null>} */
+  const ref = useRef(null)
 
   return (
     <div
       className={classNames(className, 'Dropdown dropdown', {
         'is-active': active,
+        'is-right': right,
         'Dropdown--dark': dark,
       })}
       ref={ref}
@@ -40,7 +42,7 @@ function Dropdown({ active, className, contentClassName, dark, trigger, children
 /**
  * @param {{
  *   className?: string
- *   containerRef: React.MutableRefObject<HTMLDivElement>
+ *   containerRef: React.RefObject<HTMLDivElement | null>
  *   children: React.ReactNode
  *   close: Fn
  * }} props

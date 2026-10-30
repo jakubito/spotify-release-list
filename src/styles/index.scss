@@ -20,9 +20,11 @@
 @import './components/Intro';
 @import './components/Header';
 @import './components/ReleaseDay';
+@import './components/SpotifyAttribution';
 @import './components/ResetModal';
 @import './components/SettingsModal';
 @import './components/PlaylistModal';
+@import './components/UpdatePlaylistModal';
 @import './components/BackToTop';
 @import './components/PlaylistInfo';
 @import './components/SyncButton';
@@ -32,6 +34,7 @@
 @import './components/DateRangeShortcuts';
 @import './components/SearchFilter';
 @import './components/AlbumGroupsFilter';
+@import './components/TracksCountFilter';
 @import './components/PlaylistLoading';
 @import './components/LastSync';
 @import './components/VerticalLayout';

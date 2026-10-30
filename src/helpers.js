@@ -25,7 +25,7 @@ export function sleep(ms) {
  * Delay function execution until UI is done updating
  *
  * @param {function} fn
- * @param {...any} [args] - Arguments to be passed to function
+ * @param {...any} args - Arguments to be passed to function
  */
 export function defer(fn, ...args) {
   requestAnimationFrame(() => setTimeout(() => fn(...args), 0))
@@ -35,7 +35,7 @@ export function defer(fn, ...args) {
  * Callback wrapper for `defer()`
  *
  * @param {function} fn
- * @param {...any} [args] - Arguments to be passed to function
+ * @param {...any} args - Arguments to be passed to function
  */
 export function deferred(fn, ...args) {
   return () => defer(fn, ...args)
@@ -272,14 +272,15 @@ export function captureException(error) {
  * Merge album artists and filter out old albums
  *
  * @param {AlbumRaw[]} albumsRaw
- * @param {string} minDate
+ * @param {string} [minDate]
  */
 export function mergeAlbumsRaw(albumsRaw, minDate) {
   const maxDate = moment().add(1, 'day').format(MomentFormat.ISO_DATE)
   const albumsRawMap = albumsRaw.reduce((map, album) => {
     const { id, releaseDate, artistIds } = album
 
-    if (releaseDate < minDate || releaseDate > maxDate) return map
+    if (minDate && releaseDate < minDate) return map
+    if (releaseDate > maxDate) return map
 
     if (id in map) merge(map[id].artistIds, artistIds)
     else map[id] = album
@@ -320,7 +321,10 @@ export function buildAlbum(albumRaw, artistsMap) {
   const { artistIds, albumArtists, ...albumBase } = albumRaw
 
   const artistIdsArray = Object.values(artistIds).flat()
-  const artistIdsEntries = orderBy(Object.entries(artistIds), ([group]) => AlbumGroupIndex[group])
+  const artistIdsEntries = orderBy(
+    /** @type {[AlbumGroup, string[]][]} */ (Object.entries(artistIds)),
+    ([group]) => AlbumGroupIndex[group]
+  )
   const artistsEntries = artistIdsEntries.map(([group, artistIds]) => {
     const artists = orderBy(
       artistIds.map((id) => artistsMap[id]),
@@ -358,20 +362,19 @@ export function buildReleases(releasesMap, releasesOrder) {
   const releasesUnordered = Object.entries(releasesMap).map(([date, albums]) => ({ date, albums }))
   const releasesOrderedByDate = orderBy(releasesUnordered, 'date', 'desc')
 
+  /** @param {Album} album */
+  const orderByAlbumGroup = (album) =>
+    AlbumGroupIndex[/** @type {AlbumGroup} */ (Object.keys(album.artists)[0])]
+
+  /** @param {Album} album */
+  const orderByArtistName = (album) => Object.values(album.artists)[0][0].name.toLowerCase()
+
   /** @type {Releases} */
   const releases = releasesOrderedByDate.map((releaseDay) => {
-    /** @param {Album} album */
-    const orderByAlbumGroup = (album) => AlbumGroupIndex[Object.keys(album.artists).shift()]
-    /** @param {Album} album */
-    const orderByArtistName = (album) =>
-      Object.values(album.artists).flat().shift().name.toLowerCase()
-
     /** @type {Array<((album: Album) => string | number) | string>} */
     const orders = [orderByArtistName, 'name']
     if (releasesOrder === ReleasesOrder.ALBUM_GROUP) orders.unshift(orderByAlbumGroup)
-
     releaseDay.albums = orderBy(releaseDay.albums, orders)
-
     return releaseDay
   })
 
@@ -404,7 +407,7 @@ export function deleteLabels(albumsMap, blockedLabels) {
 
   /** @param {Album} album */
   const shouldDelete = (album) => {
-    if (album.label in blockedLabels) {
+    if (album.label && album.label in blockedLabels) {
       if (blockedLabels[album.label] === undefined) return true
       if (blockedLabels[album.label].includes('VA') && hasVariousArtists(album)) return true
     }
@@ -455,6 +458,31 @@ export function deleteArtists(albumsMap, blockedArtists) {
 }
 
 /**
+ * Delete albums whose name matches any blocked pattern and return deleted IDs. Mutates `albumsMap`.
+ *
+ * @param {AlbumsMap | Draft<AlbumsMap>} albumsMap
+ * @param {RegExp[]} blockedAlbums
+ */
+export function deleteAlbums(albumsMap, blockedAlbums) {
+  if (blockedAlbums.length === 0) return []
+
+  /** @type {string[]} */
+  const deletedIds = []
+
+  /** @param {Album} album */
+  const shouldDelete = (album) => blockedAlbums.some((pattern) => pattern.test(album.name))
+
+  for (const album of Object.values(albumsMap)) {
+    if (shouldDelete(album)) {
+      deletedIds.push(album.id)
+      delete albumsMap[album.id]
+    }
+  }
+
+  return deletedIds
+}
+
+/**
  * Calculate approximate page size based on viewport size
  *
  * @param {number} width
@@ -463,4 +491,37 @@ export function deleteArtists(albumsMap, blockedArtists) {
 export function calculatePageSize(width, height) {
   const estimate = Math.round((width * height) / 20_000)
   return Math.max(20, Math.min(100, estimate))
+}
+
+/**
+ * @param {string | null | undefined} value
+ */
+export function sanitizeCsvValue(value) {
+  if (value?.match(/[\s,"]/)) return `"${value.replace(/"/g, '""')}"`
+  return value ?? ''
+}
+
+/**
+ * @param {string} content
+ * @param {Array<string | null | undefined>} data
+ * @returns {string}
+ */
+export function addCsvRow(content, data) {
+  content += data.map(sanitizeCsvValue).join(',')
+  content += `\r\n`
+  return content
+}
+
+/**
+ * @param {Blob} blob
+ * @param {string} name
+ */
+export function download(blob, name) {
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = name
+  anchor.rel = 'noopener'
+  anchor.click()
+  setTimeout(() => URL.revokeObjectURL(url), 5000)
 }

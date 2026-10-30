@@ -2,8 +2,6 @@
   flex-shrink: 0;
   overflow: hidden;
   border: none;
-  padding-left: calc(1em + 0.25em + 1px) !important;
-  padding-right: calc(1em + 0.25em + 1px) !important;
 
   &--compact {
     @include mobile {
@@ -13,6 +11,7 @@
 
   &--syncing {
     color: transparent !important;
+    cursor: wait !important;
   }
 
   .progress-bar {

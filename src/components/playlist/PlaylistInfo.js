@@ -1,19 +1,17 @@
 import { useSelector } from 'react-redux'
 import { spotifyLink } from 'helpers'
 import { SpotifyEntity } from 'enums'
-import { getPlaylistForm, getPlaylistId, getSettingsUriLinks } from 'state/selectors'
+import { getSettingsUriLinks } from 'state/selectors'
 import { Button, ButtonAnchor } from 'components/common'
 
 const { PLAYLIST } = SpotifyEntity
 
 /**
- * Render playlist creation result
+ * Render playlist export result
  *
- * @param {{ closeModal: () => void }} props
+ * @param {{ title: string, playlist: Playlist, close: () => void }} props
  */
-function PlaylistInfo({ closeModal }) {
-  const { name } = useSelector(getPlaylistForm)
-  const id = useSelector(getPlaylistId)
+function PlaylistInfo({ title, playlist, close }) {
   const uriLinks = useSelector(getSettingsUriLinks)
 
   return (
@@ -22,18 +20,19 @@ function PlaylistInfo({ closeModal }) {
         <span className="icon is-large">
           <i className="fas fa-check-circle fa-2x" />
         </span>
-        Playlist created
+        {title}
         <ButtonAnchor
-          title={name}
-          href={spotifyLink(id, PLAYLIST, uriLinks)}
+          title={playlist.name}
+          icon="fas fa-arrow-up-right-from-square"
+          href={spotifyLink(playlist.id, PLAYLIST, uriLinks)}
           className="PlaylistInfo__link"
           text
         >
-          {name}
+          {playlist.name}
         </ButtonAnchor>
       </div>
       <div className="actions">
-        <Button title="Close" icon="fas fa-times" onClick={closeModal} />
+        <Button title="Close" onClick={close} />
       </div>
     </>
   )

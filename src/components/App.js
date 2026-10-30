@@ -8,7 +8,9 @@ import { BackToTop, Message, UpdateMessage } from 'components/common'
 function App() {
   const location = useLocation()
 
-  useLayoutEffect(() => window.scrollTo(0, 0), [location])
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location])
 
   return (
     <div className="App">

@@ -10,14 +10,23 @@ import classNames from 'classnames'
  *   defaultValue?: string
  *   onChange?: React.ChangeEventHandler<HTMLSelectElement>
  *   icon?: string
+ *   disabled?: boolean
+ *   fullWidth?: boolean
  *   options: SelectOptions
  * }} props
  */
-function Select({ id, name, value, defaultValue, onChange, icon, options }) {
+function Select({ id, name, value, defaultValue, onChange, icon, disabled, fullWidth, options }) {
   return (
-    <div className={classNames('control', { 'has-icons-left': icon })}>
-      <div className="select is-rounded">
-        <select id={id} name={name} value={value} defaultValue={defaultValue} onChange={onChange}>
+    <div className={classNames('control', { 'has-icons-left': icon, 'is-expanded': fullWidth })}>
+      <div className={classNames('select is-rounded', { 'is-fullwidth': fullWidth })}>
+        <select
+          id={id}
+          name={name}
+          value={value}
+          defaultValue={defaultValue}
+          onChange={onChange}
+          disabled={disabled}
+        >
           {options.map(([value, label]) => (
             <option value={value} key={value}>
               {label}

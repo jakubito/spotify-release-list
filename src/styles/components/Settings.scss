@@ -3,7 +3,7 @@
 
   &__content {
     width: 100%;
-    max-width: $tablet;
+    max-width: 840px;
   }
 
   &__layout {
@@ -46,6 +46,8 @@
 
       @include tablet {
         display: flex;
+        flex-wrap: wrap;
+        row-gap: 8px;
       }
 
       .field {
@@ -66,6 +68,34 @@
           width: 100%;
         }
       }
+    }
+  }
+
+  .ExtraDataRequiredLink {
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .FetchExtraDataField__highlight {
+    border-radius: 6px;
+    animation: settings-highlight 5s ease-in;
+  }
+
+  @keyframes settings-highlight {
+    0%,
+    60% {
+      background-color: rgba($yellow, 0.25);
+      box-shadow: 0 0 0 6px rgba($yellow, 0.25);
+    }
+    100% {
+      background-color: transparent;
+      box-shadow: 0 0 0 6px transparent;
     }
   }
 

@@ -7,9 +7,8 @@ import UriLinksField from './UriLinksField'
 import DataInfo from './DataInfo'
 import FirstDayOfWeekField from './FirstDayOfWeekField'
 import FetchExtraDataField from './FetchExtraDataField'
-import LabelBlocklistField from './LabelBlocklistField'
-import ArtistBlocklistField from './ArtistBlocklistField'
 import MinimumSavedTracksField from './MinimumSavedTracksField'
+import CustomArtistsField from './CustomArtistsField'
 import HistoryField from './HistoryField'
 
 /**
@@ -22,14 +21,13 @@ function GeneralSettings() {
     <div className="fade-in">
       <ArtistSourcesField />
       <MinimumSavedTracksField />
+      <CustomArtistsField />
       <AlbumGroupsField />
       <FetchExtraDataField />
       <TimePeriodField />
       <FirstDayOfWeekField />
       <UriLinksField />
       <HistoryField />
-      <LabelBlocklistField />
-      <ArtistBlocklistField />
       {user && <DataInfo />}
     </div>
   )

@@ -7,7 +7,7 @@
   }
 
   &__item {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 
     @include mobile {
       text-align: center;
@@ -21,6 +21,7 @@
   &__buttons {
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
 
     @include tablet {
       margin-bottom: 15px;
@@ -28,12 +29,8 @@
   }
 
   &__button {
-    margin-right: 15px;
-    margin-bottom: 15px;
-
     @include mobile {
       width: 100%;
-      margin: 0 0 15px 0;
 
       &:last-child {
         margin-bottom: 0;

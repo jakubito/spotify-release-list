@@ -2,6 +2,7 @@ import { call, put } from 'redux-saga/effects'
 import { captureException } from 'helpers'
 import {
   AuthError,
+  InvalidGrantError,
   createCodeChallenge,
   deleteAuthData,
   exchangeCode,
@@ -23,9 +24,13 @@ export function* authorizeSaga(action) {
   try {
     yield call(authorizeMainSaga, action)
   } catch (error) {
-    yield put(showErrorMessage(error.message ?? error.toString()))
-    yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
-    yield call(captureException, error)
+    if (error instanceof Error) {
+      yield put(showErrorMessage(error.message))
+      yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
+      yield call(captureException, error)
+    } else {
+      console.error('Unknown error in authorizeSaga', error)
+    }
   }
 }
 
@@ -39,6 +44,11 @@ function* authorizeMainSaga({ payload }) {
 
   /** @type {ReturnType<typeof getAuthData>} */
   const { nonce, codeVerifier } = yield call(getAuthData)
+
+  if (!nonce || !codeVerifier) {
+    throw new AuthError('Authorization failed')
+  }
+
   /** @type {ReturnType<typeof validateAuthRequest>} */
   const { code, action } = yield call(validateAuthRequest, payload.locationSearch, nonce)
   /** @type {Await<ReturnType<typeof exchangeCode>>} */
@@ -46,14 +56,14 @@ function* authorizeMainSaga({ payload }) {
 
   yield call(setAuthData, tokenResult)
   yield put(authorizeFinished())
-  yield put(action)
+  if (action) yield put(action)
 }
 
 /**
  * Ensure valid authorized state before running saga
  *
  * @param {Action} action
- * @param {string[]} scopes
+ * @param {Scope[]} scopes
  * @param {Fn} saga
  * @param {...any} args
  */
@@ -64,17 +74,19 @@ export function authorize(action, scopes, saga, ...args) {
 
       /** @type {ReturnType<typeof getAuthData>} */
       const { tokenScope, refreshToken } = yield call(getAuthData)
-      const validScope = scopes.every((scope) => tokenScope?.includes(scope))
+      const currentScopes = tokenScope?.split(' ')
+      const scopesValid = scopes.every((scope) => currentScopes?.includes(scope))
 
-      if (refreshToken && validScope) {
-        yield call(refreshTokenAndRun, saga, ...args)
+      if (refreshToken && scopesValid) {
+        yield call(refreshTokenAndRun, action, scopes, saga, ...args)
       } else {
         yield call(triggerNewAuthFlow, action, scopes.join(' '))
       }
     } catch (error) {
-      yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
-      yield call(captureException, error)
-
+      if (error instanceof Error) {
+        yield put(authorizeError({ resetAuthData: error instanceof AuthError }))
+        yield call(captureException, error)
+      }
       throw error
     }
   }
@@ -83,14 +95,32 @@ export function authorize(action, scopes, saga, ...args) {
 /**
  * Refresh token and call saga
  *
+ * @param {Action} action
+ * @param {Scope[]} scopes
  * @param {Fn} saga
  * @param {...any} args
  */
-function* refreshTokenAndRun(saga, ...args) {
+function* refreshTokenAndRun(action, scopes, saga, ...args) {
   /** @type {ReturnType<typeof getAuthData>} */
   const { refreshToken } = yield call(getAuthData)
+
+  if (!refreshToken) {
+    throw new AuthError('Missing refresh token')
+  }
+
   /** @type {Await<ReturnType<typeof getRefreshedToken>>} */
-  const tokenResult = yield call(getRefreshedToken, refreshToken)
+  let tokenResult
+
+  try {
+    tokenResult = yield call(getRefreshedToken, refreshToken)
+  } catch (error) {
+    if (error instanceof InvalidGrantError) {
+      yield call(deleteAuthData)
+      yield call(triggerNewAuthFlow, action, scopes.join(' '))
+      return
+    }
+    throw error
+  }
 
   yield call(setAuthData, tokenResult)
   yield put(authorizeFinished())

@@ -23,10 +23,11 @@ Sentry also saves IP addresses by default, but I turned this option off for bett
 
 You might be hesitant to allow a 3rd party app to acces your data (I know I am). For the sake of transparency, let me give you an overview of all the scopes (permissions) being used by the app:
 
-- `user-follow-read` **(read-only scope)** - Allows the app to get the list of artists you follow
-- `user-library-read` **(read-only scope)** - Allows the app to get the list of songs/albums you have saved in your library
-- `playlist-modify-private` - Allows the app to export releases to a new private playlist
-- `playlist-modify-public` - Allows the app to export releases to a new public playlist
+- `user-follow-read` **(read-only scope)** - Allows the app to load artists you follow
+- `user-library-read` **(read-only scope)** - Allows the app to load songs/albums you have saved in your library
+- `playlist-read-private` **(read-only scope)** - Allows the app to load private playlists
+- `playlist-modify-private` - Allows the app to export releases to a private playlist
+- `playlist-modify-public` - Allows the app to export releases to a public playlist
 
 All scopes are asked for progressively (only when they are needed). Your existing playlist data is never touched. You can use the app with read-only scopes just fine, without ever giving the app access to modify your playlists.
 

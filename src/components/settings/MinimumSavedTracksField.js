@@ -23,7 +23,7 @@ function MinimumSavedTracksField() {
   return (
     <div className="MinimumSavedTracksField Settings__field field">
       <label className="label has-text-light" htmlFor="minimumSavedTracks">
-        Require a minimum number of songs liked
+        Minimum liked songs per artist
       </label>
       <div className="control">
         <div className="field">
@@ -31,6 +31,7 @@ function MinimumSavedTracksField() {
             id="minimumSavedTracks"
             type="number"
             className="MinimumSavedTracksField__input"
+            inputMode="numeric"
             step="1"
             min="1"
             pattern="\d*"

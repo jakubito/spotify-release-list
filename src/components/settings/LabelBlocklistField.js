@@ -1,22 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 import { defer, sleep } from 'helpers'
-import { getLabelBlocklistHeight, getSettings } from 'state/selectors'
+import { getLabelBlocklistHeight, getSettings, getSettingsBlockedLabels } from 'state/selectors'
 import { applyLabelBlocklist, setLabelBlocklistHeight, setSettings } from 'state/actions'
 import { Button } from 'components/common'
 import HelpText from './HelpText'
+import ExtraDataRequiredLink from './ExtraDataRequiredLink'
 
 /**
  * Render label blocklist field
  */
 function LabelBlocklistField() {
   const { fullAlbumData, labelBlocklist } = useSelector(getSettings)
+  const entries = useSelector(getSettingsBlockedLabels)
+  const entriesLength = Object.keys(entries).length
   const height = useSelector(getLabelBlocklistHeight)
   const dispatch = useDispatch()
   const [applied, setApplied] = useState(false)
-  /** @type {React.MutableRefObject<HTMLTextAreaElement>} */
-  const textareaRef = useRef()
+  /** @type {React.RefObject<HTMLTextAreaElement | null>} */
+  const textareaRef = useRef(null)
 
   const apply = () => {
     defer(dispatch, applyLabelBlocklist())
@@ -33,7 +36,7 @@ function LabelBlocklistField() {
     }, 300)
 
     const observer = new ResizeObserver(callback)
-    observer.observe(textareaRef.current)
+    if (textareaRef.current) observer.observe(textareaRef.current)
 
     return () => observer.disconnect()
   }, [])
@@ -41,14 +44,14 @@ function LabelBlocklistField() {
   return (
     <div className="LabelBlocklistField Settings__field field">
       <label className="label has-text-light">
-        Label blocklist
-        {!fullAlbumData && <span className="tag is-warning">Label data required</span>}
+        Label blocklist {entriesLength > 0 ? `(${entriesLength})` : ''}
+        {!fullAlbumData && <ExtraDataRequiredLink>Label data required</ExtraDataRequiredLink>}
       </label>
       <div className="Settings__help">
         <HelpText>
-          Enter one label per line. Prepend the label name with <strong>*VA*</strong> to block
-          Various Artists releases only. Labels will be automatically blocked on every refresh. You
-          can also apply the list manually.
+          Enter one label per line. Prefix a label with <strong>*VA*</strong> to block only its
+          Various Artists releases. Labels are blocked automatically on every refresh, or you can
+          apply the list manually.
         </HelpText>
       </div>
       <div className="control">
@@ -57,15 +60,16 @@ function LabelBlocklistField() {
           placeholder="Example:&#10;UME - Global Clearing House&#10;*VA* UME - Global Clearing House"
           rows={6}
           defaultValue={labelBlocklist}
+          disabled={!fullAlbumData}
           onChange={(event) => defer(dispatch, setSettings({ labelBlocklist: event.target.value }))}
-          style={{ height }}
+          style={{ height: height ?? undefined }}
           ref={textareaRef}
         />
       </div>
       <Button
         title={applied ? 'Labels blocked' : 'Block labels now'}
-        icon={applied && 'fas fa-check-circle'}
-        disabled={applied}
+        icon={applied ? 'fas fa-check-circle' : undefined}
+        disabled={applied || !fullAlbumData}
         onClick={apply}
         small
       />

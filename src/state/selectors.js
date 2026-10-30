@@ -3,7 +3,6 @@ import { createDraftSafeSelector } from '@reduxjs/toolkit'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 import intersect from 'fast_array_intersect'
-import last from 'lodash/last'
 import isEqual from 'lodash/isEqual'
 import escapeRegExp from 'lodash/escapeRegExp'
 import { AlbumGroup } from 'enums'
@@ -11,6 +10,19 @@ import { includesTruthy, getReleasesBetween, merge, hasVariousArtists } from 'he
 import { buildReleases, buildReleasesMap } from 'helpers'
 import { albumsNew } from 'albums'
 import { initialState } from './reducer'
+
+/**
+ * Parse artist IDs entered one per line
+ *
+ * @param {string} text
+ */
+function parseArtistIds(text) {
+  /** @type {Set<string>} */
+  const artistIds = new Set()
+  const matches = text.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
+  for (const match of matches) artistIds.add(match[1])
+  return [...artistIds]
+}
 
 /** @param {State} state */
 export const getAuthorizing = (state) => state.authorizing
@@ -43,6 +55,9 @@ export const getSettings = (state) => state.settings
 export const getPlaylistModalVisible = (state) => state.playlistModalVisible
 
 /** @param {State} state */
+export const getUpdatePlaylistModalVisible = (state) => state.updatePlaylistModalVisible
+
+/** @param {State} state */
 export const getFiltersVisible = (state) => state.filtersVisible
 
 /** @param {State} state */
@@ -52,10 +67,25 @@ export const getMessage = (state) => state.message
 export const getPlaylistForm = (state) => state.playlistForm
 
 /** @param {State} state */
-export const getPlaylistId = (state) => state.playlistId
+export const getPlaylistResult = (state) => state.playlistResult
+
+/** @param {State} state */
+export const getLoadingPlaylists = (state) => state.loadingPlaylists
 
 /** @param {State} state */
 export const getCreatingPlaylist = (state) => state.creatingPlaylist
+
+/** @param {State} state */
+export const getUpdatingPlaylist = (state) => state.updatingPlaylist
+
+/** @param {State} state */
+export const getPlaylists = (state) => state.playlists
+
+/** @param {State} state */
+export const getSelectedPlaylistId = (state) => state.selectedPlaylistId
+
+/** @param {State} state */
+export const getLastPlaylistsRefresh = (state) => state.lastPlaylistsRefresh
 
 /** @param {State} state */
 export const getFilters = (state) => state.filters
@@ -107,7 +137,9 @@ export const getSettingsBlockedLabels = createSelector(getSettingsLabelBlocklist
   /** @type {BlockedLabels} */
   const labels = {}
   const matches = blocklist.matchAll(/^\s*(?:\*(\S*)\*)?\s*(.*?)\s*$/gm)
-  for (const [, flags, label] of matches) {
+  for (const [, flags, line] of matches) {
+    const label = line.trim()
+    if (!label) continue
     labels[label] = flags?.split(',')
   }
   return labels
@@ -118,12 +150,31 @@ export const getSettingsArtistBlocklist = createSelector(
   (settings) => settings.artistBlocklist
 )
 
-export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlocklist, (blocklist) => {
-  /** @type {string[]} */
-  const artistIds = []
-  const matches = blocklist.matchAll(/^\s*([a-zA-Z0-9]{22})\s*$/gm)
-  for (const match of matches) artistIds.push(match[1])
-  return artistIds
+export const getSettingsBlockedArtists = createSelector(getSettingsArtistBlocklist, parseArtistIds)
+
+export const getSettingsCustomArtists = createSelector(
+  getSettings,
+  (settings) => settings.customArtists
+)
+
+export const getSettingsCustomArtistIds = createSelector(getSettingsCustomArtists, parseArtistIds)
+
+export const getSettingsAlbumBlocklist = createSelector(
+  getSettings,
+  (settings) => settings.albumBlocklist
+)
+
+export const getSettingsBlockedAlbums = createSelector(getSettingsAlbumBlocklist, (blocklist) => {
+  /** @type {RegExp[]} */
+  const patterns = []
+  for (const line of blocklist.split('\n')) {
+    const pattern = line.trim()
+    if (!pattern) continue
+    try {
+      patterns.push(new RegExp(pattern, 'i'))
+    } catch {}
+  }
+  return patterns
 })
 
 // Individual filters selectors
@@ -131,6 +182,8 @@ export const getFiltersGroups = createSelector(getFilters, (filters) => filters.
 export const getFiltersSearch = createSelector(getFilters, (filters) => filters.search)
 export const getFiltersStartDate = createSelector(getFilters, (filters) => filters.startDate)
 export const getFiltersEndDate = createSelector(getFilters, (filters) => filters.endDate)
+export const getFiltersMinTracks = createSelector(getFilters, (filters) => filters.minTracks)
+export const getFiltersMaxTracks = createSelector(getFilters, (filters) => filters.maxTracks)
 export const getFiltersExcludeVariousArtists = createSelector(
   getFilters,
   (filters) => filters.excludeVariousArtists
@@ -183,6 +236,8 @@ export const getFiltersApplied = createSelector(
   getFiltersSearch,
   getFiltersStartDate,
   getFiltersEndDate,
+  getFiltersMinTracks,
+  getFiltersMaxTracks,
   getFiltersExcludeVariousArtists,
   getFiltersExcludeRemixes,
   getFiltersExcludeDuplicates,
@@ -199,7 +254,7 @@ export const getLastSyncDate = createSelector(
   (lastSync, lastAutoSync) => {
     if (lastSync || lastAutoSync) {
       const newer = (lastSync || '') > (lastAutoSync || '') ? lastSync : lastAutoSync
-      return new Date(newer)
+      if (newer) return new Date(newer)
     }
 
     return null
@@ -210,6 +265,19 @@ export const getLastSyncDate = createSelector(
  * Get all albums / releases as an array
  */
 export const getAlbumsArray = createSelector(getAlbums, (albums) => Object.values(albums))
+
+/**
+ * Get IDs of all followed artists that have releases
+ */
+export const getFollowedArtistIds = createSelector(
+  getAlbumsArray,
+  (albums) =>
+    new Set(
+      albums.flatMap((album) =>
+        Object.values(album.artists).flatMap((artists) => artists.map((artist) => artist.id))
+      )
+    )
+)
 
 /**
  * Get all releases as a map with release dates as keys
@@ -234,15 +302,17 @@ export const getHasOriginalReleases = createSelector(getOriginalReleases, (relea
 /**
  * Get earliest date in current releases collection
  */
-export const getReleasesMinDate = createSelector(getOriginalReleases, (releases) =>
-  releases.length ? last(releases).date : null
+export const getReleasesMinDate = createSelector(
+  getOriginalReleases,
+  (releases) => releases[releases.length - 1]?.date ?? null
 )
 
 /**
  * Get latest date in current releases collection
  */
-export const getReleasesMaxDate = createSelector(getOriginalReleases, (releases) =>
-  releases.length ? releases[0].date : null
+export const getReleasesMaxDate = createSelector(
+  getOriginalReleases,
+  (releases) => releases[0]?.date ?? null
 )
 
 /**
@@ -250,7 +320,8 @@ export const getReleasesMaxDate = createSelector(getOriginalReleases, (releases)
  */
 export const getReleasesMinMaxDates = createSelector(
   [getReleasesMinDate, getReleasesMaxDate],
-  (minDate, maxDate) => minDate && maxDate && { minDate: moment(minDate), maxDate: moment(maxDate) }
+  (minDate, maxDate) =>
+    minDate && maxDate ? { minDate: moment(minDate), maxDate: moment(maxDate) } : null
 )
 
 /**
@@ -259,7 +330,7 @@ export const getReleasesMinMaxDates = createSelector(
 export const getFiltersDates = createSelector(
   [getFiltersStartDate, getFiltersEndDate],
   (startDate, endDate) =>
-    startDate && endDate && { startDate: moment(startDate), endDate: moment(endDate) }
+    startDate && endDate ? { startDate: moment(startDate), endDate: moment(endDate) } : null
 )
 
 /**
@@ -267,10 +338,13 @@ export const getFiltersDates = createSelector(
  */
 export const getReleasesGroupMap = createSelector(getAlbumsArray, (albums) =>
   albums.reduce((map, album) => {
-    const albumMap = Object.keys(album.artists).reduce((albumMap, group) => {
-      albumMap[group] = [album.id]
-      return albumMap
-    }, /** @type {ReleasesGroupMap} */ ({}))
+    const albumMap = /** @type {AlbumGroup[]} */ (Object.keys(album.artists)).reduce(
+      (albumMap, group) => {
+        albumMap[group] = [album.id]
+        return albumMap
+      },
+      /** @type {ReleasesGroupMap} */ ({})
+    )
 
     return merge(map, albumMap)
   }, /** @type {ReleasesGroupMap} */ ({}))
@@ -323,7 +397,9 @@ const getNoDuplicatesAlbumIds = createSelector(getOriginalReleases, (releases) =
     const namesMap = {}
 
     for (const album of albums) {
-      const unifiedName = album.name.replace(charsRegex, (key) => charsMap[key]).toLowerCase()
+      const unifiedName = album.name
+        .replace(charsRegex, (key) => charsMap[/** @type {keyof typeof charsMap} */ (key)])
+        .toLowerCase()
       if (unifiedName in namesMap) continue
       namesMap[unifiedName] = album.id
     }
@@ -339,7 +415,7 @@ const getFavoriteAlbumIds = createSelector(getFavorites, (favorites) =>
   Object.entries(favorites).reduce((ids, [id, selected]) => {
     if (selected) ids.push(id)
     return ids
-  }, [])
+  }, /** @type {string[]} */ ([]))
 )
 
 /**
@@ -372,7 +448,25 @@ const getAlbumGroupsFiltered = createSelector(
   [getFiltersGroups, getReleasesGroupMap],
   (groups, groupMap) =>
     groups.length &&
-    groups.reduce((ids, group) => ids.concat(groupMap[group]), /** @type {string[]} */ ([]))
+    groups.reduce((ids, group) => ids.concat(groupMap[group] ?? []), /** @type {string[]} */ ([]))
+)
+
+/**
+ * Get album IDs based on tracks count filter
+ */
+const getTracksCountFiltered = createSelector(
+  [getFiltersMinTracks, getFiltersMaxTracks, getAlbumsArray],
+  (minTracks, maxTracks, albums) =>
+    (minTracks || maxTracks) &&
+    albums.reduce((ids, album) => {
+      if (
+        (!minTracks || album.totalTracks >= minTracks) &&
+        (!maxTracks || album.totalTracks <= maxTracks)
+      ) {
+        ids.push(album.id)
+      }
+      return ids
+    }, /** @type {string[]} */ ([]))
 )
 
 /**
@@ -423,6 +517,7 @@ export const getFilteredAlbumsArray = createSelector(
   getSearchFiltered,
   getDateRangeFiltered,
   getAlbumGroupsFiltered,
+  getTracksCountFiltered,
   getVariousArtistsFiltered,
   getRemixFiltered,
   getDuplicatesFiltered,
@@ -470,4 +565,10 @@ export const getHasReleases = createSelector(getReleasesArray, (albums) => Boole
  */
 export const getReleasesTrackCount = createSelector(getReleasesArray, (albums) =>
   albums.reduce((count, album) => count + album.totalTracks, 0)
+)
+
+/** @param {State} state */
+export const getAnyModalVisible = createSelector(
+  [getPlaylistModalVisible, getUpdatePlaylistModalVisible],
+  (...values) => includesTruthy(values)
 )

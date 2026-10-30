@@ -1,0 +1,28 @@
+.SpotifyAttribution {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+
+  .Header & {
+    margin-top: 0;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    color: $grey-light;
+    font-size: 0.85rem;
+
+    &:hover {
+      color: $white-ter;
+    }
+  }
+
+  &__icon {
+    color: #1ed760;
+    font-size: 21px;
+    margin-right: -4px;
+  }
+}

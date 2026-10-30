@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": "src",
     "checkJs": true,
     "jsx": "react-jsx",
@@ -7,5 +8,5 @@
     "moduleResolution": "node",
     "target": "esnext"
   },
-  "include": ["src"]
+  "include": ["src", "typings.d.ts"]
 }

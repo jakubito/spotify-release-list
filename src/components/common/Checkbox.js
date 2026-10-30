@@ -16,9 +16,13 @@ import classNames from 'classnames'
  *   readOnly?: boolean
  *   disabled?: boolean
  *   dark?: boolean
+ *   style?: React.CSSProperties
+ *   labelStyle?: React.CSSProperties
+ *   ref?: React.Ref<HTMLInputElement>
  * }} props
  */
 function Checkbox({
+  ref,
   id,
   name,
   className,
@@ -31,10 +35,13 @@ function Checkbox({
   readOnly,
   disabled,
   dark,
+  style,
+  labelStyle,
 }) {
   return (
     <>
       <input
+        ref={ref}
         type="checkbox"
         id={id}
         name={name}
@@ -49,8 +56,9 @@ function Checkbox({
           'is-dark': dark,
           'no-label': !label,
         })}
+        style={style}
       />
-      <label htmlFor={id} className={classNames(labelClassName)}>
+      <label htmlFor={id} className={classNames(labelClassName)} style={labelStyle}>
         {label}
       </label>
     </>

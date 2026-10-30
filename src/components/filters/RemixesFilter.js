@@ -20,7 +20,7 @@ function RemixesFilter() {
     <div className="Filters__filter Filters__filter--inline">
       <Checkbox
         id="RemixesFilter"
-        label="Exclude Remixes"
+        label="Exclude remixes"
         checked={checked}
         onChange={(event) => setChecked(event.target.checked)}
         dark

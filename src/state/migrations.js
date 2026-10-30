@@ -2,7 +2,7 @@ import { AlbumGroup } from 'enums'
 import { getFiltersVisible, getHasOriginalReleases } from 'state/selectors'
 import { initialState } from './reducer'
 
-/** @type {{ [version: number]: (state: PersistedState) => PersistedState }} */
+/** @type {{ [version: string]: (state: PersistedState) => PersistedState }} */
 const migrations = {
   0: (state) => {
     const albumGroupValues = Object.values(AlbumGroup)

@@ -25338,12 +25338,18 @@
   "lastSync": "2022-05-10T18:11:22.186Z",
   "lastAutoSync": null,
   "previousSyncMaxDate": "2022-05-10",
+  "loadingPlaylists": false,
   "creatingPlaylist": false,
-  "playlistId": null,
+  "updatingPlaylist": false,
+  "playlists": [],
+  "selectedPlaylistId": null,
+  "lastPlaylistsRefresh": null,
+  "playlistResult": null,
   "playlistForm": {
     "name": null,
     "description": null,
-    "isPrivate": null
+    "isPublic": null,
+    "followedArtistsOnly": null
   },
   "user": {
     "id": "123456",
@@ -25352,6 +25358,7 @@
   },
   "message": null,
   "playlistModalVisible": false,
+  "updatePlaylistModalVisible": false,
   "filtersVisible": false,
   "settings": {
     "artistSources": ["followed"],
@@ -25364,7 +25371,6 @@
       "appears_on": "#65c587"
     },
     "days": 180,
-    "market": "",
     "theme": "theme-compact",
     "uriLinks": false,
     "covers": true,
@@ -25377,8 +25383,10 @@
     "displayLabels": false,
     "displayPopularity": false,
     "labelBlocklist": "",
-    "releasesOrder": "album-group",
     "artistBlocklist": "",
+    "customArtists": "",
+    "albumBlocklist": "",
+    "releasesOrder": "album-group",
     "trackHistory": false
   },
   "filters": {
@@ -25386,20 +25394,17 @@
     "search": "",
     "startDate": null,
     "endDate": null,
+    "minTracks": null,
+    "maxTracks": null,
     "excludeVariousArtists": false,
     "excludeRemixes": false,
     "excludeDuplicates": false,
     "favoritesOnly": false,
     "newOnly": false
   },
-  "seenFeatures": [],
   "updateReady": false,
   "favorites": {},
   "editingFavorites": false,
   "lastSettingsPath": "/settings",
-  "labelBlocklistHeight": 168,
-  "_persist": {
-    "version": 7,
-    "rehydrated": true
-  }
+  "labelBlocklistHeight": 168
 }

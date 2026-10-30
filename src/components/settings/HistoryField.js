@@ -37,13 +37,13 @@ function HistoryField() {
       </label>
       <div className="Settings__help">
         <HelpText>
-          Tracking album history enables{' '}
+          Tracking album history enables the{' '}
           <strong>
             <i className="fas fa-star fa-xs" style={{ marginRight: 4 }} />
             New
           </strong>{' '}
-          filter, which shows newly released albums since the last refresh. This filter will be
-          automatically turned on in case there are new albums to show.
+          filter, which shows albums released since your last refresh. It turns on automatically
+          whenever there's something new.
         </HelpText>
       </div>
       <div className="control">
@@ -58,7 +58,7 @@ function HistoryField() {
       </div>
       <Button
         title={clearTitle}
-        icon={cleared && 'fas fa-check-circle'}
+        icon={cleared ? 'fas fa-check-circle' : undefined}
         disabled={cleared}
         onClick={clearHistory}
         small

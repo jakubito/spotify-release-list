@@ -3,6 +3,7 @@ import { InView } from 'react-intersection-observer'
 import { calculatePageSize } from 'helpers'
 import FavoritesToolbar from './FavoritesToolbar'
 import ReleaseDay from './ReleaseDay'
+import SpotifyAttribution from './SpotifyAttribution'
 
 /**
  * Lazily render releases sorted by date
@@ -17,6 +18,7 @@ function ReleaseList({ releases }) {
   return (
     <>
       <FavoritesToolbar resetList={reset} />
+      <SpotifyAttribution className="is-hidden-desktop" />
       {slice.map(({ date, albums }) => (
         <ReleaseDay date={date} albums={albums} key={date} />
       ))}

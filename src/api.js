@@ -1,4 +1,3 @@
-import last from 'lodash/last'
 import { buildUser, buildAlbumRaw, sleep } from 'helpers'
 
 const API_URL = 'https://api.spotify.com/v1'
@@ -10,14 +9,12 @@ const HTTP_TOO_MANY_REQUESTS = 429
 export class FetchError extends Error {
   /**
    * @param {number} status
-   * @param {string} statusText
    * @param {string} [message]
    */
-  constructor(status, statusText, message) {
+  constructor(status, message) {
     super(message)
     this.name = 'FetchError'
     this.status = status
-    this.statusText = statusText
   }
 }
 
@@ -25,10 +22,11 @@ export class FetchError extends Error {
  * Return current user
  *
  * @param {string} token
+ * @param {AbortSignal} [signal]
  */
-export async function getUser(token) {
+export async function getUser(token, signal) {
   /** @type {SpotifyUser} */
-  const userResponse = await get(apiUrl('me'), token)
+  const userResponse = await get(apiUrl('me'), token, signal)
   return buildUser(userResponse)
 }
 
@@ -37,11 +35,11 @@ export async function getUser(token) {
  *
  * @type {CursorPagedRequest<SpotifyArtist>}
  */
-export async function getUserFollowedArtistsPage(token, limit, after) {
+export async function getUserFollowedArtistsPage(token, limit, after, signal) {
   const params = new URLSearchParams({ type: 'artist', limit: limit.toString() })
   if (after) params.set('after', after)
   /** @type {{ artists: CursorPaged<SpotifyArtist> }} */
-  const response = await get(apiUrl(`me/following?${params}`), token)
+  const response = await get(apiUrl(`me/following?${params}`), token, signal)
   return response.artists
 }
 
@@ -50,9 +48,9 @@ export async function getUserFollowedArtistsPage(token, limit, after) {
  *
  * @type {PagedRequest<SpotifySavedTrack>}
  */
-export function getUserSavedTracksPage(token, limit, offset) {
+export function getUserSavedTracksPage(token, limit, offset, signal) {
   const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-  return get(apiUrl(`me/tracks?${params}`), token)
+  return get(apiUrl(`me/tracks?${params}`), token, signal)
 }
 
 /**
@@ -60,9 +58,33 @@ export function getUserSavedTracksPage(token, limit, offset) {
  *
  * @type {PagedRequest<SpotifySavedAlbum>}
  */
-export function getUserSavedAlbumsPage(token, limit, offset) {
+export function getUserSavedAlbumsPage(token, limit, offset, signal) {
   const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-  return get(apiUrl(`me/albums?${params}`), token)
+  return get(apiUrl(`me/albums?${params}`), token, signal)
+}
+
+/**
+ * Return saved playlists
+ *
+ * @type {PagedRequest<SpotifyPlaylist>}
+ */
+export function getUserSavedPlaylistsPage(token, limit, offset, signal) {
+  const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+  return get(apiUrl(`me/playlists?${params}`), token, signal)
+}
+
+/**
+ * Return artists by IDs (max 50)
+ *
+ * @param {string} token
+ * @param {string[]} artistIds
+ * @param {AbortSignal} [signal]
+ */
+export async function getSeveralArtists(token, artistIds, signal) {
+  const params = new URLSearchParams({ ids: artistIds.join(',') })
+  /** @type {{ artists: (SpotifyArtist | null)[] }} */
+  const response = await get(apiUrl(`artists?${params}`), token, signal)
+  return response.artists
 }
 
 /**
@@ -71,31 +93,20 @@ export function getUserSavedAlbumsPage(token, limit, offset) {
  * @param {string} token
  * @param {string} artistId
  * @param {AlbumGroup[]} groups
- * @param {string} minDate
+ * @param {AbortSignal} [signal]
  */
-export async function getArtistAlbums(token, artistId, groups, minDate) {
+export async function getArtistAlbums(token, artistId, groups, signal) {
   /** @type {AlbumRaw[]} */
   const albums = []
   const params = new URLSearchParams({ limit: '50', include_groups: groups.join(',') })
+  /** @type {string | null} */
   let next = apiUrl(`artists/${artistId}/albums?${params}`)
 
   while (next) {
     /** @type {Paged<SpotifyAlbum>} */
-    const response = await get(next, token)
+    const response = await get(next, token, signal)
     for (const item of response.items) albums.push(buildAlbumRaw(item, artistId))
-
-    if (!response.next) return albums
-    if (last(albums).releaseDate < minDate) break
-
     next = response.next
-  }
-
-  const [lastGroup] = /** @type {[AlbumGroup]} */ (Object.keys(last(albums).artistIds))
-  const restGroups = groups.slice(groups.indexOf(lastGroup) + 1)
-
-  if (restGroups.length > 0) {
-    const restAlbums = await getArtistAlbums(token, artistId, restGroups, minDate)
-    for (const album of restAlbums) albums.push(album)
   }
 
   return albums
@@ -106,42 +117,42 @@ export async function getArtistAlbums(token, artistId, groups, minDate) {
  *
  * @param {string} token
  * @param {string[]} albumIds
+ * @param {AbortSignal} [signal]
  */
-export async function getFullAlbums(token, albumIds) {
+export async function getFullAlbums(token, albumIds, signal) {
   const params = new URLSearchParams({ ids: albumIds.join(',') })
   /** @type {{ albums: SpotifyAlbumFull[] }} */
-  const response = await get(apiUrl(`albums?${params}`), token)
+  const response = await get(apiUrl(`albums?${params}`), token, signal)
   return response.albums
 }
 
 /**
- * Return an album's track IDs
+ * Return albums' tracks
  *
  * @param {string} token
  * @param {string[]} albumIds
+ * @param {AbortSignal} [signal]
  */
-export async function getAlbumsTrackIds(token, albumIds) {
-  /** @type {string[]} */
-  const trackIds = []
-  const albums = await getFullAlbums(token, albumIds)
+export async function getAlbumsTracks(token, albumIds, signal) {
+  /** @type {SpotifyTrack[]} */
+  const tracks = []
+  const albums = await getFullAlbums(token, albumIds, signal)
 
   for (const album of albums) {
     if (!album) continue
 
-    const albumTrackIds = album.tracks.items.map((track) => track.id)
+    for (const track of album.tracks.items) tracks.push(track)
     let next = album.tracks.next
 
     while (next) {
       /** @type {Paged<SpotifyTrack>} */
-      const response = await get(next, token)
-      for (const track of response.items) albumTrackIds.push(track.id)
+      const response = await get(next, token, signal)
+      for (const track of response.items) tracks.push(track)
       next = response.next
     }
-
-    for (const id of albumTrackIds) trackIds.push(id)
   }
 
-  return trackIds
+  return tracks
 }
 
 /**
@@ -149,17 +160,17 @@ export async function getAlbumsTrackIds(token, albumIds) {
  *
  * @param {string} token
  * @param {string} userId
- * @param {string} name
- * @param {string} description
- * @param {boolean} isPrivate
+ * @param {PlaylistForm} form
+ * @param {AbortSignal} [signal]
  * @returns {Promise<SpotifyPlaylist>}
  */
-export function createPlaylist(token, userId, name, description, isPrivate) {
-  return post(apiUrl(`users/${userId}/playlists`), token, {
-    name,
-    description,
-    public: !isPrivate,
-  })
+export function createPlaylist(token, userId, form, signal) {
+  return post(
+    apiUrl(`users/${userId}/playlists`),
+    token,
+    { name: form.name, description: form.description, public: form.isPublic },
+    signal
+  )
 }
 
 /**
@@ -168,10 +179,28 @@ export function createPlaylist(token, userId, name, description, isPrivate) {
  * @param {string} token
  * @param {string} playlistId
  * @param {string[]} trackUris
+ * @param {AbortSignal} [signal]
  * @returns {Promise<SpotifyPlaylistSnapshot>}
  */
-export function addTracksToPlaylist(token, playlistId, trackUris) {
-  return post(apiUrl(`playlists/${playlistId}/tracks`), token, { uris: trackUris })
+export function addTracksToPlaylist(token, playlistId, trackUris, signal) {
+  return post(apiUrl(`playlists/${playlistId}/tracks`), token, { uris: trackUris }, signal)
+}
+
+/**
+ * Clears all tracks from playlist
+ *
+ * @param {string} token
+ * @param {string} playlistId
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<SpotifyPlaylistSnapshot>}
+ */
+export function clearPlaylist(token, playlistId, signal) {
+  return put(
+    apiUrl(`playlists/${playlistId}/tracks`),
+    token,
+    { uris: [], range_start: 0, range_length: 99999 },
+    signal
+  )
 }
 
 /**
@@ -189,10 +218,11 @@ function apiUrl(endpoint) {
  * @template T
  * @param {string} endpoint
  * @param {string} token
+ * @param {AbortSignal} [signal]
  * @returns {Promise<T>}
  */
-function get(endpoint, token) {
-  return request(endpoint, token, 'GET')
+function get(endpoint, token, signal) {
+  return request({ endpoint, token, signal, method: 'GET' })
 }
 
 /**
@@ -202,35 +232,64 @@ function get(endpoint, token) {
  * @param {string} endpoint
  * @param {string} token
  * @param {Record<string, unknown>} body
+ * @param {AbortSignal} [signal]
  * @returns {Promise<T>}
  */
-function post(endpoint, token, body) {
-  return request(
+function post(endpoint, token, body, signal) {
+  return request({
     endpoint,
     token,
-    'POST',
-    { 'content-type': 'application/json' },
-    JSON.stringify(body)
-  )
+    signal,
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}
+
+/**
+ * Fire PUT request
+ *
+ * @template T
+ * @param {string} endpoint
+ * @param {string} token
+ * @param {Record<string, unknown>} body
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<T>}
+ */
+function put(endpoint, token, body, signal) {
+  return request({
+    endpoint,
+    token,
+    signal,
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })
 }
 
 /**
  * Spotify API request wrapper
  *
  * @template T
- * @param {string} endpoint
- * @param {string} token
- * @param {string} method
- * @param {Record<string, string>} [headers]
- * @param {string} [body]
+ * @param {{
+ *   endpoint: string
+ *   token: string
+ *   method: import('workbox-routing/utils/constants').HTTPMethod
+ *   headers?: Record<string, string>
+ *   body?: string
+ *   signal?: AbortSignal
+ * }} payload
  * @returns {Promise<T>}
  */
-async function request(endpoint, token, method, headers = {}, body) {
+async function request(payload) {
+  const { endpoint, token, method, headers = {}, body, signal } = payload
   const defaultHeaders = { authorization: `Bearer ${token}`, accept: 'application/json' }
+
   const response = await fetch(endpoint, {
     headers: { ...defaultHeaders, ...headers },
     method,
     body,
+    signal,
   })
 
   if (response.ok) return response.json()
@@ -238,17 +297,15 @@ async function request(endpoint, token, method, headers = {}, body) {
   if (response.status === HTTP_TOO_MANY_REQUESTS) {
     const retryAfter = Number(response.headers.get('Retry-After'))
     await sleep((retryAfter + 1) * 1000)
-    return request(endpoint, token, method, headers, body)
+    return request(payload)
   }
 
-  if (response.status >= 400 && response.status < 500) {
+  let message = `HTTP Error ${response.status}`
+
+  try {
     const json = await response.json()
-    throw new FetchError(response.status, response.statusText, json.error.message)
-  }
+    if (json.error?.message) message = json.error.message
+  } catch {}
 
-  throw new FetchError(
-    response.status,
-    response.statusText,
-    `${response.status} ${response.statusText} error encountered while fetching`
-  )
+  throw new FetchError(response.status, message)
 }

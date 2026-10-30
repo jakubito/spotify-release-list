@@ -12,7 +12,7 @@
     margin-bottom: 0 !important;
     margin-right: 20px;
     user-select: none;
-    flex: 0 0 225px;
+    flex: 0 0 190px;
 
     @include touch {
       margin-right: 0;
@@ -24,13 +24,11 @@
   &__left {
     display: flex;
     align-items: center;
+    gap: 15px;
+    min-width: 0;
 
-    .button {
-      margin-right: 15px;
-
-      @include mobile {
-        margin-right: 10px;
-      }
+    @include mobile {
+      gap: 10px;
     }
   }
 
@@ -39,17 +37,10 @@
     margin-left: auto;
     display: flex;
     align-items: center;
+    gap: 15px;
 
-    .button {
-      margin-right: 15px;
-
-      @include mobile {
-        margin-right: 10px;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
+    @include mobile {
+      gap: 10px;
     }
   }
 }

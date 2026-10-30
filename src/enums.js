@@ -7,7 +7,7 @@ export const Address = {
   PRIVACY: `${GITHUB}/blob/master/PRIVACY.md`,
   CREDITS: `${GITHUB}/blob/master/CREDITS.md`,
   CHANGELOG: `${GITHUB}/releases`,
-  DONATE: 'https://paypal.me/jakubito',
+  KOFI: 'https://ko-fi.com/jakubito',
   EMAIL: 'mailto:dobes.jakub@gmail.com',
   DEMO: 'https://demo--spotifyreleaselist.netlify.app',
 }
@@ -16,6 +16,7 @@ export const Address = {
 export const Scope = {
   USER_FOLLOW_READ: 'user-follow-read',
   USER_LIBRARY_READ: 'user-library-read',
+  PLAYLIST_READ_PRIVATE: 'playlist-read-private',
   PLAYLIST_MODIFY_PRIVATE: 'playlist-modify-private',
   PLAYLIST_MODIFY_PUBLIC: 'playlist-modify-public',
 }
@@ -39,15 +40,17 @@ export const ArtistSource = {
   FOLLOWED: 'followed',
   SAVED_TRACKS: 'saved-tracks',
   SAVED_ALBUMS: 'saved-albums',
+  CUSTOM: 'custom',
 }
 
-const { FOLLOWED, SAVED_TRACKS, SAVED_ALBUMS } = ArtistSource
+const { FOLLOWED, SAVED_TRACKS, SAVED_ALBUMS, CUSTOM } = ArtistSource
 
 /** @type {[group: ArtistSource, label: string][]} */
 export const ArtistSourceLabels = [
   [FOLLOWED, 'Followed artists'],
   [SAVED_ALBUMS, 'Saved albums'],
   [SAVED_TRACKS, 'Liked songs'],
+  [CUSTOM, 'Custom list'],
 ]
 
 /** @type {ReleasesOrderEnum} */

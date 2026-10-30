@@ -13,10 +13,10 @@ import { colord } from 'colord'
  * }} props
  */
 function Anchor({ title, href, className, color, children }) {
-  const style = color && {
-    color,
-    textDecorationColor: colord(color).darken(0.15).desaturate(0.25).toHex(),
-  }
+  /** @type {React.CSSProperties | undefined} */
+  const style = color
+    ? { color, textDecorationColor: colord(color).darken(0.15).desaturate(0.25).toHex() }
+    : undefined
 
   return (
     <a

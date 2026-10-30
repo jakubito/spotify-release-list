@@ -13,8 +13,8 @@ function SearchFilter() {
   const dispatch = useDispatch()
   const filtersSearch = useSelector(getFiltersSearch)
   const [value, setValue] = useState(filtersSearch)
-  /** @type {React.MutableRefObject<HTMLInputElement>} */
-  const inputRef = useRef()
+  /** @type {React.RefObject<HTMLInputElement | null>} */
+  const inputRef = useRef(null)
 
   const debouncedDispatch = useCallback(
     debounce(

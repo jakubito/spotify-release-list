@@ -13,6 +13,7 @@ const options = [
   ['90', 'Past 3 months'],
   ['180', 'Past 6 months'],
   ['365', 'Past year'],
+  ['-1', 'All time'],
 ]
 
 /**

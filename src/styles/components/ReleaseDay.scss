@@ -15,7 +15,7 @@
   }
 
   &__date {
-    flex: 0 0 225px;
+    flex: 0 0 190px;
     margin-top: 25px !important;
     top: 16px;
     color: $grey;
@@ -28,8 +28,8 @@
     z-index: 2;
 
     @include theme(compact) {
-      margin-top: 16px !important;
-      font-size: 1.25rem;
+      margin-top: 18px !important;
+      font-size: 1.1rem;
     }
 
     @include desktop-only {
@@ -38,14 +38,14 @@
 
     @include touch {
       width: fit-content;
-      margin: 0 auto !important;
+      margin: 12px auto -4px !important;
       flex: none;
       top: 10px;
-      border-radius: 4px;
+      border-radius: 999px;
       filter: drop-shadow(0px 0px 6px $black);
 
       .columns.is-gapless & {
-        padding: 2px 10px !important;
+        padding: 2px 12px !important;
       }
     }
   }

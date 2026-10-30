@@ -28,7 +28,7 @@ function ButtonAnchor({
   return (
     <Anchor
       href={href}
-      title={title || titleOnly}
+      title={title ?? titleOnly ?? ''}
       className={classNames(className, 'button', 'is-rounded', 'has-text-weight-semibold', {
         'is-small': small,
         'is-medium': medium,

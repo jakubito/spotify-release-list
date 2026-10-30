@@ -9,10 +9,10 @@ const { COMPACT, SINGLE_COLUMN } = Theme
 
 /** @type {SelectOptions} */
 const options = [
-  ['', 'Default'],
-  [COMPACT, 'Compact'],
-  [SINGLE_COLUMN, 'Single Column'],
+  [COMPACT, 'Compact (Default)'],
   [[SINGLE_COLUMN, COMPACT].join(' '), 'Single Column - Compact'],
+  ['', 'Original'],
+  [SINGLE_COLUMN, 'Single Column - Original'],
 ]
 
 /**

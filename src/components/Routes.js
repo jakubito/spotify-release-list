@@ -5,6 +5,7 @@ import {
   Settings,
   GeneralSettings,
   AppearanceSettings,
+  BlocklistSettings,
   AboutSettings,
   AutomationSettings,
   BackupSettings,
@@ -18,6 +19,7 @@ function Routes() {
         <Route path="settings" element={<Settings />}>
           <Route index element={<GeneralSettings />} />
           <Route path="appearance" element={<AppearanceSettings />} />
+          <Route path="blocklists" element={<BlocklistSettings />} />
           <Route path="automation" element={<AutomationSettings />} />
           <Route path="backup" element={<BackupSettings />} />
           <Route path="about" element={<AboutSettings />} />
